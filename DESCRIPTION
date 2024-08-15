@@ -1,0 +1,19 @@
+Package: flint
+Version: 0.0.1
+Date: 2024-08-15
+Title: Fast Library for Number Theory
+Description:
+	An R interface to the 'FLINT' (Fast Library for Number Theory) C library,
+	an extension of GNU 'MFPR' (Multiple Precision Floating-Point Reliable
+	Library) GNU 'MP' (Multiple Precision Arithmetic Library).
+License: GPL (>= 2)
+URL: https://github.com/jaganmn/flint
+BugReports: https://github.com/jaganmn/flint/issues
+Authors@R:
+	c(person("Mikael", "Jagan",
+	         email = "jaganmn@mcmaster.ca",
+	         role = c("aut", "cre"),
+	         comment = c(ORCID = "0000-0002-3542-2938")))
+Depends: R (>= 4.3)
+SystemRequirements: gmp, mpfr, flint
+OS_type: unix
