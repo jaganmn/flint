@@ -5,7 +5,7 @@ Title: Fast Library for Number Theory
 Description:
 	An R interface to the 'FLINT' (Fast Library for Number Theory) C library,
 	an extension of GNU 'MFPR' (Multiple Precision Floating-Point Reliable
-	Library) GNU 'MP' (Multiple Precision Arithmetic Library).
+	Library) and GNU 'MP' (Multiple Precision Arithmetic Library).
 License: GPL (>= 2)
 URL: https://github.com/jaganmn/flint
 BugReports: https://github.com/jaganmn/flint/issues
