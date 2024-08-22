@@ -14,6 +14,6 @@ Authors@R:
 	         email = "jaganmn@mcmaster.ca",
 	         role = c("aut", "cre"),
 	         comment = c(ORCID = "0000-0002-3542-2938")))
-Depends: R (>= 4.3)
-SystemRequirements: gmp, mpfr, flint
+Depends: R (>= 4.3), methods
+SystemRequirements: gmp (>= 4.1.0), mpfr (>= 3.1.0), flint
 OS_type: unix

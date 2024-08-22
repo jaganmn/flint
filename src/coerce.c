@@ -1,7 +1,8 @@
-#include <limits.h>
 #include <mpfr.h>
-#include <Rinternals.h>
-#include <R_ext/Error.h>
+#include "R_flint.h"
+
+#define CAST_SIGNED(u, utype, stype) \
+	((u) <= (((utype) -1) >> 1)) ? (stype) (u) : -(stype) ~(u) - 1
 
 #if MPFR_PREC_WIDTH == 1
 # define FCOPY_PREC(i, j) \
@@ -15,25 +16,16 @@
 #elif MPFR_PREC_WIDTH == 2
 # define FCOPY_PREC(i, j) \
 	do { \
-		mpfr_uprec_t tmp = ((mpfr_uprec_t) (j)[1]) << sizeof(int) | ((mpfr_uprec_t) (j)[0]); \
-		if (tmp <= (((mpfr_uprec_t) -1) >> 1)) \
-		(i) = (mpfr_prec_t) tmp; \
-		else \
-		(i) = -(mpfr_prec_t) ~tmp - 1; \
+		mpfr_uprec_t tmp = (mpfr_uprec_t) (j)[1] << (sizeof(int) * CHAR_BIT) | (mpfr_uprec_t) (j)[0]; \
+		(i) = CAST_SIGNED(tmp, mpfr_uprec_t, mpfr_prec_t); \
 	} while (0)
 # define RCOPY_PREC(i, j) \
 	do { \
 		unsigned int tmp; \
-		tmp = (unsigned int) (((mpfr_uprec_t) (i)) & 0x00000000FFFFFFFFu); \
-		if (tmp <= INT_MAX) \
-		(j)[0] = (int) tmp; \
-		else \
-		(j)[0] = -(int) ~tmp - 1; \
-		tmp = (unsigned int) (((mpfr_uprec_t) (i)) >> sizeof(int)); \
-		if (tmp <= INT_MAX) \
-		(j)[1] = (int) tmp; \
-		else \
-		(j)[1] = -(int) ~tmp - 1; \
+		tmp = (unsigned int) ((mpfr_uprec_t) (i) & 0x00000000FFFFFFFFu); \
+		(j)[0] = CAST_SIGNED(tmp, unsigned int, int); \
+		tmp = (unsigned int) ((mpfr_uprec_t) (i) >> (sizeof(int) * CHAR_BIT)); \
+		(j)[1] = CAST_SIGNED(tmp, unsigned int, int); \
 	} while (0)
 #else
 # error "invalid MPFR_PREC_WIDTH"
@@ -51,25 +43,16 @@
 #elif MPFR_EXP_WIDTH == 2
 # define FCOPY_EXP(i, j) \
 	do { \
-		mpfr_uexp_t tmp = ((mpfr_uexp_t) (j)[1]) << sizeof(int) | ((mpfr_uexp_t) (j)[0]); \
-		if (tmp <= (((mpfr_uexp_t) -1) >> 1)) \
-		(i) = (mpfr_exp_t) tmp; \
-		else \
-		(i) = -(mpfr_exp_t) ~tmp - 1; \
+		mpfr_uexp_t tmp = (mpfr_uexp_t) (j)[1] << (sizeof(int) * CHAR_BIT) | (mpfr_uexp_t) (j)[0]; \
+		(i) = CAST_SIGNED(tmp, mpfr_uexp_t, mpfr_exp_t); \
 	} while (0)
 # define RCOPY_EXP(i, j) \
 	do { \
 		unsigned int tmp; \
-		tmp = (unsigned int) (((mpfr_uexp_t) (i)) & 0x00000000FFFFFFFFu); \
-		if (tmp <= INT_MAX) \
-		(j)[0] = (int) tmp; \
-		else \
-		(j)[0] = -(int) ~tmp - 1; \
-		tmp = (unsigned int) (((mpfr_uexp_t) (i)) >> sizeof(int)); \
-		if (tmp <= INT_MAX) \
-		(j)[1] = (int) tmp; \
-		else \
-		(j)[1] = -(int) ~tmp - 1; \
+		tmp = (unsigned int) ((mpfr_uexp_t) (i) & 0x00000000FFFFFFFFu); \
+		(j)[0] = CAST_SIGNED(tmp, unsigned int, int); \
+		tmp = (unsigned int) ((mpfr_uexp_t) (i) >> (sizeof(int) * CHAR_BIT)); \
+		(j)[1] = CAST_SIGNED(tmp, unsigned int, int); \
 	} while (0)
 #else
 # error "invalid MPFR_EXP_WIDTH"
@@ -95,37 +78,26 @@
 	} while (0)
 # define RCOPY_LIMB(i, j) \
 	do { \
-		if ((i) <= INT_MAX) \
-		(j)[0] = (int) (i); \
-		else \
-		(j)[0] = -(int) ~(i) - 1; \
+		(j)[0] = CAST_SIGNED((i), unsigned int, int); \
 	} while (0)
 #elif MP_LIMB_WIDTH == 2
 # define FCOPY_LIMB(i, j) \
 	do { \
-		(i) = ((mp_limb_t) (j)[1]) << sizeof(int) | ((mp_limb_t) (j)[0]); \
+		(i) = (mp_limb_t) (j)[1] << (sizeof(int) * CHAR_BIT) | (mp_limb_t) (j)[0]; \
 	} while (0)
 # define RCOPY_LIMB(i, j) \
 	do { \
 		unsigned int tmp; \
 		tmp = (unsigned int) ((i) & 0x00000000FFFFFFFFu); \
-		if (tmp <= INT_MAX) \
-		(j)[0] = (int) tmp; \
-		else \
-		(j)[0] = -(int) ~tmp - 1; \
-		tmp = (unsigned int) ((i) >> sizeof(int)); \
-		if (tmp <= INT_MAX) \
-		(j)[1] = (int) tmp; \
-		else \
-		(j)[1] = -(int) ~tmp - 1; \
+		(j)[0] = CAST_SIGNED(tmp, unsigned int, int); \
+		tmp = (unsigned int) ((i) >> (sizeof(int) * CHAR_BIT)); \
+		(j)[1] = CAST_SIGNED(tmp, unsigned int, int); \
 	} while (0)
 #else
 # error "invalid MP_LIMB_WIDTH"
 #endif
 
-extern SEXP mpfr_precSymbol, mpfr_expSymbol, mpfr_signSymbol, mpfr_dSymbol;
-
-void sexp_as_mpfr(mpfr_t to, SEXP from)
+void sexp_as_mpfr(SEXP from, mpfr_t to)
 {
 	static const char *valid[] = { "mpfr1", "" };
 	if (TYPEOF(from) != OBJSXP)
@@ -145,15 +117,14 @@ void sexp_as_mpfr(mpfr_t to, SEXP from)
 	FCOPY_PREC(prec, INTEGER(s_prec));
 	if (prec < MPFR_PREC_MIN || prec > MPFR_PREC_MAX)
 		Rf_error("invalid '%s' slot", "prec");
-	
+
 	SEXP s_exp = R_do_slot(from, mpfr_expSymbol);
 	if (TYPEOF(s_exp) != INTSXP || XLENGTH(s_exp) != MPFR_EXP_WIDTH)
 		Rf_error("invalid '%s' slot", "exp");
 	FCOPY_EXP(exp, INTEGER(s_exp));
 
 	SEXP s_sign = R_do_slot(from, mpfr_signSymbol);
-	if (TYPEOF(s_sign) != INTSXP || XLENGTH(s_sign) != 1 ||
-	    INTEGER(s_sign)[0] == NA_INTEGER)
+	if (TYPEOF(s_sign) != INTSXP || XLENGTH(s_sign) != MPFR_SIGN_WIDTH)
 		Rf_error("invalid '%s' slot", "sign");
 	FCOPY_SIGN(sign, INTEGER(s_sign));
 
@@ -189,7 +160,7 @@ void sexp_as_mpfr(mpfr_t to, SEXP from)
 	return;
 }
 
-void mpfr_as_sexp(SEXP to, mpfr_t from)
+void mpfr_as_sexp(mpfr_t from, SEXP to)
 {
 	static const char *valid[] = { "mpfr1", "" };
 	if (TYPEOF(to) != OBJSXP)
