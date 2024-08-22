@@ -1,6 +1,6 @@
-#include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 #include <R_ext/Visibility.h>
+#include <Rinternals.h>
 
 SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 	R_flint_symbol_d, R_flint_symbol_length, R_flint_symbol_x;
