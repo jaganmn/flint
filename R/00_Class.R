@@ -1,7 +1,7 @@
 setClass("flint",
          contains = "VIRTUAL",
          slots = c(length = "numeric", x = "externalptr"),
-         prototype = list(length = integer(0L)))
+         prototype = list(length = 0L))
 
 setClass("fmpz", contains = "flint")
 setClass("fmpq", contains = "flint")
