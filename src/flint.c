@@ -1,19 +1,30 @@
 #include "R_flint.h"
 
-SEXP R_flint_length(SEXP s_x)
+unsigned long long int _R_flint_length_get(SEXP object)
 {
-	SEXP length = R_do_slot(s_x, R_flint_symbol_length);
-	unsigned int *u = (unsigned int *) INTEGER(length);
-	unsigned long long int n = 0;
-	if (XLENGTH(length) == 1)
-		n = u[0];
-	else if (XLENGTH(length) == 2)
-		n = u[1] << (sizeof(int) * CHAR_BIT) | u[0];
-	else {
+	SEXP length = R_do_slot(object, R_flint_symbol_length);
+	if (TYPEOF(length) != INTSXP || XLENGTH(length) != 2)
 		Rf_error("invalid '%s' slot", "length");
-		return R_NilValue;
-	}
+	unsigned int *u = (unsigned int *) INTEGER(length);
+	return (unsigned long long int) u[1] << (sizeof(int) * CHAR_BIT) |
+		(unsigned long long int) u[0];
+}
+
+void _R_flint_length_set(SEXP object, unsigned long long int value)
+{
+	SEXP length = R_do_slot(object, R_flint_symbol_length);
+	if (TYPEOF(length) != INTSXP || XLENGTH(length) != 2)
+		Rf_error("invalid '%s' slot", "length");
+	unsigned int *u = (unsigned int *) INTEGER(length);
+	u[0] = (unsigned int) (value & 0x00000000FFFFFFFFu);
+	u[1] = (unsigned int) (value >> (sizeof(int) * CHAR_BIT));
+	return;
+}
+
+SEXP R_flint_length_get(SEXP object)
+{
 	SEXP ans;
+	unsigned long long int n = _R_flint_length_get(object);
 	if (n <= INT_MAX) {
 		ans = allocVector(INTSXP, 1);
 		INTEGER(ans)[0] = (int) n;
