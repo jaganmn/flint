@@ -5,6 +5,8 @@
 SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 	R_flint_symbol_d, R_flint_symbol_length, R_flint_symbol_x;
 
+SEXP R_flint_length(SEXP);
+
 SEXP R_flint_fmpz_initialize(SEXP, SEXP);
 
 SEXP R_flint_fmpq_initialize(SEXP, SEXP, SEXP);
@@ -20,16 +22,16 @@ SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
-
 static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
+	CALL_ENTRY(R_flint_length, 1),
 	CALL_ENTRY(R_flint_fmpz_initialize, 2),
 	CALL_ENTRY(R_flint_fmpq_initialize, 3),
 	CALL_ENTRY(R_flint_mag_initialize, 2),
 	CALL_ENTRY(R_flint_arf_initialize, 2),
 	CALL_ENTRY(R_flint_arb_initialize, 2),
-	CALL_ENTRY(R_flint_acb_initialize, 3),	
+	CALL_ENTRY(R_flint_acb_initialize, 3),
 	CALL_ENTRY(R_flint_acb_dirichlet_lerch_phi, 4),
 	CALL_ENTRY(R_flint_acb_hypgeom_2f1, 6),
 	CALL_ENTRY(R_flint_acb_hypgeom_2f1_continuation, 8),

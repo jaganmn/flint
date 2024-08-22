@@ -3,6 +3,7 @@
 
 #define R_NO_REMAP
 
+#include <limits.h> /* CHAR_BIT, INT_MAX, ... */
 #include <Rinternals.h>
 #include <R_ext/Error.h>
 
