@@ -17,4 +17,7 @@ SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 unsigned long long int _R_flint_length_get(SEXP);
 void _R_flint_length_set(SEXP, unsigned long long int);
 
+void *_R_flint_x_get(SEXP);
+void _R_flint_x_set(SEXP, void *);
+
 #endif /* ! defined (R_FLINT_H)

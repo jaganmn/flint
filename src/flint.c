@@ -38,3 +38,19 @@ SEXP R_flint_length_get(SEXP object)
 	}
 	return ans;
 }
+
+void *_R_flint_x_get(SEXP object)
+{
+	SEXP x = R_do_slot(object, R_flint_symbol_x);
+	return R_ExternalPtrAddr(x);
+}
+
+void _R_flint_x_set(SEXP object, void *p, R_CFinalizer_t f)
+{
+	SEXP x = R_do_slot(object, R_flint_symbol_x);
+	R_SetExternalPtrAddr(x, p);
+	R_SetExternalPtrTag(x, R_NilValue);
+	R_SetExternalPtrProtected(x, R_NilValue);
+	R_RegisterCFinalizer(x, f);
+	return;
+}
