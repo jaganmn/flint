@@ -18,9 +18,9 @@ SEXP R_flint_arf_initialize(SEXP, SEXP);
 SEXP R_flint_arb_initialize(SEXP, SEXP);
 
 SEXP R_flint_acb_initialize(SEXP, SEXP, SEXP);
-SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP);
-SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static R_CallMethodDef CallEntries[] =
 {
@@ -32,9 +32,9 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arf_initialize, 2),
 	CALL_ENTRY(R_flint_arb_initialize, 2),
 	CALL_ENTRY(R_flint_acb_initialize, 3),
-	CALL_ENTRY(R_flint_acb_dirichlet_lerch_phi, 4),
-	CALL_ENTRY(R_flint_acb_hypgeom_2f1, 6),
-	CALL_ENTRY(R_flint_acb_hypgeom_2f1_continuation, 8),
+	CALL_ENTRY(R_flint_acb_dirichlet_lerch_phi, 5),
+	CALL_ENTRY(R_flint_acb_hypgeom_2f1, 7),
+	CALL_ENTRY(R_flint_acb_hypgeom_2f1_continuation, 10),
 	{NULL, NULL, 0}
 };
 
