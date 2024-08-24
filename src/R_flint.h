@@ -27,6 +27,12 @@ extern
 SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 	R_flint_symbol_d, R_flint_symbol_length, R_flint_symbol_x;
 
+SEXP newObject(const char *);
+void assertClass(SEXP, const char *, const char *);
+
+int asFlags(SEXP);
+slong asPrec(SEXP);
+
 unsigned long long int _R_flint_length_get(SEXP);
 void _R_flint_length_set(SEXP, unsigned long long int);
 

@@ -99,13 +99,7 @@
 
 void sexp_as_mpfr(SEXP from, mpfr_t to)
 {
-	static const char *valid[] = { "mpfr1", "" };
-	if (TYPEOF(from) != OBJSXP)
-		Rf_error("invalid type \"%s\" in '%s'",
-		         type2char((SEXPTYPE) TYPEOF(from)), __func__);
-	if (R_check_class_etc(from, valid) < 0)
-		Rf_error("invalid class '%s' in '%s'",
-		         CHAR(STRING_ELT(getAttrib(from, R_ClassSymbol), 0)), __func__);
+	assertClass(from, "mpfr1", __func__);
 
 	mpfr_prec_t prec;
 	mpfr_exp_t exp;
@@ -162,13 +156,7 @@ void sexp_as_mpfr(SEXP from, mpfr_t to)
 
 void mpfr_as_sexp(mpfr_t from, SEXP to)
 {
-	static const char *valid[] = { "mpfr1", "" };
-	if (TYPEOF(to) != OBJSXP)
-		Rf_error("invalid type \"%s\" in '%s'",
-		         type2char((SEXPTYPE) TYPEOF(to)), __func__);
-	if (R_check_class_etc(to, valid) < 0)
-		Rf_error("invalid class '%s' in '%s'",
-		         CHAR(STRING_ELT(getAttrib(to, R_ClassSymbol), 0)), __func__);
+	assertClass(to, "mpfr1", __func__);
 
 	mpfr_prec_t prec = from->_mpfr_prec;
 	mpfr_exp_t exp = from->_mpfr_exp;
