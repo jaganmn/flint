@@ -1,7 +1,6 @@
 #include <flint/fmpz.h>
 #include "R_flint.h"
 
-static
 void R_flint_fmpz_finalize(SEXP object)
 {
 	unsigned long long int i, n = _R_flint_length_get(object);
@@ -14,20 +13,28 @@ void R_flint_fmpz_finalize(SEXP object)
 
 SEXP R_flint_fmpz_initialize(SEXP object, SEXP value)
 {
-	/* FIXME: handle NA_INTEGER, NaN */
 	unsigned long long int i, n = (unsigned long long int) XLENGTH(value);
 	_R_flint_length_set(object, n);
-	fmpz *x = flint_calloc(n, fmpz);
-	R_CFinalizer_t f = (R_CFinalizer_t) &R_flint_fmpz_finalize;
-	_R_flint_x_set(object, x, f);
+	fmpz *x = (fmpz *) flint_calloc(n, sizeof(fmpz));
+	_R_flint_x_set(object, x, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 	if (TYPEOF(value) == INTSXP) {
-		int *y = INTEGER(value);
-		for (i = 0; i < n; ++i)
-			fmpz_set_si(x[i], y[i]);
+		int *y = INTEGER(value), tmp;
+		for (i = 0; i < n; ++i) {
+			tmp = y[i];
+			if (tmp == NA_INTEGER)
+			Rf_error("NaN, Inf, -Inf not representable by 'fmpz'");
+			else
+			fmpz_set_si(x[i], tmp);
+		}
 	} else {
-		double *y = REAL(value);
-		for (i = 0; i < n; ++i)
-			fmpz_set_d (x[i], y[i]);
+		double *y = REAL(value), tmp;
+		for (i = 0; i < n; ++i) {
+			tmp = y[i];
+			if (!R_FINITE(tmp))
+			Rf_error("NaN, Inf, -Inf not representable by 'fmpz'");
+			else
+			fmpz_set_d (x[i], (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+		}
 	}
 	return object;
 }

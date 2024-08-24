@@ -1,7 +1,7 @@
 .onLoad <-
-function(libname, pkgname)
+function (libname, pkgname)
 	library.dynam("flint", pkgname, libname)
 
 .onUnload <-
-function(libpath)
+function (libpath)
 	library.dynam.unload("flint", libpath)
