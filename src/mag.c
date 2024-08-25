@@ -39,36 +39,6 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP value)
 	return object;
 }
 
-SEXP R_flint_mag_integer(SEXP from)
-{
-	unsigned long long int i, n = _R_flint_length_get(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
-		         "mag", (long long int) R_XLEN_T_MAX);
-	SEXP to = PROTECT(allocVector(INTSXP, (R_xlen_t) n));
-	mag *x = (mag *) _R_flint_x_get(from);
-	int *y = INTEGER(to);
-	int w = 1;
-	mag_t ub;
-	mag_init(ub);
-	mag_set_ui(ub, (unsigned int) INT_MAX + 1U);
-	for (i = 0; i < n; ++i) {
-		if (mag_cmp(x[i], ub) < 0)
-			y[i] = (int) mag_get_d(x[i]);
-		else {
-			y[i] = NA_INTEGER;
-			if (w) {
-				Rf_warning("NA introduced by coercion to range of \"%s\"",
-				           "integer");
-				w = 0;
-			}
-		}
-	}
-	mag_clear(ub);
-	UNPROTECT(1);
-	return to;
-}
-
 SEXP R_flint_mag_double(SEXP from)
 {
 	unsigned long long int i, n = _R_flint_length_get(from);
