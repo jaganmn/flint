@@ -5,3 +5,9 @@ setMethod("initialize",
 
 setAs("numeric", "fmpz",
       function (from) new("fmpz", x = from))
+
+setAs("fmpz", "integer",
+      function (from) .Call(R_flint_fmpz_integer, from))
+
+setAs("fmpz", "double",
+      function (from) .Call(R_flint_fmpz_double, from))

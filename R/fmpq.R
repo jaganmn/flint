@@ -5,3 +5,9 @@ setMethod("initialize",
 
 setAs("numeric", "fmpq",
       function (from) new("fmpq", p = from, q = 1L))
+
+setAs("fmpq", "integer",
+      function (from) .Call(R_flint_fmpq_integer, from))
+
+setAs("fmpq", "double",
+      function (from) .Call(R_flint_fmpq_double, from))

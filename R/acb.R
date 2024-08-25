@@ -8,3 +8,6 @@ setAs("numeric", "acb",
 
 setAs("complex", "acb",
       function (from) new("acb", r = Re(from), i = Im(from)))
+
+setAs("acb", "complex",
+      function (from) .Call(R_flint_acb_complex, from))

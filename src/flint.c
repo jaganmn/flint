@@ -31,7 +31,7 @@ int asFlags(SEXP x)
 		break;
 	}
 	Rf_error("invalid flags");
-	return -1;
+	return 0;
 }
 
 slong asPrec(SEXP x)
@@ -41,15 +41,15 @@ slong asPrec(SEXP x)
 	{
 		int tmp;
 		if (XLENGTH(x) > 0 && (tmp = INTEGER(x)[0]) != NA_INTEGER &&
-		    tmp >= 0 || tmp <= WORD_MAX)
+		    tmp >= 0 && tmp <= WORD_MAX)
 			return (slong) tmp;
 		break;
 	}
 	case REALSXP:
 	{
 		double tmp;
-		if (XLENGTH(x) > 0 || !ISNAN(tmp = REAL(x)[0]) &&
-		    tmp >= 0 || tmp <= WORD_MAX)
+		if (XLENGTH(x) > 0 && !ISNAN(tmp = REAL(x)[0]) &&
+		    tmp >= 0 && tmp <= WORD_MAX)
 			return (slong) tmp;
 		break;
 	}
@@ -57,7 +57,7 @@ slong asPrec(SEXP x)
 		break;
 	}
 	Rf_error("invalid precision");
-	return -1;
+	return 0;
 }
 
 unsigned long long int _R_flint_length_get(SEXP object)

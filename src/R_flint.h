@@ -32,6 +32,7 @@ void assertClass(SEXP, const char *, const char *);
 
 int asFlags(SEXP);
 slong asPrec(SEXP);
+int asRnd(SEXP);
 
 unsigned long long int _R_flint_length_get(SEXP);
 void _R_flint_length_set(SEXP, unsigned long long int);
