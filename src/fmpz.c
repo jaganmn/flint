@@ -22,7 +22,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, Inf, -Inf not representable by 'fmpz'");
+			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpz");
 			else
 			fmpz_set_si(x[i], tmp);
 		}
@@ -31,7 +31,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, Inf, -Inf not representable by 'fmpz'");
+			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpz");
 			else
 			fmpz_set_d (x[i], (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 		}
@@ -48,22 +48,18 @@ SEXP R_flint_fmpz_integer(SEXP from)
 	SEXP to = PROTECT(allocVector(INTSXP, (R_xlen_t) n));
 	fmpz *x = (fmpz *) _R_flint_x_get(from);
 	int *y = INTEGER(to);
-	int w = 1;
 	fmpz_t lb, ub;
 	fmpz_init(lb);
 	fmpz_init(ub);
 	fmpz_set_ui(ub, (unsigned int) INT_MAX + 1U);
 	fmpz_neg(lb, ub);
+	int w = 1;
 	for (i = 0; i < n; ++i) {
 		if (fmpz_cmp(x[i], lb) > 0 && fmpz_cmp(x[i], ub) < 0)
 			y[i] = (int) fmpz_get_si(x[i]);
 		else {
 			y[i] = NA_INTEGER;
-			if (w) {
-				Rf_warning("NA introduced by coercion to range of \"%s\"",
-				           "integer");
-				w = 0;
-			}
+			OOB_INTEGER(w);
 		}
 	}
 	fmpz_clear(lb);
@@ -92,11 +88,7 @@ SEXP R_flint_fmpz_double(SEXP from)
 			y[i] = fmpz_get_d(x[i]);
 		else {
 			y[i] = (fmpz_sgn(x[i]) < 0) ? R_NegInf : R_PosInf;
-			if (w) {
-				Rf_warning("-Inf or Inf introduced by coercion to range of \"%s\"",
-				           "double");
-				w = 0;
-			}
+			OOB_DOUBLE(w);
 		}
 	}
 	fmpz_clear(lb);

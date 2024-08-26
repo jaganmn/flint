@@ -22,7 +22,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN not representable by 'mag'");
+			Rf_error("NaN not representable by '%s'", "mag");
 			else
 			mag_set_ui(x[i], (tmp < 0) ? -tmp : tmp);
 		}
@@ -31,7 +31,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (ISNAN(tmp))
-			Rf_error("NaN not representable by 'mag'");
+			Rf_error("NaN not representable by '%s'", "mag");
 			else
 			mag_set_d (x[i], tmp);
 		}
@@ -48,20 +48,16 @@ SEXP R_flint_mag_double(SEXP from)
 	SEXP to = PROTECT(allocVector(REALSXP, (R_xlen_t) n));
 	mag *x = (mag *) _R_flint_x_get(from);
 	double *y = REAL(to);
-	int w = 1;
 	mag_t ub;
 	mag_init(ub);
 	mag_set_ui_2exp_si(ub, 1U, DBL_MAX_EXP);
+	int w = 1;
 	for (i = 0; i < n; ++i) {
 		if (mag_cmp(x[i], ub) < 0)
 			y[i] = mag_get_d(x[i]);
 		else {
 			y[i] = R_PosInf;
-			if (w) {
-				Rf_warning("-Inf or Inf introduced by coercion to range of \"%s\"",
-				           "double");
-				w = 0;
-			}
+			OOB_DOUBLE(w);
 		}
 	}
 	mag_clear(ub);

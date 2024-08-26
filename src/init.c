@@ -8,16 +8,24 @@ SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 SEXP R_flint_length_get(SEXP);
 
 SEXP R_flint_fmpz_initialize(SEXP, SEXP);
+SEXP R_flint_fmpz_integer(SEXP);
+SEXP R_flint_fmpz_double(SEXP);
 
 SEXP R_flint_fmpq_initialize(SEXP, SEXP, SEXP);
+SEXP R_flint_fmpq_integer(SEXP);
+SEXP R_flint_fmpq_double(SEXP);
 
 SEXP R_flint_mag_initialize(SEXP, SEXP);
+SEXP R_flint_mag_double(SEXP);
 
 SEXP R_flint_arf_initialize(SEXP, SEXP);
+SEXP R_flint_arf_double(SEXP, SEXP);
 
 SEXP R_flint_arb_initialize(SEXP, SEXP);
+SEXP R_flint_arb_list(SEXP, SEXP);
 
 SEXP R_flint_acb_initialize(SEXP, SEXP, SEXP);
+SEXP R_flint_acb_list(SEXP, SEXP);
 SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -27,11 +35,19 @@ static R_CallMethodDef CallEntries[] =
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
 	CALL_ENTRY(R_flint_length_get, 1),
 	CALL_ENTRY(R_flint_fmpz_initialize, 2),
+	CALL_ENTRY(R_flint_fmpz_integer, 1),
+	CALL_ENTRY(R_flint_fmpz_double, 1),
 	CALL_ENTRY(R_flint_fmpq_initialize, 3),
+	CALL_ENTRY(R_flint_fmpq_integer, 1),
+	CALL_ENTRY(R_flint_fmpq_double, 1),
 	CALL_ENTRY(R_flint_mag_initialize, 2),
+	CALL_ENTRY(R_flint_mag_double, 1),
 	CALL_ENTRY(R_flint_arf_initialize, 2),
+	CALL_ENTRY(R_flint_arf_double, 2),
 	CALL_ENTRY(R_flint_arb_initialize, 2),
+	CALL_ENTRY(R_flint_arb_list, 2),
 	CALL_ENTRY(R_flint_acb_initialize, 3),
+	CALL_ENTRY(R_flint_acb_list, 2),
 	CALL_ENTRY(R_flint_acb_dirichlet_lerch_phi, 5),
 	CALL_ENTRY(R_flint_acb_hypgeom_2f1, 7),
 	CALL_ENTRY(R_flint_acb_hypgeom_2f1_continuation, 10),

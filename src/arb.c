@@ -34,39 +34,54 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP value)
 	return object;
 }
 
-SEXP R_flint_arb_double(SEXP from, SEXP mode)
+SEXP R_flint_arb_list(SEXP from, SEXP mode)
 {
 	unsigned long long int i, n = _R_flint_length_get(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "arb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode);
-	SEXP to = PROTECT(allocVector(REALSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(allocVector(VECSXP, 2)),
+		nms = PROTECT(allocVector(STRSXP, 2)),
+		mid = PROTECT(allocVector(REALSXP, (R_xlen_t) n)),
+		rad = PROTECT(allocVector(REALSXP, (R_xlen_t) n));
+	SET_VECTOR_ELT(to, 0, mid);
+	SET_VECTOR_ELT(to, 1, rad);
+	SET_STRING_ELT(nms, 0, mkChar("mid"));
+	SET_STRING_ELT(nms, 1, mkChar("rad"));
+	setAttrib(to, R_NamesSymbol, nms);
 	arb *x = (arb *) _R_flint_x_get(from);
-	double *y = REAL(to);
+	double *y_m = REAL(mid), *y_r = REAL(rad);
+	arf_t mlb, mub, m;
+	arf_init(mlb);
+	arf_init(mub);
+	arf_set_ui_2exp_si(mub, 1U, DBL_MAX_EXP);
+	arf_neg(mlb, mub);
+	mag_t rub, r;
+	mag_init(rub);
+	mag_set_ui_2exp_si(rub, 1U, DBL_MAX_EXP);
 	int w = 1;
-	arf_t lb, ub, m;
-	arf_init(lb);
-	arf_init(ub);
-	arf_set_ui_2exp_si(ub, 1U, DBL_MAX_EXP);
-	arf_neg(lb, ub);
 	for (i = 0; i < n; ++i) {
 		m = arb_midref(x[i]);
 		if (arf_is_nan(m))
-			y[i] = R_NaN;
-		else if (arf_cmp(m, lb) > 0 && arf_cmp(m, ub) < 0)
-			y[i] = arf_get_d(m, rnd);
+			y_m[i] = R_NaN;
+		else if (arf_cmp(m, mlb) > 0 && arf_cmp(m, mub) < 0)
+			y_m[i] = arf_get_d(m, rnd);
 		else {
-			y[i] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
-			if (w) {
-				Rf_warning("-Inf or Inf introduced by coercion to range of \"%s\"",
-				           "double");
-				w = 0;
-			}
+			y_m[i] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			OOB_DOUBLE(w);
+		}
+		r = arb_radref(x[i]);
+		if (mag_cmp(r, rub) < 0)
+			y_r[i] = mag_get_d(r);
+		else {
+			y_r[i] = R_PosInf;
+			OOB_DOUBLE(w);
 		}
 	}
-	arf_clear(lb);
-	arf_clear(ub);
-	UNPROTECT(1);
+	arf_clear(mlb);
+	arf_clear(mub);
+	mag_clear(rub);
+	UNPROTECT(4);
 	return to;
 }

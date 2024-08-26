@@ -6,5 +6,5 @@ setMethod("initialize",
 setAs("numeric", "arb",
       function (from) new("arb", x = from))
 
-setAs("arb", "double",
-      function (from) .Call(R_flint_arb_double, from))
+setAs("arb", "list",
+      function (from) .Call(R_flint_arb_list, from))

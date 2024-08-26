@@ -23,6 +23,24 @@
 #define RECYCLE3(a, b, c)    (((a) && (b) && (c)       ) ? MAX3(a, b, c)    : 0)
 #define RECYCLE4(a, b, c, d) (((a) && (b) && (c) && (d)) ? MAX4(a, b, c, d) : 0)
 
+#define OOB_INTEGER(w) \
+do { \
+	if (w) { \
+		Rf_warning("NA introduced by coercion to range of \"%s\"", \
+		           "integer"); \
+		w = 0; \
+	} \
+} while (0)
+
+#define OOB_DOUBLE(w) \
+do { \
+	if (w) { \
+		Rf_warning("-Inf or Inf introduced by coercion to range of \"%s\"", \
+		           "double"); \
+		w = 0; \
+	} \
+} while (0)
+
 extern
 SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 	R_flint_symbol_d, R_flint_symbol_length, R_flint_symbol_x;
