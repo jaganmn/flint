@@ -8,9 +8,11 @@ setClass("flint",
              else TRUE
          })
 
-setClass("fmpz", contains = "flint")
-setClass("fmpq", contains = "flint")
-setClass( "mag", contains = "flint")
-setClass( "arf", contains = "flint")
-setClass( "arb", contains = "flint")
-setClass( "acb", contains = "flint")
+setClass("slong", contains = "flint")
+setClass("ulong", contains = "flint")
+setClass( "fmpz", contains = "flint")
+setClass( "fmpq", contains = "flint")
+setClass(  "arf", contains = "flint")
+setClass(  "mag", contains = "flint")
+setClass(  "arb", contains = "flint")
+setClass(  "acb", contains = "flint")
