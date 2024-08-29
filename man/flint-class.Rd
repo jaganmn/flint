@@ -1,5 +1,6 @@
 \name{flint-class}
 \alias{flint-class}
+\alias{length,flint-method}
 \title{Class of \abbr{FLINT}-Type Vectors}
 \docType{class}
 \description{

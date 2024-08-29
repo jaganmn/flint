@@ -1,6 +1,6 @@
 \name{fmpz-class}
 \alias{fmpz-class}
-\alias{initialize,fmpz,numeric-method}
+\alias{initialize,fmpz-method}
 \alias{coerce,numeric,fmpz-method}
 \alias{coerce,fmpz,integer-method}
 \alias{coerce,fmpz,double-method}

@@ -110,8 +110,8 @@ SEXP R_flint_fmpq_integer(SEXP from)
 			WARNING_OOB_INTEGER(w);
 		}
 	}
-	fmpq_clear(lb);
-	fmpq_clear(ub);
+	fmpz_clear(lb);
+	fmpz_clear(ub);
 	UNPROTECT(1);
 	return to;
 }

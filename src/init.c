@@ -74,7 +74,7 @@ void attribute_visible R_init_flint(DllInfo *info)
 {
 	R_registerRoutines(info, NULL, CallEntries, NULL, NULL);
 	R_useDynamicSymbols(info, FALSE);
-	R_forceSymbols(info, TRUE);
+	/* R_forceSymbols(info, TRUE); */
 	R_flint_symbol_prec   = install("prec");
 	R_flint_symbol_exp    = install("exp");
 	R_flint_symbol_sign   = install("sign");

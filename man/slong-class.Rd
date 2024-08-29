@@ -1,8 +1,8 @@
 \name{slong-class}
 \alias{slong-class}
 \alias{ulong-class}
-\alias{initialize,slong,numeric-method}
-\alias{initialize,ulong,numeric-method}
+\alias{initialize,slong-method}
+\alias{initialize,ulong-method}
 \alias{coerce,numeric,slong-method}
 \alias{coerce,numeric,ulong-method}
 \alias{coerce,slong,integer-method}

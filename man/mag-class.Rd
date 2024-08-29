@@ -1,6 +1,6 @@
 \name{mag-class}
 \alias{mag-class}
-\alias{initialize,mag,numeric-method}
+\alias{initialize,mag-method}
 \alias{coerce,numeric,mag-method}
 \alias{coerce,mag,double-method}
 \title{Class of Vectors of Magnitude Bounds}

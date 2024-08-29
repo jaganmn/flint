@@ -9,8 +9,12 @@ acb_hypgeom_2f1_continuation(a, b, c, z0, z1, f0, f1, prec = 53L)
 }
 \arguments{
   \item{a, b, c, z, z0, z1, f0, f1}{numeric, complex, or
-	\code{\linkS4class{acb}} vectors.}
-  \item{prec}{a numeric or \code{\linkS4class{slong}} vector.}
+    \code{\linkS4class{acb}} vectors.}
+  \item{flags}{an integer vector of length 1.  The bits of the data
+    flag special cases for which an alternate algorithm may be used.
+    For expert use only.}
+  \item{prec}{a numeric or \code{\linkS4class{slong}} vector
+    indicating the desired precision as a number of bits.}
 }
 \value{
   An \code{\linkS4class{acb}} vector storing function values with error

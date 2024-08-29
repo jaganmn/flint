@@ -1,6 +1,6 @@
 \name{arf-class}
 \alias{arf-class}
-\alias{initialize,arf,numeric-method}
+\alias{initialize,arf-method}
 \alias{coerce,numeric,arf-method}
 \alias{coerce,arf,double-method}
 \title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}

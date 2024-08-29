@@ -1,3 +1,4 @@
+useDynLib(flint, .registration = TRUE)
 importFrom(methods, as, coerce, initialize, new, setAs, setClass, setMethod)
 exportClasses(flint, fmpz, fmpq, mag, arf, arb, acb)
 exportMethods(coerce, initialize)

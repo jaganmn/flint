@@ -1,1 +1,1 @@
-flintBits <- function () .Call("R_flint_bits")
+flintBits <- function () .Call(R_flint_bits)

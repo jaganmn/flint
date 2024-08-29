@@ -1,6 +1,6 @@
 \name{fmpq-class}
 \alias{fmpq-class}
-\alias{initialize,fmpq,numeric,numeric-method}
+\alias{initialize,fmpq-method}
 \alias{coerce,numeric,fmpq-method}
 \alias{coerce,fmpq,integer-method}
 \alias{coerce,fmpq,double-method}

@@ -7,7 +7,8 @@ acb_dirichlet_lerch_phi(z, s, a, prec = 53L)
 }
 \arguments{
   \item{z, s, a}{numeric, complex, or \code{\linkS4class{acb}} vectors.}
-  \item{prec}{a numeric or \code{\linkS4class{slong}} vector.}
+  \item{prec}{a numeric or \code{\linkS4class{slong}} vector
+    indicating the desired precision as a number of bits.}
 }
 \value{
   An \code{\linkS4class{acb}} vector storing function values with error

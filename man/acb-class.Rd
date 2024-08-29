@@ -1,6 +1,6 @@
 \name{acb-class}
 \alias{acb-class}
-\alias{initialize,acb,numeric,numeric-method}
+\alias{initialize,acb-method}
 \alias{coerce,numeric,acb-method}
 \alias{coerce,complex,acb-method}
 \alias{coerce,acb,list-method}

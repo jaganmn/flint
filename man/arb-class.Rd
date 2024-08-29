@@ -1,6 +1,6 @@
 \name{arb-class}
 \alias{arb-class}
-\alias{initialize,arb,numeric-method}
+\alias{initialize,arb-method}
 \alias{coerce,numeric,arb-method}
 \alias{coerce,arb,list-method}
 \title{Class of Balls over the Real Numbers}
