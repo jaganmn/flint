@@ -1,5 +1,5 @@
 setMethod("initialize",
-          c(.Object = "arb", x = "numeric"),
+          c(.Object = "arb"),
           function (.Object, x, ...)
               .Call(R_flint_arb_initialize, .Object, x))
 

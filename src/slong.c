@@ -13,7 +13,9 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP value)
 	_R_flint_length_set(object, n);
 	slong *x = (slong *) flint_calloc(n, sizeof(slong));
 	_R_flint_x_set(object, x, (R_CFinalizer_t) &R_flint_slong_finalize);
-	if (TYPEOF(value) == INTSXP) {
+	switch (TYPEOF(value)) {
+	case INTSXP:
+	{
 		int *y = INTEGER(value), tmp;
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
@@ -22,7 +24,10 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP value)
 			else
 			x[i] = (slong) tmp;
 		}
-	} else {
+		break;
+	}
+	case REALSXP:
+	{
 		double *y = REAL(value), tmp;
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
@@ -37,6 +42,11 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP value)
 			else
 			x[i] = (slong) tmp;
 		}
+		break;
+	}
+	default:
+		ERROR_INVALID_TYPE(value, __func__);
+		break;
 	}
 	return object;
 }
@@ -47,7 +57,7 @@ SEXP R_flint_slong_integer(SEXP from)
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "slong", (long long int) R_XLEN_T_MAX);
-	SEXP to = PROTECT(allocVector(INTSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t) n));
 	slong *x = (slong *) _R_flint_x_get(from);
 	int *y = INTEGER(to);
 	int w = 1;
@@ -56,7 +66,7 @@ SEXP R_flint_slong_integer(SEXP from)
 			y[i] = (int) x[i];
 		else {
 			y[i] = NA_INTEGER;
-			OOB_INTEGER(w);
+			WARNING_OOB_INTEGER(w);
 		}
 	}
 	UNPROTECT(1);
@@ -69,7 +79,7 @@ SEXP R_flint_slong_double(SEXP from)
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "slong", (long long int) R_XLEN_T_MAX);
-	SEXP to = PROTECT(allocVector(REALSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	slong *x = (slong *) _R_flint_x_get(from);
 	double *y = REAL(to);
 	for (i = 0; i < n; ++i)

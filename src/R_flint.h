@@ -5,7 +5,7 @@
 #include <limits.h> /* CHAR_BIT, INT_MAX, ... */
 #include <math.h> /* fabs */
 #include <stddef.h> /* size_t */
-#include <flint.h> /* ulong, slong, ... */
+#include <flint/flint.h> /* ulong, slong, ... */
 
 #define R_NO_REMAP
 
@@ -33,7 +33,7 @@
 #define RECYCLE5(a, b, c, d, e) \
 (((a) && (b) && (c) && (d) && (e)) ? MAX5(a, b, c, d, e) : 0)
 
-#define OOB_INTEGER(w) \
+#define WARNING_OOB_INTEGER(w) \
 do { \
 	if (w) { \
 		Rf_warning("NA introduced by coercion to range of \"%s\"", \
@@ -42,13 +42,25 @@ do { \
 	} \
 } while (0)
 
-#define OOB_DOUBLE(w) \
+#define WARNING_OOB_DOUBLE(w) \
 do { \
 	if (w) { \
 		Rf_warning("-Inf or Inf introduced by coercion to range of \"%s\"", \
 		           "double"); \
 		w = 0; \
 	} \
+} while (0)
+
+#define ERROR_INVALID_TYPE(x, func) \
+do { \
+	Rf_error("invalid type \"%s\" in '%s'", \
+	         Rf_type2char((SEXPTYPE) TYPEOF(x)), func); \
+} while (0)
+
+#define ERROR_INVALID_CLASS(x, func) \
+do { \
+	Rf_error("invalid class \"%s\" in '%s'", \
+	         CHAR(STRING_ELT(Rf_getAttrib(object, R_ClassSymbol), 0)), func); \
 } while (0)
 
 extern
@@ -65,7 +77,7 @@ unsigned long long int _R_flint_length_get(SEXP);
 void _R_flint_length_set(SEXP, unsigned long long int);
 
 void *_R_flint_x_get(SEXP);
-void _R_flint_x_set(SEXP, void *);
+void _R_flint_x_set(SEXP, void *, R_CFinalizer_t);
 
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);
@@ -74,4 +86,4 @@ void R_flint_arf_finalize(SEXP);
 void R_flint_arb_finalize(SEXP);
 void R_flint_acb_finalize(SEXP);
 
-#endif /* ! defined (R_FLINT_H)
+#endif /* ! defined (R_FLINT_H) */

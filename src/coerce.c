@@ -176,7 +176,7 @@ void mpfr_as_sexp(mpfr_t from, SEXP to)
 	mpfr_prec_t limbs = prec / mp_bits_per_limb +
 		(prec % mp_bits_per_limb != 0);
 
-	SEXP s_d = PROTECT(allocVector(INTSXP, limbs * MP_LIMB_WIDTH));
+	SEXP s_d = PROTECT(Rf_allocVector(INTSXP, limbs * MP_LIMB_WIDTH));
 	mp_limb_t *d = from->_mpfr_d;
 	int *s = INTEGER(s_d);
 	for (mpfr_prec_t l = 0; l < limbs; ++l) {

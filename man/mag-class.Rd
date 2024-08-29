@@ -1,3 +1,4 @@
+\name{mag-class}
 \alias{mag-class}
 \alias{initialize,mag,numeric-method}
 \alias{coerce,numeric,mag-method}

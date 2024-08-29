@@ -54,7 +54,6 @@
       representable in the target type is to introduce \code{NA} with
       a warning (\code{"integer"}) or to round without a warning
       (\code{"double"}).  The rounding mode is implementation-defined.}
-    }
   }
 }
 \seealso{

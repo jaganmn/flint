@@ -2,8 +2,8 @@ setClass("flint",
          contains = "VIRTUAL",
          slots = c(length = "integer", x = "externalptr"),
          prototype = list(length = integer(2L)),
-         validity = function (.Object) {
-             if (length(.Object@length) != 2L)
+         validity = function (object) {
+             if (length(object@length) != 2L)
                  gettextf("length of '%s' slot is not %d", "length", 2L)
              else TRUE
          })

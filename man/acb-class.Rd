@@ -1,3 +1,4 @@
+\name{acb-class}
 \alias{acb-class}
 \alias{initialize,acb,numeric,numeric-method}
 \alias{coerce,numeric,acb-method}

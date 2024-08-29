@@ -45,9 +45,9 @@ int asRnd(SEXP x)
 void R_flint_arf_finalize(SEXP object)
 {
 	unsigned long long int i, n = _R_flint_length_get(object);
-	arf *x = (arf *) _R_flint_x_get(object);
+	arf_ptr x = (arf_ptr) _R_flint_x_get(object);
 	for (i = 0; i < n; ++i)
-		arf_clear(x[i]);
+		arf_clear(x + i);
 	flint_free(x);
 	return;
 }
@@ -56,19 +56,29 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP value)
 {
 	unsigned long long int i, n = (unsigned long long int) XLENGTH(value);
 	_R_flint_length_set(object, n);
-	arf *x = (arf *) flint_calloc(n, sizeof(arf));
+	arf_ptr x = (arf_ptr) flint_calloc(n, sizeof(arf_t));
 	_R_flint_x_set(object, x, (R_CFinalizer_t) &R_flint_arf_finalize);
-	if (TYPEOF(value) == INTSXP) {
+	switch (TYPEOF(value)) {
+	case INTSXP:
+	{
 		int *y = INTEGER(value);
 		for (i = 0; i < n; ++i)
 			if (y[i] == NA_INTEGER)
-			arf_set_d (x[i], R_NaN);
+			arf_set_d (x + i, R_NaN);
 			else
-			arf_set_si(x[i], y[i]);
-	} else {
+			arf_set_si(x + i, y[i]);
+		break;
+	}
+	case REALSXP:
+	{
 		double *y = REAL(value);
 		for (i = 0; i < n; ++i)
-			arf_set_d (x[i], y[i]);
+			arf_set_d (x + i, y[i]);
+		break;
+	}
+	default:
+		ERROR_INVALID_TYPE(value, __func__);
+		break;
 	}
 	return object;
 }
@@ -80,8 +90,8 @@ SEXP R_flint_arf_double(SEXP from, SEXP mode)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "arf", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode);
-	SEXP to = PROTECT(allocVector(REALSXP, (R_xlen_t) n));
-	arf *x = (arf *) _R_flint_x_get(from);
+	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	arf_ptr x = (arf_ptr) _R_flint_x_get(from);
 	double *y = REAL(to);
 	arf_t lb, ub;
 	arf_init(lb);
@@ -90,13 +100,13 @@ SEXP R_flint_arf_double(SEXP from, SEXP mode)
 	arf_neg(lb, ub);
 	int w = 1;
 	for (i = 0; i < n; ++i) {
-		if (arf_is_nan(x[i]))
+		if (arf_is_nan(x + i))
 			y[i] = R_NaN;
-		else if (arf_cmp(x[i], lb) > 0 && arf_cmp(x[i], ub) < 0)
-			y[i] = arf_get_d(x[i], rnd);
+		else if (arf_cmp(x + i, lb) > 0 && arf_cmp(x + i, ub) < 0)
+			y[i] = arf_get_d(x + i, rnd);
 		else {
-			y[i] = (arf_sgn(x[i]) < 0) ? R_NegInf : R_PosInf;
-			OOB_DOUBLE(w);
+			y[i] = (arf_sgn(x + i) < 0) ? R_NegInf : R_PosInf;
+			WARNING_OOB_DOUBLE(w);
 		}
 	}
 	arf_clear(lb);

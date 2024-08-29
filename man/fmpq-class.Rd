@@ -1,3 +1,4 @@
+\name{fmpq-class}
 \alias{fmpq-class}
 \alias{initialize,fmpq,numeric,numeric-method}
 \alias{coerce,numeric,fmpq-method}

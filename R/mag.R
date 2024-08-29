@@ -1,5 +1,5 @@
 setMethod("initialize",
-          c(.Object = "mag", x = "numeric"),
+          c(.Object = "mag"),
           function (.Object, x, ...)
               .Call(R_flint_mag_initialize, .Object, x))
 

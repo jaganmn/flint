@@ -26,10 +26,10 @@ SEXP R_flint_length_get(SEXP object)
 	SEXP ans;
 	unsigned long long int n = _R_flint_length_get(object);
 	if (n <= INT_MAX) {
-		ans = allocVector(INTSXP, 1);
+		ans = Rf_allocVector(INTSXP, 1);
 		INTEGER(ans)[0] = (int) n;
 	} else {
-		ans = allocVector(REALSXP, 1);
+		ans = Rf_allocVector(REALSXP, 1);
 		REAL(ans)[0] = (double) n;
 		unsigned long long int n_ = (unsigned long long int) (double) n;
 		if (n_ != n)

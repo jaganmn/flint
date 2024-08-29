@@ -1,3 +1,4 @@
+\name{arf-class}
 \alias{arf-class}
 \alias{initialize,arf,numeric-method}
 \alias{coerce,numeric,arf-method}

@@ -2,7 +2,7 @@
 
 SEXP R_flint_bits(void)
 {
-	return ScalarInteger(FLINT_BITS);
+	return Rf_ScalarInteger(FLINT_BITS);
 }
 
 SEXP newObject(const char *what)
@@ -17,11 +17,9 @@ void assertClass(SEXP object, const char *what, const char *where)
 {
 	const char *valid[] = { what, "" };
 	if (TYPEOF(object) != OBJSXP)
-		Rf_error("invalid type \"%s\" in '%s'",
-		         type2char((SEXPTYPE) TYPEOF(from)), where);
+		ERROR_INVALID_TYPE(object, where);
 	if (R_check_class_etc(object, valid) < 0)
-		Rf_error("invalid class \"%s\" in '%s'",
-		         CHAR(STRING_ELT(getAttrib(from, R_ClassSymbol), 0)), where);
+		ERROR_INVALID_CLASS(object, where);
 	return;
 }
 

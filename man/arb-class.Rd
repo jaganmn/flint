@@ -1,3 +1,4 @@
+\name{arb-class}
 \alias{arb-class}
 \alias{initialize,arb,numeric-method}
 \alias{coerce,numeric,arb-method}
