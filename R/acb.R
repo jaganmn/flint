@@ -1,6 +1,6 @@
 setMethod("initialize",
           c(.Object = "acb"),
-          function (.Object, r, i, ...)
+          function (.Object, r = double(0L), i = double(0L), ...)
               .Call(R_flint_acb_initialize, .Object, r, i))
 
 setAs("numeric", "acb",

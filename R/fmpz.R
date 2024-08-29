@@ -1,6 +1,6 @@
 setMethod("initialize",
           c(.Object = "fmpz"),
-          function (.Object, x, ...)
+          function (.Object, x = integer(0L), ...)
               .Call(R_flint_fmpz_initialize, .Object, x))
 
 setAs("numeric", "fmpz",

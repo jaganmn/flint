@@ -1,6 +1,6 @@
 setMethod("initialize",
           c(.Object = "arf"),
-          function (.Object, x, ...)
+          function (.Object, x = double(0L), ...)
               .Call(R_flint_arf_initialize, .Object, x))
 
 setAs("numeric", "arf",

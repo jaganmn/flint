@@ -1,6 +1,6 @@
 setMethod("initialize",
           c(.Object = "slong"),
-          function (.Object, x, ...)
+          function (.Object, x = integer(0L), ...)
               .Call(R_flint_slong_initialize, .Object, x))
 
 setAs("numeric", "slong",

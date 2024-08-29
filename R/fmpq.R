@@ -1,6 +1,6 @@
 setMethod("initialize",
           c(.Object = "fmpq"),
-          function (.Object, p, q, ...)
+          function (.Object, p = integer(0L), q = integer(0L), ...)
               .Call(R_flint_fmpq_initialize, .Object, p, q))
 
 setAs("numeric", "fmpq",

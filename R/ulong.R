@@ -1,6 +1,6 @@
 setMethod("initialize",
           c(.Object = "ulong"),
-          function (.Object, x, ...)
+          function (.Object, x = integer(0L), ...)
               .Call(R_flint_ulong_initialize, .Object, x))
 
 setAs("numeric", "ulong",
