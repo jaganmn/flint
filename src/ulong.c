@@ -18,7 +18,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "ulong");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "ulong");
 			else if (tmp < 0)
 			Rf_error("integer not in range of '%s'", "ulong");
 			else
@@ -29,7 +29,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "ulong");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "ulong");
 #if FLINT64
 			else if (tmp <= -1.0 || tmp > UWORD_MAX)
 #else

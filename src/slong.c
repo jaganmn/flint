@@ -18,7 +18,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "slong");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "slong");
 			else
 			x[i] = (slong) tmp;
 		}
@@ -27,7 +27,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "slong");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "slong");
 #if FLINT64
 			else if (tmp < WORD_MIN || tmp > WORD_MAX)
 #else

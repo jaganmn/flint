@@ -25,7 +25,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP numerator, SEXP denominator)
 		for (i = 0; i < n; ++i) {
 			tmp = y_p[i % np];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpq");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
 			else
 			fmpz_set_si(fmpq_numref(x[i]), tmp);
 		}
@@ -34,7 +34,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP numerator, SEXP denominator)
 		for (i = 0; i < n; ++i) {
 			tmp = y_p[i % np];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpq");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
 			else
 			fmpz_set_d (fmpq_numref(x[i]), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 		}
@@ -44,7 +44,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP numerator, SEXP denominator)
 		for (i = 0; i < n; ++i) {
 			tmp = y_q[i % nq];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpq");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
 			else
 			fmpz_set_si(fmpq_denref(x[i]), tmp);
 		}
@@ -53,7 +53,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP numerator, SEXP denominator)
 		for (i = 0; i < n; ++i) {
 			tmp = y_q[i % nq];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpq");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
 			else
 			fmpz_set_d (fmpq_denref(x[i]), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 		}

@@ -22,7 +22,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpz");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
 			else
 			fmpz_set_si(x[i], tmp);
 		}
@@ -31,7 +31,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP value)
 		for (i = 0; i < n; ++i) {
 			tmp = y[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, Inf, -Inf not representable by '%s'", "fmpz");
+			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
 			else
 			fmpz_set_d (x[i], (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 		}
