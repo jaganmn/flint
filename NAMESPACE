@@ -1,4 +1,5 @@
 importFrom(methods, as, coerce, initialize, new, setAs, setClass, setMethod)
 exportClasses(flint, fmpz, fmpq, mag, arf, arb, acb)
 exportMethods(coerce, initialize)
-export(acb_dirichlet_lerch_phi, acb_hypgeom_2f1, acb_hypgeom_2f1_continuation)
+export(flintBits,
+       acb_dirichlet_lerch_phi, acb_hypgeom_2f1, acb_hypgeom_2f1_continuation)

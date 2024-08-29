@@ -60,6 +60,11 @@ slong asPrec(SEXP x)
 	return 0;
 }
 
+SEXP R_flint_bits(void)
+{
+	return ScalarInteger(FLINT_BITS);
+}
+
 unsigned long long int _R_flint_length_get(SEXP object)
 {
 	SEXP length = R_do_slot(object, R_flint_symbol_length);
