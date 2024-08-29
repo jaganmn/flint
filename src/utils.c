@@ -38,29 +38,3 @@ int asFlags(SEXP x)
 	Rf_error("invalid flags");
 	return 0;
 }
-
-slong asPrec(SEXP x)
-{
-	switch (TYPEOF(x)) {
-	case INTSXP:
-	{
-		int tmp;
-		if (XLENGTH(x) > 0 && (tmp = INTEGER(x)[0]) != NA_INTEGER &&
-		    tmp >= 0 && tmp <= WORD_MAX)
-			return (slong) tmp;
-		break;
-	}
-	case REALSXP:
-	{
-		double tmp;
-		if (XLENGTH(x) > 0 && !ISNAN(tmp = REAL(x)[0]) &&
-		    tmp >= 0 && tmp <= WORD_MAX)
-			return (slong) tmp;
-		break;
-	}
-	default:
-		break;
-	}
-	Rf_error("invalid precision");
-	return 0;
-}
