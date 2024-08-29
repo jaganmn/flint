@@ -58,6 +58,7 @@ SEXP R_flint_fmpz_integer(SEXP from)
 		if (fmpz_cmp(x[i], lb) > 0 && fmpz_cmp(x[i], ub) < 0)
 			y[i] = (int) fmpz_get_si(x[i]);
 		else {
+			warning(_("NAs introduced by coercion to integer range"));
 			y[i] = NA_INTEGER;
 			OOB_INTEGER(w);
 		}
