@@ -57,7 +57,6 @@ SEXP R_flint_ulong_integer(SEXP from)
 		if (x[i] <= INT_MAX)
 			y[i] = (int) x[i];
 		else {
-			warning(_("NAs introduced by coercion to integer range"));
 			y[i] = NA_INTEGER;
 			OOB_INTEGER(w);
 		}
