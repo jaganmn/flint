@@ -78,8 +78,8 @@ SEXP R_flint_acb_list(SEXP from, SEXP mode)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "acb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode);
-	SEXP to = PROTECT(Rf_allocVector(VECSXP, 3)),
-		nms = PROTECT(Rf_allocVector(STRSXP, 3)),
+	SEXP to = PROTECT(Rf_allocVector(VECSXP, 4)),
+		nms = PROTECT(Rf_allocVector(STRSXP, 4)),
 		real_mid = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n)),
 		real_rad = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n)),
 		imag_mid = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n)),
