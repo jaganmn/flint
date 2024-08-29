@@ -16,7 +16,7 @@ SEXP newObject(const char *what)
 void assertClass(SEXP object, const char *what, const char *where)
 {
 	const char *valid[] = { what, "" };
-	if (TYPEOF(object) != OBJSXP)
+	if (TYPEOF(object) != S4SXP)
 		ERROR_INVALID_TYPE(object, where);
 	if (R_check_class_etc(object, valid) < 0)
 		ERROR_INVALID_CLASS(object, where);
