@@ -1,44 +1,23 @@
 #include <flint/arf.h>
 #include "R_flint.h"
 
-int asRnd(SEXP x)
+int asRnd(SEXP rnd, const char *where)
 {
-
-#define ARF_RND_VALID(c) \
-	switch (c) { \
-	case ARF_RND_DOWN: \
-	case ARF_RND_UP: \
-	case ARF_RND_FLOOR: \
-	case ARF_RND_CEIL: \
-	case ARF_RND_NEAR: \
-		return c; \
-	default: \
-		break; \
+	if (TYPEOF(rnd) == STRSXP && XLENGTH(rnd) > 0 &&
+	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING) {
+		const char *s = CHAR(rnd);
+		if (strcmp(s, "down") == 0)
+			return ARF_RND_DOWN;
+		else if (strcmp(s, "up") == 0)
+			return ARF_RND_UP;
+		else if (strcmp(s, "floor") == 0)
+			return ARF_RND_FLOOR;
+		else if (strcmp(s, "ceil") == 0)
+			return ARF_RND_CEIL;
+		else if (strcmp(s, "near") == 0)
+			return ARF_RND_NEAR;
 	}
-
-	switch (TYPEOF(x)) {
-	case INTSXP:
-	{
-		int tmp;
-		if (XLENGTH(x) > 0 && (tmp = INTEGER(x)[0]) != NA_INTEGER)
-			ARF_RND_VALID(tmp);
-		break;
-	}
-	case REALSXP:
-	{
-		double tmp;
-		if (XLENGTH(x) > 0 && !ISNAN(tmp = REAL(x)[0]) &&
-		    tmp > INT_MIN - 1.0 && tmp < INT_MAX + 1.0)
-			ARF_RND_VALID((int) tmp);
-		break;
-	}
-	default:
-		break;
-	}
-
-#undef ARF_RND_VALID
-
-	Rf_error("invalid rounding mode");
+	Rf_error("invalid '%s' in '%s'", "rnd", where);
 	return 0;
 }
 
@@ -89,7 +68,7 @@ SEXP R_flint_arf_double(SEXP from, SEXP mode)
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "arf", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode, __func__);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arf_ptr x = (arf_ptr) _R_flint_x_get(from);
 	double *y = REAL(to);

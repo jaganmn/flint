@@ -7,4 +7,4 @@ setAs("numeric", "arb",
       function (from) new("arb", x = from))
 
 setAs("arb", "list",
-      function (from) .Call(R_flint_arb_list, from, 4L))
+      function (from) .Call(R_flint_arb_list, from, "down"))

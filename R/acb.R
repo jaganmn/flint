@@ -10,4 +10,4 @@ setAs("complex", "acb",
       function (from) new("acb", r = Re(from), i = Im(from)))
 
 setAs("acb", "list",
-      function (from) .Call(R_flint_acb_list, from, 4L))
+      function (from) .Call(R_flint_acb_list, from, "down"))

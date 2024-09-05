@@ -50,7 +50,7 @@ SEXP R_flint_arb_list(SEXP from, SEXP mode)
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "arb", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(mode, __func__);
 	SEXP to = PROTECT(Rf_allocVector(VECSXP, 2)),
 		nms = PROTECT(Rf_allocVector(STRSXP, 2)),
 		mid = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n)),
