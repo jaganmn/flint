@@ -70,7 +70,7 @@ SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 SEXP newObject(const char *);
 void assertClass(SEXP, const char *, const char *);
 
-int asFlags(SEXP);
+int asFlags(SEXP, const char *);
 int asRnd(SEXP, const char *);
 
 unsigned long long int _R_flint_length_get(SEXP);

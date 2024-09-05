@@ -23,16 +23,16 @@ void assertClass(SEXP object, const char *what, const char *where)
 	return;
 }
 
-int asFlags(SEXP x)
+int asFlags(SEXP flags, const char *where)
 {
-	switch (TYPEOF(x)) {
+	switch (TYPEOF(flags)) {
 	case INTSXP:
-		if (XLENGTH(x) > 0)
-			return INTEGER(x)[0];
+		if (XLENGTH(flags) > 0)
+			return INTEGER(flags)[0];
 		break;
 	default:
 		break;
 	}
-	Rf_error("invalid flags");
+	Rf_error("invalid '%s' in '%s'", "flags", where);
 	return 0;
 }

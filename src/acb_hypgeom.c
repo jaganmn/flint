@@ -3,7 +3,7 @@
 
 SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z, SEXP s_flags, SEXP s_prec)
 {
-	int flags = asFlags(s_flags);
+	int flags = asFlags(s_flags, __func__);
 
 	unsigned long long int i,
 		na = _R_flint_length_get(s_a),
