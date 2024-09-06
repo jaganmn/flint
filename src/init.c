@@ -6,7 +6,7 @@ SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
 	R_flint_symbol_d, R_flint_symbol_length, R_flint_symbol_x;
 
 SEXP R_flint_bits(void);
-SEXP R_flint_length_get(SEXP);
+SEXP R_flint_length(SEXP);
 
 SEXP R_flint_slong_initialize(SEXP, SEXP);
 SEXP R_flint_slong_integer(SEXP);
@@ -43,7 +43,7 @@ static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
 	CALL_ENTRY(R_flint_bits, 0),
-	CALL_ENTRY(R_flint_length_get, 1),
+	CALL_ENTRY(R_flint_length, 1),
 	CALL_ENTRY(R_flint_slong_initialize, 2),
 	CALL_ENTRY(R_flint_slong_integer, 1),
 	CALL_ENTRY(R_flint_slong_double, 1),

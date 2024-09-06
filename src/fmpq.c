@@ -3,8 +3,8 @@
 
 void R_flint_fmpq_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_length_get(object);
-	fmpq *x = (fmpq *) _R_flint_x_get(object);
+	unsigned long long int i, n = _R_flint_get_length(object);
+	fmpq *x = (fmpq *) _R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		fmpq_clear(x + i);
 	flint_free(x);
@@ -17,9 +17,9 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP numerator, SEXP denominator)
 		np = (unsigned long long int) XLENGTH(numerator),
 		nq = (unsigned long long int) XLENGTH(denominator),
 		n  = RECYCLE2(np, nq);
-	_R_flint_length_set(object, n);
+	_R_flint_set_length(object, n);
 	fmpq *x = (fmpq *) flint_calloc(n, sizeof(fmpq));
-	_R_flint_x_set(object, x, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+	_R_flint_set_x(object, x, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	switch (TYPEOF(numerator)) {
 	case INTSXP:
 	{
@@ -89,12 +89,12 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP numerator, SEXP denominator)
 
 SEXP R_flint_fmpq_integer(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_length_get(from);
+	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpq", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t) n));
-	fmpq *x = (fmpq *) _R_flint_x_get(from);
+	fmpq *x = (fmpq *) _R_flint_get_x(from);
 	int *y = INTEGER(to);
 	fmpz_t lb, ub;
 	fmpz_init(lb);
@@ -118,12 +118,12 @@ SEXP R_flint_fmpq_integer(SEXP from)
 
 SEXP R_flint_fmpq_double(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_length_get(from);
+	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpq", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	fmpq *x = (fmpq *) _R_flint_x_get(from);
+	fmpq *x = (fmpq *) _R_flint_get_x(from);
 	double *y = REAL(to);
 	fmpz_t lb, ub;
 	fmpz_init(lb);

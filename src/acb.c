@@ -3,8 +3,8 @@
 
 void R_flint_acb_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_length_get(object);
-	acb_ptr x = (acb_ptr) _R_flint_x_get(object);
+	unsigned long long int i, n = _R_flint_get_length(object);
+	acb_ptr x = (acb_ptr) _R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		acb_clear(x + i);
 	flint_free(x);
@@ -17,9 +17,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP real, SEXP imaginary)
 		na = (unsigned long long int) XLENGTH(real),
 		nb = (unsigned long long int) XLENGTH(imaginary),
 		n  = RECYCLE2(na, nb);
-	_R_flint_length_set(object, n);
+	_R_flint_set_length(object, n);
 	acb_ptr x = (acb_ptr) flint_calloc(n, sizeof(acb_t));
-	_R_flint_x_set(object, x, (R_CFinalizer_t) &R_flint_acb_finalize);
+	_R_flint_set_x(object, x, (R_CFinalizer_t) &R_flint_acb_finalize);
 	switch (TYPEOF(real)) {
 	case INTSXP:
 	{
@@ -73,7 +73,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP real, SEXP imaginary)
 
 SEXP R_flint_acb_list(SEXP from, SEXP mode)
 {
-	unsigned long long int i, n = _R_flint_length_get(from);
+	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "acb", (long long int) R_XLEN_T_MAX);
@@ -93,7 +93,7 @@ SEXP R_flint_acb_list(SEXP from, SEXP mode)
 	SET_STRING_ELT(nms, 2, Rf_mkChar("imag.mid"));
 	SET_STRING_ELT(nms, 3, Rf_mkChar("imag.rad"));
 	Rf_setAttrib(to, R_NamesSymbol, nms);
-	acb_ptr x = (acb_ptr) _R_flint_x_get(from);
+	acb_ptr x = (acb_ptr) _R_flint_get_x(from);
 	double
 		*y_rm = REAL(real_mid), *y_rr = REAL(real_rad),
 		*y_im = REAL(imag_mid), *y_ir = REAL(imag_rad);

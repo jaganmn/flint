@@ -3,8 +3,8 @@
 
 void R_flint_arb_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_length_get(object);
-	arb_ptr x = (arb_ptr) _R_flint_x_get(object);
+	unsigned long long int i, n = _R_flint_get_length(object);
+	arb_ptr x = (arb_ptr) _R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		arb_clear(x + i);
 	flint_free(x);
@@ -14,9 +14,9 @@ void R_flint_arb_finalize(SEXP object)
 SEXP R_flint_arb_initialize(SEXP object, SEXP value)
 {
 	unsigned long long int i, n = (unsigned long long int) XLENGTH(value);
-	_R_flint_length_set(object, n);
+	_R_flint_set_length(object, n);
 	arb_ptr x = (arb_ptr) flint_calloc(n, sizeof(arb_t));
-	_R_flint_x_set(object, x, (R_CFinalizer_t) &R_flint_arb_finalize);
+	_R_flint_set_x(object, x, (R_CFinalizer_t) &R_flint_arb_finalize);
 	switch (TYPEOF(value)) {
 	case INTSXP:
 	{
@@ -46,7 +46,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP value)
 
 SEXP R_flint_arb_list(SEXP from, SEXP mode)
 {
-	unsigned long long int i, n = _R_flint_length_get(from);
+	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "arb", (long long int) R_XLEN_T_MAX);
@@ -60,7 +60,7 @@ SEXP R_flint_arb_list(SEXP from, SEXP mode)
 	SET_STRING_ELT(nms, 0, Rf_mkChar("mid"));
 	SET_STRING_ELT(nms, 1, Rf_mkChar("rad"));
 	Rf_setAttrib(to, R_NamesSymbol, nms);
-	arb_ptr x = (arb_ptr) _R_flint_x_get(from);
+	arb_ptr x = (arb_ptr) _R_flint_get_x(from);
 	double *y_m = REAL(mid), *y_r = REAL(rad);
 	arf_t mlb, mub;
 	arf_ptr m;
