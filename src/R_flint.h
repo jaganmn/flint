@@ -86,11 +86,11 @@ unsigned long long int asLength(SEXP, SEXP, const char *);
 int asFlags(SEXP, const char *);
 int asRnd(SEXP, const char *);
 
-unsigned long long int _R_flint_get_length(SEXP);
-void _R_flint_set_length(SEXP, unsigned long long int);
+unsigned long long int R_flint_get_length(SEXP);
+void R_flint_set_length(SEXP, unsigned long long int);
 
-void *_R_flint_get_x(SEXP);
-void _R_flint_set_x(SEXP, void *, R_CFinalizer_t);
+void *R_flint_get_x(SEXP);
+void R_flint_set_x(SEXP, void *, R_CFinalizer_t);
 
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);

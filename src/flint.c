@@ -1,6 +1,6 @@
 #include "R_flint.h"
 
-unsigned long long int _R_flint_get_length(SEXP object)
+unsigned long long int R_flint_get_length(SEXP object)
 {
 	SEXP length = R_do_slot(object, R_flint_symbol_length);
 	if (TYPEOF(length) != INTSXP || XLENGTH(length) != 2)
@@ -10,7 +10,7 @@ unsigned long long int _R_flint_get_length(SEXP object)
 		(unsigned long long int) u[0];
 }
 
-void _R_flint_set_length(SEXP object, unsigned long long int value)
+void R_flint_set_length(SEXP object, unsigned long long int value)
 {
 	SEXP length = R_do_slot(object, R_flint_symbol_length);
 	if (TYPEOF(length) != INTSXP || XLENGTH(length) != 2)
@@ -21,13 +21,13 @@ void _R_flint_set_length(SEXP object, unsigned long long int value)
 	return;
 }
 
-void *_R_flint_get_x(SEXP object)
+void *R_flint_get_x(SEXP object)
 {
 	SEXP x = R_do_slot(object, R_flint_symbol_x);
 	return R_ExternalPtrAddr(x);
 }
 
-void _R_flint_set_x(SEXP object, void *p, R_CFinalizer_t f)
+void R_flint_set_x(SEXP object, void *p, R_CFinalizer_t f)
 {
 	SEXP x = R_do_slot(object, R_flint_symbol_x);
 	R_SetExternalPtrAddr(x, p);
@@ -40,7 +40,7 @@ void _R_flint_set_x(SEXP object, void *p, R_CFinalizer_t f)
 SEXP R_flint_length(SEXP object)
 {
 	SEXP ans;
-	unsigned long long int n = _R_flint_get_length(object);
+	unsigned long long int n = R_flint_get_length(object);
 	if (n <= INT_MAX) {
 		ans = Rf_allocVector(INTSXP, 1);
 		INTEGER(ans)[0] = (int) n;

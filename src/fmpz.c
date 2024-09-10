@@ -3,8 +3,8 @@
 
 void R_flint_fmpz_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_get_length(object);
-	fmpz *x = (fmpz *) _R_flint_get_x(object);
+	unsigned long long int i, n = R_flint_get_length(object);
+	fmpz *x = (fmpz *) R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		fmpz_clear(x + i);
 	flint_free(x);
@@ -14,9 +14,9 @@ void R_flint_fmpz_finalize(SEXP object)
 SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
 	unsigned long long int i, n = asLength(s_length, s_x, __func__);
-	_R_flint_set_length(object, n);
+	R_flint_set_length(object, n);
 	fmpz *y = (fmpz *) flint_calloc(n, sizeof(fmpz));
-	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpz_finalize);
+	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		break;
@@ -53,12 +53,12 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_fmpz_nfmpz(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_get_length(from);
+	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
-	fmpz *x = (fmpz *) _R_flint_get_x(from);
+	fmpz *x = (fmpz *) R_flint_get_x(from);
 	int *y = INTEGER(to);
 	fmpz_t lb, ub;
 	fmpz_init(lb);
@@ -82,12 +82,12 @@ SEXP R_flint_fmpz_nfmpz(SEXP from)
 
 SEXP R_flint_fmpz_double(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_get_length(from);
+	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	fmpz *x = (fmpz *) _R_flint_get_x(from);
+	fmpz *x = (fmpz *) R_flint_get_x(from);
 	double *y = REAL(to);
 	int w = 1;
 	fmpz_t lb, ub;

@@ -3,8 +3,8 @@
 
 void R_flint_fmpq_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_get_length(object);
-	fmpq *x = (fmpq *) _R_flint_get_x(object);
+	unsigned long long int i, n = R_flint_get_length(object);
+	fmpq *x = (fmpq *) R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		fmpq_clear(x + i);
 	flint_free(x);
@@ -29,9 +29,9 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		s_num = NULL;
 		s_den = NULL;
 	}
-	_R_flint_set_length(object, n);
+	R_flint_set_length(object, n);
 	fmpq *y = (fmpq *) flint_calloc(n, sizeof(fmpq));
-	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_num)
 	switch (TYPEOF(s_num)) {
 	case INTSXP:
@@ -146,7 +146,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 
 SEXP R_flint_fmpq_nfmpq(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_get_length(from);
+	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpq", (long long int) R_XLEN_T_MAX);
@@ -155,7 +155,7 @@ SEXP R_flint_fmpq_nfmpq(SEXP from)
 		den = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
 	R_do_slot_assign(to, R_flint_symbol_num, num);
 	R_do_slot_assign(to, R_flint_symbol_den, den);
-	fmpq *x = (fmpq *) _R_flint_get_x(from);
+	fmpq *x = (fmpq *) R_flint_get_x(from);
 	int *yp = INTEGER(num), *yq = INTEGER(den);
 	fmpz_t lb, ub;
 	fmpz *p, *q;
@@ -188,12 +188,12 @@ SEXP R_flint_fmpq_nfmpq(SEXP from)
 
 SEXP R_flint_fmpq_double(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_get_length(from);
+	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpq", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	fmpq *x = (fmpq *) _R_flint_get_x(from);
+	fmpq *x = (fmpq *) R_flint_get_x(from);
 	double *y = REAL(to);
 	fmpz_t lb, ub;
 	fmpz_init(lb);

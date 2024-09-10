@@ -3,8 +3,8 @@
 
 void R_flint_arb_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_get_length(object);
-	arb_ptr x = (arb_ptr) _R_flint_get_x(object);
+	unsigned long long int i, n = R_flint_get_length(object);
+	arb_ptr x = (arb_ptr) R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		arb_clear(x + i);
 	flint_free(x);
@@ -14,9 +14,9 @@ void R_flint_arb_finalize(SEXP object)
 SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
 	unsigned long long int i, n = asLength(s_length, s_x, __func__);
-	_R_flint_set_length(object, n);
+	R_flint_set_length(object, n);
 	arb_ptr y = (arb_ptr) flint_calloc(n, sizeof(arb_t));
-	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_arb_finalize);
+	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_arb_finalize);
 	switch (TYPEOF(s_x)) {
 	case INTSXP:
 	{
@@ -46,7 +46,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 {
-	unsigned long long int i, n = _R_flint_get_length(from);
+	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "arb", (long long int) R_XLEN_T_MAX);
@@ -56,7 +56,7 @@ SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 		rad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	R_do_slot_assign(to, R_flint_symbol_mid, mid);
 	R_do_slot_assign(to, R_flint_symbol_rad, rad);
-	arb_ptr x = (arb_ptr) _R_flint_get_x(from);
+	arb_ptr x = (arb_ptr) R_flint_get_x(from);
 	double *ym = REAL(mid), *yr = REAL(rad);
 	arf_t lbm, ubm;
 	arf_ptr m;

@@ -3,8 +3,8 @@
 
 void R_flint_mag_finalize(SEXP object)
 {
-	unsigned long long int i, n = _R_flint_get_length(object);
-	mag_ptr x = (mag_ptr) _R_flint_get_x(object);
+	unsigned long long int i, n = R_flint_get_length(object);
+	mag_ptr x = (mag_ptr) R_flint_get_x(object);
 	for (i = 0; i < n; ++i)
 		mag_clear(x + i);
 	flint_free(x);
@@ -14,9 +14,9 @@ void R_flint_mag_finalize(SEXP object)
 SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
 	unsigned long long int i, n = asLength(s_length, s_x, __func__);
-	_R_flint_set_length(object, n);
+	R_flint_set_length(object, n);
 	mag_ptr y = (mag_ptr) flint_calloc(n, sizeof(mag_t));
-	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_mag_finalize);
+	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
 	case INTSXP:
 	{
@@ -51,12 +51,12 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_mag_nmag(SEXP from)
 {
-	unsigned long long int i, n = _R_flint_get_length(from);
+	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "mag", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
-	mag_ptr x = (mag_ptr) _R_flint_get_x(from);
+	mag_ptr x = (mag_ptr) R_flint_get_x(from);
 	double *y = REAL(to);
 	mag_t ub;
 	mag_init(ub);
