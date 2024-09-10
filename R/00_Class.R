@@ -49,12 +49,19 @@ setClass("nfmpq",
          })
 
 setClass("narf",
-         contains = c("nflint", "double"))
+         contains = c("nflint", "numeric"),
+         validity = function (object) {
+             if (typeof(object) != "double")
+                 gettextf("vector type is not \"%s\"", "double")
+             else TRUE
+         })
 
 setClass("nmag",
-         contains = c("nflint", "double"),
+         contains = c("nflint", "numeric"),
          validity = function (object) {
-             if (is.na(m <- min(0, object)))
+             if (typeof(object) != "double")
+                 gettextf("vector type is not \"%s\"", "double")
+             else if (is.na(m <- min(0, object)))
                  gettext("vector contains NaN")
              else if (m < 0)
                  gettext("vector contains negative numbers")
