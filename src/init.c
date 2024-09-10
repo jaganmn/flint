@@ -16,8 +16,12 @@ SEXP R_flint_symbol_length,
 	R_flint_symbol_sign,
 	R_flint_symbol_d;
 
+const char *R_flint_classes[] =
+{ "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };
+
 SEXP R_flint_bits(void);
 SEXP R_flint_length(SEXP);
+SEXP R_flint_class(SEXP);
 
 SEXP R_flint_slong_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_slong_nslong(SEXP);
@@ -55,6 +59,7 @@ static R_CallMethodDef CallEntries[] =
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
 	CALL_ENTRY(R_flint_bits, 0),
 	CALL_ENTRY(R_flint_length, 1),
+	CALL_ENTRY(R_flint_class, 1),
 	CALL_ENTRY(R_flint_slong_initialize, 3),
 	CALL_ENTRY(R_flint_slong_nslong, 1),
 	CALL_ENTRY(R_flint_slong_double, 1),

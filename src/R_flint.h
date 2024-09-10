@@ -83,6 +83,9 @@ SEXP R_flint_symbol_length,
 	R_flint_symbol_sign,
 	R_flint_symbol_d;
 
+extern
+const char *R_flint_classes[9];
+
 SEXP newObject(const char *);
 SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 void assertClass(SEXP, const char *, const char *);
@@ -96,6 +99,8 @@ void R_flint_set_length(SEXP, unsigned long long int);
 
 void *R_flint_get_x(SEXP);
 void R_flint_set_x(SEXP, void *, R_CFinalizer_t);
+
+const char *R_flint_get_class(SEXP);
 
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);
