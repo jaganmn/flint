@@ -10,10 +10,15 @@
 #define R_NO_REMAP
 
 #include <Rconfig.h> /* R_INLINE */
+#include <Rversion.h> /* R_VERSION */
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
 #include <R_ext/Error.h> /* Rf_error, Rf_warning */
 #include <R_ext/RS.h> /* R_Calloc, R_Free */
 #include <Rinternals.h> /* SEXP, ... */
+
+#if R_VERSION < R_Version(4, 4, 0)
+# define OBJSXP S4SXP
+#endif
 
 #define MAX2(a, b) \
 (((a) < (b)) ? (b)              : (a))

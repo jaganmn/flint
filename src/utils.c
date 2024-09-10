@@ -25,16 +25,16 @@ SEXP newBasic(const char *what, SEXPTYPE type, R_xlen_t length)
 void assertClass(SEXP object, const char *what, const char *where)
 {
 	const char *valid[] = { what, "" };
-	if (TYPEOF(object) != S4SXP)
+	if (TYPEOF(object) != OBJSXP)
 		ERROR_INVALID_TYPE(object, where);
 	if (R_check_class_etc(object, valid) < 0)
 		ERROR_INVALID_CLASS(object, where);
 	return;
 }
 
-unsigned long long int asLength(SEXP length, SEXP value, const char *where)
+unsigned long long int asLength(SEXP length, SEXP x, const char *where)
 {
-	switch (TYPEOF(value)) {
+	switch (TYPEOF(x)) {
 	case NILSXP:
 		break;
 	case RAWSXP:
@@ -42,9 +42,9 @@ unsigned long long int asLength(SEXP length, SEXP value, const char *where)
 	case INTSXP:
 	case REALSXP:
 	case CPLXSXP:
-		return (unsigned long long int) XLENGTH(value);
+		return (unsigned long long int) XLENGTH(x);
 	default:
-		ERROR_INVALID_TYPE(value, where);
+		ERROR_INVALID_TYPE(x, where);
 		break;
 	}
 	switch (TYPEOF(length)) {
