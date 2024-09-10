@@ -13,6 +13,15 @@ SEXP newObject(const char *what)
 	return object;
 }
 
+SEXP newBasic(const char *what, SEXPTYPE type, R_xlen_t length)
+{
+	SEXP s = PROTECT(newObject(what)),
+		data = PROTECT(Rf_allocVector(type, length));
+	s = R_do_slot_assign(s, R_flint_symbol_dot_data, data);
+	UNPROTECT(2);
+	return s;
+}
+
 void assertClass(SEXP object, const char *what, const char *where)
 {
 	const char *valid[] = { what, "" };

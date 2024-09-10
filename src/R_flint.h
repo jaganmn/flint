@@ -64,10 +64,22 @@ do { \
 } while (0)
 
 extern
-SEXP R_flint_symbol_prec, R_flint_symbol_exp, R_flint_symbol_sign,
-	R_flint_symbol_d, R_flint_symbol_length, R_flint_symbol_x;
+SEXP R_flint_symbol_length,
+	R_flint_symbol_x,
+	R_flint_symbol_dot_data,
+	R_flint_symbol_num,
+	R_flint_symbol_den,
+	R_flint_symbol_mid,
+	R_flint_symbol_rad,
+	R_flint_symbol_real,
+	R_flint_symbol_imag,
+	R_flint_symbol_prec,
+	R_flint_symbol_exp,
+	R_flint_symbol_sign,
+	R_flint_symbol_d;
 
 SEXP newObject(const char *);
+SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 void assertClass(SEXP, const char *, const char *);
 
 unsigned long long int asLength(SEXP, SEXP, const char *);
