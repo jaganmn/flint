@@ -1,10 +1,10 @@
 setMethod("initialize",
           c(.Object = "arb"),
-          function (.Object, x = double(0L), ...)
-              .Call(R_flint_arb_initialize, .Object, x))
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_arb_initialize, .Object, length, x))
 
 setAs("numeric", "arb",
       function (from) new("arb", x = from))
 
-setAs("arb", "list",
-      function (from) .Call(R_flint_arb_list, from, "down"))
+setAs("arb", "narb",
+      function (from) .Call(R_flint_arb_narb, from, "down"))

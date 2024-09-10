@@ -1,10 +1,10 @@
 setMethod("initialize",
           c(.Object = "mag"),
-          function (.Object, x = double(0L), ...)
-              .Call(R_flint_mag_initialize, .Object, x))
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_mag_initialize, .Object, length, x))
 
 setAs("numeric", "mag",
       function (from) new("mag", x = from))
 
-setAs("mag", "double",
-      function (from) .Call(R_flint_mag_double, from))
+setAs("mag", "nmag",
+      function (from) .Call(R_flint_mag_nmag, from))

@@ -1,13 +1,13 @@
 setMethod("initialize",
           c(.Object = "acb"),
-          function (.Object, r = double(0L), i = double(0L), ...)
-              .Call(R_flint_acb_initialize, .Object, r, i))
+          function (.Object, length = 0L, x = NULL, real = NULL, imag = NULL, ...)
+              .Call(R_flint_acb_initialize, .Object, length, x, real, imag))
 
 setAs("numeric", "acb",
-      function (from) new("acb", r = from, i = 0))
+      function (from) new("acb", x = from))
 
 setAs("complex", "acb",
-      function (from) new("acb", r = Re(from), i = Im(from)))
+      function (from) new("acb", x = from))
 
-setAs("acb", "list",
-      function (from) .Call(R_flint_acb_list, from, "down"))
+setAs("acb", "nacb",
+      function (from) .Call(R_flint_acb_nacb, from, "down"))

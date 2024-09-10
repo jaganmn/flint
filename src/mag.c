@@ -11,51 +11,51 @@ void R_flint_mag_finalize(SEXP object)
 	return;
 }
 
-SEXP R_flint_mag_initialize(SEXP object, SEXP value)
+SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n = (unsigned long long int) XLENGTH(value);
+	unsigned long long int i, n = asLength(s_length, s_x, __func__);
 	_R_flint_set_length(object, n);
-	mag_ptr x = (mag_ptr) flint_calloc(n, sizeof(mag_t));
-	_R_flint_set_x(object, x, (R_CFinalizer_t) &R_flint_mag_finalize);
-	switch (TYPEOF(value)) {
+	mag_ptr y = (mag_ptr) flint_calloc(n, sizeof(mag_t));
+	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_mag_finalize);
+	switch (TYPEOF(s_x)) {
 	case INTSXP:
 	{
-		int *y = INTEGER(value), tmp;
+		int *x = INTEGER(s_x), tmp;
 		for (i = 0; i < n; ++i) {
-			tmp = y[i];
+			tmp = x[i];
 			if (tmp == NA_INTEGER)
 			Rf_error("NaN not representable by '%s'", "mag");
 			else
-			mag_set_ui(x + i, (ulong) ((tmp < 0) ? -tmp : tmp));
+			mag_set_ui(y + i, (ulong) ((tmp < 0) ? -tmp : tmp));
 		}
 		break;
 	}
 	case REALSXP:
 	{
-		double *y = REAL(value), tmp;
+		double *x = REAL(s_x), tmp;
 		for (i = 0; i < n; ++i) {
-			tmp = y[i];
+			tmp = x[i];
 			if (ISNAN(tmp))
 			Rf_error("NaN not representable by '%s'", "mag");
 			else
-			mag_set_d (x + i, tmp);
+			mag_set_d(y + i, tmp);
 		}
 		break;
 	}
 	default:
-		ERROR_INVALID_TYPE(value, __func__);
+		ERROR_INVALID_TYPE(s_x, __func__);
 		break;
 	}
 	return object;
 }
 
-SEXP R_flint_mag_double(SEXP from)
+SEXP R_flint_mag_nmag(SEXP from)
 {
 	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "mag", (long long int) R_XLEN_T_MAX);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	mag_ptr x = (mag_ptr) _R_flint_get_x(from);
 	double *y = REAL(to);
 	mag_t ub;

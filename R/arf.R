@@ -1,10 +1,10 @@
 setMethod("initialize",
           c(.Object = "arf"),
-          function (.Object, x = double(0L), ...)
-              .Call(R_flint_arf_initialize, .Object, x))
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_arf_initialize, .Object, length, x))
 
 setAs("numeric", "arf",
       function (from) new("arf", x = from))
 
-setAs("arf", "double",
-      function (from) .Call(R_flint_arf_double, from, "down"))
+setAs("arf", "narf",
+      function (from) .Call(R_flint_arf_narf, from, "down"))

@@ -1,13 +1,13 @@
 setMethod("initialize",
           c(.Object = "fmpq"),
-          function (.Object, p = integer(0L), q = integer(0L), ...)
-              .Call(R_flint_fmpq_initialize, .Object, p, q))
+          function (.Object, length = 0L, x = NULL, num = NULL, den = NULL, ...)
+              .Call(R_flint_fmpq_initialize, .Object, length, x, num, den))
 
 setAs("numeric", "fmpq",
-      function (from) new("fmpq", p = from, q = 1L))
+      function (from) new("fmpq", x = from))
 
-setAs("fmpq", "integer",
-      function (from) .Call(R_flint_fmpq_integer, from))
+setAs("fmpq", "nfmpq",
+      function (from) .Call(R_flint_fmpq_nfmpq, from))
 
 setAs("fmpq", "double",
       function (from) .Call(R_flint_fmpq_double, from))

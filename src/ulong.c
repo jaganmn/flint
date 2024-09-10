@@ -7,32 +7,34 @@ void R_flint_ulong_finalize(SEXP object)
 	return;
 }
 
-SEXP R_flint_ulong_initialize(SEXP object, SEXP value)
+SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n = (unsigned long long int) XLENGTH(value);
+	unsigned long long int i, n = asLength(s_length, s_x, __func__);
 	_R_flint_set_length(object, n);
-	ulong *x = (ulong *) flint_calloc(n, sizeof(ulong));
-	_R_flint_set_x(object, x, (R_CFinalizer_t) &R_flint_ulong_finalize);
-	switch (TYPEOF(value)) {
+	ulong *y = (ulong *) flint_calloc(n, sizeof(ulong));
+	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_ulong_finalize);
+	switch (TYPEOF(s_x)) {
+	case NILSXP:
+		break;
 	case INTSXP:
 	{
-		int *y = INTEGER(value), tmp;
+		int *x = INTEGER(s_x), tmp;
 		for (i = 0; i < n; ++i) {
-			tmp = y[i];
+			tmp = x[i];
 			if (tmp == NA_INTEGER)
 			Rf_error("NaN, -Inf, Inf not representable by '%s'", "ulong");
 			else if (tmp < 0)
 			Rf_error("integer not in range of '%s'", "ulong");
 			else
-			x[i] = (ulong) tmp;
+			y[i] = (ulong) tmp;
 		}
 		break;
 	}
 	case REALSXP:
 	{
-		double *y = REAL(value), tmp;
+		double *x = REAL(s_x), tmp;
 		for (i = 0; i < n; ++i) {
-			tmp = y[i];
+			tmp = x[i];
 			if (!R_FINITE(tmp))
 			Rf_error("NaN, -Inf, Inf not representable by '%s'", "ulong");
 #if FLINT64
@@ -42,24 +44,24 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP value)
 #endif
 			Rf_error("floating-point number not in range of '%s'", "ulong");
 			else
-			x[i] = (ulong) tmp;
+			y[i] = (ulong) tmp;
 		}
 		break;
 	}
 	default:
-		ERROR_INVALID_TYPE(value, __func__);
+		ERROR_INVALID_TYPE(s_x, __func__);
 		break;
 	}
 	return object;
 }
 
-SEXP R_flint_ulong_integer(SEXP from)
+SEXP R_flint_ulong_nulong(SEXP from)
 {
 	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "ulong", (long long int) R_XLEN_T_MAX);
-	SEXP to = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(newBasic("nulong", INTSXP, (R_xlen_t) n));
 	ulong *x = (ulong *) _R_flint_get_x(from);
 	int *y = INTEGER(to);
 	int w = 1;

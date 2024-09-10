@@ -7,30 +7,32 @@ void R_flint_slong_finalize(SEXP object)
 	return;
 }
 
-SEXP R_flint_slong_initialize(SEXP object, SEXP value)
+SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n = (unsigned long long int) XLENGTH(value);
+	unsigned long long int i, n = asLength(s_length, s_x, __func__);
 	_R_flint_set_length(object, n);
-	slong *x = (slong *) flint_calloc(n, sizeof(slong));
-	_R_flint_set_x(object, x, (R_CFinalizer_t) &R_flint_slong_finalize);
-	switch (TYPEOF(value)) {
+	slong *y = (slong *) flint_calloc(n, sizeof(slong));
+	_R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_slong_finalize);
+	switch (TYPEOF(s_x)) {
+	case NILSXP:
+		break;
 	case INTSXP:
 	{
-		int *y = INTEGER(value), tmp;
+		int *x = INTEGER(s_x), tmp;
 		for (i = 0; i < n; ++i) {
-			tmp = y[i];
+			tmp = x[i];
 			if (tmp == NA_INTEGER)
 			Rf_error("NaN, -Inf, Inf not representable by '%s'", "slong");
 			else
-			x[i] = (slong) tmp;
+			y[i] = (slong) tmp;
 		}
 		break;
 	}
 	case REALSXP:
 	{
-		double *y = REAL(value), tmp;
+		double *x = REAL(s_x), tmp;
 		for (i = 0; i < n; ++i) {
-			tmp = y[i];
+			tmp = x[i];
 			if (!R_FINITE(tmp))
 			Rf_error("NaN, -Inf, Inf not representable by '%s'", "slong");
 #if FLINT64
@@ -40,24 +42,24 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP value)
 #endif
 			Rf_error("floating-point number not in range of '%s'", "slong");
 			else
-			x[i] = (slong) tmp;
+			y[i] = (slong) tmp;
 		}
 		break;
 	}
 	default:
-		ERROR_INVALID_TYPE(value, __func__);
+		ERROR_INVALID_TYPE(s_x, __func__);
 		break;
 	}
 	return object;
 }
 
-SEXP R_flint_slong_integer(SEXP from)
+SEXP R_flint_slong_nslong(SEXP from)
 {
 	unsigned long long int i, n = _R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "slong", (long long int) R_XLEN_T_MAX);
-	SEXP to = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(newBasic("nslong", INTSXP, (R_xlen_t) n));
 	slong *x = (slong *) _R_flint_get_x(from);
 	int *y = INTEGER(to);
 	int w = 1;
