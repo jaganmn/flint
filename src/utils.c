@@ -1,5 +1,15 @@
 #include "R_flint.h"
 
+#if R_VERSION < R_Version(4, 4, 1)
+void CLEAR_ATTRIB(SEXP x)
+{
+    SET_ATTRIB(CHK(x), R_NilValue);
+    SET_OBJECT(x, 0);
+    UNSET_S4_OBJECT(x);
+	return;
+}
+#endif /* < 4.4.1 */
+
 SEXP R_flint_bits(void)
 {
 	return Rf_ScalarInteger(FLINT_BITS);

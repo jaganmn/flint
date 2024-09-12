@@ -16,9 +16,12 @@
 #include <R_ext/RS.h> /* R_Calloc, R_Free */
 #include <Rinternals.h> /* SEXP, ... */
 
+#if R_VERSION < R_Version(4, 4, 1)
+void CLEAR_ATTRIB(SEXP);
 #if R_VERSION < R_Version(4, 4, 0)
 # define OBJSXP S4SXP
-#endif
+#endif /* < 4.4.0 */
+#endif /* < 4.4.1 */
 
 #define MAX2(a, b) \
 (((a) < (b)) ? (b)              : (a))
