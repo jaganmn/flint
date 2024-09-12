@@ -61,14 +61,18 @@ do { \
 
 #define ERROR_INVALID_TYPE(x, func) \
 do { \
-	Rf_error("invalid type \"%s\" in '%s'", \
+	Rf_error("object of invalid type \"%s\" in '%s'", \
 	         Rf_type2char((SEXPTYPE) TYPEOF(x)), func); \
 } while (0)
 
 #define ERROR_INVALID_CLASS(x, func) \
 do { \
-	Rf_error("invalid class \"%s\" in '%s'", \
-	         CHAR(STRING_ELT(Rf_getAttrib(object, R_ClassSymbol), 0)), func); \
+	if (Rf_isObject(x)) \
+		Rf_error("object of invalid class \"%s\" in '%s'", \
+		         CHAR(STRING_ELT(Rf_getAttrib(x, R_ClassSymbol), 0)), func); \
+	else \
+		Rf_error("object without class attribute in '%s'", \
+		         func); \
 } while (0)
 
 extern
