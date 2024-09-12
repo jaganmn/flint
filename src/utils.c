@@ -50,21 +50,8 @@ const char *checkClass(SEXP object, const char **valid, const char *where)
 	return valid[i];
 }
 
-unsigned long long int asLength(SEXP length, SEXP x, const char *where)
+unsigned long long int asLength(SEXP length, const char *where)
 {
-	switch (TYPEOF(x)) {
-	case NILSXP:
-		break;
-	case RAWSXP:
-	case LGLSXP:
-	case INTSXP:
-	case REALSXP:
-	case CPLXSXP:
-		return (unsigned long long int) XLENGTH(x);
-	default:
-		ERROR_INVALID_TYPE(x, where);
-		break;
-	}
 	switch (TYPEOF(length)) {
 	case INTSXP:
 	{

@@ -102,7 +102,7 @@ SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 SEXPTYPE checkType(SEXP, SEXPTYPE*, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
-unsigned long long int asLength(SEXP, SEXP, const char *);
+unsigned long long int asLength(SEXP, const char *);
 int asFlags(SEXP, const char *);
 int asRnd(SEXP, const char *);
 
