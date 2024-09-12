@@ -91,11 +91,16 @@ SEXP R_flint_symbol_length,
 	R_flint_symbol_d;
 
 extern
+SEXPTYPE R_flint_sexptypes[4];
+
+extern
 const char *R_flint_classes[9];
 
 SEXP newObject(const char *);
 SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
-void assertClass(SEXP, const char *, const char *);
+
+SEXPTYPE checkType(SEXP, SEXPTYPE*, const char *);
+const char *checkClass(SEXP, const char **, const char *);
 
 unsigned long long int asLength(SEXP, SEXP, const char *);
 int asFlags(SEXP, const char *);
