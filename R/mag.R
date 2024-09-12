@@ -3,8 +3,15 @@ setMethod("initialize",
           function (.Object, length = 0L, x = NULL, ...)
               .Call(R_flint_mag_initialize, .Object, length, x))
 
-setAs("numeric", "mag",
-      function (from) new("mag", x = from))
+setMethod("as.vector",
+          c(x = "mag"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_mag_vector, x), mode))
 
-setAs("mag", "nmag",
-      function (from) .Call(R_flint_mag_nmag, from))
+setAs("nmag", "flint",
+      function (from)
+          new("mag", x = from))
+
+setAs("mag", "nflint",
+      function (from)
+          .Call(R_flint_mag_nflint, from))

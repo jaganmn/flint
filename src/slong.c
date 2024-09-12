@@ -9,13 +9,17 @@ void R_flint_slong_finalize(SEXP object)
 
 SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n = asLength(s_length, s_x, __func__);
+	unsigned long long int i, n;
+	if (s_x == R_NilValue)
+		n = asLength(s_length, __func__);
+	else {
+		checkType(s_x, R_flint_sexptypes + 1, __func__);
+		n = (unsigned long long int) XLENGTH(s_x);
+	}
 	R_flint_set_length(object, n);
 	slong *y = (slong *) flint_calloc(n, sizeof(slong));
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
-	case NILSXP:
-		break;
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;
@@ -46,14 +50,11 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	default:
-		ERROR_INVALID_TYPE(s_x, __func__);
-		break;
 	}
 	return object;
 }
 
-SEXP R_flint_slong_nslong(SEXP from)
+SEXP R_flint_slong_nflint(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -75,7 +76,7 @@ SEXP R_flint_slong_nslong(SEXP from)
 	return to;
 }
 
-SEXP R_flint_slong_double(SEXP from)
+SEXP R_flint_slong_vector(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)

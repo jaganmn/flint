@@ -13,11 +13,21 @@ void R_flint_mag_finalize(SEXP object)
 
 SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n = asLength(s_length, s_x, __func__);
+	unsigned long long int i, n;
+	if (s_x == R_NilValue)
+		n = asLength(s_length, __func__);
+	else {
+		checkType(s_x, R_flint_sexptypes + 1, __func__);
+		n = (unsigned long long int) XLENGTH(s_x);
+	}
 	R_flint_set_length(object, n);
 	mag_ptr y = (mag_ptr) flint_calloc(n, sizeof(mag_t));
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
+	case NILSXP:
+		for (i = 0; i < n; ++i)
+			mag_zero(y + i);
+		break;
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;
@@ -42,14 +52,11 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	default:
-		ERROR_INVALID_TYPE(s_x, __func__);
-		break;
 	}
 	return object;
 }
 
-SEXP R_flint_mag_nmag(SEXP from)
+SEXP R_flint_mag_nflint(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -73,4 +80,11 @@ SEXP R_flint_mag_nmag(SEXP from)
 	mag_clear(ub);
 	UNPROTECT(1);
 	return to;
+}
+
+SEXP R_flint_mag_vector(SEXP from)
+{
+	from = R_flint_mag_nflint(from);
+	CLEAR_ATTRIB(from);
+	return from;
 }

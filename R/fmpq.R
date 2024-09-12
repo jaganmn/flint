@@ -3,11 +3,19 @@ setMethod("initialize",
           function (.Object, length = 0L, x = NULL, num = NULL, den = NULL, ...)
               .Call(R_flint_fmpq_initialize, .Object, length, x, num, den))
 
-setAs("numeric", "fmpq",
-      function (from) new("fmpq", x = from))
+setMethod("as.vector",
+          c(x = "fmpq"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_fmpq_vector, x), mode))
 
-setAs("fmpq", "nfmpq",
-      function (from) .Call(R_flint_fmpq_nfmpq, from))
+setMethod("length",
+          c(x = "nfmpq"),
+          function (x) length(x@num))
 
-setAs("fmpq", "double",
-      function (from) .Call(R_flint_fmpq_double, from))
+setAs("nfmpq", "flint",
+      function (from)
+          new("fmpq", num = from@num, den = from@den))
+
+setAs("fmpq", "nflint",
+      function (from)
+          .Call(R_flint_fmpq_nflint, from))

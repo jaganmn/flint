@@ -3,8 +3,15 @@ setMethod("initialize",
           function (.Object, length = 0L, x = NULL, ...)
               .Call(R_flint_arf_initialize, .Object, length, x))
 
-setAs("numeric", "arf",
-      function (from) new("arf", x = from))
+setMethod("as.vector",
+          c(x = "arf"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_arf_vector, x, "down"), mode))
 
-setAs("arf", "narf",
-      function (from) .Call(R_flint_arf_narf, from, "down"))
+setAs("narf", "flint",
+      function (from)
+          new("arf", x = from))
+
+setAs("arf", "nflint",
+      function (from)
+          .Call(R_flint_arf_nflint, from, "down"))

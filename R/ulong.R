@@ -3,11 +3,15 @@ setMethod("initialize",
           function (.Object, length = 0L, x = NULL, ...)
               .Call(R_flint_ulong_initialize, .Object, length, x))
 
-setAs("numeric", "ulong",
-      function (from) new("ulong", x = from))
+setMethod("as.vector",
+          c(x = "ulong"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_ulong_vector, x), mode))
 
-setAs("ulong", "nulong",
-      function (from) .Call(R_flint_ulong_nulong, from))
+setAs("nulong", "flint",
+      function (from)
+          new("ulong", x = from))
 
-setAs("ulong", "double",
-      function (from) .Call(R_flint_ulong_double, from))
+setAs("ulong", "nflint",
+      function (from)
+          .Call(R_flint_ulong_nflint, from))

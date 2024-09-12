@@ -3,11 +3,16 @@ setMethod("initialize",
           function (.Object, length = 0L, x = NULL, ...)
               .Call(R_flint_slong_initialize, .Object, length, x))
 
-setAs("numeric", "slong",
-      function (from) new("slong", x = from))
+setMethod("as.vector",
+          c(x = "slong"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_slong_vector, x), mode))
 
-setAs("slong", "nslong",
-      function (from) .Call(R_flint_slong_nslong, from))
+setAs("nslong", "flint",
+      function (from)
+          new("slong", x = from))
 
-setAs("slong", "double",
-      function (from) .Call(R_flint_slong_double, from))
+setAs("slong", "nflint",
+      function (from)
+          .Call(R_flint_slong_nflint, from))
+

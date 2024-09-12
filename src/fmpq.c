@@ -14,58 +14,90 @@ void R_flint_fmpq_finalize(SEXP object)
 SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
                              SEXP s_num, SEXP s_den)
 {
-	unsigned long long int i, n, np, nq;
-	if (s_num != R_NilValue && s_den != R_NilValue) {
-		np = (unsigned long long int) XLENGTH(s_num),
-		nq = (unsigned long long int) XLENGTH(s_den),
+	unsigned long long int i, n, np = 1, nq = 1;
+	if (s_num != R_NilValue || s_den != R_NilValue) {
+		if (s_num != R_NilValue) {
+			checkType(s_num, R_flint_sexptypes + 1, __func__);
+			np = (unsigned long long int) XLENGTH(s_num);
+		}
+		if (s_den != R_NilValue) {
+			checkType(s_den, R_flint_sexptypes + 1, __func__);
+			nq = (unsigned long long int) XLENGTH(s_den);
+		}
 		n = RECYCLE2(np, nq);
-	} else if (TYPEOF(s_x) == INTSXP) {
-		np = (unsigned long long int) XLENGTH(s_x);
-		n = np;
-		s_num = s_x;
-		s_den = NULL;
-	} else {
-		n = asLength(s_length, s_x, __func__);
-		s_num = NULL;
-		s_den = NULL;
-	}
+	} else if (s_x != R_NilValue) {
+		checkType(s_x, R_flint_sexptypes + 1, __func__);
+		n = (unsigned long long int) XLENGTH(s_x);
+		if (TYPEOF(s_x) == INTSXP) {
+			s_num = s_x;
+			np = n;
+		}
+	} else
+		n = asLength(s_length, __func__);
 	R_flint_set_length(object, n);
 	fmpq *y = (fmpq *) flint_calloc(n, sizeof(fmpq));
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
-	if (s_num)
-	switch (TYPEOF(s_num)) {
-	case INTSXP:
-	{
-		int *xp = INTEGER(s_num), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = xp[i % np];
-			if (tmp == NA_INTEGER)
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
-			else
-			fmpz_set_si(fmpq_numref(y + i), tmp);
+	if (s_num != R_NilValue || s_den != R_NilValue) {
+		switch (TYPEOF(s_num)) {
+		case NILSXP:
+			/* numerators are already initialized to zero */
+			break;
+		case INTSXP:
+		{
+			int *xp = INTEGER(s_num), tmp;
+			for (i = 0; i < n; ++i) {
+				tmp = xp[i % np];
+				if (tmp == NA_INTEGER)
+				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				else
+				fmpz_set_si(fmpq_numref(y + i), tmp);
+			}
+			break;
 		}
-		break;
-	}
-	case REALSXP:
-	{
-		double *xp = REAL(s_num), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = xp[i % np];
-			if (!R_FINITE(tmp))
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
-			else
-			fmpz_set_d(fmpq_numref(y + i), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+		case REALSXP:
+		{
+			double *xp = REAL(s_num), tmp;
+			for (i = 0; i < n; ++i) {
+				tmp = xp[i % np];
+				if (!R_FINITE(tmp))
+				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				else
+				fmpz_set_d(fmpq_numref(y + i), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+			}
+			break;
 		}
-		break;
-	}
-	default:
-		ERROR_INVALID_TYPE(s_num, __func__);
-		break;
-	}
-	else
-	switch (TYPEOF(s_x)) {
-	case REALSXP:
-	{
+		}
+		switch (TYPEOF(s_den)) {
+		case NILSXP:
+			for (i = 0; i < n; ++i)
+				fmpz_one(fmpq_denref(y + i));
+			break;
+		case INTSXP:
+		{
+			int *xq = INTEGER(s_den), tmp;
+			for (i = 0; i < n; ++i) {
+				tmp = xq[i % nq];
+				if (tmp == NA_INTEGER)
+				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				else
+				fmpz_set_si(fmpq_denref(y + i), tmp);
+			}
+			break;
+		}
+		case REALSXP:
+		{
+			double *xq = REAL(s_den), tmp;
+			for (i = 0; i < n; ++i) {
+				tmp = xq[i % nq];
+				if (!R_FINITE(tmp))
+				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				else
+				fmpz_set_d(fmpq_denref(y + i), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+			}
+			break;
+		}
+		}
+	} else if (s_x != R_NilValue) {
 		double *x = REAL(s_x), tmp;
 		int e;
 		for (i = 0; i < n; ++i) {
@@ -85,56 +117,9 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			}
 		}
-	}
-	case NILSXP:
-	case INTSXP:
-		break;
-	default:
-		ERROR_INVALID_TYPE(s_x, __func__);
-		break;
-	}
-	if (s_den)
-	switch (TYPEOF(s_den)) {
-	case INTSXP:
-	{
-		int *xq = INTEGER(s_den), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = xq[i % nq];
-			if (tmp == NA_INTEGER)
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
-			else
-			fmpz_set_si(fmpq_denref(y + i), tmp);
-		}
-		break;
-	}
-	case REALSXP:
-	{
-		double *xq = REAL(s_den), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = xq[i % nq];
-			if (!R_FINITE(tmp))
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
-			else
-			fmpz_set_d(fmpq_denref(y + i), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
-		}
-		break;
-	}
-	default:
-		ERROR_INVALID_TYPE(s_den, __func__);
-		break;
-	}
-	else
-	switch (TYPEOF(s_x)) {
-	case NILSXP:
-	case INTSXP:
+	} else
 		for (i = 0; i < n; ++i)
-			fmpz_one(fmpq_denref(y + i));
-	case REALSXP:
-		break;
-	default:
-		ERROR_INVALID_TYPE(s_x, __func__);
-		break;
-	}
+			fmpq_zero(y + i);
 	for (i = 0; i < n; ++i) {
 		if (fmpz_is_zero(fmpq_denref(y + i)))
 		Rf_error("zero denominator not valid in canonical '%s'", "fmpq");
@@ -144,7 +129,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_fmpq_nfmpq(SEXP from)
+SEXP R_flint_fmpq_nflint(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -186,7 +171,7 @@ SEXP R_flint_fmpq_nfmpq(SEXP from)
 	return to;
 }
 
-SEXP R_flint_fmpq_double(SEXP from)
+SEXP R_flint_fmpq_vector(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
