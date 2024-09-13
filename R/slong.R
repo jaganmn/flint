@@ -8,6 +8,10 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_slong_vector, x), mode))
 
+setAs("vector", "slong",
+      function (from)
+          new("slong", x = from))
+
 setAs("nslong", "slong",
       function (from)
           new("slong", x = from))

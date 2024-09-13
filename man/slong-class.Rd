@@ -5,7 +5,9 @@
 \alias{nulong-class}
 \alias{as.vector,slong-method}
 \alias{as.vector,ulong-method}
+\alias{coerce,vector,slong-method}
 \alias{coerce,nslong,slong-method}
+\alias{coerce,vector,ulong-method}
 \alias{coerce,nulong,ulong-method}
 \alias{coerce,slong,nslong-method}
 \alias{coerce,ulong,nulong-method}
@@ -68,7 +70,9 @@
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{flintBits()}.}
     \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "slong")}:\cr
       \code{signature(from = "nslong", to = "slong")}:\cr
+      \code{signature(from = "vector", to = "ulong")}:\cr
       \code{signature(from = "nulong", to = "ulong")}:\cr
       return \code{new("slong", x = from)} or
       \code{new("ulong", x = from)}.}

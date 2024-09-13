@@ -12,6 +12,10 @@ setMethod("length",
           c(x = "narb"),
           function (x) length(x@mid))
 
+setAs("vector", "arb",
+      function (from)
+          new("arb", x = from))
+
 setAs("narb", "arb",
       function (from)
           new("arb", mid = from@mid, rad = from@rad))

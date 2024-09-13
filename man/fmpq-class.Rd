@@ -2,6 +2,7 @@
 \alias{fmpq-class}
 \alias{nfmpq-class}
 \alias{as.vector,fmpq-method}
+\alias{coerce,vector,fmpq-method}
 \alias{coerce,nfmpq,fmpq-method}
 \alias{coerce,fmpq,nfmpq-method}
 \alias{initialize,fmpq-method}
@@ -63,6 +64,9 @@
       signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
       \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
       zero.}
+    \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "fmpq")}:\cr
+      returns \code{new("fmpq", x = from)}.}
     \item{\code{coerce}}{
       \code{signature(from = "nfmpq", to = "fmpq")}:\cr
       returns \code{new("fmpq", num = from@num, den = from@den)}.}

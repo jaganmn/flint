@@ -53,6 +53,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				arf_zero(arb_midref(acb_realref(y + i)));
+		case RAWSXP:
+		case LGLSXP:
+			s_realmid = Rf_coerceVector(s_realmid, INTSXP);
 		case INTSXP:
 		{
 			int *xrm = INTEGER(s_realmid), tmp;
@@ -79,6 +82,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				mag_zero(arb_radref(acb_realref(y + i)));
+		case RAWSXP:
+		case LGLSXP:
+			s_realrad = Rf_coerceVector(s_realrad, INTSXP);
 		case INTSXP:
 		{
 			int *xrr = INTEGER(s_realrad), tmp;
@@ -108,6 +114,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				arf_zero(arb_midref(acb_imagref(y + i)));
+		case RAWSXP:
+		case LGLSXP:
+			s_imagmid = Rf_coerceVector(s_imagmid, INTSXP);
 		case INTSXP:
 		{
 			int *xim = INTEGER(s_imagmid), tmp;
@@ -134,6 +143,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				mag_zero(arb_radref(acb_imagref(y + i)));
+		case RAWSXP:
+		case LGLSXP:
+			s_imagrad = Rf_coerceVector(s_imagrad, INTSXP);
 		case INTSXP:
 		{
 			int *xir = INTEGER(s_imagrad), tmp;

@@ -2,6 +2,7 @@
 \alias{acb-class}
 \alias{nacb-class}
 \alias{as.vector,acb-method}
+\alias{coerce,vector,acb-method}
 \alias{coerce,nacb,acb-method}
 \alias{coerce,acb,nacb-method}
 \alias{initialize,acb-method}
@@ -64,6 +65,10 @@
       midpoints from \code{*.mid} and radii from \code{*.rad}, all
       recycled as necessary.  An error is signaled if any
       \code{*.rad[i]} is \code{NaN}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "acb")}:\cr
+      returns
+      \code{new("acb", x = from)}.}
     \item{\code{coerce}}{
       \code{signature(from = "nacb", to = "acb")}:\cr
       returns

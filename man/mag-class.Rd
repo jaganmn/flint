@@ -2,6 +2,7 @@
 \alias{mag-class}
 \alias{nmag-class}
 \alias{as.vector,mag-method}
+\alias{coerce,vector,mag-method}
 \alias{coerce,nmag,mag-method}
 \alias{coerce,mag,nmag-method}
 \alias{initialize,mag-method}
@@ -52,6 +53,7 @@
       is initialized with values from \code{abs(x)} rounded away from
       zero.  An error is signaled if any \code{x[i]} is \code{NaN}.}
     \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "mag")}:\cr
       \code{signature(from = "nmag", to = "mag")}:\cr
       returns \code{new("mag", x = from)}.}
     \item{\code{coerce}}{

@@ -28,7 +28,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	} else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes + 1, __func__);
 		n = (unsigned long long int) XLENGTH(s_x);
-		if (TYPEOF(s_x) == INTSXP) {
+		if (TYPEOF(s_x) != REALSXP) {
 			s_num = s_x;
 			np = n;
 		}
@@ -40,8 +40,11 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		switch (TYPEOF(s_num)) {
 		case NILSXP:
-			/* numerators are already initialized to zero */
+			/* nothing to do */
 			break;
+		case RAWSXP:
+		case LGLSXP:
+			s_num = Rf_coerceVector(s_num, INTSXP);
 		case INTSXP:
 		{
 			int *xp = INTEGER(s_num), tmp;
@@ -72,6 +75,9 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i)
 				fmpz_one(fmpq_denref(y + i));
 			break;
+		case RAWSXP:
+		case LGLSXP:
+			s_den = Rf_coerceVector(s_den, INTSXP);
 		case INTSXP:
 		{
 			int *xq = INTEGER(s_den), tmp;

@@ -12,6 +12,10 @@ setMethod("length",
           c(x = "nfmpq"),
           function (x) length(x@num))
 
+setAs("vector", "fmpq",
+      function (from)
+          new("fmpq", x = from))
+
 setAs("nfmpq", "fmpq",
       function (from)
           new("fmpq", num = from@num, den = from@den))

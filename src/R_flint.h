@@ -91,7 +91,7 @@ SEXP R_flint_symbol_length,
 	R_flint_symbol_d;
 
 extern
-SEXPTYPE R_flint_sexptypes[4];
+SEXPTYPE R_flint_sexptypes[6];
 
 extern
 const char *R_flint_classes[9];

@@ -2,6 +2,7 @@
 \alias{fmpz-class}
 \alias{nfmpz-class}
 \alias{as.vector,fmpz-method}
+\alias{coerce,vector,fmpz-method}
 \alias{coerce,nfmpz,fmpz-method}
 \alias{coerce,fmpz,nfmpz-method}
 \alias{initialize,fmpz-method}
@@ -54,6 +55,7 @@
       An error is signaled if any \code{x[i]} is \code{NaN},
       \code{-Inf}, \code{Inf}, or subnormal.}
     \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "fmpz")}:\cr
       \code{signature(from = "nfmpz", to = "fmpz")}:\cr
       returns \code{new("fmpz", x = from)}.}
     \item{\code{coerce}}{

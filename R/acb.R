@@ -15,6 +15,10 @@ setMethod("length",
           c(x = "nacb"),
           function (x) length(x@real@mid))
 
+setAs("vector", "acb",
+      function (from)
+          new("acb", x = from))
+
 setAs("nacb", "acb",
       function (from)
           new("acb",

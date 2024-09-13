@@ -48,6 +48,9 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i)
 			arf_zero(y + i);
 		break;
+	case RAWSXP:
+	case LGLSXP:
+		s_x = Rf_coerceVector(s_x, INTSXP);
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;

@@ -2,6 +2,7 @@
 \alias{arb-class}
 \alias{narb-class}
 \alias{as.vector,arb-method}
+\alias{coerce,vector,arb-method}
 \alias{coerce,narb,arb-method}
 \alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}
@@ -62,6 +63,9 @@
       midpoints from \code{mid} and radii from \code{rad}, both recycled
       as necessary.  An error is signaled if any \code{rad[i]} is
       \code{NaN}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "arb")}:\cr
+      returns \code{new("arb", x = from)}.}
     \item{\code{coerce}}{
       \code{signature(from = "narb", to = "arb")}:\cr
       returns \code{new("arb", mid = from@mid, rad = from@rad)}.}

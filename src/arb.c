@@ -41,6 +41,9 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i)
 				arf_zero(arb_midref(y + i));
 			break;
+		case RAWSXP:
+		case LGLSXP:
+			s_mid = Rf_coerceVector(s_mid, INTSXP);
 		case INTSXP:
 		{
 			int *xm = INTEGER(s_mid), tmp;
@@ -68,6 +71,9 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i)
 				mag_zero(arb_radref(y + i));
 			break;
+		case RAWSXP:
+		case LGLSXP:
+			s_rad = Rf_coerceVector(s_rad, INTSXP);
 		case INTSXP:
 		{
 			int *x = INTEGER(s_rad), tmp;

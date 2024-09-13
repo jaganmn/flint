@@ -8,6 +8,10 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_arf_vector, x, "down"), mode))
 
+setAs("vector", "arf",
+      function (from)
+          new("arf", x = from))
+
 setAs("narf", "arf",
       function (from)
           new("arf", x = from))

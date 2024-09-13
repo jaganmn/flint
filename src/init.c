@@ -17,7 +17,7 @@ SEXP R_flint_symbol_length,
 	R_flint_symbol_d;
 
 SEXPTYPE R_flint_sexptypes[] =
-{ CPLXSXP, REALSXP, INTSXP, NILSXP };
+{ CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
 
 const char *R_flint_classes[] =
 { "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };

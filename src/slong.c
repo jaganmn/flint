@@ -21,6 +21,12 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	slong *y = (slong *) flint_calloc(n, sizeof(slong));
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
+	case NILSXP:
+		/* nothing to do */
+		break;
+	case RAWSXP:
+	case LGLSXP:
+		s_x = Rf_coerceVector(s_x, INTSXP);
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;

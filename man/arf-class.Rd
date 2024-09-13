@@ -2,6 +2,7 @@
 \alias{arf-class}
 \alias{narf-class}
 \alias{as.vector,arf-method}
+\alias{coerce,vector,arf-method}
 \alias{coerce,narf,arf-method}
 \alias{coerce,arf,narf-method}
 \alias{initialize,arf-method}
@@ -51,6 +52,7 @@
       representation of \code{length(x)} and the newly allocated array
       is initialized with values from \code{x}.}
     \item{\code{coerce}}{
+      \code{signature(from = "vector", to = "arf")}:\cr
       \code{signature(from = "narf", to = "arf")}:\cr
       returns \code{new("arf", x = from)}.}
     \item{\code{coerce}}{
