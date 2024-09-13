@@ -45,6 +45,8 @@ setClass("nfmpq",
          validity = function (object) {
              if (length(object@num) != length(object@den))
                  gettextf("lengths of '%s' and '%s' slots are not equal", "num", "den")
+             else if (!all(TRUE, object@den, na.rm = TRUE))
+                 gettextf("'%s' slot contains zero", "den")
              else TRUE
          })
 
