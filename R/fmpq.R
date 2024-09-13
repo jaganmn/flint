@@ -12,10 +12,10 @@ setMethod("length",
           c(x = "nfmpq"),
           function (x) length(x@num))
 
-setAs("nfmpq", "flint",
+setAs("nfmpq", "fmpq",
       function (from)
           new("fmpq", num = from@num, den = from@den))
 
-setAs("fmpq", "nflint",
+setAs("fmpq", "nfmpq",
       function (from)
           .Call(R_flint_fmpq_nflint, from))

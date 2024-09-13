@@ -2,8 +2,8 @@
 \alias{fmpq-class}
 \alias{nfmpq-class}
 \alias{as.vector,fmpq-method}
-\alias{coerce,nfmpq,flint-method}
-\alias{coerce,fmpq,nflint-method}
+\alias{coerce,nfmpq,fmpq-method}
+\alias{coerce,fmpq,nfmpq-method}
 \alias{initialize,fmpq-method}
 \alias{length,nfmpq-method}
 \title{Class of Vectors of Rational Numbers}
@@ -64,10 +64,10 @@
       \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
       zero.}
     \item{\code{coerce}}{
-      \code{signature(from = "nfmpq", to = "flint")}:\cr
+      \code{signature(from = "nfmpq", to = "fmpq")}:\cr
       returns \code{new("fmpq", num = from@num, den = from@den)}.}
     \item{\code{coerce}}{
-      \code{signature(from = "fmpq", to = "nflint")}:\cr
+      \code{signature(from = "fmpq", to = "nfmpq")}:\cr
       returns the analogous object of class \code{nfmpq} with slots
       \code{num} and \code{den} such that \code{den[i]} positive and
       coprime with \code{num[i]} for all \code{i}, except where

@@ -8,10 +8,10 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_mag_vector, x), mode))
 
-setAs("nmag", "flint",
+setAs("nmag", "mag",
       function (from)
           new("mag", x = from))
 
-setAs("mag", "nflint",
+setAs("mag", "nmag",
       function (from)
           .Call(R_flint_mag_nflint, from))

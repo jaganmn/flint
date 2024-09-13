@@ -12,10 +12,10 @@ setMethod("length",
           c(x = "narb"),
           function (x) length(x@mid))
 
-setAs("narb", "flint",
+setAs("narb", "arb",
       function (from)
           new("arb", mid = from@mid, rad = from@rad))
 
-setAs("arb", "nflint",
+setAs("arb", "narb",
       function (from)
           .Call(R_flint_arb_nflint, from, "down"))

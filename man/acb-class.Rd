@@ -2,8 +2,8 @@
 \alias{acb-class}
 \alias{nacb-class}
 \alias{as.vector,acb-method}
-\alias{coerce,nacb,flint-method}
-\alias{coerce,acb,nflint-method}
+\alias{coerce,nacb,acb-method}
+\alias{coerce,acb,nacb-method}
 \alias{initialize,acb-method}
 \alias{length,nacb-method}
 \title{Class of Complex Numbers with Error Bounds}
@@ -65,11 +65,11 @@
       recycled as necessary.  An error is signaled if any
       \code{*.rad[i]} is \code{NaN}.}
     \item{\code{coerce}}{
-      \code{signature(from = "nacb", to = "flint")}:\cr
+      \code{signature(from = "nacb", to = "acb")}:\cr
       returns
       \code{new("acb", real.mid = from@real@mid, real.rad = from@real@rad, imag.mid = from@imag@mid, imag.rad = from@imag@rad)}.}
     \item{\code{coerce}}{
-      \code{signature(from = "acb", to = "nflint")}:\cr
+      \code{signature(from = "acb", to = "nacb")}:\cr
       returns the analogous object of class \code{nacb}.}
     \item{\code{length}}{
       \code{signature(x = "nacb")}:\cr

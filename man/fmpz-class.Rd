@@ -2,8 +2,8 @@
 \alias{fmpz-class}
 \alias{nfmpz-class}
 \alias{as.vector,fmpz-method}
-\alias{coerce,nfmpz,flint-method}
-\alias{coerce,fmpz,nflint-method}
+\alias{coerce,nfmpz,fmpz-method}
+\alias{coerce,fmpz,nfmpz-method}
 \alias{initialize,fmpz-method}
 \title{Class of Vectors of Arbitrary Precision Integers}
 \docType{class}
@@ -54,10 +54,10 @@
       An error is signaled if any \code{x[i]} is \code{NaN},
       \code{-Inf}, \code{Inf}, or subnormal.}
     \item{\code{coerce}}{
-      \code{signature(from = "nfmpz", to = "flint")}:\cr
+      \code{signature(from = "nfmpz", to = "fmpz")}:\cr
       returns \code{new("fmpz", x = from)}.}
     \item{\code{coerce}}{
-      \code{signature(from = "fmpz", to = "nflint")}:\cr
+      \code{signature(from = "fmpz", to = "nfmpz")}:\cr
       returns an object of class \code{nfmpz} whose data part is
       \code{as.vector(from, "integer")}.}
   }

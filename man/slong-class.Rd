@@ -5,10 +5,10 @@
 \alias{nulong-class}
 \alias{as.vector,slong-method}
 \alias{as.vector,ulong-method}
-\alias{coerce,nslong,flint-method}
-\alias{coerce,nulong,flint-method}
-\alias{coerce,slong,nflint-method}
-\alias{coerce,ulong,nflint-method}
+\alias{coerce,nslong,slong-method}
+\alias{coerce,nulong,ulong-method}
+\alias{coerce,slong,nslong-method}
+\alias{coerce,ulong,nulong-method}
 \alias{initialize,slong-method}
 \alias{initialize,ulong-method}
 \alias{flintBits}
@@ -68,13 +68,13 @@
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{flintBits()}.}
     \item{\code{coerce}}{
-      \code{signature(from = "nslong", to = "flint")}:\cr
-      \code{signature(from = "nulong", to = "flint")}:\cr
+      \code{signature(from = "nslong", to = "slong")}:\cr
+      \code{signature(from = "nulong", to = "ulong")}:\cr
       return \code{new("slong", x = from)} or
       \code{new("ulong", x = from)}.}
     \item{\code{coerce}}{
-      \code{signature(from = "slong", to = "nflint")}:\cr
-      \code{signature(from = "ulong", to = "nflint")}:\cr
+      \code{signature(from = "slong", to = "nslong")}:\cr
+      \code{signature(from = "ulong", to = "nulong")}:\cr
       return an object of class \code{nslong} or \code{nulong}
       whose data part is \code{as.vector(from, "integer")}.}
   }

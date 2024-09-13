@@ -8,11 +8,11 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_slong_vector, x), mode))
 
-setAs("nslong", "flint",
+setAs("nslong", "slong",
       function (from)
           new("slong", x = from))
 
-setAs("slong", "nflint",
+setAs("slong", "nslong",
       function (from)
           .Call(R_flint_slong_nflint, from))
 

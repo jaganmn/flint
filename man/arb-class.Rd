@@ -2,8 +2,8 @@
 \alias{arb-class}
 \alias{narb-class}
 \alias{as.vector,arb-method}
-\alias{coerce,narb,flint-method}
-\alias{coerce,arb,nflint-method}
+\alias{coerce,narb,arb-method}
+\alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}
 \alias{length,narb-method}
 \title{Class of Real Numbers with Error Bounds}
@@ -63,10 +63,10 @@
       as necessary.  An error is signaled if any \code{rad[i]} is
       \code{NaN}.}
     \item{\code{coerce}}{
-      \code{signature(from = "narb", to = "flint")}:\cr
+      \code{signature(from = "narb", to = "arb")}:\cr
       returns \code{new("arb", mid = from@mid, rad = from@rad)}.}
     \item{\code{coerce}}{
-      \code{signature(from = "arb", to = "nflint")}:\cr
+      \code{signature(from = "arb", to = "narb")}:\cr
       returns the analogous object of class \code{narb}.}
     \item{\code{length}}{
       \code{signature(x = "narb")}:\cr

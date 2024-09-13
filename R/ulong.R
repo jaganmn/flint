@@ -8,10 +8,10 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_ulong_vector, x), mode))
 
-setAs("nulong", "flint",
+setAs("nulong", "ulong",
       function (from)
           new("ulong", x = from))
 
-setAs("ulong", "nflint",
+setAs("ulong", "nulong",
       function (from)
           .Call(R_flint_ulong_nflint, from))

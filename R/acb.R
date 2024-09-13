@@ -15,12 +15,12 @@ setMethod("length",
           c(x = "nacb"),
           function (x) length(x@real@mid))
 
-setAs("nacb", "flint",
+setAs("nacb", "acb",
       function (from)
           new("acb",
               real.mid = from@real@mid, real.rad = from@real@rad,
               imag.mid = from@imag@mid, imag.rad = from@imag@rad))
 
-setAs("acb", "nflint",
+setAs("acb", "nacb",
       function (from)
           .Call(R_flint_acb_nflint, from, "down"))
