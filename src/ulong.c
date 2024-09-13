@@ -1,3 +1,4 @@
+#include <flint/fmpz.h>
 #include "R_flint.h"
 
 void R_flint_ulong_finalize(SEXP object)
@@ -87,8 +88,18 @@ SEXP R_flint_ulong_vector(SEXP from)
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	ulong *x = (ulong *) R_flint_get_x(from);
 	double *y = REAL(to);
+#if FLINT64
+	fmpz_t tmp;
+	fmpz_init(tmp);
+	for (i = 0; i < n; ++i) {
+		fmpz_set_ui(tmp, x[i]);
+		y[i] = fmpz_get_d(tmp);
+	}
+	fmpz_clear(tmp);
+#else
 	for (i = 0; i < n; ++i)
 		y[i] = (double) x[i];
+#endif
 	UNPROTECT(1);
 	return to;
 }
