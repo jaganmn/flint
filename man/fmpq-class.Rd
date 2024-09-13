@@ -1,56 +1,86 @@
 \name{fmpq-class}
 \alias{fmpq-class}
+\alias{nfmpq-class}
+\alias{as.vector,fmpq-method}
+\alias{coerce,nfmpq,flint-method}
+\alias{coerce,fmpq,nflint-method}
 \alias{initialize,fmpq-method}
-\alias{coerce,numeric,fmpq-method}
-\alias{coerce,fmpq,integer-method}
-\alias{coerce,fmpq,double-method}
+\alias{length,nfmpq-method}
 \title{Class of Vectors of Rational Numbers}
 \docType{class}
 \description{
-  Class \code{fmpq} represents vectors of rational numbers.  The
-  numerator and (positive, coprime) denominator are each stored as
-  multiple precision integers.  The limb size is 32 or 64 bits,
-  depending on the configuration of the linked \abbr{FLINT} library.
-  The number of bits is given by \code{flintBits()}.
+  Class \code{fmpq} extends virtual class \code{\linkS4class{flint}}.
+  It represents vectors of rational numbers.  Elements are specified by
+  a pair of arbitrary precision integers a numerator and a (typically
+  positive, coprime) denominator.
+
+  Class \code{nfmpq} extends virtual class \code{\linkS4class{nflint}}.
+  It is the \dQuote{native} analogue of \code{fmpq}.
 }
 \section{Slots}{
-  \describe{
-    \item{\code{length, x}}{
-      inherited from \code{\linkS4class{flint}}.}
-  }
+  \code{fmpq} inherits slots \code{length} and \code{x} from
+  \code{\linkS4class{flint}}.
+
+  \code{nfmpq} has slots \code{num} and \code{den} of class
+  \code{\linkS4class{fmpz}}.  They are integer vectors of equal length
+  listing numerators and non-zero denominators.
 }
 \section{Methods}{
   \describe{
+    \item{\code{as.vector}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns \code{as.vector(y, mode)}, where \code{y} is a double
+      vector containing the result of converting each element of
+      \code{x} to the range of double, rounding if the value is not
+      exactly representable in double precision.  The rounding mode is
+      to the nearest representable number in the direction of zero,
+      unless the element exceeds \code{.Machine[["double.xmax"]]} in
+      absolute value, in which case \code{-Inf} or \code{Inf} is
+      introduced with a warning.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq", p = "numeric", q = "numeric")}:\cr
-      return \code{.Object} with \code{length} slot set to a
-      representation of \code{max(length(p), length(q))} (0 if either
-      length is 0) and \code{x} slot set to the address of an
-      initialized array of \code{fmpq}.  The array is initialized with
-      numerators and denominator values from \code{p} and \code{q},
-      which are both truncated towards zero and recycled.  An error is
-      signaled if any \code{p[i]} or \code{q[i]} is \code{NaN},
-      \code{-Inf}, \code{Inf}, or subnormal.}
+      \code{signature(.Object = "fmpq", length = "numeric")}:\cr
+      returns \code{.Object} after initializing its \code{length} and
+      \code{x} slots.  The \code{length} slot is initialized to a
+      representation of the \code{length} argument, which after
+      truncation towards zero must be a non-negative integer less than
+      \eqn{2^{64}}.  The \code{x} slot \dQuote{address} is changed to
+      the address of an array of the corresponding \proglang{C} type,
+      which is newly allocated and initialized entirely with zeros
+      (zero numerator, unit denominator).}
+    \item{\code{initialize}}{
+      \code{signature(.Object = "fmpq", x = "numeric")}:\cr
+      as above, except that the \code{length} slot is initialized to a
+      representation of \code{length(x)} and the newly allocated array
+      is initialized with values from \code{x}.  An error is signaled if
+      any \code{x[i]} is \code{NaN}, \code{-Inf}, or \code{Inf}.}
+    \item{\code{initialize}}{
+      \code{signature(.Object = "fmpq", num = "numeric", den = "numeric")}:\cr
+      as above, except that the \code{length} slot is initialized to a
+      representation of the maximum initializer length (0 if any length
+      is zero) and the newly allocated array is initialized with
+      numerators from \code{num} and denominators from \code{den}, both
+      truncated towards zero and recycled as necessary.  An error is
+      signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
+      \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
+      zero.}
     \item{\code{coerce}}{
-      \code{signature(from = "numeric", to = "fmpq")}:\cr
-      equivalent to \code{new("fmpq", x = from)}.}
+      \code{signature(from = "nfmpq", to = "flint")}:\cr
+      returns \code{new("fmpq", num = from@num, den = from@den)}.}
     \item{\code{coerce}}{
-      \code{signature(from = "fmpq", to = "integer")}:\cr
-      returns an integer vector containing the result of truncating
-      the rational numbers towards zero.  \code{NA} is introduced,
-      with a warning, where the result is not in the range of integer.}
-    \item{\code{coerce}}{
-      \code{signature(from = "fmpq", to = "double")}:\cr
-      returns an double vector containing the result of rounding
-      the rational numbers to the nearest representable floating-point
-      numbers in the direction of zero, except where the original
-      number exceeds \eqn{2^1024} in absolute value, in which case the
-      behaviour is to introduce \code{-Inf} or \code{Inf} with a
-      warning.}
+      \code{signature(from = "fmpq", to = "nflint")}:\cr
+      returns the analogous object of class \code{nfmpq} with slots
+      \code{num} and \code{den} such that \code{den[i]} positive and
+      coprime with \code{num[i]} for all \code{i}, except where
+      \code{NA} is introduced (where the numerator or the denominator
+      exceeds the range of \R{}'s integer type).}
+    \item{\code{length}}{
+      \code{signature(x = "nfmpq")}:\cr
+      returns \code{length(x@num)}.}
   }
 }
 \seealso{
-  Virtual superclass \code{\linkS4class{flint}}.
+  Virtual classes \code{\linkS4class{flint}} and
+  \code{\linkS4class{nflint}}.
 }
 \references{
   The \abbr{FLINT} documentation of the underlying \proglang{C} type:
@@ -58,5 +88,5 @@
 }
 \examples{
 showClass("fmpq")
-flintBits()
+showClass("nfmpq")
 }

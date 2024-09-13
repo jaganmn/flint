@@ -17,19 +17,17 @@
   pointer type.
 }
 \section{Slots}{
-  These slots are common to all objects inheriting from class
-  \code{flint}.  They are not part of the API: the details are subject
-  to change without notice.
-  \describe{
-    \item{\code{length}}{
-      an integer vector of length 2 storing the lower and upper bits
-      of the 64-bit length.}
-    \item{\code{x}}{
-      an external pointer to allocated memory of size equal to the
-      length times the size of the \abbr{FLINT} type.  A finalizer
-      ensures that this memory is freed before the external pointer is
-      itself freed by the garbage collector.}
-  }
+  Slots \code{length} and \code{x} are common to all objects inheriting
+  from class \code{flint}.  They are not part of the API, hence details
+  are subject to change without notice.
+
+  The \code{length} slot is an integer vector of length 2 storing the
+  lower and upper bits of the 64-bit object length.
+
+  The \code{x} slot is an external pointer to allocated memory of size
+  equal to the object length times the size of the \abbr{FLINT} type.
+  Typically, a finalizer is set to ensure that this memory is freed
+  before the external pointer is itself freed by the garbage collector.
 }
 \section{Methods}{
   \describe{
@@ -39,12 +37,12 @@
       \code{as.vector} must be defined for subclasses of \code{flint}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
-      return an integer vector of length 1 giving the vector length.  If
+      return an integer vector of length 1 giving the object length.  If
       the length exceeds \code{.Machine[["integer.max"]]}, then a double
       vector of length 1 is returned instead.  If the length exceeds
       \code{2^.Machine[["double.digits"]]-1} and is not exactly
       representable, then a warning is signaled to indicate that the
-      result is an implementation-defined rounded length.}
+      return value is an implementation-defined rounded length.}
   }
 }
 \seealso{
