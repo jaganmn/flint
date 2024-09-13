@@ -86,7 +86,7 @@ SEXP R_flint_arf_nflint(SEXP from, SEXP s_rnd)
 	arf_t lb, ub;
 	arf_init(lb);
 	arf_init(ub);
-	arf_set_ui_2exp_si(ub, 1U, DBL_MAX_EXP);
+	arf_set_d(ub, DBL_MAX);
 	arf_neg(lb, ub);
 	int w = 1;
 	for (i = 0; i < n; ++i) {

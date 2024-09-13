@@ -183,7 +183,7 @@ SEXP R_flint_fmpq_vector(SEXP from)
 	fmpz_t lb, ub;
 	fmpz_init(lb);
 	fmpz_init(ub);
-	fmpz_one_2exp(ub, DBL_MAX_EXP);
+	fmpz_set_d(ub, DBL_MAX);
 	fmpz_neg(lb, ub);
 	int w = 1;
 	for (i = 0; i < n; ++i) {
