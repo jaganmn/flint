@@ -1,2 +1,0 @@
-PKG_CPPFLAGS = -I/usr/local/include # @FLINT_CPPFLAGS@
-PKG_LIBS = -L/usr/local/lib -lflint -lmpfr -lgmp # @FLINT_LIBS@
