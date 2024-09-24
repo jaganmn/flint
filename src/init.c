@@ -103,18 +103,18 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_registerRoutines(info, NULL, CallEntries, NULL, NULL);
 	R_useDynamicSymbols(info, FALSE);
 	/* R_forceSymbols(info, TRUE); */
-	R_flint_symbol_length   = install("length");
-	R_flint_symbol_x        = install("x");
-	R_flint_symbol_dot_data = install(".Data");
-	R_flint_symbol_num      = install("num");
-	R_flint_symbol_den      = install("den");
-	R_flint_symbol_mid      = install("mid");
-	R_flint_symbol_rad      = install("rad");
-	R_flint_symbol_real     = install("real");
-	R_flint_symbol_imag     = install("imag");
-	R_flint_symbol_prec     = install("prec");
-	R_flint_symbol_exp      = install("exp");
-	R_flint_symbol_sign     = install("sign");
-	R_flint_symbol_d        = install("d");
+	R_flint_symbol_length   = Rf_install("length");
+	R_flint_symbol_x        = Rf_install("x");
+	R_flint_symbol_dot_data = Rf_install(".Data");
+	R_flint_symbol_num      = Rf_install("num");
+	R_flint_symbol_den      = Rf_install("den");
+	R_flint_symbol_mid      = Rf_install("mid");
+	R_flint_symbol_rad      = Rf_install("rad");
+	R_flint_symbol_real     = Rf_install("real");
+	R_flint_symbol_imag     = Rf_install("imag");
+	R_flint_symbol_prec     = Rf_install("prec");
+	R_flint_symbol_exp      = Rf_install("exp");
+	R_flint_symbol_sign     = Rf_install("sign");
+	R_flint_symbol_d        = Rf_install("d");
 	return;
 }
