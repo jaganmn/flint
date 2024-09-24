@@ -182,7 +182,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 	} else
 		for (i = 0; i < n; ++i)
-			arb_zero(y + i);
+			acb_zero(y + i);
 	return object;
 }
 
