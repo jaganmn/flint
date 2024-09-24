@@ -4,6 +4,7 @@
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
 \alias{as.double,flint-method}
+\alias{as.numeric,flint-method}
 \alias{as.complex,flint-method}
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}

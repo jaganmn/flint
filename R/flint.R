@@ -14,6 +14,10 @@ setMethod("as.double",
           c(x = "flint"),
           function (x, ...) as.vector(x, "double"))
 
+setMethod("as.numeric",
+          c(x = "flint"),
+          function (x, ...) as.vector(x, "numeric"))
+
 setMethod("as.complex",
           c(x = "flint"),
           function (x, ...) as.vector(x, "complex"))
