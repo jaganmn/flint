@@ -21,12 +21,21 @@
   It is the \dQuote{native} analogue of \code{acb}.
 }
 \section{Slots}{
-  \code{acb} inherits slots \code{length} and \code{x} from
-  \code{\linkS4class{flint}}.
-
-  \code{nacb} has slots \code{real} and \code{imag} of class
-  \code{\linkS4class{arb}}.  They are objects of equal length listing
-  real and imaginary parts with corresponding error bounds.
+  \code{acb}:
+  \describe{
+    \item{\code{length}, \code{x}}{
+      inherited from virtual class \code{\linkS4class{flint}}.}
+  }
+  \code{nacb}:
+  \describe{
+    \item{\code{real}}{
+      an \code{\linkS4class{narb}} vector listing real parts with error
+      bounds.}
+    \item{\code{imag}}{
+      an \code{\linkS4class{narb}} vector listing imaginary parts with
+      error bounds.}
+  }
+  The lengths of \code{real} and \code{imag} must be equal.
 }
 \section{Methods}{
   \describe{

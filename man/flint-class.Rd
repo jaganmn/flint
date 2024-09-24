@@ -18,17 +18,16 @@
   pointer type.
 }
 \section{Slots}{
-  Slots \code{length} and \code{x} are common to all objects inheriting
-  from class \code{flint}.  They are not part of the API, hence details
-  are subject to change without notice.
-
-  The \code{length} slot is an integer vector of length 2 storing the
-  lower and upper bits of the 64-bit object length.
-
-  The \code{x} slot is an external pointer to allocated memory of size
-  equal to the object length times the size of the \abbr{FLINT} type.
-  Typically, a finalizer is set to ensure that this memory is freed
-  before the external pointer is itself freed by the garbage collector.
+  \describe{
+    \item{\code{length}}{
+      an integer vector of length 2 storing the lower and upper bits of
+      the 64-bit object length.}
+    \item{\code{x}}{
+      an external pointer to allocated memory of size equal to the
+      object length times the size of the \abbr{FLINT} type.  Typically,
+      a finalizer is set to ensure that this memory is freed before the
+      external pointer is itself freed by the garbage collector.}
+  }
 }
 \section{Methods}{
   \describe{

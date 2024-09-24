@@ -20,12 +20,18 @@
   \dQuote{native} analogue of \code{mag}.
 }
 \section{Slots}{
-  \code{mag} inherits slots \code{length} and \code{x} from
-  \code{\linkS4class{flint}}.
-
-  \code{nmag} possesses a pseudo-slot \code{.Data} (called the
-  \dQuote{data part}) whose apparent value is the same double vector
-  with S4 bit unset and attributes removed.
+  \code{mag}:
+  \describe{
+    \item{\code{length}, \code{x}}{
+      inherited from virtual class \code{\linkS4class{flint}}.}
+  }
+  \code{nmag}:
+  \describe{
+    \item{\code{.Data}}{
+      a pseudo-slot whose \emph{apparent} value is the
+      \dQuote{data part} of the object: a copy of the object with S4 bit
+      unset and attributes removed.}
+  }
 }
 \section{Methods}{
   \describe{

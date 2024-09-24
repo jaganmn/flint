@@ -20,12 +20,19 @@
   It is the \dQuote{native} analogue of \code{arb}.
 }
 \section{Slots}{
-  \code{arb} inherits slots \code{length} and \code{x} from
-  \code{\linkS4class{flint}}.
-
-  \code{narb} has a slot \code{mid} of class \code{\linkS4class{arf}}
-  and a slot \code{rad} of class \code{\linkS4class{mag}}.  They are
-  double vectors of equal length listing midpoints and radii.
+  \code{arb}:
+  \describe{
+    \item{\code{length}, \code{x}}{
+      inherited from virtual class \code{\linkS4class{flint}}.}
+  }
+  \code{narb}:
+  \describe{
+    \item{\code{mid}}{
+      an \code{\linkS4class{narf}} vector listing midpoints.}
+    \item{\code{rad}}{
+      an \code{\linkS4class{nmag}} vector listing radii.}
+  }
+  The lengths of \code{mid} and \code{rad} must be equal.
 }
 \section{Methods}{
   \describe{

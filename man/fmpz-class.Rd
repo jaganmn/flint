@@ -17,14 +17,19 @@
   \dQuote{native} analogue of \code{fmpz}.
 }
 \section{Slots}{
-  \code{fmpz} inherits slots \code{length} and \code{x} from
-  \code{\linkS4class{flint}}.
-
-  \code{nfmpz} possesses a pseudo-slot \code{.Data} (called the
-  \dQuote{data part}) whose apparent value is the same integer vector
-  with S4 bit unset and attributes removed.  \code{NA} represents
-  integers not in \eqn{(-2^{31}, 2^{31})}, the range of \R{}'s integer
-  type.
+  \code{fmpz}:
+  \describe{
+    \item{\code{length}, \code{x}}{
+      inherited from virtual class \code{\linkS4class{flint}}.}
+  }
+  \code{nfmpz}:
+  \describe{
+    \item{\code{.Data}}{
+      a pseudo-slot whose \emph{apparent} value is the
+      \dQuote{data part} of the object: a copy of the object with S4 bit
+      unset and attributes removed.  \code{NA} represents integers not
+      in \eqn{(-2^{31}, 2^{31})}, the range of \R{}'s integer type.}
+  }
 }
 \section{Methods}{
   \describe{

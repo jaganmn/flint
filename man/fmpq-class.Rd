@@ -19,12 +19,20 @@
   It is the \dQuote{native} analogue of \code{fmpq}.
 }
 \section{Slots}{
-  \code{fmpq} inherits slots \code{length} and \code{x} from
-  \code{\linkS4class{flint}}.
-
-  \code{nfmpq} has slots \code{num} and \code{den} of class
-  \code{\linkS4class{fmpz}}.  They are integer vectors of equal length
-  listing numerators and non-zero denominators.
+  \code{fmpq}:
+  \describe{
+    \item{\code{length}, \code{x}}{
+      inherited from virtual class \code{\linkS4class{flint}}.}
+  }
+  \code{nfmpq}:
+  \describe{
+    \item{\code{num}}{
+      an \code{\linkS4class{nfmpz}} vector listing numerators.}
+    \item{\code{den}}{
+      an \code{\linkS4class{nfmpz}} vector listing non-zero
+      denominators.}
+  }
+  The lengths of \code{num} and \code{den} must be equal.
 }
 \section{Methods}{
   \describe{
