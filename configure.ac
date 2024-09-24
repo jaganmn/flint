@@ -13,8 +13,6 @@ AC_ARG_VAR([FLINT_CFLAGS],
            [additional flags for the C compiler])
 AC_ARG_VAR([FLINT_LDFLAGS],
            [additional flags for the linker (not -l)])
-AC_ARG_VAR([FLINT_LIBS],
-           [additional flags for the linker (only -l)])
 
 : ${R_HOME=`R RHOME`}
 if test "x${R_HOME}" = "x"; then
@@ -26,20 +24,21 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS` ${FLINT_CPPFLAGS}
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS` ${FLINT_CFLAGS}
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS` ${FLINT_LDFLAGS}
 
-AC_CHECK_HEADER([gmp.h], [],
-                [AC_MSG_ERROR([GNU MP not found, see https://gmplib.org/])])
 AC_CHECK_LIB([gmp], [__gmpz_init], [],
              [AC_MSG_ERROR([GNU MP not found, see https://gmplib.org/])])
-
-AC_CHECK_HEADER([mpfr.h], [],
-                [AC_MSG_ERROR([GNU MPFR not found, see https://www.mpfr.org/])])
 AC_CHECK_LIB([mpfr], [mpfr_init], [],
              [AC_MSG_ERROR([GNU MPFR not found, see https://www.mpfr.org/])])
-
-AC_CHECK_HEADER([flint/flint.h], [],
-                [AC_MSG_ERROR([FLINT not found, see https://flintlib.org/])])
 AC_CHECK_LIB([flint], [arb_init], [],
              [AC_MSG_ERROR([FLINT not found, see https://flintlib.org/])])
+
+AC_CHECK_HEADER([gmp.h], [],
+                [AC_MSG_ERROR([GNU MP not found, see https://gmplib.org/])])
+AC_CHECK_HEADER([mpfr.h], [],
+                [AC_MSG_ERROR([GNU MPFR not found, see https://www.mpfr.org/])])
+AC_CHECK_HEADER([flint/flint.h], [],
+                [AC_MSG_ERROR([FLINT not found, see https://flintlib.org/])])
+
+FLINT_LIBS=${LIBS}
 
 AC_SUBST(FLINT_CPPFLAGS)
 AC_SUBST(FLINT_CFLAGS)
