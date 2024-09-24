@@ -3,6 +3,7 @@
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
+\alias{as.double,flint-method} % stub
 \alias{as.numeric,flint-method}
 \alias{as.complex,flint-method}
 \alias{as.list,flint-method}
@@ -33,7 +34,10 @@
     \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}, \code{as.list}, \code{as.expression}}{
       \code{signature(x = "flint")}:\cr
       return the value of \code{as.vector(x, mode = *)}.  Methods for
-      \code{as.vector} must be defined for subclasses of \code{flint}.}
+      \code{as.vector} must be defined for subclasses of \code{flint}.
+      Note that \code{as.double} dispatches internally the method for
+      \code{as.numeric}, so there is no method for \code{as.double};
+      see also \code{\link{as.numeric}}, section \sQuote{S4 Methods}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
       return an integer vector of length 1 giving the object length.  If
