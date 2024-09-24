@@ -1,5 +1,5 @@
-Package: @PACKAGE_NAME@
-Version: @PACKAGE_VERSION@
+Package: flint
+Version: 0.0.1
 Date: 2024-09-24
 Title: Fast Library for Number Theory
 Description:
@@ -7,8 +7,8 @@ Description:
 	an extension of GNU 'MFPR' (Multiple Precision Floating-Point Reliable
 	Library) and GNU 'MP' (Multiple Precision Arithmetic Library).
 License: GPL (>= 2)
-URL: @PACKAGE_URL@
-BugReports: @PACKAGE_BUGREPORT@
+URL: https://github.com/jaganmn/flint
+BugReports: https://github.com/jaganmn/flint/issues
 Authors@R:
 	c(person("Mikael", "Jagan",
 	         email = "jaganmn@mcmaster.ca",
