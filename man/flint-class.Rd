@@ -3,7 +3,6 @@
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
-\alias{as.double,flint-method}
 \alias{as.numeric,flint-method}
 \alias{as.complex,flint-method}
 \alias{as.list,flint-method}
@@ -31,7 +30,7 @@
 }
 \section{Methods}{
   \describe{
-    \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.double}, \code{as.complex}, \code{as.list}, \code{as.expression}}{
+    \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}, \code{as.list}, \code{as.expression}}{
       \code{signature(x = "flint")}:\cr
       return the value of \code{as.vector(x, mode = *)}.  Methods for
       \code{as.vector} must be defined for subclasses of \code{flint}.}

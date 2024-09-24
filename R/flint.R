@@ -10,6 +10,7 @@ setMethod("as.integer",
           c(x = "flint"),
           function (x, ...) as.vector(x, "integer"))
 
+if (FALSE)
 setMethod("as.double",
           c(x = "flint"),
           function (x, ...) as.vector(x, "double"))
