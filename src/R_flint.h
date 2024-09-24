@@ -1,27 +1,22 @@
 #ifndef R_FLINT_H
 #define R_FLINT_H
 
-#include <float.h> /* DBL_MIN */
-#include <limits.h> /* CHAR_BIT, INT_MAX, ... */
-#include <math.h> /* fabs */
-#include <stddef.h> /* size_t */
-#include <flint/flint.h> /* ulong, slong, ... */
-
-#define R_NO_REMAP
+#include <float.h> /* DBL_MIN, ... */
+#include <limits.h> /* CHAR_BIT, ... */
+#include <math.h> /* fabs, ldexp, frexp, ... */
+#include <string.h> /* strcmp */
+#include <flint/flint.h> /* slong, ulong, ... */
 
 #include <Rconfig.h> /* R_INLINE */
 #include <Rversion.h> /* R_VERSION */
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
+#include <R_ext/Complex.h> /* Rcomplex */
 #include <R_ext/Error.h> /* Rf_error, Rf_warning */
-#include <R_ext/RS.h> /* R_Calloc, R_Free */
 #include <Rinternals.h> /* SEXP, ... */
 
-#if R_VERSION < R_Version(4, 4, 1)
-void CLEAR_ATTRIB(SEXP);
 #if R_VERSION < R_Version(4, 4, 0)
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
-#endif /* < 4.4.1 */
 
 #define MAX2(a, b) \
 (((a) < (b)) ? (b)              : (a))
@@ -96,6 +91,10 @@ SEXPTYPE R_flint_sexptypes[6];
 extern
 const char *R_flint_classes[9];
 
+#if R_VERSION < R_Version(4, 4, 1)
+void CLEAR_ATTRIB(SEXP);
+#endif /* < 4.4.1 */
+
 SEXP newObject(const char *);
 SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 
@@ -114,10 +113,12 @@ void R_flint_set_x(SEXP, void *, R_CFinalizer_t);
 
 const char *R_flint_get_class(SEXP);
 
+void R_flint_slong_finalize(SEXP);
+void R_flint_ulong_finalize(SEXP);
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);
-void R_flint_mag_finalize(SEXP);
 void R_flint_arf_finalize(SEXP);
+void R_flint_mag_finalize(SEXP);
 void R_flint_arb_finalize(SEXP);
 void R_flint_acb_finalize(SEXP);
 

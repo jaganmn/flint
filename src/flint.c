@@ -44,6 +44,21 @@ const char *R_flint_get_class(SEXP object)
 	return (i < 0) ? "" : R_flint_classes[i];
 }
 
+SEXP R_flint_bits(void)
+{
+	return Rf_ScalarInteger(FLINT_BITS);
+}
+
+SEXP R_flint_class(SEXP object)
+{
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, 1));
+	int i = (TYPEOF(object) == OBJSXP)
+		? R_check_class_etc(object, R_flint_classes) : -1;
+	SET_STRING_ELT(ans, 0, (i < 0) ? NA_STRING : Rf_mkChar(R_flint_classes[i]));
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXP R_flint_length(SEXP object)
 {
 	SEXP ans;
@@ -59,15 +74,5 @@ SEXP R_flint_length(SEXP object)
 			Rf_warning("true length (%llu) is not exactly representable in double precision; returning an implementation-defined rounded length (%llu)",
 			           n, n_);
 	}
-	return ans;
-}
-
-SEXP R_flint_class(SEXP object)
-{
-	SEXP ans = PROTECT(Rf_allocVector(STRSXP, 1));
-	int i = (TYPEOF(object) == OBJSXP)
-		? R_check_class_etc(object, R_flint_classes) : -1;
-	SET_STRING_ELT(ans, 0, (i < 0) ? NA_STRING : Rf_mkChar(R_flint_classes[i]));
-	UNPROTECT(1);
 	return ans;
 }

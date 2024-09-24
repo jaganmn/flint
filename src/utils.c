@@ -10,11 +10,6 @@ void CLEAR_ATTRIB(SEXP x)
 }
 #endif /* < 4.4.1 */
 
-SEXP R_flint_bits(void)
-{
-	return Rf_ScalarInteger(FLINT_BITS);
-}
-
 SEXP newObject(const char *what)
 {
 	SEXP class = PROTECT(R_do_MAKE_CLASS(what)),
