@@ -10,6 +10,20 @@ void CLEAR_ATTRIB(SEXP x)
 }
 #endif /* < 4.4.1 */
 
+void uconv(unsigned long long int *u, unsigned int *uu, int from)
+{
+	if (from != 0) {
+		/* uu -> u */
+		u[0] = (unsigned long long int) uu[1] << (sizeof(int) * CHAR_BIT) |
+			(unsigned long long int) uu[0];
+	} else {
+		/* u -> uu */
+		uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
+		uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
+	}
+	return;
+}
+
 SEXP newObject(const char *what)
 {
 	SEXP class = PROTECT(R_do_MAKE_CLASS(what)),
@@ -50,20 +64,18 @@ unsigned long long int asLength(SEXP length, const char *where)
 	switch (TYPEOF(length)) {
 	case INTSXP:
 	{
-		int tmp;
-		if (XLENGTH(length) > 0 && (tmp = INTEGER(length)[0]) >= 0)
-			return (unsigned long long int) tmp;
+		int *s = INTEGER(length);
+		if (XLENGTH(length) >= 1 && s[0] != NA_INTEGER && s[0] >= 0)
+			return (unsigned long long int) s[0];
 		break;
 	}
 	case REALSXP:
 	{
-		double tmp;
-		if (XLENGTH(length) > 0 && !ISNAN(REAL(length)[0]) && (tmp = REAL(length)[0]) > -1.0 && tmp < 0x1.0p+64)
-			return (unsigned long long int) tmp;
+		double *s = REAL(length);
+		if (XLENGTH(length) >= 1 && !ISNAN(s[0]) && s[0] > -1.0 && s[0] < 0x1.0p+64)
+			return (unsigned long long int) s[0];
 		break;
 	}
-	default:
-		break;
 	}
 	Rf_error("invalid '%s' in '%s'", "length", where);
 	return 0ull;

@@ -95,10 +95,12 @@ const char *R_flint_classes[9];
 void CLEAR_ATTRIB(SEXP);
 #endif /* < 4.4.1 */
 
+void uconv(unsigned long long int *, unsigned int *, int);
+
 SEXP newObject(const char *);
 SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 
-SEXPTYPE checkType(SEXP, SEXPTYPE*, const char *);
+SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
 unsigned long long int asLength(SEXP, const char *);
