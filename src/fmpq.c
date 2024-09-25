@@ -1,13 +1,14 @@
 #include <flint/fmpq.h>
 #include "R_flint.h"
 
-void R_flint_fmpq_finalize(SEXP object)
+void R_flint_fmpq_finalize(SEXP x)
 {
-	unsigned long long int i, n = R_flint_get_length(object);
-	fmpq *x = (fmpq *) R_flint_get_x(object);
+	unsigned long long int i, n;
+	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	fmpq *p = (fmpq *) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
-		fmpq_clear(x + i);
-	flint_free(x);
+		fmpq_clear(p + i);
+	flint_free(p);
 	return;
 }
 
@@ -35,7 +36,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	} else
 		n = asLength(s_length, __func__);
 	R_flint_set_length(object, n);
-	fmpq *y = (fmpq *) flint_calloc(n, sizeof(fmpq));
+	fmpq *y = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		switch (TYPEOF(s_num)) {

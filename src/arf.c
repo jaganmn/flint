@@ -21,13 +21,14 @@ int asRnd(SEXP rnd, const char *where)
 	return 0;
 }
 
-void R_flint_arf_finalize(SEXP object)
+void R_flint_arf_finalize(SEXP x)
 {
-	unsigned long long int i, n = R_flint_get_length(object);
-	arf_ptr x = (arf_ptr) R_flint_get_x(object);
+	unsigned long long int i, n;
+	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	arf_ptr p = (arf_ptr) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
-		arf_clear(x + i);
-	flint_free(x);
+		arf_clear(p + i);
+	flint_free(p);
 	return;
 }
 
@@ -41,7 +42,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
 	R_flint_set_length(object, n);
-	arf_ptr y = (arf_ptr) flint_calloc(n, sizeof(arf_t));
+	arf_ptr y = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:

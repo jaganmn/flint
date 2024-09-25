@@ -2,22 +2,19 @@
 
 unsigned long long int R_flint_get_length(SEXP object)
 {
+	unsigned long long int value;
 	SEXP length = R_do_slot(object, R_flint_symbol_length);
-	if (TYPEOF(length) != INTSXP || XLENGTH(length) != 2)
-		Rf_error("invalid '%s' slot", "length");
-	unsigned int *u = (unsigned int *) INTEGER(length);
-	return (unsigned long long int) u[1] << (sizeof(int) * CHAR_BIT) |
-		(unsigned long long int) u[0];
+	uconv(&value, (unsigned int *) INTEGER(length), 1);
+	return value;
 }
 
 void R_flint_set_length(SEXP object, unsigned long long int value)
 {
+	/* 'object' is the value of R_do_new_object(class), which is the value  */
+	/* of Rf_duplicate(class@prototype); class@prototype@length is INTSXP,  */
+	/* so object@length **is** newly allocated.                             */
 	SEXP length = R_do_slot(object, R_flint_symbol_length);
-	if (TYPEOF(length) != INTSXP || XLENGTH(length) != 2)
-		Rf_error("invalid '%s' slot", "length");
-	unsigned int *u = (unsigned int *) INTEGER(length);
-	u[0] = (unsigned int) (value & 0x00000000FFFFFFFFu);
-	u[1] = (unsigned int) (value >> (sizeof(int) * CHAR_BIT));
+	uconv(&value, (unsigned int *) INTEGER(length), 0);
 	return;
 }
 
@@ -29,11 +26,14 @@ void *R_flint_get_x(SEXP object)
 
 void R_flint_set_x(SEXP object, void *p, R_CFinalizer_t f)
 {
-	SEXP x = R_do_slot(object, R_flint_symbol_x);
-	R_SetExternalPtrAddr(x, p);
-	R_SetExternalPtrTag(x, R_NilValue);
-	R_SetExternalPtrProtected(x, R_NilValue);
+	/* 'object' is the value of R_do_new_object(class), which is the value  */
+	/* of Rf_duplicate(class@prototype); class@prototype@x is EXTPTRSXP,    */
+	/* so object@x **is not** newly allocated.                              */
+	SEXP length = PROTECT(R_do_slot(object, R_flint_symbol_length)),
+		x = PROTECT(R_MakeExternalPtrFn(p, R_NilValue, length));
 	R_RegisterCFinalizer(x, f);
+	R_do_slot_assign(object, R_flint_symbol_x, x);
+	UNPROTECT(2);
 	return;
 }
 
@@ -57,6 +57,27 @@ SEXP R_flint_class(SEXP object)
 	SET_STRING_ELT(ans, 0, (i < 0) ? NA_STRING : Rf_mkChar(R_flint_classes[i]));
 	UNPROTECT(1);
 	return ans;
+}
+
+SEXP R_flint_new(SEXP class)
+{
+	return newObject(CHAR(STRING_ELT(class, 0)));
+}
+
+SEXP R_flint_valid(SEXP object)
+{
+	SEXP length = R_do_slot(object, R_flint_symbol_length);
+	if (XLENGTH(length) != 2)
+		return Rf_mkString("length of 'length' slot is not 2");
+	int length0 = INTEGER(length)[0] == 0 && INTEGER(length)[1] == 0;
+	SEXP x = R_do_slot(object, R_flint_symbol_x);
+	if ((R_ExternalPtrAddr(x) == 0) != length0)
+		return Rf_mkString((length0) ?
+		                   "pointer field of 'x' slot is non-zero and length is zero" :
+		                   "pointer field of 'x' slot is zero and length is non-zero");
+	if (R_ExternalPtrProtected(x) != length)
+		return Rf_mkString("protected field of 'x' slot is not 'length' slot");
+	return Rf_ScalarLogical(1);
 }
 
 SEXP R_flint_length(SEXP object)

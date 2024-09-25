@@ -1,13 +1,14 @@
 #include <flint/arb.h>
 #include "R_flint.h"
 
-void R_flint_arb_finalize(SEXP object)
+void R_flint_arb_finalize(SEXP x)
 {
-	unsigned long long int i, n = R_flint_get_length(object);
-	arb_ptr x = (arb_ptr) R_flint_get_x(object);
+	unsigned long long int i, n;
+	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	arb_ptr p = (arb_ptr) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
-		arb_clear(x + i);
-	flint_free(x);
+		arb_clear(p + i);
+	flint_free(p);
 	return;
 }
 
@@ -33,7 +34,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	} else
 		n = asLength(s_length, __func__);
 	R_flint_set_length(object, n);
-	arb_ptr y = (arb_ptr) flint_calloc(n, sizeof(arb_t));
+	arb_ptr y = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		switch (TYPEOF(s_mid)) {

@@ -11,7 +11,7 @@ SEXP R_flint_acb_dirichlet_lerch_phi(SEXP s_res, SEXP s_z, SEXP s_s, SEXP s_a, S
 		n = RECYCLE4(nz, ns, na, nprec);
 	R_flint_set_length(s_res, n);
 
-	acb_ptr res = (acb_ptr) flint_calloc(n, sizeof(acb_t)),
+	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0),
 		z = (acb_ptr) R_flint_get_x(s_z),
 		s = (acb_ptr) R_flint_get_x(s_s),
 		a = (acb_ptr) R_flint_get_x(s_a);

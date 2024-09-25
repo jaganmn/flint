@@ -1,10 +1,10 @@
 #include <flint/fmpz.h>
 #include "R_flint.h"
 
-void R_flint_ulong_finalize(SEXP object)
+void R_flint_ulong_finalize(SEXP x)
 {
-	ulong *x = (ulong *) R_flint_get_x(object);
-	flint_free(x);
+	ulong *p = (ulong *) R_ExternalPtrAddr(x);
+	flint_free(p);
 	return;
 }
 
@@ -18,7 +18,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
 	R_flint_set_length(object, n);
-	ulong *y = (ulong *) flint_calloc(n, sizeof(ulong));
+	ulong *y = (ulong *) ((n) ? flint_calloc(n, sizeof(ulong)) : 0);
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_ulong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:

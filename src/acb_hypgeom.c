@@ -14,7 +14,7 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z,
 		n = RECYCLE5(na, nb, nc, nz, nprec);
 	R_flint_set_length(s_res, n);
 
-	acb_ptr res = (acb_ptr) flint_calloc(n, sizeof(acb_t)),
+	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0),
 		a = (acb_ptr) R_flint_get_x(s_a),
 		b = (acb_ptr) R_flint_get_x(s_b),
 		c = (acb_ptr) R_flint_get_x(s_c),
@@ -43,8 +43,8 @@ SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP s_res0, SEXP s_res1, SEXP s_a, SE
 	R_flint_set_length(s_res0, n);
 	R_flint_set_length(s_res1, n);
 
-	acb_ptr res0 = (acb_ptr) flint_calloc(n, sizeof(acb_t)),
-		res1 = (acb_ptr) flint_calloc(n, sizeof(acb_t)),
+	acb_ptr res0 = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0),
+		res1 = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0),
 		a = (acb_ptr) R_flint_get_x(s_a),
 		b = (acb_ptr) R_flint_get_x(s_b),
 		c = (acb_ptr) R_flint_get_x(s_c),

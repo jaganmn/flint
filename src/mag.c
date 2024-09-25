@@ -1,13 +1,14 @@
 #include <flint/mag.h>
 #include "R_flint.h"
 
-void R_flint_mag_finalize(SEXP object)
+void R_flint_mag_finalize(SEXP x)
 {
-	unsigned long long int i, n = R_flint_get_length(object);
-	mag_ptr x = (mag_ptr) R_flint_get_x(object);
+	unsigned long long int i, n;
+	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	mag_ptr p = (mag_ptr) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
-		mag_clear(x + i);
-	flint_free(x);
+		mag_clear(p + i);
+	flint_free(p);
 	return;
 }
 
@@ -21,7 +22,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
 	R_flint_set_length(object, n);
-	mag_ptr y = (mag_ptr) flint_calloc(n, sizeof(mag_t));
+	mag_ptr y = (mag_ptr) ((n) ? flint_calloc(n, sizeof(mag_t)) : 0);
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:

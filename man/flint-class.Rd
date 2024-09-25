@@ -23,11 +23,27 @@
       an integer vector of length 2 storing the lower and upper bits of
       the 64-bit object length.}
     \item{\code{x}}{
-      an external pointer to allocated memory of size equal to the
-      object length times the size of the \abbr{FLINT} type.  Typically,
-      a finalizer is set to ensure that this memory is freed before the
-      external pointer is itself freed by the garbage collector.}
+      an external pointer.  The pointer field contains the address of a
+      block of allocated memory of size greater than or equal to the
+      object length times the size of the \abbr{FLINT} type.  It is a
+      null pointer if and only if the object length is zero.  The
+      protected field is the \code{length} slot.}
   }
+  Methods for \code{\link{initialize}} set a finalizer on \code{x} to
+  ensure that allocated memory is freed before \code{x} is itself freed
+  by the garbage collector.  The requirement that the protected field of
+  \code{x} is \code{length} ensures that the finalizer has a means to
+  determine the object length from \code{x}.
+
+  There is no mechanism in the package API for replacing or modifying
+  \code{length} or \code{x} once initialized.  Users tempted to do so
+  are encouraged to use \code{\link{new}} and API functions and methods,
+  as those will allocate new objects with new (valid, consistent,
+  \ldots) slots \code{length} and \code{x}.
+
+  Calls to \code{\link{initialize}} outside of \code{\link{new}} and
+  calls to \code{attr<-}, \code{\link{slot<-}}, \code{\link{@<-}}, and
+  similar in user code are not safe and not supported.
 }
 \section{Methods}{
   \describe{

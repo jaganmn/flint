@@ -1,13 +1,14 @@
 #include <flint/acb.h>
 #include "R_flint.h"
 
-void R_flint_acb_finalize(SEXP object)
+void R_flint_acb_finalize(SEXP x)
 {
-	unsigned long long int i, n = R_flint_get_length(object);
-	acb_ptr x = (acb_ptr) R_flint_get_x(object);
+	unsigned long long int i, n;
+	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	acb_ptr p = (acb_ptr) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
-		acb_clear(x + i);
-	flint_free(x);
+		acb_clear(p + i);
+	flint_free(p);
 	return;
 }
 
@@ -45,7 +46,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	} else
 		n = asLength(s_length, __func__);
 	R_flint_set_length(object, n);
-	acb_ptr y = (acb_ptr) flint_calloc(n, sizeof(acb_t));
+	acb_ptr y = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_acb_finalize);
 	if (s_realmid != R_NilValue || s_realrad != R_NilValue ||
 	    s_imagmid != R_NilValue || s_imagrad != R_NilValue) {
@@ -53,6 +54,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				arf_zero(arb_midref(acb_realref(y + i)));
+			break;
 		case RAWSXP:
 		case LGLSXP:
 			s_realmid = Rf_coerceVector(s_realmid, INTSXP);
@@ -82,6 +84,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				mag_zero(arb_radref(acb_realref(y + i)));
+			break;
 		case RAWSXP:
 		case LGLSXP:
 			s_realrad = Rf_coerceVector(s_realrad, INTSXP);
@@ -114,6 +117,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				arf_zero(arb_midref(acb_imagref(y + i)));
+			break;
 		case RAWSXP:
 		case LGLSXP:
 			s_imagmid = Rf_coerceVector(s_imagmid, INTSXP);
@@ -143,6 +147,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case NILSXP:
 			for (i = 0; i < n; ++i)
 				mag_zero(arb_radref(acb_imagref(y + i)));
+			break;
 		case RAWSXP:
 		case LGLSXP:
 			s_imagrad = Rf_coerceVector(s_imagrad, INTSXP);
@@ -201,8 +206,8 @@ SEXP R_flint_acb_nflint(SEXP from, SEXP s_rnd)
 		realrad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n)),
 		imagrad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	R_do_slot_assign(real, R_flint_symbol_mid, realmid);
-	R_do_slot_assign(imag, R_flint_symbol_mid, imagrad);
-	R_do_slot_assign(real, R_flint_symbol_rad, realmid);
+	R_do_slot_assign(imag, R_flint_symbol_mid, imagmid);
+	R_do_slot_assign(real, R_flint_symbol_rad, realrad);
 	R_do_slot_assign(imag, R_flint_symbol_rad, imagrad);
 	acb_ptr x = (acb_ptr) R_flint_get_x(from);
 	double *yrm = REAL(realmid), *yim = REAL(imagmid),
