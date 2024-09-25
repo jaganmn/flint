@@ -2,19 +2,18 @@
 
 unsigned long long int R_flint_get_length(SEXP object)
 {
-	unsigned long long int value;
 	SEXP length = R_do_slot(object, R_flint_symbol_length);
-	uconv(&value, (unsigned int *) INTEGER(length), 1);
-	return value;
+	unsigned long long int n;
+	uconv(&n, (unsigned int *) INTEGER(length), 1);
+	return n;
 }
 
-void R_flint_set_length(SEXP object, unsigned long long int value)
+void R_flint_set_length(SEXP object, unsigned long long int n)
 {
-	/* 'object' is the value of R_do_new_object(class), which is the value  */
-	/* of Rf_duplicate(class@prototype); class@prototype@length is INTSXP,  */
-	/* so object@length **is** newly allocated.                             */
-	SEXP length = R_do_slot(object, R_flint_symbol_length);
-	uconv(&value, (unsigned int *) INTEGER(length), 0);
+	SEXP length = PROTECT(Rf_allocVector(INTSXP, 2));
+	uconv(&n, (unsigned int *) INTEGER(length), 0);
+	R_do_slot_assign(object, R_flint_symbol_length, length);
+	UNPROTECT(1);
 	return;
 }
 
@@ -26,9 +25,6 @@ void *R_flint_get_x(SEXP object)
 
 void R_flint_set_x(SEXP object, void *p, R_CFinalizer_t f)
 {
-	/* 'object' is the value of R_do_new_object(class), which is the value  */
-	/* of Rf_duplicate(class@prototype); class@prototype@x is EXTPTRSXP,    */
-	/* so object@x **is not** newly allocated.                              */
 	SEXP length = PROTECT(R_do_slot(object, R_flint_symbol_length)),
 		x = PROTECT(R_MakeExternalPtrFn(p, R_NilValue, length));
 	R_RegisterCFinalizer(x, f);
