@@ -10,6 +10,16 @@ void CLEAR_ATTRIB(SEXP x)
 }
 #endif /* < 4.4.1 */
 
+char *R_alloc_snprintf(size_t n, const char *format, ...)
+{
+	char *buf = R_alloc(n, sizeof(char));
+	va_list args;
+	va_start(args, format);
+	vsnprintf(buf, n, format, args);
+	va_end(args);
+	return buf;
+}
+
 void uconv(unsigned long long int *u, unsigned int *uu, int from)
 {
 	if (from != 0) {

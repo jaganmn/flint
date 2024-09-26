@@ -64,15 +64,17 @@ SEXP R_flint_valid(SEXP object)
 {
 	SEXP x = R_do_slot(object, R_flint_symbol_dot_xdata),
 		length = R_ExternalPtrProtected(x);
+#define INVALID(...) Rf_mkString(R_alloc_snprintf(255, __VA_ARGS__))
 	if (TYPEOF(length) != INTSXP)
-		return Rf_mkString("type of protected field is not \"integer\"");
+		return INVALID(_("type of protected field is not \"%s\""), "integer");
 	if (XLENGTH(length) != 2)
-		return Rf_mkString("length of protected field is not 2");
+		return INVALID(_("length of protected field is not %d"), 2);
 	int length0 = INTEGER(length)[0] == 0 && INTEGER(length)[1] == 0;
 	if ((R_ExternalPtrAddr(object) == 0) != length0)
-		return Rf_mkString((length0) ?
-		                   "length is zero and pointer field is non-zero" :
-		                   "length is non-zero and pointer field is zero");
+		return INVALID((length0)
+		               ? _("length is zero and pointer field is non-zero")
+		               : _("length is non-zero and pointer field is zero"));
+#undef INVALID
 	return Rf_ScalarLogical(1);
 }
 

@@ -4,6 +4,8 @@
 #include <float.h> /* DBL_MIN, ... */
 #include <limits.h> /* CHAR_BIT, ... */
 #include <math.h> /* fabs, ldexp, frexp, ... */
+#include <stdarg.h> /* va_list, va_start, ... */
+#include <stddef.h> /* size_t */
 #include <string.h> /* strcmp */
 #include <flint/flint.h> /* slong, ulong, ... */
 
@@ -16,6 +18,7 @@
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
 #include <R_ext/Complex.h> /* Rcomplex */
 #include <R_ext/Error.h> /* Rf_error, Rf_warning */
+#include <R_ext/Memory.h> /* R_alloc */
 #include <Rinternals.h> /* SEXP, ... */
 #include <Rversion.h> /* R_VERSION */
 
@@ -104,6 +107,8 @@ const char *R_flint_classes[9];
 #if R_VERSION < R_Version(4, 4, 1)
 void CLEAR_ATTRIB(SEXP);
 #endif /* < 4.4.1 */
+
+char *R_alloc_snprintf(size_t, const char *, ...);
 
 void uconv(unsigned long long int *, unsigned int *, int);
 
