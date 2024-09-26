@@ -6,6 +6,7 @@
 #include <math.h> /* fabs, ldexp, frexp, ... */
 #include <stdarg.h> /* va_list, va_start, ... */
 #include <stddef.h> /* size_t */
+#include <stdio.h> /* vsnprintf */
 #include <string.h> /* strcmp */
 #include <flint/flint.h> /* slong, ulong, ... */
 
