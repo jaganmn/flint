@@ -107,19 +107,19 @@ void sexp_as_mpfr(SEXP from, mpfr_t to)
 
 	SEXP s_prec = R_do_slot(from, mpfr_precSymbol);
 	if (TYPEOF(s_prec) != INTSXP || XLENGTH(s_prec) != MPFR_PREC_WIDTH)
-		Rf_error("invalid '%s' slot", "prec");
+		Rf_error(_("invalid '%s' slot"), "prec");
 	FCOPY_PREC(prec, INTEGER(s_prec));
 	if (prec < MPFR_PREC_MIN || prec > MPFR_PREC_MAX)
-		Rf_error("invalid '%s' slot", "prec");
+		Rf_error(_("invalid '%s' slot"), "prec");
 
 	SEXP s_exp = R_do_slot(from, mpfr_expSymbol);
 	if (TYPEOF(s_exp) != INTSXP || XLENGTH(s_exp) != MPFR_EXP_WIDTH)
-		Rf_error("invalid '%s' slot", "exp");
+		Rf_error(_("invalid '%s' slot"), "exp");
 	FCOPY_EXP(exp, INTEGER(s_exp));
 
 	SEXP s_sign = R_do_slot(from, mpfr_signSymbol);
 	if (TYPEOF(s_sign) != INTSXP || XLENGTH(s_sign) != MPFR_SIGN_WIDTH)
-		Rf_error("invalid '%s' slot", "sign");
+		Rf_error(_("invalid '%s' slot"), "sign");
 	FCOPY_SIGN(sign, INTEGER(s_sign));
 
 	mpfr_init2(to, prec);
@@ -133,7 +133,7 @@ void sexp_as_mpfr(SEXP from, mpfr_t to)
 	SEXP s_d = R_do_slot(from, mpfr_dSymbol);
 	if (TYPEOF(s_d) != INTSXP || XLENGTH(s_d) != limbs * MP_LIMB_WIDTH) {
 		mpfr_clear(to);
-		Rf_error("invalid '%s' slot", "d");
+		Rf_error(_("invalid '%s' slot"), "d");
 	}
 	mp_limb_t *d = to->_mpfr_d;
 	int *s = INTEGER(s_d);
@@ -146,7 +146,7 @@ void sexp_as_mpfr(SEXP from, mpfr_t to)
 	     (prec % mp_bits_per_limb != 0 &&
 	      (d[0] << (prec % mp_bits_per_limb)) != 0))) {
 		mpfr_clear(to);
-		Rf_error("invalid '%s' slot", "d");
+		Rf_error(_("invalid '%s' slot"), "d");
 	}
 
 	}

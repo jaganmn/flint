@@ -17,7 +17,7 @@ int asRnd(SEXP rnd, const char *where)
 		else if (strcmp(s, "near") == 0)
 			return ARF_RND_NEAR;
 	}
-	Rf_error("invalid '%s' in '%s'", "rnd", where);
+	Rf_error(_("invalid '%s' in '%s'"), "rnd", where);
 	return 0;
 }
 
@@ -80,7 +80,7 @@ SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arf", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
 	SEXP to = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n));

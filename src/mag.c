@@ -37,7 +37,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN not representable by '%s'", "mag");
+			Rf_error(_("NaN not representable by '%s'"), "mag");
 			else
 			mag_set_ui(y + i, (ulong) ((tmp < 0) ? -tmp : tmp));
 		}
@@ -49,7 +49,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (ISNAN(tmp))
-			Rf_error("NaN not representable by '%s'", "mag");
+			Rf_error(_("NaN not representable by '%s'"), "mag");
 			else
 			mag_set_d(y + i, tmp);
 		}
@@ -63,7 +63,7 @@ SEXP R_flint_mag_nmag(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "mag", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	mag_ptr x = (mag_ptr) R_flint_get_pointer(from);

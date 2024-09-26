@@ -77,7 +77,7 @@ unsigned long long int asLength(SEXP length, const char *where)
 		break;
 	}
 	}
-	Rf_error("invalid '%s' in '%s'", "length", where);
+	Rf_error(_("invalid '%s' in '%s'"), "length", where);
 	return 0ull;
 }
 
@@ -91,6 +91,6 @@ int asFlags(SEXP flags, const char *where)
 	default:
 		break;
 	}
-	Rf_error("invalid '%s' in '%s'", "flags", where);
+	Rf_error(_("invalid '%s' in '%s'"), "flags", where);
 	return 0;
 }

@@ -7,12 +7,23 @@
 #include <string.h> /* strcmp */
 #include <flint/flint.h> /* slong, ulong, ... */
 
-#include <Rconfig.h> /* R_INLINE */
-#include <Rversion.h> /* R_VERSION */
+#include <Rconfig.h> /* ENABLE_NLS */
+
+#ifdef ENABLE_NLS
+# include <libintl.h> /* dgettext, dngettext */
+#endif
+
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
 #include <R_ext/Complex.h> /* Rcomplex */
 #include <R_ext/Error.h> /* Rf_error, Rf_warning */
 #include <Rinternals.h> /* SEXP, ... */
+#include <Rversion.h> /* R_VERSION */
+
+#ifndef ENABLE_NLS
+# define dgettext(Domain, String) (String)
+# define dngettext(Domain, String, StringP, N) (((N) == 1) ? String : StringP)
+#endif
+#define _(String) dgettext("flint", String)
 
 #if R_VERSION < R_Version(4, 4, 0)
 # define OBJSXP S4SXP
@@ -39,7 +50,7 @@
 #define WARNING_OOB_INTEGER(w) \
 do { \
 	if (w) { \
-		Rf_warning("NA introduced by coercion to range of \"%s\"", \
+		Rf_warning(_("NA introduced by coercion to range of \"%s\""), \
 		           "integer"); \
 		w = 0; \
 	} \
@@ -48,7 +59,7 @@ do { \
 #define WARNING_OOB_DOUBLE(w) \
 do { \
 	if (w) { \
-		Rf_warning("-Inf or Inf introduced by coercion to range of \"%s\"", \
+		Rf_warning(_("-Inf or Inf introduced by coercion to range of \"%s\""), \
 		           "double"); \
 		w = 0; \
 	} \
@@ -56,17 +67,17 @@ do { \
 
 #define ERROR_INVALID_TYPE(x, func) \
 do { \
-	Rf_error("object of invalid type \"%s\" in '%s'", \
+	Rf_error(_("object of invalid type \"%s\" in '%s'"), \
 	         Rf_type2char((SEXPTYPE) TYPEOF(x)), func); \
 } while (0)
 
 #define ERROR_INVALID_CLASS(x, func) \
 do { \
 	if (Rf_isObject(x)) \
-		Rf_error("object of invalid class \"%s\" in '%s'", \
+		Rf_error(_("object of invalid class \"%s\" in '%s'"), \
 		         CHAR(STRING_ELT(Rf_getAttrib(x, R_ClassSymbol), 0)), func); \
 	else \
-		Rf_error("object without class attribute in '%s'", \
+		Rf_error(_("object without class attribute in '%s'"), \
 		         func); \
 } while (0)
 

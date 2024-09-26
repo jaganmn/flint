@@ -36,7 +36,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 			else
 			fmpz_set_si(y + i, tmp);
 		}
@@ -48,7 +48,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 			else
 			fmpz_set_d(y + i, (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 		}
@@ -62,7 +62,7 @@ SEXP R_flint_fmpz_nfmpz(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
 	fmpz *x = (fmpz *) R_flint_get_pointer(from);
@@ -91,7 +91,7 @@ SEXP R_flint_fmpz_vector(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	fmpz *x = (fmpz *) R_flint_get_pointer(from);

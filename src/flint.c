@@ -1,5 +1,11 @@
 #include "R_flint.h"
 
+void R_flint_abort(void)
+{
+	Rf_error(_("caught exception in libflint"));
+	return;
+}
+
 void *R_flint_get_pointer(SEXP object)
 {
 	SEXP x = R_do_slot(object, R_flint_symbol_dot_xdata);
@@ -82,7 +88,7 @@ SEXP R_flint_length(SEXP object)
 		REAL(ans)[0] = (double) n;
 		unsigned long long int n_ = (unsigned long long int) (double) n;
 		if (n_ != n)
-			Rf_warning("true length (%llu) is not exactly representable in double precision; returning an implementation-defined rounded length (%llu)",
+			Rf_warning(_("true length (%llu) is not exactly representable in double precision; returning an implementation-defined rounded length (%llu)"),
 			           n, n_);
 	}
 	return ans;

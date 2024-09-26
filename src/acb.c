@@ -93,7 +93,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xrr[i % nrr];
 				if (tmp == NA_INTEGER)
-				Rf_error("NaN not representable by '%s'", "mag");
+				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
 				mag_set_ui(arb_radref(acb_realref(y + i)), (ulong) ((tmp < 0) ? -tmp : tmp));
 			}
@@ -105,7 +105,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xrr[i % nrr];
 				if (ISNAN(tmp))
-				Rf_error("NaN not representable by '%s'", "mag");
+				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
 				mag_set_d(arb_radref(acb_realref(y + i)), tmp);
 			}
@@ -156,7 +156,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xir[i % nir];
 				if (tmp == NA_INTEGER)
-				Rf_error("NaN not representable by '%s'", "mag");
+				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
 				mag_set_ui(arb_radref(acb_imagref(y + i)), (ulong) ((tmp < 0) ? -tmp : tmp));
 			}
@@ -168,7 +168,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xir[i % nir];
 				if (ISNAN(tmp))
-				Rf_error("NaN not representable by '%s'", "mag");
+				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
 				mag_set_d(arb_radref(acb_imagref(y + i)), tmp);
 			}
@@ -194,7 +194,7 @@ SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "acb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
 	SEXP to = PROTECT(newObject("nacb")),
@@ -267,7 +267,7 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "acb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
 	SEXP to = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));

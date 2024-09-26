@@ -51,7 +51,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xp[i % np];
 				if (tmp == NA_INTEGER)
-				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 				else
 				fmpz_set_si(fmpq_numref(y + i), tmp);
 			}
@@ -63,7 +63,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xp[i % np];
 				if (!R_FINITE(tmp))
-				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 				else
 				fmpz_set_d(fmpq_numref(y + i), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 			}
@@ -84,7 +84,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xq[i % nq];
 				if (tmp == NA_INTEGER)
-				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 				else
 				fmpz_set_si(fmpq_denref(y + i), tmp);
 			}
@@ -96,7 +96,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			for (i = 0; i < n; ++i) {
 				tmp = xq[i % nq];
 				if (!R_FINITE(tmp))
-				Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpz");
+				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 				else
 				fmpz_set_d(fmpq_denref(y + i), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 			}
@@ -109,7 +109,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "fmpq");
+			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpq");
 			else {
 			fmpz_set_d(fmpq_numref(y + i), ldexp(frexp(tmp, &e), DBL_MANT_DIG));
 			e -= DBL_MANT_DIG;
@@ -128,7 +128,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			fmpq_zero(y + i);
 	for (i = 0; i < n; ++i) {
 		if (fmpz_is_zero(fmpq_denref(y + i)))
-		Rf_error("zero denominator not valid in canonical '%s'", "fmpq");
+		Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
 		else
 		fmpq_canonicalise(y + i);
 	}
@@ -139,7 +139,7 @@ SEXP R_flint_fmpq_nfmpq(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpq", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newObject("nfmpq")),
 		num = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n)),
@@ -181,7 +181,7 @@ SEXP R_flint_fmpq_vector(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpq", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	fmpq *x = (fmpq *) R_flint_get_pointer(from);

@@ -32,7 +32,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (tmp == NA_INTEGER)
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "slong");
+			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
 			else
 			y[i] = (slong) tmp;
 		}
@@ -44,13 +44,13 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (i = 0; i < n; ++i) {
 			tmp = x[i];
 			if (!R_FINITE(tmp))
-			Rf_error("NaN, -Inf, Inf not representable by '%s'", "slong");
+			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
 #if FLINT64
 			else if (tmp < WORD_MIN || tmp > WORD_MAX)
 #else
 			else if (tmp <= WORD_MIN - 1.0 || tmp >= WORD_MAX + 1.0)
 #endif
-			Rf_error("floating-point number not in range of '%s'", "slong");
+			Rf_error(_("floating-point number not in range of '%s'"), "slong");
 			else
 			y[i] = (slong) tmp;
 		}
@@ -64,7 +64,7 @@ SEXP R_flint_slong_nslong(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "slong", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nslong", INTSXP, (R_xlen_t) n));
 	slong *x = (slong *) R_flint_get_pointer(from);
@@ -86,7 +86,7 @@ SEXP R_flint_slong_vector(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error("'%s' length exceeds R maximum (%lld)",
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "slong", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	slong *x = (slong *) R_flint_get_pointer(from);
