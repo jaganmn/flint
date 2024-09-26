@@ -18,5 +18,5 @@ setAs("nslong", "slong",
 
 setAs("slong", "nslong",
       function (from)
-          .Call(R_flint_slong_nflint, from))
+          .Call(R_flint_slong_nslong, from))
 

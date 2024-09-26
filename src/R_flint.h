@@ -71,8 +71,7 @@ do { \
 } while (0)
 
 extern
-SEXP R_flint_symbol_length,
-	R_flint_symbol_x,
+SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_dot_data,
 	R_flint_symbol_num,
 	R_flint_symbol_den,
@@ -107,13 +106,10 @@ unsigned long long int asLength(SEXP, const char *);
 int asFlags(SEXP, const char *);
 int asRnd(SEXP, const char *);
 
+void *R_flint_get_pointer(SEXP);
 unsigned long long int R_flint_get_length(SEXP);
-void R_flint_set_length(SEXP, unsigned long long int);
-
-void *R_flint_get_x(SEXP);
-void R_flint_set_x(SEXP, void *, R_CFinalizer_t);
-
 const char *R_flint_get_class(SEXP);
+void R_flint_set(SEXP, void *, unsigned long long int, R_CFinalizer_t);
 
 void R_flint_slong_finalize(SEXP);
 void R_flint_ulong_finalize(SEXP);

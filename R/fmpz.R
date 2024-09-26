@@ -18,4 +18,4 @@ setAs("nfmpz", "fmpz",
 
 setAs("fmpz", "nfmpz",
       function (from)
-          .Call(R_flint_fmpz_nflint, from))
+          .Call(R_flint_fmpz_nfmpz, from))

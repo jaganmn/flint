@@ -31,7 +31,7 @@
 \section{Slots}{
   \code{slong}, \code{ulong}:
   \describe{
-    \item{\code{length}, \code{x}}{
+    \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
   \code{nslong}, \code{nulong}:
@@ -51,25 +51,22 @@
       return \code{as.vector(y, mode)}, where \code{y} is a double
       vector containing the result of converting each element of
       \code{x} to the range of double, rounding if the value is not
-      exactly representable in double precision.  The rounding mode
-      is to the nearest representable number in the direction of zero.}
+      exactly representable in double precision.  The rounding mode is
+      to the nearest representable number in the direction of zero.}
     \item{\code{initialize}}{
       \code{signature(.Object = "slong", length = "numeric")}:\cr
       \code{signature(.Object = "ulong", length = "numeric")}:\cr
-      return \code{.Object} after initializing its \code{length} and
-      \code{x} slots.  The \code{length} slot is initialized to a
-      representation of the \code{length} argument, which after
-      truncation towards zero must be a non-negative integer less than
-      \eqn{2^{64}}.  The \code{x} slot \dQuote{address} is changed to
-      the address of an array of the corresponding \proglang{C} type,
-      which is newly allocated and initialized entirely with zeros.}
+      return \code{.Object} after setting its \code{.xData} slot.  The
+      new slot value is an external pointer to an array of the
+      corresponding \proglang{C} type, which is newly allocated and
+      initialized entirely with zeros.  \code{.Object} is not copied, so
+      all references are affected.}
     \item{\code{initialize}}{
       \code{signature(.Object = "slong", x = "numeric")}:\cr
       \code{signature(.Object = "ulong", x = "numeric")}:\cr
-      as above, except that the \code{length} slot is initialized to a
-      representation of \code{length(x)} and the newly allocated array
-      is initialized with values from \code{x} truncated towards zero.
-      An error is signaled if any \code{x[i]} is not in the range of the
+      as above, except that the new slot value points to an array
+      initialized with values from \code{x} truncated towards zero.  An
+      error is signaled if any \code{x[i]} is not in the range of the
       \proglang{C} type, in particular if any \code{x[i]} is \code{NaN}.
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of

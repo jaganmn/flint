@@ -18,4 +18,4 @@ setAs("narf", "arf",
 
 setAs("arf", "narf",
       function (from)
-          .Call(R_flint_arf_nflint, from, "down"))
+          .Call(R_flint_arf_narf, from, "down"))

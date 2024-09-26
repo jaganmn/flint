@@ -21,9 +21,8 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		checkType(s_x, R_flint_sexptypes + 1, __func__);
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
-	R_flint_set_length(object, n);
 	mag_ptr y = (mag_ptr) ((n) ? flint_calloc(n, sizeof(mag_t)) : 0);
-	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_mag_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		for (i = 0; i < n; ++i)
@@ -60,14 +59,14 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_mag_nflint(SEXP from)
+SEXP R_flint_mag_nmag(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "mag", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
-	mag_ptr x = (mag_ptr) R_flint_get_x(from);
+	mag_ptr x = (mag_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	mag_t ub;
 	mag_init(ub);
@@ -88,7 +87,7 @@ SEXP R_flint_mag_nflint(SEXP from)
 
 SEXP R_flint_mag_vector(SEXP from)
 {
-	from = R_flint_mag_nflint(from);
-	CLEAR_ATTRIB(from);
-	return from;
+	SEXP to = R_flint_mag_nmag(from);
+	CLEAR_ATTRIB(to);
+	return to;
 }

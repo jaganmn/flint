@@ -1,9 +1,7 @@
 ## FLINT vectors represented directly using R external pointers
 
 setClass("flint",
-         contains = "VIRTUAL",
-         slots = c(length = "integer", x = "externalptr"),
-         prototype = list(length = integer(2L)),
+         contains = c("VIRTUAL", "externalptr"),
          validity = function (object) flintValid(object))
 
 setClass("slong", contains = "flint")

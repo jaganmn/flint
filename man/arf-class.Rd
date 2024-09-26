@@ -45,18 +45,15 @@
       introduced with a warning.}
     \item{\code{initialize}}{
       \code{signature(.Object = "arf", length = "numeric")}:\cr
-      returns \code{.Object} after initializing its \code{length} and
-      \code{x} slots.  The \code{length} slot is initialized to a
-      representation of the \code{length} argument, which after
-      truncation towards zero must be a non-negative integer less than
-      \eqn{2^{64}}.  The \code{x} slot \dQuote{address} is changed to
-      the address of an array of the corresponding \proglang{C} type,
-      which is newly allocated and initialized entirely with zeros.}
+      returns \code{.Object} after setting its \code{.xData} slot.  The
+      new slot value is an external pointer to an array of the
+      corresponding \proglang{C} type, which is newly allocated and
+      initialized entirely with zeros.  \code{.Object} is not copied, so
+      all references are affected.}
     \item{\code{initialize}}{
       \code{signature(.Object = "arf", x = "numeric")}:\cr
-      as above, except that the \code{length} slot is initialized to a
-      representation of \code{length(x)} and the newly allocated array
-      is initialized with values from \code{x}.}
+      as above, except that the new slot value points to an array
+      initialized with values from \code{x}.}
     \item{\code{coerce}}{
       \code{signature(from = "vector", to = "arf")}:\cr
       \code{signature(from = "narf", to = "arf")}:\cr

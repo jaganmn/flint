@@ -45,9 +45,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 	} else
 		n = asLength(s_length, __func__);
-	R_flint_set_length(object, n);
 	acb_ptr y = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
-	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_acb_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	if (s_realmid != R_NilValue || s_realrad != R_NilValue ||
 	    s_imagmid != R_NilValue || s_imagrad != R_NilValue) {
 		switch (TYPEOF(s_realmid)) {
@@ -191,7 +190,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_acb_nflint(SEXP from, SEXP s_rnd)
+SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -209,7 +208,7 @@ SEXP R_flint_acb_nflint(SEXP from, SEXP s_rnd)
 	R_do_slot_assign(imag, R_flint_symbol_mid, imagmid);
 	R_do_slot_assign(real, R_flint_symbol_rad, realrad);
 	R_do_slot_assign(imag, R_flint_symbol_rad, imagrad);
-	acb_ptr x = (acb_ptr) R_flint_get_x(from);
+	acb_ptr x = (acb_ptr) R_flint_get_pointer(from);
 	double *yrm = REAL(realmid), *yim = REAL(imagmid),
 		*yrr = REAL(realrad), *yir = REAL(imagrad);
 	arf_t lbm, ubm;
@@ -272,7 +271,7 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 		         "acb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
 	SEXP to = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
-	acb_ptr x = (acb_ptr) R_flint_get_x(from);
+	acb_ptr x = (acb_ptr) R_flint_get_pointer(from);
 	Rcomplex *y = COMPLEX(to);
 	arf_t lbm, ubm;
 	arf_ptr m;

@@ -27,4 +27,4 @@ setAs("nacb", "acb",
 
 setAs("acb", "nacb",
       function (from)
-          .Call(R_flint_acb_nflint, from, "down"))
+          .Call(R_flint_acb_nacb, from, "down"))

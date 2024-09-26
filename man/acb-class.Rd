@@ -43,37 +43,32 @@
       \code{signature(x = "acb")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a complex
       vector containing the result of converting the midpoints of
-      \code{x} to the range of double, rounding if the value is not
-      exactly representable in double precision.  The rounding mode is
-      to the nearest representable number in the direction of zero,
-      unless the midpoint exceeds \code{.Machine[["double.xmax"]]} in
-      absolute value, in which case \code{-Inf} or \code{Inf} is
-      introduced with a warning.}
+      the real and imaginary parts of \code{x} to the range of double,
+      rounding if the value is not exactly representable in double
+      precision.  The rounding mode is to the nearest representable
+      number in the direction of zero, unless a midpoint exceeds
+      \code{.Machine[["double.xmax"]]} in absolute value, in which case
+      \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{initialize}}{
       \code{signature(.Object = "acb", length = "numeric")}:\cr
-      returns \code{.Object} after initializing its \code{length} and
-      \code{x} slots.  The \code{length} slot is initialized to a
-      representation of the \code{length} argument, which after
-      truncation towards zero must be a non-negative integer less than
-      \eqn{2^{64}}.  The \code{x} slot \dQuote{address} is changed to
-      the address of an array of the corresponding \proglang{C} type,
-      which is newly allocated and initialized entirely with zeros
-      (zero midpoints, zero radii).}
+      returns \code{.Object} after setting its \code{.xData} slot.  The
+      new slot value is an external pointer to an array of the
+      corresponding \proglang{C} type, which is newly allocated and
+      initialized entirely with zeros (zero midpoint, zero radius
+      in the real and imaginary parts).  \code{.Object} is not copied,
+      so all references are affected.}
     \item{\code{initialize}}{
       \code{signature(.Object = "acb", x = "complex")}:\cr
       \code{signature(.Object = "acb", x = "numeric")}:\cr
-      as above, except that the \code{length} slot is initialized to a
-      representation of \code{length(x)} and the newly allocated array
-      is initialized with midpoints from \code{x} and radii equal to
-      zero.}
+      as above, except that the new \code{x} slot points to an array
+      initialized with midpoints from \code{x} and radii equal to zero.}
     \item{\code{initialize}}{
       \code{signature(.Object = "acb", real.mid = "numeric", real.rad = "numeric", imag.mid = "numeric", imag.rad = "numeric")}:\cr
-      as above, except that the \code{length} slot is initialized to a
-      representation of the maximum initializer length (0 if any length
-      is zero) and the newly allocated array is initialized with
-      midpoints from \code{*.mid} and radii from \code{*.rad}, all
-      recycled as necessary.  An error is signaled if any
-      \code{*.rad[i]} is \code{NaN}.}
+      as above, except that the new slot value points to an array
+      initialized with midpoints from \code{*.mid} and radii from
+      \code{*.rad}, all recycled as necessary.  The result length is the
+      maximum initializer length or zero if any initializer has length
+      zero.  An error is signaled if any \code{*.rad[i]} is \code{NaN}.}
     \item{\code{coerce}}{
       \code{signature(from = "vector", to = "acb")}:\cr
       returns

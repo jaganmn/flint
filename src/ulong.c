@@ -17,9 +17,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		checkType(s_x, R_flint_sexptypes + 1, __func__);
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
-	R_flint_set_length(object, n);
 	ulong *y = (ulong *) ((n) ? flint_calloc(n, sizeof(ulong)) : 0);
-	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_ulong_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		/* nothing to do */
@@ -63,14 +62,14 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_ulong_nflint(SEXP from)
+SEXP R_flint_ulong_nulong(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "ulong", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nulong", INTSXP, (R_xlen_t) n));
-	ulong *x = (ulong *) R_flint_get_x(from);
+	ulong *x = (ulong *) R_flint_get_pointer(from);
 	int *y = INTEGER(to);
 	int w = 1;
 	for (i = 0; i < n; ++i) {
@@ -92,7 +91,7 @@ SEXP R_flint_ulong_vector(SEXP from)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "ulong", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	ulong *x = (ulong *) R_flint_get_x(from);
+	ulong *x = (ulong *) R_flint_get_pointer(from);
 	double *y = REAL(to);
 #if FLINT64
 	fmpz_t tmp;

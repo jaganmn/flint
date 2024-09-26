@@ -48,30 +48,26 @@
       introduced with a warning.}
     \item{\code{initialize}}{
       \code{signature(.Object = "fmpq", length = "numeric")}:\cr
-      returns \code{.Object} after initializing its \code{length} and
-      \code{x} slots.  The \code{length} slot is initialized to a
-      representation of the \code{length} argument, which after
-      truncation towards zero must be a non-negative integer less than
-      \eqn{2^{64}}.  The \code{x} slot \dQuote{address} is changed to
-      the address of an array of the corresponding \proglang{C} type,
-      which is newly allocated and initialized entirely with zeros
-      (zero numerator, unit denominator).}
+      returns \code{.Object} after setting its \code{.xData} slot.  The
+      new slot value is an external pointer to an array of the
+      corresponding \proglang{C} type, which is newly allocated and
+      initialized entirely with zeros (zero numerator, unit
+      denominator).  \code{.Object} is not copied, so all references are
+      affected.}
     \item{\code{initialize}}{
       \code{signature(.Object = "fmpq", x = "numeric")}:\cr
-      as above, except that the \code{length} slot is initialized to a
-      representation of \code{length(x)} and the newly allocated array
-      is initialized with values from \code{x}.  An error is signaled if
+      as above, except that the new slot value points to an array
+      initialized with values from \code{x}.  An error is signaled if
       any \code{x[i]} is \code{NaN}, \code{-Inf}, or \code{Inf}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "fmpq", num = "numeric", den = "numeric")}:\cr
-      as above, except that the \code{length} slot is initialized to a
-      representation of the maximum initializer length (0 if any length
-      is zero) and the newly allocated array is initialized with
-      numerators from \code{num} and denominators from \code{den}, both
-      truncated towards zero and recycled as necessary.  An error is
-      signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
-      \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
-      zero.}
+      as above, except that the new slot value points to an array
+      initialized with numerators from \code{num} and denominators from
+      \code{den}, both truncated towards zero and recycled as necessary.
+      The result length is the maximum initializer length or zero if any
+      initializer has length zero.  An error is signaled if any
+      \code{num[i]} or \code{den[i]} is \code{NaN}, \code{-Inf},
+      \code{Inf}, or subnormal or if any \code{den[i]} is zero.}
     \item{\code{coerce}}{
       \code{signature(from = "vector", to = "fmpq")}:\cr
       returns \code{new("fmpq", x = from)}.}

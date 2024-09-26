@@ -22,4 +22,4 @@ setAs("narb", "arb",
 
 setAs("arb", "narb",
       function (from)
-          .Call(R_flint_arb_nflint, from, "down"))
+          .Call(R_flint_arb_narb, from, "down"))

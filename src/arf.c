@@ -41,9 +41,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		checkType(s_x, R_flint_sexptypes + 1, __func__);
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
-	R_flint_set_length(object, n);
 	arf_ptr y = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
-	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_arf_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		for (i = 0; i < n; ++i)
@@ -77,7 +76,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_arf_nflint(SEXP from, SEXP s_rnd)
+SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -85,7 +84,7 @@ SEXP R_flint_arf_nflint(SEXP from, SEXP s_rnd)
 		         "arf", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
 	SEXP to = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n));
-	arf_ptr x = (arf_ptr) R_flint_get_x(from);
+	arf_ptr x = (arf_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	arf_t lb, ub;
 	arf_init(lb);
@@ -111,7 +110,7 @@ SEXP R_flint_arf_nflint(SEXP from, SEXP s_rnd)
 
 SEXP R_flint_arf_vector(SEXP from, SEXP s_rnd)
 {
-	from = R_flint_arf_nflint(from, s_rnd);
-	CLEAR_ATTRIB(from);
-	return from;
+	SEXP to = R_flint_arf_narf(from, s_rnd);
+	CLEAR_ATTRIB(to);
+	return to;
 }

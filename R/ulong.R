@@ -18,4 +18,4 @@ setAs("nulong", "ulong",
 
 setAs("ulong", "nulong",
       function (from)
-          .Call(R_flint_ulong_nflint, from))
+          .Call(R_flint_ulong_nulong, from))

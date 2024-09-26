@@ -35,9 +35,8 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 	} else
 		n = asLength(s_length, __func__);
-	R_flint_set_length(object, n);
 	fmpq *y = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
-	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		switch (TYPEOF(s_num)) {
 		case NILSXP:
@@ -136,7 +135,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_fmpq_nflint(SEXP from)
+SEXP R_flint_fmpq_nfmpq(SEXP from)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -147,7 +146,7 @@ SEXP R_flint_fmpq_nflint(SEXP from)
 		den = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
 	R_do_slot_assign(to, R_flint_symbol_num, num);
 	R_do_slot_assign(to, R_flint_symbol_den, den);
-	fmpq *x = (fmpq *) R_flint_get_x(from);
+	fmpq *x = (fmpq *) R_flint_get_pointer(from);
 	int *yp = INTEGER(num), *yq = INTEGER(den);
 	fmpz_t lb, ub;
 	fmpz *p, *q;
@@ -185,7 +184,7 @@ SEXP R_flint_fmpq_vector(SEXP from)
 		Rf_error("'%s' length exceeds R maximum (%lld)",
 		         "fmpq", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	fmpq *x = (fmpq *) R_flint_get_x(from);
+	fmpq *x = (fmpq *) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	fmpz_t lb, ub;
 	fmpz_init(lb);

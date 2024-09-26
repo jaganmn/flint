@@ -18,4 +18,4 @@ setAs("nmag", "mag",
 
 setAs("mag", "nmag",
       function (from)
-          .Call(R_flint_mag_nflint, from))
+          .Call(R_flint_mag_nmag, from))

@@ -33,9 +33,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		nm = n;
 	} else
 		n = asLength(s_length, __func__);
-	R_flint_set_length(object, n);
 	arb_ptr y = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
-	R_flint_set_x(object, y, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		switch (TYPEOF(s_mid)) {
 		case NILSXP:
@@ -106,7 +105,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_arb_nflint(SEXP from, SEXP s_rnd)
+SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
@@ -118,7 +117,7 @@ SEXP R_flint_arb_nflint(SEXP from, SEXP s_rnd)
 		rad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	R_do_slot_assign(to, R_flint_symbol_mid, mid);
 	R_do_slot_assign(to, R_flint_symbol_rad, rad);
-	arb_ptr x = (arb_ptr) R_flint_get_x(from);
+	arb_ptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *ym = REAL(mid), *yr = REAL(rad);
 	arf_t lbm, ubm;
 	arf_ptr m;
@@ -164,7 +163,7 @@ SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 		         "arb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	arb_ptr x = (arb_ptr) R_flint_get_x(from);
+	arb_ptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	arf_t lbm, ubm;
 	arf_ptr m;

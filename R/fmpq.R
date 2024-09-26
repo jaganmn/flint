@@ -22,4 +22,4 @@ setAs("nfmpq", "fmpq",
 
 setAs("fmpq", "nfmpq",
       function (from)
-          .Call(R_flint_fmpq_nflint, from))
+          .Call(R_flint_fmpq_nfmpq, from))
