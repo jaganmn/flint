@@ -1,6 +1,7 @@
-#include <R_ext/Rdynload.h>
-#include <R_ext/Visibility.h>
-#include <Rinternals.h>
+#include <flint/flint.h> /* flint_set_abort */
+#include <R_ext/Rdynload.h> /* DL_FUNC, ... */
+#include <R_ext/Visibility.h> /* attribute_visible */
+#include <Rinternals.h> /* SEXP, ... */
 
 SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_dot_data,
@@ -63,6 +64,12 @@ SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
+static void R_flint_abort(void)
+{
+	Rf_error("FLINT error: bailing out ...");
+	return;
+}
+
 static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
@@ -118,5 +125,6 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_flint_symbol_exp       = Rf_install("exp");
 	R_flint_symbol_sign      = Rf_install("sign");
 	R_flint_symbol_d         = Rf_install("d");
+	flint_set_abort(&R_flint_abort);
 	return;
 }
