@@ -11,7 +11,7 @@ loadNamespace("flint") # work with or without attaching
 cl <- c("slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb")
 basic <- c("raw", "logical", "integer", "double", "numeric", "complex",
            "list", "expression", "vector")
-zu <- lapply(cl, function(s) new(s, x = c(0, 1)))
+zu <- lapply(cl, function (s) new(s, x = c(0, 1)))
 for (t in basic) {
     as. <- match.fun(paste0("as.", t))
     as.01 <- rep(list(as.(c(0, 1)), as.(c(0, 1)+0i)), c(7L, 1L))

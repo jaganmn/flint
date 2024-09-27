@@ -16,13 +16,13 @@ stopifnot(identical(lapply(a, length), as.list(n)),
 ## Test implicit default values of initializers.
 
 new.fmpq <-
-function(Class, num = 0L, den = 1L, ...)
+function (Class, num = 0L, den = 1L, ...)
     new(Class, num = num, den = den)
 new.arb <-
-function(Class, mid = 0, rad = 0, ...)
+function (Class, mid = 0, rad = 0, ...)
     new(Class, mid = mid, rad = rad)
 new.acb <-
-function(Class, real.mid = 0, real.rad = 0, imag.mid = 0, imag.rad = 0, ...)
+function (Class, real.mid = 0, real.rad = 0, imag.mid = 0, imag.rad = 0, ...)
     new(Class, real.mid = real.mid, real.rad = real.rad, imag.mid = imag.mid, imag.rad = imag.rad)
 
 e <- expression(as(new(, 1), ), )
@@ -100,7 +100,7 @@ stopifnot(identical(a, b))
 
 ## Test handling of unrepresentable values.
 
-allError <- function(call, l) {
+allError <- function (call, l) {
     call <- substitute(call)
     for (value in l) {
         call. <- do.call(substitute, list(call, list(. = value)))
