@@ -78,7 +78,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		{
 			int *x = INTEGER(s_rad), tmp;
 			for (i = 0; i < n; ++i) {
-				tmp = x[i];
+				tmp = x[i % nr];
 				if (tmp == NA_INTEGER)
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
@@ -90,7 +90,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		{
 			double *x = REAL(s_rad), tmp;
 			for (i = 0; i < n; ++i) {
-				tmp = x[i];
+				tmp = x[i % nr];
 				if (ISNAN(tmp))
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
