@@ -1,11 +1,12 @@
 library(methods) # as, new
 loadNamespace("flint") # work with or without attaching
 
+
 ## Test that as(<class>, "<type>") and as.<type>(<class>) work correctly
 ## for all 'flint' subclasses <class> and all basic vector types <type>.
 ## Use 0 and 1 as test cases as these are in the range of every class.
 ## Allow for imprecision in "mag" conversions which are not exact even
-## exactly representable cases.
+## in exactly representable cases.
 
 cl <- c("slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb")
 basic <- c("raw", "logical", "integer", "double", "numeric", "complex",
@@ -19,6 +20,12 @@ for (t in basic) {
               identical(as.zu[-6L], as.01[-6L]),
               all.equal(as.zu[ 6L], as.01[ 6L]))
 }
+
+
+## Test that typeof(as.vector(.)) is "complex" for 'acb', "double" otherwise.
+
+stopifnot(identical(vapply(lapply(zu, as.vector), typeof, ""),
+                    rep(c("double", "complex"), c(7L, 1L))))
 
 
 ## Test that as(<class>, <nclass>) works correctly.
@@ -52,8 +59,8 @@ stopifnot(identical(nzu[-6L], nzu.[-6L]),
           all.equal(nzu[ 6L], nzu.[ 6L]))
 
 
-## Test that exactly one warning is signaled when nonzero imaginary parts
-## are discarded and that no condition is signaled otherwise.
+## Test that exactly one condition (a warning) is signaled when nonzero
+## imaginary parts are discarded and that no condition is signaled otherwise.
 
 zi <- new("acb", x = 0i)
 ui <- new("acb", x = 1i)
