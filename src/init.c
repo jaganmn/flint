@@ -62,7 +62,6 @@ SEXP R_flint_acb_vector(SEXP, SEXP);
 
 SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-SEXP R_flint_acb_hypgeom_2f1_continuation(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static R_CallMethodDef CallEntries[] =
 {
@@ -98,7 +97,6 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_acb_vector, 2),
 	CALL_ENTRY(R_flint_acb_dirichlet_lerch_phi, 5),
 	CALL_ENTRY(R_flint_acb_hypgeom_2f1, 7),
-	CALL_ENTRY(R_flint_acb_hypgeom_2f1_continuation, 10),
 	{NULL, NULL, 0}
 };
 
