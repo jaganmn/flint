@@ -124,7 +124,6 @@ SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
 unsigned long long int asLength(SEXP, const char *);
-int asFlags(SEXP, const char *);
 int asRnd(SEXP, const char *);
 
 void *R_flint_get_pointer(SEXP);

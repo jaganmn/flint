@@ -90,17 +90,3 @@ unsigned long long int asLength(SEXP length, const char *where)
 	Rf_error(_("invalid '%s' in '%s'"), "length", where);
 	return 0ull;
 }
-
-int asFlags(SEXP flags, const char *where)
-{
-	switch (TYPEOF(flags)) {
-	case INTSXP:
-		if (XLENGTH(flags) > 0)
-			return INTEGER(flags)[0];
-		break;
-	default:
-		break;
-	}
-	Rf_error(_("invalid '%s' in '%s'"), "flags", where);
-	return 0;
-}
