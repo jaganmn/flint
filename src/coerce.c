@@ -1,5 +1,5 @@
 #include <mpfr.h>
-#include "R_flint.h"
+#include "flint.h"
 
 #define CAST_SIGNED(u, utype, stype) \
 	((u) <= (((utype) -1) >> 1)) ? (stype) (u) : -(stype) ~(u) - 1

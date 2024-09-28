@@ -1,5 +1,5 @@
-#ifndef R_FLINT_H
-#define R_FLINT_H
+#ifndef R_FLINT_FLINT_H
+#define R_FLINT_FLINT_H
 
 #include <float.h> /* DBL_MIN, ... */
 #include <limits.h> /* CHAR_BIT, ... */
@@ -8,7 +8,6 @@
 #include <stddef.h> /* size_t */
 #include <stdio.h> /* vsnprintf */
 #include <string.h> /* strcmp */
-#include <flint/flint.h> /* slong, ulong, ... */
 
 #include <Rconfig.h> /* ENABLE_NLS */
 
@@ -115,7 +114,7 @@ void CLEAR_ATTRIB(SEXP);
 
 char *R_alloc_snprintf(size_t, const char *, ...);
 
-void uconv(unsigned long long int *, unsigned int *, int);
+void ucopy(unsigned long long int *, unsigned int *, int);
 
 SEXP newObject(const char *);
 SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
@@ -140,4 +139,4 @@ void R_flint_mag_finalize(SEXP);
 void R_flint_arb_finalize(SEXP);
 void R_flint_acb_finalize(SEXP);
 
-#endif /* ! defined (R_FLINT_H) */
+#endif /* ! defined (R_FLINT_FLINT_H) */

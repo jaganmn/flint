@@ -1,4 +1,5 @@
-#include "R_flint.h"
+#include <flint/flint.h>
+#include "flint.h"
 
 void R_flint_abort(void)
 {
@@ -18,7 +19,7 @@ unsigned long long int R_flint_get_length(SEXP object)
 	SEXP x = R_do_slot(object, R_flint_symbol_dot_xdata),
 		length = R_ExternalPtrProtected(x);
 	unsigned long long int n;
-	uconv(&n, (unsigned int *) INTEGER(length), 1);
+	ucopy(&n, (unsigned int *) INTEGER(length), 1);
 	return n;
 }
 
@@ -33,7 +34,7 @@ void R_flint_set(SEXP object,
                  void *p, unsigned long long int n, R_CFinalizer_t f)
 {
 	SEXP length = PROTECT(Rf_allocVector(INTSXP, 2));
-	uconv(&n, (unsigned int *) INTEGER(length), 0);
+	ucopy(&n, (unsigned int *) INTEGER(length), 0);
 	SEXP x = PROTECT(R_MakeExternalPtrFn(p, R_NilValue, length));
 	R_RegisterCFinalizer(x, f);
 	R_do_slot_assign(object, R_flint_symbol_dot_xdata, x);

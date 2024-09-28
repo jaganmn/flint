@@ -1,5 +1,7 @@
+#include <flint/flint.h>
+#include <flint/acb.h>
 #include <flint/acb_hypgeom.h>
-#include "R_flint.h"
+#include "flint.h"
 
 SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z, SEXP s_flags, SEXP s_prec)
 {

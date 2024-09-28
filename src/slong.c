@@ -1,5 +1,6 @@
+#include <flint/flint.h>
 #include <flint/fmpz.h>
-#include "R_flint.h"
+#include "flint.h"
 
 void R_flint_slong_finalize(SEXP x)
 {

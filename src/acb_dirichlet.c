@@ -1,5 +1,7 @@
+#include <flint/flint.h>
+#include <flint/acb.h>
 #include <flint/acb_dirichlet.h>
-#include "R_flint.h"
+#include "flint.h"
 
 SEXP R_flint_acb_dirichlet_lerch_phi(SEXP s_res, SEXP s_z, SEXP s_s, SEXP s_a, SEXP s_prec)
 {

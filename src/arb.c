@@ -1,10 +1,11 @@
+#include <flint/flint.h>
 #include <flint/arb.h>
-#include "R_flint.h"
+#include "flint.h"
 
 void R_flint_arb_finalize(SEXP x)
 {
 	unsigned long long int i, n;
-	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	arb_ptr p = (arb_ptr) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
 		arb_clear(p + i);

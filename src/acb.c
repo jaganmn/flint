@@ -1,10 +1,11 @@
+#include <flint/flint.h>
 #include <flint/acb.h>
-#include "R_flint.h"
+#include "flint.h"
 
 void R_flint_acb_finalize(SEXP x)
 {
 	unsigned long long int i, n;
-	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	acb_ptr p = (acb_ptr) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
 		acb_clear(p + i);

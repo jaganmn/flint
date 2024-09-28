@@ -1,10 +1,11 @@
+#include <flint/flint.h>
 #include <flint/fmpz.h>
-#include "R_flint.h"
+#include "flint.h"
 
 void R_flint_fmpz_finalize(SEXP x)
 {
 	unsigned long long int i, n;
-	uconv(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	fmpz *p = (fmpz *) R_ExternalPtrAddr(x);
 	for (i = 0; i < n; ++i)
 		fmpz_clear(p + i);

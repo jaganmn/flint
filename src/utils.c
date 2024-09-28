@@ -1,4 +1,4 @@
-#include "R_flint.h"
+#include "flint.h"
 
 #if R_VERSION < R_Version(4, 4, 1)
 void CLEAR_ATTRIB(SEXP x)
@@ -20,7 +20,7 @@ char *R_alloc_snprintf(size_t n, const char *format, ...)
 	return buf;
 }
 
-void uconv(unsigned long long int *u, unsigned int *uu, int from)
+void ucopy(unsigned long long int *u, unsigned int *uu, int from)
 {
 	if (from != 0) {
 		/* uu -> u */
