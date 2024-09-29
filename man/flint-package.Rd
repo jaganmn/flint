@@ -1,4 +1,5 @@
 \name{flint-package}
+\alias{flint}
 \alias{flint-package}
 \title{\R{} Package \pkg{flint}}
 \description{
