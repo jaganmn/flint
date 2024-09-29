@@ -608,7 +608,7 @@ PACKAGE_STRING='flint 0.0.1'
 PACKAGE_BUGREPORT='https://github.com/jaganmn/flint/issues'
 PACKAGE_URL='https://github.com/jaganmn/flint'
 
-ac_unique_file="src/R_flint.h"
+ac_unique_file="man/flint-class.Rd"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stddef.h>

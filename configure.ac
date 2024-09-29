@@ -4,7 +4,7 @@ AC_INIT([flint],
         [https://github.com/jaganmn/flint/issues],
         [],
         [https://github.com/jaganmn/flint])
-AC_CONFIG_SRCDIR([src/R_flint.h])
+AC_CONFIG_SRCDIR([man/flint-class.Rd])
 AC_CONFIG_HEADERS([src/config.h])
 
 AC_ARG_VAR([FLINT_CPPFLAGS],
