@@ -5,6 +5,20 @@ function (z, k, flags = 0L, prec = 53L) {
     res
 }
 
+acb_polygamma <-
+function (s, z, prec = 53L) {
+    res <- flintNew("acb")
+    .Call(R_flint_acb_polygamma, res, as(s, "acb"), as(z, "acb"), as(prec, "slong"))
+    res
+}
+
+acb_dirichlet_zeta <-
+function (s, prec = 53L) {
+    res <- flintNew("acb")
+    .Call(R_flint_acb_dirichlet_zeta, res, as(s, "acb"), as(prec, "slong"))
+    res
+}
+
 acb_dirichlet_hurwitz <-
 function (s, a, prec = 53L) {
     res <- flintNew("acb")

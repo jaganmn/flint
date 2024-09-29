@@ -5,16 +5,6 @@
 #include "flint.h"
 #include "acb_template.h"
 
-SEXP R_flint_acb_digamma(SEXP s_res, SEXP s_z, SEXP s_prec)
-{
-	return R_flint_acb_1ary(&acb_digamma, s_res, s_z, s_prec);
-}
-
-SEXP R_flint_acb_polygamma(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_prec)
-{
-	return R_flint_acb_2ary(&acb_polygamma, s_res, s_s, s_z, s_prec);
-}
-
 SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_prec)
 {
 	if (TYPEOF(s_flags) != INTSXP)
@@ -40,9 +30,19 @@ SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_p
 	return R_NilValue;
 }
 
+SEXP R_flint_acb_polygamma(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_prec)
+{
+	return R_flint_acb_2ary(&acb_polygamma, s_res, s_s, s_z, s_prec);
+}
+
+SEXP R_flint_acb_dirichlet_zeta(SEXP s_res, SEXP s_s, SEXP s_prec)
+{
+	return R_flint_acb_1ary(&acb_dirichlet_zeta, s_res, s_s, s_prec);
+}
+
 SEXP R_flint_acb_dirichlet_hurwitz(SEXP s_res, SEXP s_s, SEXP s_a, SEXP s_prec)
 {
-	return R_flint_acb_1ary(&acb_zeta, s_res, s_s, s_a, s_prec);
+	return R_flint_acb_2ary(&acb_dirichlet_hurwitz, s_res, s_s, s_a, s_prec);
 }
 
 SEXP R_flint_acb_dirichlet_lerch_phi(SEXP s_res, SEXP s_z, SEXP s_s, SEXP s_a, SEXP s_prec)
