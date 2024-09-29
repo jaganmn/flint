@@ -20,7 +20,7 @@
   Classes \code{slong} and \code{ulong} extend virtual class
   \code{\linkS4class{flint}}.  They represent vectors of signed and
   unsigned integers, respectively.  The integer size is 32 or 64 bits,
-  depending on the configuration of the linked \abbr{FLINT} library.
+  depending on the configuration of the linked \acronym{FLINT} library.
   The number of bits is given by \code{flintBits()}.
 
   Classes \code{nslong} and \code{nulong} extend virtual class
@@ -90,8 +90,8 @@
   \code{\linkS4class{nflint}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} types:
-  \url{https://flintlib.org/doc/flint.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  types: \url{https://flintlib.org/doc/flint.html}
 }
 \examples{
 showClass("slong")

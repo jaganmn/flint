@@ -4,9 +4,9 @@
 \docType{class}
 \description{
   Class \code{nflint} is a virtual class representing vectors of any
-  \abbr{FLINT} \proglang{C} type.  The \proglang{C} type is determined
-  by the class attribute and interfaced inexactly (with less precision
-  or narrower range) using \R{}'s basic vector types.
+  \acronym{FLINT} \proglang{C} type.  The \proglang{C} type is
+  determined by the class attribute and interfaced inexactly (with less
+  precision or narrower range) using \R{}'s basic vector types.
 
   The main purpose of \code{nflint} is to expose at \R{} level the
   elements of \code{flint} objects which for efficiency are hidden

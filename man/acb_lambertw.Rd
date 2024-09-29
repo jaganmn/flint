@@ -33,10 +33,10 @@ acb_lambertw(z, k = 0L, flags = 0L, prec = 53L)
   Class \code{\linkS4class{acb}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} function:
-  \url{https://flintlib.org/doc/acb.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  function: \url{https://flintlib.org/doc/acb.html}
 
-  \abbr{NIST} Digital Library of Mathematical Functions:
+  \acronym{NIST} Digital Library of Mathematical Functions:
   \url{https://dlmf.nist.gov/4.13}
 }
 \examples{

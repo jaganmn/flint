@@ -35,10 +35,10 @@ acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = 53L)
   Class \code{\linkS4class{acb}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} function:
-  \url{https://flintlib.org/doc/acb_hypgeom.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  function: \url{https://flintlib.org/doc/acb_hypgeom.html}
 
-  \abbr{NIST} Digital Library of Mathematical Functions:
+  \acronym{NIST} Digital Library of Mathematical Functions:
   \url{https://dlmf.nist.gov/15}
 }
 \examples{

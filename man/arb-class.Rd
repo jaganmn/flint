@@ -83,8 +83,8 @@
   \code{\linkS4class{nflint}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} type:
-  \url{https://flintlib.org/doc/arb.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  type: \url{https://flintlib.org/doc/arb.html}
 }
 \examples{
 showClass("arb")

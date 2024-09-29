@@ -36,10 +36,10 @@ acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = 53L)
   Class \code{\linkS4class{acb}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} functions:
-  \url{https://flintlib.org/doc/acb_dirichlet.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  functions: \url{https://flintlib.org/doc/acb_dirichlet.html}
 
-  \abbr{NIST} Digital Library of Mathematical Functions:
+  \acronym{NIST} Digital Library of Mathematical Functions:
   \url{https://dlmf.nist.gov/25}
 }
 \examples{

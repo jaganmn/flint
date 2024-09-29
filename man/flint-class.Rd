@@ -13,9 +13,9 @@
 \docType{class}
 \description{
   Class \code{flint} is a virtual class representing vectors of any
-  \abbr{FLINT} \proglang{C} type.  The \proglang{C} type is determined
-  by the class attribute and interfaced exactly using \R{}'s external
-  pointer type.
+  \acronym{FLINT} \proglang{C} type.  The \proglang{C} type is
+  determined by the class attribute and interfaced exactly using \R{}'s
+  external pointer type.
 }
 \section{Slots}{
   \describe{
@@ -24,7 +24,7 @@
       of length 2 storing the lower and upper bits of the 64-bit object
       length.  The pointer field contains the address of a block of
       allocated memory of size greater than or equal to the object
-      length times the size of the \abbr{FLINT} type.  It is a null
+      length times the size of the \acronym{FLINT} type.  It is a null
       pointer if and only if the object length is zero.\cr
       \cr
       Methods for \code{\link{initialize}} set a finalizer on

@@ -42,7 +42,7 @@
       \code{x} to the range of double, rounding in the direction of
       \code{Inf}, not always to nearest.  For a precise description of
       the conversion, consult the definition of function
-      \code{mag_set_d} in the \abbr{FLINT} sources.}
+      \code{mag_set_d} in the \acronym{FLINT} sources.}
     \item{\code{initialize}}{
       \code{signature(.Object = "mag", length = "numeric")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
@@ -57,7 +57,7 @@
       direction of \code{Inf}, not always to nearest.  An error is
       signaled if any \code{x[i]} is \code{NaN}.  For a precise
       description of the conversion, consult the definition of function
-      \code{mag_get_d} in the \abbr{FLINT} sources.}
+      \code{mag_get_d} in the \acronym{FLINT} sources.}
     \item{\code{coerce}}{
       \code{signature(from = "vector", to = "mag")}:\cr
       \code{signature(from = "nmag", to = "mag")}:\cr
@@ -73,8 +73,8 @@
   \code{\linkS4class{nflint}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} type:
-  \url{https://flintlib.org/doc/mag.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  type: \url{https://flintlib.org/doc/mag.html}
 }
 \examples{
 showClass("mag")

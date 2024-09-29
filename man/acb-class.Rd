@@ -90,8 +90,8 @@
   \code{\linkS4class{nflint}}.
 }
 \references{
-  The \abbr{FLINT} documentation of the underlying \proglang{C} type:
-  \url{https://flintlib.org/doc/acb.html}
+  The \acronym{FLINT} documentation of the underlying \proglang{C}
+  type: \url{https://flintlib.org/doc/acb.html}
 }
 \examples{
 showClass("acb")
