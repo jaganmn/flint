@@ -1,12 +1,12 @@
 acb_lambertw <-
-function (z, k, flags = 0L, prec = 53L) {
+function (z, k = 0L, flags = 0L, prec = 53L) {
     res <- flintNew("acb")
     .Call(R_flint_acb_lambertw, res, as(z, "acb"), as(k, "fmpz"), flags, as(prec, "slong"))
     res
 }
 
 acb_polygamma <-
-function (s, z, prec = 53L) {
+function (s = 0, z, prec = 53L) {
     res <- flintNew("acb")
     .Call(R_flint_acb_polygamma, res, as(s, "acb"), as(z, "acb"), as(prec, "slong"))
     res
@@ -20,14 +20,14 @@ function (s, prec = 53L) {
 }
 
 acb_dirichlet_hurwitz <-
-function (s, a, prec = 53L) {
+function (s, a = 1, prec = 53L) {
     res <- flintNew("acb")
     .Call(R_flint_acb_dirichlet_hurwitz, res, as(s, "acb"), as(a, "acb"), as(prec, "slong"))
     res
 }
 
 acb_dirichlet_lerch_phi <-
-function (z, s, a, prec = 53L) {
+function (z = 1, s, a = 1, prec = 53L) {
     res <- flintNew("acb")
     .Call(R_flint_acb_dirichlet_lerch_phi, res, as(z, "acb"), as(s, "acb"), as(a, "acb"), as(prec, "slong"))
     res

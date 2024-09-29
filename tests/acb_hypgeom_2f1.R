@@ -2,7 +2,7 @@ h2f1 <- function(a, b, c, z) as.complex(flint::acb_hypgeom_2f1(a, b, c, z))
 hgamma <- function(z) as.complex(flint:::acb_hypgeom_gamma(z))
 
 incl.unit.circle <- FALSE # not yet; a, b, c must meet convergence criteria
-debugging <- FALSE
+debugging <- tolower(Sys.getenv("R_FLINT_CHECK_EXTRA")) == "true"
 
 r <- 10L
 n <- (if (incl.unit.circle) 3L else 2L) * r

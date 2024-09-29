@@ -4,7 +4,7 @@
 \description{
   Computes any branch \eqn{W_{k}}{W_k} of the multiple-valued Lambert
   \eqn{W} function.  \eqn{W(z)} is the set of solutions \eqn{w} of the
-  equation {w e^{w} = z}{w * exp(w) = z}.
+  equation \eqn{w e^{w} = z}{w * exp(w) = z}.
 }
 \usage{
 acb_lambertw(z, k = 0L, flags = 0L, prec = 53L)

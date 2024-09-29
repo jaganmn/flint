@@ -42,7 +42,7 @@ acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = 53L)
   \url{https://dlmf.nist.gov/15}
 }
 \examples{
-h2f1 <- function(a, b, c, z) as.complex(acb_hypgeom_2f1(a, b, c, z))
+h2f1 <- function(...) as.complex(acb_hypgeom_2f1(...))
 
 set.seed(0xbcdeL)
 r <- 10L
@@ -55,9 +55,9 @@ z <- c(z.l1, z.g1)
 
 ## Elementary special cases from http://dlmf.nist.gov/15.4 :
 all.equal(h2f1(1.0, 1.0, 2.0,  z  ),
-          -log(1 - z)/z),
+          -log(1 - z)/z)
 all.equal(h2f1(0.5, 1.0, 1.5,  z^2),
-          0.5 * (log(1 + z) - log(1 - z))/z),
+          0.5 * (log(1 + z) - log(1 - z))/z)
 all.equal(h2f1(0.5, 1.0, 1.5, -z^2),
           atan(z)/z)
 ## [ see more in ../tests/acb_hypgeom_2f1.R ]
