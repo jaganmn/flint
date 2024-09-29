@@ -8,7 +8,7 @@ r <- 10L
 n <- (if (incl.unit.circle) 3L else 2L) * r
 tol <- 0x1p-4
 
-set.seed(0L)
+set.seed(0xabcdL)
 a    <- complex(modulus  = runif(n,     0, 1/tol),
                 argument = runif(n,     0,  2*pi))
 b    <- complex(modulus  = runif(n,     0, 1/tol),
@@ -28,7 +28,7 @@ stopifnot(all.equal(h2f1(1, 1, 2, z),
                     -log(1 - z)/z),
 ## http://dlmf.nist.gov/15.4.E2
           all.equal(h2f1(0.5, 1, 1.5, z^2),
-                    0.5 * (log(1 + z) - log(1 - z)) / z),
+                    0.5 * (log(1 + z) - log(1 - z))/z),
 ## http://dlmf.nist.gov/15.4.E3
           all.equal(h2f1(0.5, 1, 1.5, -z^2),
                     atan(z)/z),
