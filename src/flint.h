@@ -108,9 +108,9 @@ SEXPTYPE R_flint_sexptypes[6];
 extern
 const char *R_flint_classes[9];
 
-#if R_VERSION < R_Version(4, 4, 1)
+#if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP);
-#endif /* < 4.4.1 */
+#endif /* < 4.5.0 */
 
 char *R_alloc_snprintf(size_t, const char *, ...);
 

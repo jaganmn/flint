@@ -1,6 +1,6 @@
 #include "flint.h"
 
-#if R_VERSION < R_Version(4, 4, 1)
+#if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP x)
 {
     SET_ATTRIB(x, R_NilValue);
@@ -8,7 +8,7 @@ void CLEAR_ATTRIB(SEXP x)
     UNSET_S4_OBJECT(x);
 	return;
 }
-#endif /* < 4.4.1 */
+#endif /* < 4.5.0 */
 
 char *R_alloc_snprintf(size_t n, const char *format, ...)
 {
