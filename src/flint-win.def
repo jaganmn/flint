@@ -1,0 +1,3 @@
+LIBRARY flint.dll
+EXPORTS
+ R_init_flint
