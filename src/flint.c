@@ -1,4 +1,3 @@
-#include <flint/flint.h>
 #include "flint.h"
 
 void R_flint_abort(void)
@@ -40,11 +39,6 @@ void R_flint_set(SEXP object,
 	R_do_slot_assign(object, R_flint_symbol_dot_xdata, x);
 	UNPROTECT(2);
 	return;
-}
-
-SEXP R_flint_bits(void)
-{
-	return Rf_ScalarInteger(FLINT_BITS);
 }
 
 SEXP R_flint_class(SEXP object)

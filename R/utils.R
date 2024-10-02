@@ -1,4 +1,5 @@
 flintBits <- function () .Call(R_flint_bits)
+flintVersion <- function () .Call(R_flint_version)
 flintClass <- function (object) .Call(R_flint_class, object)
 flintNew <- function (class) .Call(R_flint_new, class)
 flintValid <- function (object) .Call(R_flint_valid, object)

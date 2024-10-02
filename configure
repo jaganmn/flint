@@ -2244,6 +2244,22 @@ ac_config_headers="$ac_config_headers src/config.h"
 
 
 
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_VERSION_MAJOR `echo "${PACKAGE_VERSION}" | cut -f 1 -d .`
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_VERSION_MINOR `echo "${PACKAGE_VERSION}" | cut -f 2 -d .`
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_VERSION_PATCHLEVEL `echo "${PACKAGE_VERSION}" | cut -f 3 -d .`
+_ACEOF
+
+
+
 
 
 

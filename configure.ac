@@ -7,6 +7,16 @@ AC_INIT([flint],
 AC_CONFIG_SRCDIR([man/flint-class.Rd])
 AC_CONFIG_HEADERS([src/config.h])
 
+AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MAJOR],
+                   [`echo "${PACKAGE_VERSION}" | cut -f 1 -d .`],
+                   [Define to the first field of the version string.])
+AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MINOR],
+                   [`echo "${PACKAGE_VERSION}" | cut -f 2 -d .`],
+                   [Define to the second field of the version string.])
+AC_DEFINE_UNQUOTED([PACKAGE_VERSION_PATCHLEVEL],
+                   [`echo "${PACKAGE_VERSION}" | cut -f 3 -d .`],
+                   [Define to the third field of the version string.])
+
 AC_ARG_VAR([FLINT_CPPFLAGS],
            [additional flags for the C preprocessor])
 AC_ARG_VAR([FLINT_CFLAGS],

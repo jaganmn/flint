@@ -1,0 +1,12 @@
+#! /bin/sh
+
+version=0.0.1
+v1=`echo "${version}" | cut -f 1 -d .`
+v2=`echo "${version}" | cut -f 2 -d .`
+v3=`echo "${version}" | cut -f 3 -d .`
+
+cp src/config.h.in src/config.h
+echo "#define PACKAGE_VERSION \"${version}\""   >> src/config.h
+echo "#define PACKAGE_VERSION_MAJOR      ${v1}" >> src/config.h
+echo "#define PACKAGE_VERSION_MINOR      ${v2}" >> src/config.h
+echo "#define PACKAGE_VERSION_PATCHLEVEL ${v3}" >> src/config.h

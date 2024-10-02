@@ -23,6 +23,7 @@ const char *R_flint_classes[] =
 { "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };
 
 SEXP R_flint_bits(void);
+SEXP R_flint_version(void);
 SEXP R_flint_class(SEXP);
 SEXP R_flint_new(SEXP);
 SEXP R_flint_valid(SEXP);
@@ -74,6 +75,7 @@ static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
 	CALL_ENTRY(R_flint_bits, 0),
+	CALL_ENTRY(R_flint_version, 0),
 	CALL_ENTRY(R_flint_class, 1),
 	CALL_ENTRY(R_flint_new, 1),
 	CALL_ENTRY(R_flint_valid, 1),

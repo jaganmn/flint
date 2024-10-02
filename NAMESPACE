@@ -5,6 +5,7 @@ exportClasses(flint, slong, ulong, fmpz, fmpq, arf, mag, arb, acb,
 exportMethods(as.raw, as.logical, as.integer, as.numeric, as.complex,
               as.list, as.expression, as.vector, coerce, initialize, length)
 export(flintBits,
+       flintVersion,
        acb_lambertw,
        acb_polygamma,
        acb_dirichlet_zeta,
