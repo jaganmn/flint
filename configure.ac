@@ -48,6 +48,22 @@ AC_CHECK_HEADER([mpfr.h], [],
 AC_CHECK_HEADER([flint/flint.h], [],
                 [AC_MSG_ERROR([FLINT not found, see https://flintlib.org/])])
 
+AC_MSG_CHECKING([for FLINT_BITS consistent with mp_limb_t])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <limits.h>
+#include <gmp.h>
+#include <flint/flint.h>
+int main()
+{
+	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t);
+}
+                  ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [
+                   AC_MSG_RESULT([no])
+                   AC_MSG_FAILURE([FLINT and GNU MP installations seem incompatible])
+                  ])
+
 FLINT_LIBS=${LIBS}
 
 AC_SUBST(FLINT_CPPFLAGS)

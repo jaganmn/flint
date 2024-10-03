@@ -3519,6 +3519,37 @@ esac
 fi
 
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for FLINT_BITS consistent with mp_limb_t" >&5
+printf %s "checking for FLINT_BITS consistent with mp_limb_t... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <limits.h>
+#include <gmp.h>
+#include <flint/flint.h>
+int main()
+{
+	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error $? "FLINT and GNU MP installations seem incompatible
+See 'config.log' for more details" "$LINENO" 5; }
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
 FLINT_LIBS=${LIBS}
 
 
