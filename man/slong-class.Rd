@@ -11,6 +11,8 @@
 \alias{coerce,nulong,ulong-method}
 \alias{coerce,slong,nslong-method}
 \alias{coerce,ulong,nulong-method}
+\alias{format,slong-method}
+\alias{format,ulong-method}
 \alias{initialize,slong-method}
 \alias{initialize,ulong-method}
 \alias{flintBits}

@@ -9,6 +9,8 @@
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
 \alias{length,flint-method}
+\alias{print,flint-method}
+\alias{show,flint-method}
 \title{Class of FLINT-Type Vectors}
 \docType{class}
 \description{
@@ -51,6 +53,13 @@
       \code{2^.Machine[["double.digits"]]-1} and is not exactly
       representable, then a warning is signaled to indicate that the
       return value is an implementation-defined rounded length.}
+    \item{\code{print}}{
+      \code{signature(x = "flint")}:\cr
+      prints \code{\link{format}(x)} and returns \code{x} invisibly.}
+    \item{\code{show}}{
+      \code{signature(object = "flint")}:\cr
+      prints \code{\link{format}(object)} and returns \code{NULL}
+      invisibly.}
   }
 }
 \seealso{

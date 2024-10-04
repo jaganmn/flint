@@ -19,3 +19,8 @@ setAs("nulong", "ulong",
 setAs("ulong", "nulong",
       function (from)
           .Call(R_flint_ulong_nulong, from))
+
+setMethod("format",
+          c(x = "ulong"),
+          function (x, ...)
+              .Call(R_flint_ulong_format, x))

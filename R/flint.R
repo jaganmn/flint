@@ -34,3 +34,33 @@ setMethod("as.expression",
 setMethod("length",
           c(x = "flint"),
           function (x) flintLength(x))
+
+setMethod("print",
+          c(x = "flint"),
+          function (x, quote = FALSE, max = NULL, ...) {
+              s <- flintTriple(x)
+              cat(gettextf("class '%s', address %s, length %s",
+                           s[1L], s[2L], s[3L]),
+                  "\n", sep = "")
+              len <- length(x)
+              if (len > 0L) {
+                  if (is.null(max))
+                      max <- getOption("max.print", 99999L)
+                  if (len <= max)
+                      print.default(format(x), quote = quote, max = max, ...)
+                  else {
+                      print.default(format(x[seq_len(max)]), quote = quote, max = max, ...)
+                      cat(gettextf(" [ reached '%s' / getOption(\"%s\") -- omitted %f entries ]",
+                                   "max", "max.print", len - trunc(max)),
+                          "\n", sep = "")
+                  }
+              }
+              invisible(x)
+          })
+
+setMethod("show",
+          c(object = "flint"),
+          function (object) {
+              print(object, quote = FALSE)
+              invisible(NULL)
+          })

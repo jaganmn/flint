@@ -107,3 +107,30 @@ SEXP R_flint_slong_vector(SEXP from)
 	UNPROTECT(1);
 	return to;
 }
+
+SEXP R_flint_slong_format(SEXP from)
+{
+	unsigned long long int i, n = R_flint_get_length(from);
+	if (n > R_XLEN_T_MAX)
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
+		         "slong", (long long int) R_XLEN_T_MAX);
+	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	slong *x = (slong *) R_flint_get_pointer(from);
+#if FLINT64
+	/* needs to hold WORD_MIN = -2^63 and null */
+	char buffer[21];
+#else
+	/* needs to hold WORD_MIN = -2^31 and null */
+	char buffer[12];
+#endif
+	for (i = 0; i < n; ++i) {
+#if FLINT64
+		snprintf(buffer, 21, "%lld", (long long int) x[i]);
+#else
+		snprintf(buffer, 12,   "%d",           (int) x[i]);
+#endif
+		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+	}
+	UNPROTECT(1);
+	return to;
+}

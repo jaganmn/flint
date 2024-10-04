@@ -90,3 +90,17 @@ SEXP R_flint_length(SEXP object)
 	}
 	return ans;
 }
+
+SEXP R_flint_triple(SEXP object)
+{
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, 3));
+	char buffer[64];
+	snprintf(buffer, 64,   "%s", R_flint_get_class  (object));
+	SET_STRING_ELT(ans, 0, Rf_mkChar(buffer));
+	snprintf(buffer, 64,   "%p", R_flint_get_pointer(object));
+	SET_STRING_ELT(ans, 1, Rf_mkChar(buffer));
+	snprintf(buffer, 64, "%llu", R_flint_get_length (object));
+	SET_STRING_ELT(ans, 2, Rf_mkChar(buffer));
+	UNPROTECT(1);
+	return ans;
+}

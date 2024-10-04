@@ -20,3 +20,7 @@ setAs("slong", "nslong",
       function (from)
           .Call(R_flint_slong_nslong, from))
 
+setMethod("format",
+          c(x = "slong"),
+          function (x, ...)
+              .Call(R_flint_slong_format, x))
