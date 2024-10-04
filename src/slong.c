@@ -47,9 +47,9 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			if (!R_FINITE(tmp))
 			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
 #if FLINT64
-			else if (tmp < WORD_MIN || tmp > WORD_MAX)
+			else if (tmp <  -0x1.0p+63       || tmp >= 0x1.0p+63)
 #else
-			else if (tmp <= WORD_MIN - 1.0 || tmp >= WORD_MAX + 1.0)
+			else if (tmp <= -0x1.0p+31 - 1.0 || tmp >= 0x1.0p+31)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "slong");
 			else

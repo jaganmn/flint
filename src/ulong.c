@@ -49,9 +49,9 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			if (!R_FINITE(tmp))
 			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "ulong");
 #if FLINT64
-			else if (tmp <= -1.0 || tmp > UWORD_MAX)
+			else if (tmp <= -1.0 || tmp >= 0x1.0p+64)
 #else
-			else if (tmp <= -1.0 || tmp >= UWORD_MAX + 1.0)
+			else if (tmp <= -1.0 || tmp >= 0x1.0p+32)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 			else
