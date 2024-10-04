@@ -19,3 +19,11 @@ setAs("nfmpz", "fmpz",
 setAs("fmpz", "nfmpz",
       function (from)
           .Call(R_flint_fmpz_nfmpz, from))
+
+setMethod("format",
+          c(x = "fmpz"),
+          function (x, ...) {
+              file <- tempfile()
+              on.exit(unlink(file))
+              .Call(R_flint_fmpz_format, x, file)
+          })

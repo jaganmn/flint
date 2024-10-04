@@ -116,3 +116,40 @@ SEXP R_flint_fmpz_vector(SEXP from)
 	UNPROTECT(1);
 	return to;
 }
+
+SEXP R_flint_fmpz_format(SEXP from, SEXP file)
+{
+	unsigned long long int i, n = R_flint_get_length(from);
+	if (n > R_XLEN_T_MAX)
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
+		         "slong", (long long int) R_XLEN_T_MAX);
+	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	fmpz *x = (fmpz *) R_flint_get_pointer(from);
+	FILE *f;
+	if (!(f = fopen(CHAR(STRING_ELT(file, 0)), "w")))
+		Rf_error(_("failed to open file for writing"));
+	int nc, ncmax = 0;
+	for (i = 0; i < n; ++i) {
+		nc = fmpz_fprint(f, x + i);
+		if (nc > ncmax)
+			ncmax = nc;
+		fputc('\n', f);
+	}
+	fclose(f);
+	if (!(f = fopen(CHAR(STRING_ELT(file, 0)), "r")))
+		Rf_error(_("failed to open file for reading"));
+	char c, *buffer = R_alloc((size_t) ncmax + 1, 1);
+	for (i = 0; i < n; ++i) {
+		nc = 0;
+		while ((c = fgetc(f)) != '\n')
+			++nc;
+		fseek(f, -nc - 1, SEEK_CUR);
+		memset(buffer, ' ', (size_t) (ncmax - nc));
+		fread(buffer + (ncmax - nc), 1, (size_t) nc + 1, f);
+		buffer[ncmax] = '\0';
+		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+	}
+	fclose(f);
+	UNPROTECT(1);
+	return to;
+}

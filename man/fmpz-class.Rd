@@ -5,6 +5,7 @@
 \alias{coerce,vector,fmpz-method}
 \alias{coerce,nfmpz,fmpz-method}
 \alias{coerce,fmpz,nfmpz-method}
+\alias{format,fmpz-method}
 \alias{initialize,fmpz-method}
 \title{Class of Vectors of Arbitrary Precision Integers}
 \docType{class}
