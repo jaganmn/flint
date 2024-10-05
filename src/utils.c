@@ -90,3 +90,32 @@ unsigned long long int asLength(SEXP length, const char *where)
 	Rf_error(_("invalid '%s' in '%s'"), "length", where);
 	return 0ull;
 }
+
+int asBase(SEXP base, const char *where)
+{
+	switch (TYPEOF(base)) {
+	case INTSXP:
+	{
+		int *s = INTEGER(base);
+		if (XLENGTH(base) >= 1 &&
+		    ((s[0] >= -36 && s[0] <= -2) || (s[0] >= 2 && s[0] <= 62)))
+			return (s[0] >= 2 && s[0] <= 36) ? -s[0] : s[0];
+	}
+	}
+	Rf_error(_("invalid '%s' in '%s'"), "base", where);
+	return 0;
+}
+
+size_t asDigits(SEXP digits, const char *where)
+{
+	switch (TYPEOF(digits)) {
+	case INTSXP:
+	{
+		int *s = INTEGER(digits);
+		if (XLENGTH(digits) >= 1 && s[0] >= 0)
+			return (size_t) s[0];
+	}
+	}
+	Rf_error(_("invalid '%s' in '%s'"), "digits", where);
+	return 0u;
+}
