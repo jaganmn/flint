@@ -22,5 +22,5 @@ setAs("slong", "nslong",
 
 setMethod("format",
           c(x = "slong"),
-          function (x, ...)
-              .Call(R_flint_slong_format, x))
+          function (x, base = 10L, ...)
+              .Call(R_flint_slong_format, x, base))

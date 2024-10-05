@@ -1,3 +1,4 @@
+#include <gmp.h>
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include "flint.h"
@@ -117,39 +118,55 @@ SEXP R_flint_fmpz_vector(SEXP from)
 	return to;
 }
 
-SEXP R_flint_fmpz_format(SEXP from, SEXP file)
+SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "slong", (long long int) R_XLEN_T_MAX);
+		         "fmpz", (long long int) R_XLEN_T_MAX);
+	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	fmpz *x = (fmpz *) R_flint_get_pointer(from);
-	FILE *f;
-	if (!(f = fopen(CHAR(STRING_ELT(file, 0)), "w")))
-		Rf_error(_("failed to open file for writing"));
-	int nc, ncmax = 0;
+	size_t ns, nc, ncmax = 0;
+	mpz_t z;
+	mpz_ptr tmp;
+	mpz_init(z);
+
+#define FORMAT_INIT(i) \
+	do { \
+		if (COEFF_IS_MPZ(x[i])) \
+			tmp = COEFF_TO_PTR(x[i]); \
+		else { \
+			mpz_set_si(z, x[i]); \
+			tmp = &z[0]; \
+		} \
+		nc = mpz_sizeinbase(tmp, abase) + (mpz_sgn(tmp) < 0); \
+	} while (0)
+
 	for (i = 0; i < n; ++i) {
-		nc = fmpz_fprint(f, x + i);
+		FORMAT_INIT(i);
 		if (nc > ncmax)
 			ncmax = nc;
-		fputc('\n', f);
 	}
-	fclose(f);
-	if (!(f = fopen(CHAR(STRING_ELT(file, 0)), "r")))
-		Rf_error(_("failed to open file for reading"));
-	char c, *buffer = R_alloc((size_t) ncmax + 1, 1);
+	char *buffer = R_alloc(ncmax + 1, 1);
+	memset(buffer, 0, ncmax + 1);
 	for (i = 0; i < n; ++i) {
-		nc = 0;
-		while ((c = fgetc(f)) != '\n')
-			++nc;
-		fseek(f, -nc - 1, SEEK_CUR);
-		memset(buffer, ' ', (size_t) (ncmax - nc));
-		fread(buffer + (ncmax - nc), 1, (size_t) nc + 1, f);
-		buffer[ncmax] = '\0';
+		FORMAT_INIT(i);
+		ns = ncmax - nc;
+		if (ns > 0 && buffer[ns - 1] != ' ')
+			memset(buffer, ' ', ns);
+		mpz_get_str(buffer + ns, base, tmp);
+		if (buffer[ncmax - 1] == '\0') {
+			/* mpz_sizeinbase() was off by 1 : */
+			memmove(buffer + ns + 1, buffer + ns, nc);
+			buffer[ns] = ' ';
+		}
 		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
 	}
-	fclose(f);
+
+#undef FORMAT_INIT
+
+	mpz_clear(z);
 	UNPROTECT(1);
 	return to;
 }

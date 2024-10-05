@@ -23,3 +23,8 @@ setAs("nfmpq", "fmpq",
 setAs("fmpq", "nfmpq",
       function (from)
           .Call(R_flint_fmpq_nfmpq, from))
+
+setMethod("format",
+          c(x = "fmpq"),
+          function (x, base = 10L, ...)
+              .Call(R_flint_fmpq_format, x, base))

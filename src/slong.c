@@ -1,3 +1,4 @@
+#include <gmp.h>
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include "flint.h"
@@ -108,29 +109,35 @@ SEXP R_flint_slong_vector(SEXP from)
 	return to;
 }
 
-SEXP R_flint_slong_format(SEXP from)
+SEXP R_flint_slong_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "slong", (long long int) R_XLEN_T_MAX);
+	int base = asBase(s_base, __func__);
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	slong *x = (slong *) R_flint_get_pointer(from);
-#if FLINT64
-	/* needs to hold WORD_MIN = -2^63 and null */
-	char buffer[21];
-#else
-	/* needs to hold WORD_MIN = -2^31 and null */
-	char buffer[12];
-#endif
+	size_t nc, ncmax = 0;
+	mpz_t z;
+	mpz_init(z);
 	for (i = 0; i < n; ++i) {
-#if FLINT64
-		snprintf(buffer, 21, "%lld", (long long int) x[i]);
-#else
-		snprintf(buffer, 12,   "%d",           (int) x[i]);
-#endif
+		mpz_set_si(z, x[i]);
+		nc = mpz_sizeinbase(z, base) + (mpz_sgn(z) < 0);
+		if (nc < ncmax)
+			ncmax = nc;
+	}
+	char *buffer = R_alloc(ncmax + 1, 1);
+	memset(buffer, 0, ncmax + 2);
+	for (i = 0; i < n; ++i) {
+		mpz_set_si(z, x[i]);
+		nc = ncmax - mpz_sizeinbase(z, base) - (mpz_sgn(z) < 0);
+		if (nc > 0 && buffer[nc - 1] != ' ')
+			memset(buffer, ' ', nc);
+		mpz_get_str(buffer + nc, base, z);
 		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
 	}
+	mpz_clear(z);
 	UNPROTECT(1);
 	return to;
 }

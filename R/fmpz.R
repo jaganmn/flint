@@ -22,8 +22,5 @@ setAs("fmpz", "nfmpz",
 
 setMethod("format",
           c(x = "fmpz"),
-          function (x, ...) {
-              file <- tempfile()
-              on.exit(unlink(file))
-              .Call(R_flint_fmpz_format, x, file)
-          })
+          function (x, base = 10L, ...)
+              .Call(R_flint_fmpz_format, x, base))

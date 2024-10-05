@@ -1,3 +1,4 @@
+#include <gmp.h>
 #include <flint/flint.h>
 #include <flint/fmpq.h>
 #include "flint.h"
@@ -203,6 +204,76 @@ SEXP R_flint_fmpq_vector(SEXP from)
 	}
 	fmpz_clear(lb);
 	fmpz_clear(ub);
+	UNPROTECT(1);
+	return to;
+}
+
+SEXP R_flint_fmpq_format(SEXP from, SEXP s_base)
+{
+	unsigned long long int i, n = R_flint_get_length(from);
+	if (n > R_XLEN_T_MAX)
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
+		         "fmpq", (long long int) R_XLEN_T_MAX);
+	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
+	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	fmpq *x = (fmpq *) R_flint_get_pointer(from);
+	size_t ns, nc, ncmaxp = 0, ncmaxq = 0;
+	mpz_t z;
+	mpz_ptr tmp;
+	mpz_init(z);
+
+#define FORMAT_INIT(i, ref) \
+	do { \
+		if (COEFF_IS_MPZ(ref(x + i)[0])) \
+			tmp = COEFF_TO_PTR(ref(x + i)[0]); \
+		else { \
+			mpz_set_si(z, ref(x + i)[0]); \
+			tmp = &z[0]; \
+		} \
+		nc = mpz_sizeinbase(tmp, abase) + (mpz_sgn(tmp) < 0); \
+	} while (0)
+
+	for (i = 0; i < n; ++i) {
+		FORMAT_INIT(i, fmpq_numref);
+		if (nc > ncmaxp)
+			ncmaxp = nc;
+		FORMAT_INIT(i, fmpq_denref);
+		if (nc > ncmaxq)
+			ncmaxq = nc;
+	}
+	char *buffer = R_alloc(1 + ncmaxp + 1 + ncmaxq + 2, 1),
+		*bufferp = buffer + 1, *bufferq = buffer + 1 + ncmaxp + 1;
+	memset(buffer, 0, 1 + ncmaxp + 1 + ncmaxq + 2);
+	buffer[0] = '(';
+	for (i = 0; i < n; ++i) {
+
+#define FORMAT_BUFF(buffer, ncmax, end) \
+		do { \
+			ns = ncmax - nc; \
+			if (ns > 0 && buffer[ns - 1] != ' ') \
+				memset(buffer, ' ', ns); \
+			mpz_get_str(buffer + ns, base, tmp); \
+			if (buffer[ncmax - 1] == '\0') { \
+				/* mpz_sizeinbase() was off by 1 : */ \
+				memmove(buffer + ns + 1, buffer + ns, nc); \
+				buffer[ns] = ' '; \
+			} \
+			buffer[ncmax] = end; \
+		} while (0)
+
+		FORMAT_INIT(i, fmpq_numref);
+		FORMAT_BUFF(bufferp, ncmaxp, '/');
+		FORMAT_INIT(i, fmpq_denref);
+		FORMAT_BUFF(bufferq, ncmaxq, ')');
+		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+
+#undef FORMAT_BUFF
+
+	}
+
+#undef FORMAT_INIT
+
+	mpz_clear(z);
 	UNPROTECT(1);
 	return to;
 }

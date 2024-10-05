@@ -5,6 +5,7 @@
 \alias{coerce,vector,fmpq-method}
 \alias{coerce,nfmpq,fmpq-method}
 \alias{coerce,fmpq,nfmpq-method}
+\alias{format,fmpq-method}
 \alias{initialize,fmpq-method}
 \alias{length,nfmpq-method}
 \title{Class of Vectors of Rational Numbers}

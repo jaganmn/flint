@@ -22,5 +22,5 @@ setAs("ulong", "nulong",
 
 setMethod("format",
           c(x = "ulong"),
-          function (x, ...)
-              .Call(R_flint_ulong_format, x))
+          function (x, base = 10L, ...)
+              .Call(R_flint_ulong_format, x, base))
