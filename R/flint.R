@@ -39,7 +39,7 @@ setMethod("print",
           c(x = "flint"),
           function (x, quote = FALSE, max = NULL, ...) {
               s <- flintTriple(x)
-              cat(gettextf("class '%s', address %s, length %s",
+              cat(gettextf("class '%s', length %s, address %s",
                            s[1L], s[2L], s[3L]),
                   "\n", sep = "")
               len <- length(x)
