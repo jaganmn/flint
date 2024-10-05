@@ -197,7 +197,7 @@ SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "acb", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(newObject("nacb")),
 		real = PROTECT(R_do_slot(to, R_flint_symbol_real)),
 		imag = PROTECT(R_do_slot(to, R_flint_symbol_imag)),
@@ -270,7 +270,7 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "acb", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acb_ptr x = (acb_ptr) R_flint_get_pointer(from);
 	Rcomplex *y = COMPLEX(to);

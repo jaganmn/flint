@@ -112,7 +112,7 @@ SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arb", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(newObject("narb")),
 		mid = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n)),
 		rad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
@@ -162,7 +162,7 @@ SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arb", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arb_ptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);

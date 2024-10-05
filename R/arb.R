@@ -6,7 +6,7 @@ setMethod("initialize",
 setMethod("as.vector",
           c(x = "arb"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_arb_vector, x, "down"), mode))
+              as.vector(.Call(R_flint_arb_vector, x, "Z"), mode))
 
 setMethod("length",
           c(x = "narb"),
@@ -22,4 +22,4 @@ setAs("narb", "arb",
 
 setAs("arb", "narb",
       function (from)
-          .Call(R_flint_arb_narb, from, "down"))
+          .Call(R_flint_arb_narb, from, "Z"))

@@ -7,7 +7,7 @@
 #include <stdarg.h> /* va_list, va_start, ... */
 #include <stddef.h> /* size_t */
 #include <stdio.h> /* vsnprintf */
-#include <string.h> /* strcmp */
+#include <string.h> /* memset, memcpy, memmove */
 
 #include <Rconfig.h> /* ENABLE_NLS */
 
@@ -123,7 +123,7 @@ SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
 unsigned long long int asLength(SEXP, const char *);
-int asRnd(SEXP, const char *);
+int asRnd(SEXP, int, const char *);
 
 void *R_flint_get_pointer(SEXP);
 unsigned long long int R_flint_get_length(SEXP);

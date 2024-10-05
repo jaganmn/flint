@@ -9,7 +9,7 @@ setMethod("initialize",
 setMethod("as.vector",
           c(x = "acb"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_acb_vector, x, "down"), mode))
+              as.vector(.Call(R_flint_acb_vector, x, "Z"), mode))
 
 setMethod("length",
           c(x = "nacb"),
@@ -27,4 +27,4 @@ setAs("nacb", "acb",
 
 setAs("acb", "nacb",
       function (from)
-          .Call(R_flint_acb_nacb, from, "down"))
+          .Call(R_flint_acb_nacb, from, "Z"))

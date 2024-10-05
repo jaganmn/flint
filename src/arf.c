@@ -1,22 +1,24 @@
+#include <mpfr.h>
 #include <flint/flint.h>
 #include <flint/arf.h>
 #include "flint.h"
 
-int asRnd(SEXP rnd, const char *where)
+int asRnd(SEXP rnd, int gnu, const char *where)
 {
 	if (TYPEOF(rnd) == STRSXP && XLENGTH(rnd) > 0 &&
 	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING) {
-		const char *s = CHAR(rnd);
-		if (strcmp(s, "down") == 0)
-			return ARF_RND_DOWN;
-		else if (strcmp(s, "up") == 0)
-			return ARF_RND_UP;
-		else if (strcmp(s, "floor") == 0)
-			return ARF_RND_FLOOR;
-		else if (strcmp(s, "ceil") == 0)
-			return ARF_RND_CEIL;
-		else if (strcmp(s, "near") == 0)
-			return ARF_RND_NEAR;
+		switch (CHAR(rnd)[0]) {
+		case 'N': case 'n':
+			return (gnu) ? MPFR_RNDN : ARF_RND_NEAR;
+		case 'Z': case 'z':
+			return (gnu) ? MPFR_RNDZ : ARF_RND_DOWN;
+		case 'U': case 'u':
+			return (gnu) ? MPFR_RNDU : ARF_RND_CEIL;
+		case 'D': case 'd':
+			return (gnu) ? MPFR_RNDD : ARF_RND_FLOOR;
+		case 'A': case 'a':
+			return (gnu) ? MPFR_RNDA : ARF_RND_UP;
+		}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "rnd", where);
 	return 0;
@@ -83,7 +85,7 @@ SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arf", (long long int) R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n));
 	arf_ptr x = (arf_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);

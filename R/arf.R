@@ -6,7 +6,7 @@ setMethod("initialize",
 setMethod("as.vector",
           c(x = "arf"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_arf_vector, x, "down"), mode))
+              as.vector(.Call(R_flint_arf_vector, x, "Z"), mode))
 
 setAs("vector", "arf",
       function (from)
@@ -18,4 +18,4 @@ setAs("narf", "arf",
 
 setAs("arf", "narf",
       function (from)
-          .Call(R_flint_arf_narf, from, "down"))
+          .Call(R_flint_arf_narf, from, "Z"))
