@@ -65,7 +65,7 @@ SEXP R_flint_valid(SEXP object)
 	if (XLENGTH(length) != 2)
 		return INVALID(_("length of protected field is not %d"), 2);
 	int length0 = INTEGER(length)[0] == 0 && INTEGER(length)[1] == 0;
-	if ((R_ExternalPtrAddr(object) == 0) != length0)
+	if ((R_ExternalPtrAddr(x) == 0) != length0)
 		return INVALID((length0)
 		               ? _("length is zero and pointer field is non-zero")
 		               : _("length is non-zero and pointer field is zero"));
