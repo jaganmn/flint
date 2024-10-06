@@ -23,7 +23,6 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
-		/* nothing to do */
 		break;
 	case RAWSXP:
 	case LGLSXP:
@@ -111,32 +110,39 @@ SEXP R_flint_ulong_vector(SEXP from)
 	return to;
 }
 
+/* NB: mpz_sizeinbase() can be 1 too big for bases not equal to power of 2 */
 SEXP R_flint_ulong_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "ulong", (long long int) R_XLEN_T_MAX);
-	int base = asBase(s_base, __func__);
+	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	ulong *x = (ulong *) R_flint_get_pointer(from);
-	size_t nc, ncmax = 0;
+	ulong *x = (ulong *) R_flint_get_pointer(from), xmax = 0;
+	for (i = 0; i < n; ++i)
+		if (x[i] > xmax)
+			xmax = x[i];
+	size_t ns, nc, ncmax;
 	mpz_t z;
 	mpz_init(z);
+	mpz_set_ui(z, xmax);
+	char *buffer = R_alloc(mpz_sizeinbase(z, abase) + 2, 1);
+	mpz_get_str(buffer, base, z);
+	ncmax = strlen(buffer);
 	for (i = 0; i < n; ++i) {
 		mpz_set_ui(z, x[i]);
-		nc = mpz_sizeinbase(z, base);
-		if (nc < ncmax)
-			ncmax = nc;
-	}
-	char *buffer = R_alloc(ncmax + 1, 1);
-	memset(buffer, 0, ncmax + 2);
-	for (i = 0; i < n; ++i) {
-		mpz_set_si(z, x[i]);
-		nc = ncmax - mpz_sizeinbase(z, base);
-		if (nc > 0 && buffer[nc - 1] != ' ')
-			memset(buffer, ' ', nc);
-		mpz_get_str(buffer + nc, base, z);
+		nc = mpz_sizeinbase(z, abase);
+		if (nc > ncmax)
+			nc = ncmax;
+		ns = ncmax - nc;
+		if (ns > 0 && buffer[ns - 1] != ' ')
+			memset(buffer, ' ', ns);
+		mpz_get_str(buffer + ns, base, z);
+		if (buffer[ncmax - 1] == '\0') {
+			memmove(buffer + ns + 1, buffer + ns, nc);
+			buffer[ns] = ' ';
+		}
 		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
 	}
 	mpz_clear(z);

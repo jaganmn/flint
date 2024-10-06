@@ -118,6 +118,20 @@ SEXP R_flint_fmpz_vector(SEXP from)
 	return to;
 }
 
+static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
+{
+	if (COEFF_IS_MPZ(x))
+		return COEFF_TO_PTR(x);
+	else {
+		mpz_set_si(work, x);
+		return work;
+	}
+}
+
+#define AMIN2(a, b) ((fmpz_cmpabs(a, b) <= 0) ? a : b)
+#define AMAX2(a, b) ((fmpz_cmpabs(a, b) >= 0) ? a : b)
+
+/* NB: mpz_sizeinbase() can be 1 too big for bases not equal to power of 2 */
 SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int i, n = R_flint_get_length(from);
@@ -126,47 +140,41 @@ SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	fmpz *x = (fmpz *) R_flint_get_pointer(from);
-	size_t ns, nc, ncmax = 0;
-	mpz_t z;
-	mpz_ptr tmp;
-	mpz_init(z);
-
-#define FORMAT_INIT(i) \
-	do { \
-		if (COEFF_IS_MPZ(x[i])) \
-			tmp = COEFF_TO_PTR(x[i]); \
-		else { \
-			mpz_set_si(z, x[i]); \
-			tmp = &z[0]; \
-		} \
-		nc = mpz_sizeinbase(tmp, abase) + (mpz_sgn(tmp) < 0); \
-	} while (0)
-
+	fmpz *x = (fmpz *) R_flint_get_pointer(from), xmin = 0, xmax = 0;
 	for (i = 0; i < n; ++i) {
-		FORMAT_INIT(i);
-		if (nc > ncmax)
-			ncmax = nc;
+		if (fmpz_cmp(x + i, &xmax) > 0)
+			xmax = x[i];
+		else if (fmpz_cmp(x + i, &xmin) < 0)
+			xmin = x[i];
 	}
-	char *buffer = R_alloc(ncmax + 1, 1);
-	memset(buffer, 0, ncmax + 1);
+	size_t ns, nc, ncmax;
+	mpz_ptr z;
+	mpz_t work;
+	mpz_init(work);
+	z = as_mpz_ptr(AMAX2(&xmin, &xmax)[0], work);
+	char *buffer = R_alloc(mpz_sizeinbase(z, abase) + 2, 1);
+	mpz_get_str(buffer, base, z);
+	ncmax = strlen(buffer);
+	z = as_mpz_ptr(AMIN2(&xmin, &xmax)[0], work);
+	mpz_get_str(buffer, base, z);
+	if (buffer[ncmax] != '\0')
+		ncmax = strlen(buffer);
 	for (i = 0; i < n; ++i) {
-		FORMAT_INIT(i);
+		z = as_mpz_ptr(x[i], work);
+		nc = mpz_sizeinbase(z, abase) + (mpz_sgn(z) < 0);
+		if (nc > ncmax)
+			nc = ncmax;
 		ns = ncmax - nc;
 		if (ns > 0 && buffer[ns - 1] != ' ')
 			memset(buffer, ' ', ns);
-		mpz_get_str(buffer + ns, base, tmp);
+		mpz_get_str(buffer + ns, base, z);
 		if (buffer[ncmax - 1] == '\0') {
-			/* mpz_sizeinbase() was off by 1 : */
 			memmove(buffer + ns + 1, buffer + ns, nc);
 			buffer[ns] = ' ';
 		}
 		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
 	}
-
-#undef FORMAT_INIT
-
-	mpz_clear(z);
+	mpz_clear(work);
 	UNPROTECT(1);
 	return to;
 }
