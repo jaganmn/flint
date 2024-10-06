@@ -7,9 +7,9 @@
 #include <stdarg.h> /* va_list, va_start, ... */
 #include <stddef.h> /* size_t */
 #include <stdio.h> /* vsnprintf */
-#include <string.h> /* memset, memcpy, memmove */
+#include <string.h> /* strlen, memset, memcpy, memmove */
 
-#include <Rconfig.h> /* ENABLE_NLS */
+#include <Rconfig.h> /* R_INLINE, ENABLE_NLS */
 
 #ifdef ENABLE_NLS
 # include <libintl.h> /* dgettext, dngettext */
@@ -125,6 +125,7 @@ const char *checkClass(SEXP, const char **, const char *);
 unsigned long long int asLength(SEXP, const char *);
 int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
+const char *asSep(SEXP, const char *);
 int asRnd(SEXP, int, const char *);
 
 void *R_flint_get_pointer(SEXP);

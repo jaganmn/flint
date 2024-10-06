@@ -12,12 +12,12 @@ void CLEAR_ATTRIB(SEXP x)
 
 char *R_alloc_snprintf(size_t n, const char *format, ...)
 {
-	char *buf = R_alloc(n, sizeof(char));
+	char *buffer = R_alloc(n, sizeof(char));
 	va_list args;
 	va_start(args, format);
-	vsnprintf(buf, n, format, args);
+	vsnprintf(buffer, n, format, args);
 	va_end(args);
-	return buf;
+	return buffer;
 }
 
 void ucopy(unsigned long long int *u, unsigned int *uu, int from)
@@ -118,4 +118,18 @@ size_t asDigits(SEXP digits, const char *where)
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "digits", where);
 	return 0u;
+}
+
+const char *asSep(SEXP sep, const char *where)
+{
+	switch (TYPEOF(sep)) {
+	case STRSXP:
+	{
+		if (XLENGTH(sep) >= 1 && (sep = STRING_ELT(sep, 0)) != NA_STRING &&
+		    CHAR(sep)[0] != '\0')
+			return CHAR(sep);
+	}
+	}
+	Rf_error(_("invalid '%s' in '%s'"), "sep", where);
+	return (const char *) 0;
 }
