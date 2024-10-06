@@ -20,20 +20,6 @@ char *R_alloc_snprintf(size_t n, const char *format, ...)
 	return buffer;
 }
 
-void ucopy(unsigned long long int *u, unsigned int *uu, int from)
-{
-	if (from != 0) {
-		/* uu -> u */
-		u[0] = (unsigned long long int) uu[1] << (sizeof(int) * CHAR_BIT) |
-			(unsigned long long int) uu[0];
-	} else {
-		/* u -> uu */
-		uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
-		uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
-	}
-	return;
-}
-
 SEXP newObject(const char *what)
 {
 	SEXP class = PROTECT(R_do_MAKE_CLASS(what)),
@@ -132,4 +118,18 @@ const char *asSep(SEXP sep, const char *where)
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "sep", where);
 	return (const char *) 0;
+}
+
+void ucopy(unsigned long long int *u, unsigned int *uu, int from)
+{
+	if (from != 0) {
+		/* uu -> u */
+		u[0] = (unsigned long long int) uu[1] << (sizeof(int) * CHAR_BIT) |
+			(unsigned long long int) uu[0];
+	} else {
+		/* u -> uu */
+		uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
+		uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
+	}
+	return;
 }

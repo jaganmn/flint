@@ -114,8 +114,6 @@ void CLEAR_ATTRIB(SEXP);
 
 char *R_alloc_snprintf(size_t, const char *, ...);
 
-void ucopy(unsigned long long int *, unsigned int *, int);
-
 SEXP newObject(const char *);
 SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 
@@ -127,6 +125,8 @@ int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
 const char *asSep(SEXP, const char *);
 int asRnd(SEXP, int, const char *);
+
+void ucopy(unsigned long long int *, unsigned int *, int);
 
 void *R_flint_get_pointer(SEXP);
 unsigned long long int R_flint_get_length(SEXP);
