@@ -207,6 +207,16 @@ SEXP R_flint_fmpq_vector(SEXP from)
 	return to;
 }
 
+SEXP R_flint_fmpq_num(SEXP from)
+{
+	THISPART(num, fmpq, fmpz, fmpq *, fmpz *, fmpz);
+}
+
+SEXP R_flint_fmpq_den(SEXP from)
+{
+	THISPART(den, fmpq, fmpz, fmpq *, fmpz *, fmpz);
+}
+
 static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
 {
 	if (COEFF_IS_MPZ(x))

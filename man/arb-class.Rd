@@ -6,6 +6,7 @@
 \alias{coerce,narb,arb-method}
 \alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}
+\alias{format,arb-method}
 \alias{length,narb-method}
 \title{Class of Real Numbers with Error Bounds}
 \docType{class}

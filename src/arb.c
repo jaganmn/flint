@@ -189,3 +189,13 @@ SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 	UNPROTECT(1);
 	return to;
 }
+
+SEXP R_flint_arb_mid(SEXP from)
+{
+	THISPART(mid, arb, arf, arb_ptr, arf_ptr, arf_t);
+}
+
+SEXP R_flint_arb_rad(SEXP from)
+{
+	THISPART(rad, arb, mag, arb_ptr, mag_ptr, mag_t);
+}

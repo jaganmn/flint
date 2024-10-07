@@ -23,3 +23,18 @@ setAs("narb", "arb",
 setAs("arb", "narb",
       function (from)
           .Call(R_flint_arb_narb, from, "Z"))
+
+Mid <- function (x) .Call(R_flint_arb_mid, x)
+Rad <- function (x) .Call(R_flint_arb_rad, x)
+
+setMethod("format",
+          c(x = "arb"),
+          function (x, base = 10L, digits = NULL, sep = NULL,
+                    rnd = c("N", "A"), ...)
+              paste0("(",
+                     format(Mid(x), base = base, digits = digits, sep = sep,
+                            rnd = rnd[[1L]], ...),
+                     " +/- ",
+                     format(Rad(x), base = base, digits = digits, sep = sep,
+                            rnd = rnd[[2L]], ...),
+                     ")"))

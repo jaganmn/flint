@@ -24,7 +24,21 @@ setAs("fmpq", "nfmpq",
       function (from)
           .Call(R_flint_fmpq_nfmpq, from))
 
+Num <- function (q) .Call(R_flint_fmpq_num, q)
+Den <- function (q) .Call(R_flint_fmpq_den, q)
+
+if (FALSE) {
+setMethod("format",
+          c(x = "fmpq"),
+          function (x, base = 10L, ...)
+              paste0("(",
+                     format(Num(x), base = base, ...),
+                     "/",
+                     format(Den(x), base = base, ...),
+                     ")"))
+} else {
 setMethod("format",
           c(x = "fmpq"),
           function (x, base = 10L, ...)
               .Call(R_flint_fmpq_format, x, base))
+}
