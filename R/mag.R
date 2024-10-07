@@ -19,3 +19,13 @@ setAs("nmag", "mag",
 setAs("mag", "nmag",
       function (from)
           .Call(R_flint_mag_nmag, from))
+
+setMethod("format",
+          c(x = "mag"),
+          function (x, base = 10L, digits = NULL, sep = NULL, rnd = "A", ...) {
+              if (is.null(digits))
+                  digits <- getOption("digits")
+              if (is.null(sep))
+                  sep <- if (identical(base, 10L)) "e" else "|"
+              .Call(R_flint_mag_format, x, base, digits, sep, rnd)
+          })

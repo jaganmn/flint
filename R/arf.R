@@ -19,3 +19,13 @@ setAs("narf", "arf",
 setAs("arf", "narf",
       function (from)
           .Call(R_flint_arf_narf, from, "Z"))
+
+setMethod("format",
+          c(x = "arf"),
+          function (x, base = 10L, digits = NULL, sep = NULL, rnd = "N", ...) {
+              if (is.null(digits))
+                  digits <- getOption("digits")
+              if (is.null(sep))
+                  sep <- if (identical(base, 10L)) "e" else "|"
+              .Call(R_flint_arf_format, x, base, digits, sep, rnd)
+          })

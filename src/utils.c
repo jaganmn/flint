@@ -83,9 +83,8 @@ int asBase(SEXP base, const char *where)
 	case INTSXP:
 	{
 		int *s = INTEGER(base);
-		if (XLENGTH(base) >= 1 &&
-		    ((s[0] >= -36 && s[0] <= -2) || (s[0] >= 2 && s[0] <= 62)))
-			return (s[0] >= 2 && s[0] <= 36) ? -s[0] : s[0];
+		if (XLENGTH(base) >= 1 && s[0] >= 2 && s[0] <= 62)
+			return (s[0] <= 36) ? -s[0] : s[0];
 	}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "base", where);

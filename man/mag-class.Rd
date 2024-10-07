@@ -5,6 +5,7 @@
 \alias{coerce,vector,mag-method}
 \alias{coerce,nmag,mag-method}
 \alias{coerce,mag,nmag-method}
+\alias{format,mag-method}
 \alias{initialize,mag-method}
 \title{Class of Vectors of Magnitude (Error) Bounds}
 \docType{class}

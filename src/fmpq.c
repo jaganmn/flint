@@ -220,7 +220,6 @@ static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
 #define AMIN2(a, b) ((fmpz_cmpabs(a, b) <= 0) ? a : b)
 #define AMAX2(a, b) ((fmpz_cmpabs(a, b) >= 0) ? a : b)
 
-/* NB: mpz_sizeinbase() can be 1 too big for bases not equal to power of 2 */
 SEXP R_flint_fmpq_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int i, n = R_flint_get_length(from);

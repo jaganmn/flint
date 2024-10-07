@@ -110,7 +110,6 @@ SEXP R_flint_ulong_vector(SEXP from)
 	return to;
 }
 
-/* NB: mpz_sizeinbase() can be 1 too big for bases not equal to power of 2 */
 SEXP R_flint_ulong_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int i, n = R_flint_get_length(from);

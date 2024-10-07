@@ -5,6 +5,7 @@
 \alias{coerce,vector,arf-method}
 \alias{coerce,narf,arf-method}
 \alias{coerce,arf,narf-method}
+\alias{format,arf-method}
 \alias{initialize,arf-method}
 \title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}
 \docType{class}

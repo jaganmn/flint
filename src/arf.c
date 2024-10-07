@@ -1,3 +1,4 @@
+#include <gmp.h>
 #include <mpfr.h>
 #include <flint/flint.h>
 #include <flint/arf.h>
@@ -115,5 +116,154 @@ SEXP R_flint_arf_vector(SEXP from, SEXP s_rnd)
 {
 	SEXP to = R_flint_arf_narf(from, s_rnd);
 	CLEAR_ATTRIB(to);
+	return to;
+}
+
+SEXP R_flint_arf_format(SEXP from, SEXP s_base,
+                        SEXP s_digits, SEXP s_sep, SEXP s_rnd)
+{
+	unsigned long long int i, n = R_flint_get_length(from);
+	if (n > R_XLEN_T_MAX)
+		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
+		         "arf", (long long int) R_XLEN_T_MAX);
+	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
+	size_t digits = asDigits(s_digits, __func__);
+	const char *sep = asSep(s_sep, __func__);
+	mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(s_rnd, 1, __func__);
+	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	arf_ptr x = (arf_ptr) R_flint_get_pointer(from);
+	mpfr_exp_t e__;
+	slong p__;
+	mpfr_uexp_t e, emax = 0;
+	mpfr_prec_t p, pmax = 0;
+	char work[4];
+	unsigned int flags = 0;
+	mpz_t z;
+	mpfr_t f;
+	SET_MPFR_ERANGE;
+	mpz_init(z);
+	mpfr_init2(f, FLINT_BITS);
+	for (i = 0; i < n; ++i) {
+		arf_get_mpfr(f, x + i, rnd);
+		if (mpfr_regular_p(f)) {
+			flags |= 1;
+			if (mpfr_sgn(f) < 0)
+				flags |= 2;
+			mpfr_get_str(work, &e__, base, 2, f, rnd);
+			e = (e__ <= 0) ? (mpfr_uexp_t) -(e__ + 1) + 2 : (mpfr_uexp_t) (e__ - 1);
+			if (e > emax)
+				emax = e;
+			p__ = arf_bits(x + i);
+			p = (p__ <= MPFR_PREC_MAX) ? (mpfr_prec_t) p__ : MPFR_PREC_MAX;
+			if (p > pmax)
+				pmax = p;
+		}
+		else if (mpfr_zero_p(f))
+			flags |= 1;
+		else if (mpfr_inf_p(f) && mpfr_sgn(f) < 0)
+			flags |= 4;
+	}
+	mpfr_set_prec(f, pmax);
+
+	if (flags & 1) {
+
+	mpz_set_ui(z, emax);
+	if (digits == 0)
+		digits = (pmax == 0) ? 1 : mpfr_get_str_ndigits(abase, pmax);
+
+	size_t ns, nc,
+		ncsgn = (flags & 2) ? 1 : 0,
+		ncrad = (digits > 1) ? 1 : 0,
+		ncman = digits,
+		ncsep = strlen(sep),
+		ncexp = mpz_sizeinbase(z, abase),
+		ncmax = ncsgn + ncrad + ncman + ncsep + 1;
+	char *buffer = R_alloc(ncmax + ncexp + 1, 1);
+	mpz_get_str(buffer, base, z);
+	ncexp = strlen(buffer);
+	ncmax += ncexp;
+	char
+		*bufman = buffer + (ncsgn + ncrad),
+		*bufsep = buffer + (ncsgn + ncrad + ncman),
+		*bufexp = buffer + (ncsgn + ncrad + ncman + ncsep + 1),
+		*bufnan = buffer + (ncmax - 4);
+	buffer[ncmax] = '\0';
+
+	memset(buffer, ' ', ncmax - 4);
+	memcpy(bufnan, "-Inf", 4);
+	SEXP s_neg_inf = Rf_mkChar(buffer);
+	memcpy(bufnan, " Inf", 4);
+	SEXP s_pos_inf = Rf_mkChar(buffer);
+	memcpy(bufnan, " NaN", 4);
+	SEXP s_nan     = Rf_mkChar(buffer);
+	memset(buffer, '0', ncmax);
+	if (ncsgn)
+		buffer[0] = ' ';
+	if (ncrad)
+		bufman[0] = '.';
+	memcpy(bufsep, sep, ncsep);
+	bufexp[-1] = '+';
+	SEXP s_zero    = Rf_mkChar(buffer);
+
+	for (i = 0; i < n; ++i) {
+		arf_get_mpfr(f, x + i, rnd);
+		if (!mpfr_regular_p(f))
+			SET_STRING_ELT(to, (R_xlen_t) i,
+			               (mpfr_zero_p(f)) ? s_zero :
+			               (mpfr_nan_p(f)) ? s_nan :
+			               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
+		else {
+			/* Sign */
+			if (ncsgn)
+				buffer[0] = (mpfr_sgn(f) < 0) ? '-' : ' ';
+			/* Mantissa */
+			mpfr_abs(f, f, rnd);
+			mpfr_get_str(bufman, &e__, base, ncman, f, rnd);
+			/* Radix point */
+			if (ncrad) {
+				bufman[-1] = bufman[0];
+				bufman[0] = '.';
+			}
+			/* Separator */
+			bufsep[0] = sep[0];
+			/* Exponent sign */
+			bufexp[-1] = (e__ <= 0) ? '-' : '+';
+			/* Exponent absolute value */
+			e = (e__ <= 0) ? (mpfr_uexp_t) -(e__ + 1) + 2 : (mpfr_uexp_t) (e__ - 1);
+			mpz_set_ui(z, e);
+			nc = mpz_sizeinbase(z, abase);
+			if (nc > ncexp)
+				nc = ncexp;
+			ns = ncexp - nc;
+			if (ns > 0)
+				memset(bufexp, '0', ns);
+			mpz_get_str(bufexp + ns, base, z);
+			if (bufexp[ncexp - 1] == '\0') {
+				memmove(bufexp + ns + 1, bufexp + ns, nc);
+				bufexp[ns] = '0';
+			}
+			SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+		}
+	}
+
+	} else {
+
+	SEXP
+		s_neg_inf = Rf_mkChar(              "-Inf"        ),
+		s_pos_inf = Rf_mkChar((flags & 4) ? " Inf" : "Inf"),
+		s_nan     = Rf_mkChar((flags & 4) ? " NaN" : "NaN");
+	for (i = 0; i < n; ++i) {
+		arf_get_mpfr(f, x + i, rnd);
+		SET_STRING_ELT(to, (R_xlen_t) i,
+		               (mpfr_nan_p(f)) ? s_nan :
+		               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
+	}
+
+	}
+
+	mpz_clear(z);
+	mpfr_clear(f);
+	RESET_MPFR_ERANGE;
+	UNPROTECT(1);
 	return to;
 }
