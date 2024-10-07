@@ -152,7 +152,8 @@ SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 	mpz_t work;
 	mpz_init(work);
 	z = as_mpz_ptr(AMAX2(&xmin, &xmax)[0], work);
-	char *buffer = R_alloc(mpz_sizeinbase(z, abase) + 2, 1);
+	ncmax = mpz_sizeinbase(z, abase);
+	char *buffer = R_alloc(ncmax + 2, 1);
 	mpz_get_str(buffer, base, z);
 	ncmax = strlen(buffer);
 	z = as_mpz_ptr(AMIN2(&xmin, &xmax)[0], work);

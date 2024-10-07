@@ -262,8 +262,8 @@ SEXP R_flint_fmpq_format(SEXP from, SEXP s_base)
 	buffer[ncmax[0] + ncmax[1] + 3] = '\0';
 	buffer[0] = '(';
 	char *bufoff[2];
-	bufoff[0] = buffer + 1;
-	bufoff[1] = buffer + 1 + ncmax[0] + 1;
+	bufoff[0] = buffer + (1);
+	bufoff[1] = buffer + (1 + ncmax[0] + 1);
 	char delim[2];
 	delim[0] = '/';
 	delim[1] = ')';

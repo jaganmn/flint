@@ -127,7 +127,8 @@ SEXP R_flint_ulong_format(SEXP from, SEXP s_base)
 	mpz_t z;
 	mpz_init(z);
 	mpz_set_ui(z, xmax);
-	char *buffer = R_alloc(mpz_sizeinbase(z, abase) + 2, 1);
+	ncmax = mpz_sizeinbase(z, abase);
+	char *buffer = R_alloc(ncmax + 2, 1);
 	mpz_get_str(buffer, base, z);
 	ncmax = strlen(buffer);
 	for (i = 0; i < n; ++i) {
