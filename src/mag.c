@@ -118,7 +118,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 	mpz_t z;
 	mpfr_t f;
 	arf_t tmp;
-	SET_MPFR_ERANGE;
+	MPFR_ERANGE_SET;
 	mpz_init(z);
 	mpfr_init2(f, FLINT_BITS);
 	arf_init(tmp);
@@ -221,7 +221,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 	mpz_clear(z);
 	mpfr_clear(f);
 	arf_clear(f);
-	RESET_MPFR_ERANGE;
+	MPFR_ERANGE_RESET;
 	UNPROTECT(1);
 	return to;
 }

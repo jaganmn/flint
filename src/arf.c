@@ -140,7 +140,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 	unsigned int flags = 0;
 	mpz_t z;
 	mpfr_t f;
-	SET_MPFR_ERANGE;
+	MPFR_ERANGE_SET;
 	mpz_init(z);
 	mpfr_init2(f, FLINT_BITS);
 	for (i = 0; i < n; ++i) {
@@ -263,7 +263,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 
 	mpz_clear(z);
 	mpfr_clear(f);
-	RESET_MPFR_ERANGE;
+	MPFR_ERANGE_RESET;
 	UNPROTECT(1);
 	return to;
 }

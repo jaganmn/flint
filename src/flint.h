@@ -88,14 +88,14 @@ do { \
 		         func); \
 } while (0)
 
-#define SET_MPFR_ERANGE \
+#define MPFR_ERANGE_SET \
 mpfr_exp_t \
 	__emin_old = mpfr_get_emin(), __emin_new = mpfr_get_emin_min(), \
 	__emax_old = mpfr_get_emax(), __emax_new = mpfr_get_emax_max(); \
 mpfr_set_emin(__emin_new); \
 mpfr_set_emax(__emax_new); \
 
-#define RESET_MPFR_ERANGE \
+#define MPFR_ERANGE_RESET \
 mpfr_set_emin(__emin_old); \
 mpfr_set_emax(__emax_old); \
 
