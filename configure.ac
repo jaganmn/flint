@@ -49,11 +49,11 @@ AC_CHECK_HEADER([flint/flint.h], [],
                 [AC_MSG_ERROR([FLINT not found, see https://flintlib.org/])])
 
 AC_CHECK_TYPE([mpfr_uprec_t], [],
-              [AC_MSG_ERROR([GNU MPFR missing unsigned precision type])]
-              [#include <mpfr.h>])
+              [AC_MSG_ERROR([GNU MPFR missing unsigned precision type])],
+              [[#include <mpfr.h>]])
 AC_CHECK_TYPE([mpfr_uexp_t], [],
-              [AC_MSG_ERROR([GNU MPFR missing unsigned exponent type])]
-              [#include <mpfr.h>])
+              [AC_MSG_ERROR([GNU MPFR missing unsigned exponent type])],
+              [[#include <mpfr.h>]])
 
 AC_MSG_CHECKING([for mpfr_uexp_t in range of unsigned long int])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[

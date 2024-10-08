@@ -3578,23 +3578,23 @@ esac
 fi
 
 
-ac_fn_c_check_type "$LINENO" "mpfr_uprec_t" "ac_cv_type_mpfr_uprec_t" "$ac_includes_default"
+ac_fn_c_check_type "$LINENO" "mpfr_uprec_t" "ac_cv_type_mpfr_uprec_t" "#include <mpfr.h>
+"
 if test "x$ac_cv_type_mpfr_uprec_t" = xyes
 then :
 
 else case e in #(
-  e) as_fn_error $? "GNU MPFR missing unsigned precision type" "$LINENO" 5
-              #include <mpfr.h> ;;
+  e) as_fn_error $? "GNU MPFR missing unsigned precision type" "$LINENO" 5 ;;
 esac
 fi
 
-ac_fn_c_check_type "$LINENO" "mpfr_uexp_t" "ac_cv_type_mpfr_uexp_t" "$ac_includes_default"
+ac_fn_c_check_type "$LINENO" "mpfr_uexp_t" "ac_cv_type_mpfr_uexp_t" "#include <mpfr.h>
+"
 if test "x$ac_cv_type_mpfr_uexp_t" = xyes
 then :
 
 else case e in #(
-  e) as_fn_error $? "GNU MPFR missing unsigned exponent type" "$LINENO" 5
-              #include <mpfr.h> ;;
+  e) as_fn_error $? "GNU MPFR missing unsigned exponent type" "$LINENO" 5 ;;
 esac
 fi
 
