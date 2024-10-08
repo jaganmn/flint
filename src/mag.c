@@ -220,7 +220,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 
 	mpz_clear(z);
 	mpfr_clear(f);
-	arf_clear(f);
+	arf_clear(tmp);
 	MPFR_ERANGE_RESET;
 	UNPROTECT(1);
 	return to;
