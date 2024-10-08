@@ -81,12 +81,13 @@ SEXP R_flint_length(SEXP object)
 		ans = Rf_allocVector(INTSXP, 1);
 		INTEGER(ans)[0] = (int) n;
 	} else {
-		ans = Rf_allocVector(REALSXP, 1);
-		REAL(ans)[0] = (double) n;
 		unsigned long long int n_ = (unsigned long long int) (double) n;
+		if (n_ >  n)
+			n_ = (unsigned long long int) nextafter((double) n, 0.0);
 		if (n_ != n)
-			Rf_warning(_("true length (%llu) is not exactly representable in double precision; returning an implementation-defined rounded length (%llu)"),
-			           n, n_);
+			Rf_warning(_("true length %llu truncated to %llu"), n, n_);
+		ans = Rf_allocVector(REALSXP, 1);
+		REAL(ans)[0] = (double) n_;
 	}
 	return ans;
 }

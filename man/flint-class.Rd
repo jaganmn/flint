@@ -47,12 +47,12 @@
       see also \code{\link{as.numeric}}, section \sQuote{S4 Methods}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
-      return an integer vector of length 1 giving the object length.  If
-      the length exceeds \code{.Machine[["integer.max"]]}, then a double
-      vector of length 1 is returned instead.  If the length exceeds
-      \code{2^.Machine[["double.digits"]]-1} and is not exactly
-      representable, then a warning is signaled to indicate that the
-      return value is an implementation-defined rounded length.}
+      returns an integer vector of length 1 giving the object length.
+      If the length exceeds \code{.Machine[["integer.max"]]}, then the
+      method returns a double vector of length 1 instead.  If the length
+      exceeds \code{2^.Machine[["double.digits"]]-1} and is not exactly
+      representable, then the method signals a warning and returns the
+      the next representable number in the direction of zero.}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
       prints \code{\link{format}(x)} and returns \code{x} invisibly.
