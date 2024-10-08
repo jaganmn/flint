@@ -29,23 +29,19 @@ setAs("acb", "nacb",
       function (from)
           .Call(R_flint_acb_nacb, from, "Z"))
 
-setMethod("Re",
-          c(z = "acb"),
-          function (z)
-              .Call(R_flint_acb_real, z))
+Real <- function (z) .Call(R_flint_acb_real, z)
+Imag <- function (z) .Call(R_flint_acb_imag, z)
 
-setMethod("Im",
-          c(z = "acb"),
-          function (z)
-              .Call(R_flint_acb_imag, z))
+setMethod("Re", c(z = "acb"), Real)
+setMethod("Im", c(z = "acb"), Imag)
 
 setMethod("format",
           c(x = "acb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
                     rnd = c("N", "A"), ...)
-              paste0(format(Re(x), base = base, digits = digits, sep = sep,
+              paste0(format(Real(x), base = base, digits = digits, sep = sep,
                             rnd = rnd, ...),
                      "+",
-                     format(Im(x), base = base, digits = digits, sep = sep,
+                     format(Imag(x), base = base, digits = digits, sep = sep,
                             rnd = rnd, ...),
                      "i"))
