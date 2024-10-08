@@ -69,5 +69,5 @@ for (b in 2:8) {
 z <- new("acb", real.mid = pi, real.rad = 0.5 * pi)
 format(z)
 format(z, base = 62L, sep = "*[62]^")
-strsplit(format(Re(z), digits = 80L), "[( )]")[[1L]]
+strsplit(format(Re(z), digits = 80L), "[( )]")[[1L]][c(FALSE, TRUE)]
 }
