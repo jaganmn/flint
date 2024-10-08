@@ -5,7 +5,6 @@
 \alias{coerce,vector,mag-method}
 \alias{coerce,nmag,mag-method}
 \alias{coerce,mag,nmag-method}
-\alias{format,mag-method}
 \alias{initialize,mag-method}
 \title{Class of Vectors of Magnitude (Error) Bounds}
 \docType{class}
@@ -67,6 +66,11 @@
       \code{signature(from = "mag", to = "nmag")}:\cr
       returns an object of class \code{nmag} whose data part is
       \code{as.vector(from, "double")}.}
+    \item{\code{format}}{
+      \code{signature(x = "mag")}:\cr
+      returns a character vector suitable for printing, using scientific
+      format.  Optional arguments control the output; see
+      \code{\link{format-methods}}.}
   }
 }
 \seealso{

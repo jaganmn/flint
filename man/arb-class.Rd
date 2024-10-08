@@ -6,7 +6,6 @@
 \alias{coerce,narb,arb-method}
 \alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}
-\alias{format,arb-method}
 \alias{length,narb-method}
 \title{Class of Real Numbers with Error Bounds}
 \docType{class}
@@ -77,6 +76,12 @@
     \item{\code{length}}{
       \code{signature(x = "narb")}:\cr
       returns \code{length(x@mid)}.}
+    \item{\code{format}}{
+      \code{signature(x = "arb")}:\cr
+      returns a character vector suitable for printing, using string
+      format \code{"(m +/- r)"} and scientific format for \code{m} and
+      \code{r}.  Optional arguments control the output; see
+      \code{\link{format-methods}}.}
   }
 }
 \seealso{

@@ -5,7 +5,6 @@
 \alias{coerce,vector,fmpq-method}
 \alias{coerce,nfmpq,fmpq-method}
 \alias{coerce,fmpq,nfmpq-method}
-\alias{format,fmpq-method}
 \alias{initialize,fmpq-method}
 \alias{length,nfmpq-method}
 \title{Class of Vectors of Rational Numbers}
@@ -85,6 +84,11 @@
     \item{\code{length}}{
       \code{signature(x = "nfmpq")}:\cr
       returns \code{length(x@num)}.}
+    \item{\code{format}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a character vector suitable for printing, using string
+      format \code{"(p/q)"}.  Optional arguments control the output;
+      see \code{\link{format-methods}}.}
   }
 }
 \seealso{

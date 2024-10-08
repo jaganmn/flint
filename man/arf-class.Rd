@@ -5,7 +5,6 @@
 \alias{coerce,vector,arf-method}
 \alias{coerce,narf,arf-method}
 \alias{coerce,arf,narf-method}
-\alias{format,arf-method}
 \alias{initialize,arf-method}
 \title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}
 \docType{class}
@@ -63,6 +62,11 @@
       \code{signature(from = "arf", to = "narf")}:\cr
       returns an object of class \code{narf} whose data part is
       \code{as.vector(from, "double")}.}
+    \item{\code{format}}{
+      \code{signature(x = "arf")}:\cr
+      returns a character vector suitable for printing, using scientific
+      format.  Optional arguments control the output; see
+      \code{\link{format-methods}}.}
   }
 }
 \seealso{

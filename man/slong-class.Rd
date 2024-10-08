@@ -11,8 +11,6 @@
 \alias{coerce,nulong,ulong-method}
 \alias{coerce,slong,nslong-method}
 \alias{coerce,ulong,nulong-method}
-\alias{format,slong-method}
-\alias{format,ulong-method}
 \alias{initialize,slong-method}
 \alias{initialize,ulong-method}
 \alias{flintBits}
@@ -85,6 +83,11 @@
       \code{signature(from = "ulong", to = "nulong")}:\cr
       return an object of class \code{nslong} or \code{nulong}
       whose data part is \code{as.vector(from, "integer")}.}
+    \item{\code{format}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      return a character vector suitable for printing.  Optional
+      arguments control the output; see \code{\link{format-methods}}.}
   }
 }
 \seealso{

@@ -7,7 +7,6 @@
 \alias{coerce,vector,acb-method}
 \alias{coerce,nacb,acb-method}
 \alias{coerce,acb,nacb-method}
-\alias{format,acb-method}
 \alias{initialize,acb-method}
 \alias{length,nacb-method}
 \title{Class of Complex Numbers with Error Bounds}
@@ -86,6 +85,16 @@
     \item{\code{length}}{
       \code{signature(x = "nacb")}:\cr
       returns \code{length(x@real@mid)}.}
+    \item{\code{Re}, \code{Im}}{
+      \code{signature(z = "acb")}:\cr
+      return an \code{\linkS4class{arb}} vector containing the real and
+      imaginary parts, respectively.}
+    \item{\code{format}}{
+      \code{signature(x = "acb")}:\cr
+      returns a character vector suitable for printing, using string
+      format \code{"(m +/- r)+(m +/- r)i"} and scientific format for
+      each \code{m} and \code{r}.  Optional arguments control the
+      output; see \code{\link{format-methods}}.}
   }
 }
 \seealso{

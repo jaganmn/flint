@@ -5,7 +5,6 @@
 \alias{coerce,vector,fmpz-method}
 \alias{coerce,nfmpz,fmpz-method}
 \alias{coerce,fmpz,nfmpz-method}
-\alias{format,fmpz-method}
 \alias{initialize,fmpz-method}
 \title{Class of Vectors of Arbitrary Precision Integers}
 \docType{class}
@@ -65,6 +64,10 @@
       \code{signature(from = "fmpz", to = "nfmpz")}:\cr
       returns an object of class \code{nfmpz} whose data part is
       \code{as.vector(from, "integer")}.}
+    \item{\code{format}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns a character vector suitable for printing.  Optional
+      arguments control the output; see \code{\link{format-methods}}.}
   }
 }
 \seealso{

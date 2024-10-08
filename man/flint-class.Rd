@@ -55,7 +55,9 @@
       return value is an implementation-defined rounded length.}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
-      prints \code{\link{format}(x)} and returns \code{x} invisibly.}
+      prints \code{\link{format}(x)} and returns \code{x} invisibly.
+      For more options, consider \code{print(format(x, \dots), \dots)}
+      instead of \code{print(x, \dots)}.}
     \item{\code{show}}{
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}
