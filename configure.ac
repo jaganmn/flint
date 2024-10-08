@@ -48,6 +48,28 @@ AC_CHECK_HEADER([mpfr.h], [],
 AC_CHECK_HEADER([flint/flint.h], [],
                 [AC_MSG_ERROR([FLINT not found, see https://flintlib.org/])])
 
+AC_CHECK_TYPE([mpfr_uprec_t], [],
+              [AC_MSG_ERROR([GNU MPFR missing unsigned precision type])]
+              [#include <mpfr.h>])
+AC_CHECK_TYPE([mpfr_uexp_t], [],
+              [AC_MSG_ERROR([GNU MPFR missing unsigned exponent type])]
+              [#include <mpfr.h>])
+
+AC_MSG_CHECKING([for mpfr_uexp_t in range of unsigned long int])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <limits.h>
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_uexp_t) > sizeof(unsigned long int);
+}
+                  ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [
+                   AC_MSG_RESULT([no])
+                   AC_MSG_FAILURE([FLINT and GNU MP installations seem incompatible])
+                  ])
+
 AC_MSG_CHECKING([for FLINT_BITS consistent with mp_limb_t])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include <limits.h>
