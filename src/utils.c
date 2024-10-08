@@ -83,8 +83,16 @@ int asBase(SEXP base, const char *where)
 	case INTSXP:
 	{
 		int *s = INTEGER(base);
-		if (XLENGTH(base) >= 1 && s[0] >= 2 && s[0] <= 62)
-			return (s[0] <= 36) ? -s[0] : s[0];
+		if (XLENGTH(base) >= 1 && s[0] >= 2 && s[0] < 63)
+			return (s[0] < 37) ? -s[0] : s[0];
+		break;
+	}
+	case REALSXP:
+	{
+		double *s = REAL(base);
+		if (XLENGTH(base) >= 1 && !ISNAN(s[0]) && s[0] >= 2.0 && s[0] < 63.0)
+			return (s[0] < 37.0) ? -(int) s[0] : (int) s[0];
+		break;
 	}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "base", where);
@@ -99,6 +107,14 @@ size_t asDigits(SEXP digits, const char *where)
 		int *s = INTEGER(digits);
 		if (XLENGTH(digits) >= 1 && s[0] >= 0)
 			return (size_t) s[0];
+		break;
+	}
+	case REALSXP:
+	{
+		double *s = REAL(digits);
+		if (XLENGTH(digits) >= 1 && s[0] >= 0.0 && s[0] < 0x1.0p+31)
+			return (size_t) s[0];
+		break;
 	}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "digits", where);
@@ -113,6 +129,7 @@ const char *asSep(SEXP sep, const char *where)
 		if (XLENGTH(sep) >= 1 && (sep = STRING_ELT(sep, 0)) != NA_STRING &&
 		    CHAR(sep)[0] != '\0')
 			return CHAR(sep);
+		break;
 	}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "sep", where);
