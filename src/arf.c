@@ -163,11 +163,11 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 		else if (mpfr_inf_p(f) && mpfr_sgn(f) < 0)
 			flags |= 4;
 	}
-	mpfr_set_prec(f, pmax);
 
 	if (flags & 1) {
 
 	mpz_set_ui(z, emax);
+	mpfr_set_prec(f, (pmax == 0) ? 1 : pmax);
 	if (digits == 0)
 		digits = (pmax == 0) ? 1 : mpfr_get_str_ndigits(abase, pmax);
 
