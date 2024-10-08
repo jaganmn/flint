@@ -42,10 +42,10 @@
       vector containing the result of converting the midpoints of
       \code{x} to the range of double, rounding if the value is not
       exactly representable in double precision.  The rounding mode is
-      to the nearest representable number in the direction of zero,
-      unless a midpoint exceeds \code{.Machine[["double.xmax"]]} in
-      absolute value, in which case \code{-Inf} or \code{Inf} is
-      introduced with a warning.}
+      to the nearest representable number (with precedence to even
+      significands in case of ties), unless a midpoint exceeds
+      \code{.Machine[["double.xmax"]]} in absolute value, in which case
+      \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{initialize}}{
       \code{signature(.Object = "arb", length = "numeric")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The

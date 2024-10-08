@@ -11,7 +11,7 @@
 \description{
   Class \code{mag} extends virtual class \code{flint}.  It represents
   vectors of unsigned floating-point numbers with a fixed precision
-  mantissa and an arbitary precision exponent.  In typical usage,
+  significand and an arbitary precision exponent.  In typical usage,
   \code{mag} objects store magnitude (or error) bounds on real numbers.
   The value can be positive infinity but never not-a-number.
 

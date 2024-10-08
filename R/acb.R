@@ -9,7 +9,7 @@ setMethod("initialize",
 setMethod("as.vector",
           c(x = "acb"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_acb_vector, x, "Z"), mode))
+              as.vector(.Call(R_flint_acb_vector, x, "N"), mode))
 
 setMethod("length",
           c(x = "nacb"),
@@ -27,7 +27,7 @@ setAs("nacb", "acb",
 
 setAs("acb", "nacb",
       function (from)
-          .Call(R_flint_acb_nacb, from, "Z"))
+          .Call(R_flint_acb_nacb, from, "N"))
 
 Real <- function (z) .Call(R_flint_acb_real, z)
 Imag <- function (z) .Call(R_flint_acb_imag, z)

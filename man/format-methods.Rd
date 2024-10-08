@@ -49,9 +49,10 @@
     rounding mode.  Valid characters are \samp{[Uu]} (towards positive
     infinity), \samp{[Dd]} (towards negative infinity), \samp{[Zz]}
     (towards zero), \samp{[Aa]} (away from zero), and \samp{[Nn]} (to
-    nearest, or ties to even).  Methods for \code{\linkS4class{arb}}
-    and \code{\linkS4class{acb}} require \code{rnd} of length 2,
-    specifying rounding modes separately for midpoints and radii.}
+    nearest, with precedence to even significands).  Methods for
+    \code{\linkS4class{arb}} and \code{\linkS4class{acb}} require
+    \code{rnd} of length 2, specifying rounding modes separately for
+    midpoints and radii.}
   \item{\dots}{
      further optional arguments, though these are currently unused.}
 }

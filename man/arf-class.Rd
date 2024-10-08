@@ -11,7 +11,7 @@
 \description{
   Class \code{arf} extends virtual class \code{flint}.  It represents
   vectors of signed floating-point numbers with an arbitrary precision
-  mantissa and an arbitrary precision exponent.
+  significand and an arbitrary precision exponent.
 
   Class \code{narf} extends virtual class \code{\linkS4class{nflint}}
   and basic vector class \code{\linkS4class{double}}.  It is the
@@ -39,10 +39,10 @@
       vector containing the result of converting each element of
       \code{x} to the range of double, rounding if the value is not
       exactly representable in double precision.  The rounding mode is
-      is to the nearest representable number in the direction of zero,
-      unless the element exceeds \code{.Machine[["double.xmax"]]} in
-      absolute value, in which case \code{-Inf} or \code{Inf} is
-      introduced with a warning.}
+      to the nearest representable number (with precedence to even
+      significands in case of ties), unless the element exceeds
+      \code{.Machine[["double.xmax"]]} in absolute value, in which case
+      \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{initialize}}{
       \code{signature(.Object = "arf", length = "numeric")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
