@@ -3,7 +3,8 @@ importFrom(methods, as, coerce, initialize, new, setAs, setClass, setMethod,
            show)
 exportClasses(flint, slong, ulong, fmpz, fmpq, arf, mag, arb, acb,
               nflint, nslong, nulong, nfmpz, nfmpq, narf, nmag, narb, nacb)
-exportMethods(as.raw, as.logical, as.integer, as.numeric, as.complex,
+exportMethods("[", "[<-", "[[", "[[<-", Im, Re,
+              as.raw, as.logical, as.integer, as.numeric, as.complex,
               as.list, as.expression, as.vector, coerce, format, initialize,
               length, print, show)
 export(flintBits,

@@ -1,5 +1,11 @@
 \name{flint-class}
 \alias{flint-class}
+\alias{[,flint,ANY,missing,missing-method}
+\alias{[<-,flint,ANY,missing-method} % R CMD check; help("matchSignature")
+\alias{[<-,flint,ANY,missing,ANY-method}
+\alias{[[,flint,ANY,missing-method}
+\alias{[[<-,flint,ANY,missing-method} % R CMD check; help("matchSignature")
+\alias{[[<-,flint,ANY,missing,ANY-method}
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
@@ -62,6 +68,31 @@
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}
       invisibly.}
+    \item{\code{[}}{
+      \code{signature(x = "flint", i = "ANY", j = "missing", drop = "missing")}:\cr
+      return a \code{flint} vector containing the elements of \code{x}
+      indexed by \code{i} (the \dQuote{subscript}).  The subscript can
+      be logical, integer, or double or missing or \code{NULL}.  It is
+      an error to supply \code{NA} or out of bounds subscripts: the
+      underlying \proglang{C} types have no representation for missing
+      values.}
+    \item{\code{[[}}{
+      \code{signature(x = "flint", i = "ANY", j = "missing")}:\cr
+      equivalent to code \code{[} with the restriction that \code{i}
+      must index exactly one element.}
+    \item{\code{[<-}}{
+      \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
+      return a \code{flint} vector identical to \code{x} but with
+      elements indexed by \code{i} (the \dQuote{subscript}) set to
+      values from \code{value} (which is coerced to the class of
+      \code{x}).  The subscript can be logical, integer, or double or
+      missing or \code{NULL}.  It is an error to supply \code{NA} or out
+      of bounds subscripts: the underlying \proglang{C} types have no
+      representation for missing values.}
+    \item{\code{[[<-}}{
+      \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
+      equivalent to code \code{[<-} with the restriction that \code{i}
+      must index exactly one element.}
   }
 }
 \seealso{
