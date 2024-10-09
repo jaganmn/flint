@@ -3599,16 +3599,14 @@ esac
 fi
 
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_uexp_t in range of unsigned long int" >&5
-printf %s "checking for mpfr_uexp_t in range of unsigned long int... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for int with bit width 32" >&5
+printf %s "checking for int with bit width 32... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-#include <limits.h>
-#include <mpfr.h>
 int main()
 {
-	return sizeof(mpfr_uexp_t) > sizeof(unsigned long int);
+	return sizeof(int) != 4;
 }
 
 _ACEOF
@@ -3620,17 +3618,67 @@ else case e in #(
   e)
                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-                   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
-printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
-as_fn_error $? "FLINT and GNU MP installations seem incompatible
-See 'config.log' for more details" "$LINENO" 5; }
+                   as_fn_error $? "package requires a 32-bit int" "$LINENO" 5
                    ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for FLINT_BITS consistent with mp_limb_t" >&5
-printf %s "checking for FLINT_BITS consistent with mp_limb_t... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for size_t with bit width at least 64" >&5
+printf %s "checking for size_t with bit width at least 64... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <stddef.h>
+int main()
+{
+	return sizeof(size_t) < 8;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "package requires a >= 64-bit size_t" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_exp_t in range of long int" >&5
+printf %s "checking for mpfr_exp_t in range of long int... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <limits.h>
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_exp_t) > sizeof(long int);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "GNU MPFR exponent can overflow long int" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mp_limb_t, mp_bits_per_limb consistent with FLINT_BITS" >&5
+printf %s "checking for mp_limb_t, mp_bits_per_limb consistent with FLINT_BITS... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3639,7 +3687,8 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #include <flint/flint.h>
 int main()
 {
-	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t);
+	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t) ||
+		FLINT_BITS != mp_bits_per_limb;
 }
 
 _ACEOF

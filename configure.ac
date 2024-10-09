@@ -55,29 +55,57 @@ AC_CHECK_TYPE([mpfr_uexp_t], [],
               [AC_MSG_ERROR([GNU MPFR missing unsigned exponent type])],
               [[#include <mpfr.h>]])
 
-AC_MSG_CHECKING([for mpfr_uexp_t in range of unsigned long int])
+AC_MSG_CHECKING([for int with bit width 32])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include <limits.h>
-#include <mpfr.h>
 int main()
 {
-	return sizeof(mpfr_uexp_t) > sizeof(unsigned long int);
+	return sizeof(int) != 4;
 }
                   ]])],
                   [AC_MSG_RESULT([yes])],
                   [
                    AC_MSG_RESULT([no])
-                   AC_MSG_FAILURE([FLINT and GNU MP installations seem incompatible])
+                   AC_MSG_ERROR([package requires a 32-bit int])
                   ])
 
-AC_MSG_CHECKING([for FLINT_BITS consistent with mp_limb_t])
+AC_MSG_CHECKING([for size_t with bit width at least 64])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <stddef.h>
+int main()
+{
+	return sizeof(size_t) < 8;
+}
+                  ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [
+                   AC_MSG_RESULT([no])
+                   AC_MSG_ERROR([package requires a >= 64-bit size_t])
+                  ])
+
+AC_MSG_CHECKING([for mpfr_exp_t in range of long int])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <limits.h>
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_exp_t) > sizeof(long int);
+}
+                  ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [
+                   AC_MSG_RESULT([no])
+                   AC_MSG_ERROR([GNU MPFR exponent can overflow long int])
+                  ])
+
+AC_MSG_CHECKING([for mp_limb_t, mp_bits_per_limb consistent with FLINT_BITS])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include <limits.h>
 #include <gmp.h>
 #include <flint/flint.h>
 int main()
 {
-	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t);
+	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t) ||
+		FLINT_BITS != mp_bits_per_limb;
 }
                   ]])],
                   [AC_MSG_RESULT([yes])],
