@@ -114,6 +114,18 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_sign,
 	R_flint_symbol_d;
 
+typedef enum {
+	R_FLINT_CLASS_SLONG = 0,
+	R_FLINT_CLASS_ULONG,
+	R_FLINT_CLASS_FMPZ,
+	R_FLINT_CLASS_FMPQ,
+	R_FLINT_CLASS_ARF,
+	R_FLINT_CLASS_MAG,
+	R_FLINT_CLASS_ARB,
+	R_FLINT_CLASS_ACB,
+	R_FLINT_CLASS_INVALID = -1
+} R_flint_class_t;
+
 extern
 SEXPTYPE R_flint_sexptypes[6];
 
@@ -142,7 +154,7 @@ void ucopy(unsigned long long int *, unsigned int *, int);
 
 void *R_flint_get_pointer(SEXP);
 unsigned long long int R_flint_get_length(SEXP);
-const char *R_flint_get_class(SEXP);
+R_flint_class_t R_flint_get_class(SEXP);
 void R_flint_set(SEXP, void *, unsigned long long int, R_CFinalizer_t);
 
 void R_flint_slong_finalize(SEXP);

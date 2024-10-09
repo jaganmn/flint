@@ -29,11 +29,11 @@ unsigned long long int R_flint_get_length(SEXP object)
 	return n;
 }
 
-const char *R_flint_get_class(SEXP object)
+R_flint_class_t R_flint_get_class(SEXP object)
 {
 	int i = (TYPEOF(object) == OBJSXP)
 		? R_check_class_etc(object, R_flint_classes) : -1;
-	return (i < 0) ? "" : R_flint_classes[i];
+	return (R_flint_class_t) i;
 }
 
 void R_flint_set(SEXP object,
@@ -103,11 +103,11 @@ SEXP R_flint_triple(SEXP object)
 {
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, 3));
 	char buffer[64];
-	snprintf(buffer, 64,   "%s", R_flint_get_class  (object));
+	snprintf(buffer, 64,   "%s", R_flint_classes[R_flint_get_class  (object)]);
 	SET_STRING_ELT(ans, 0, Rf_mkChar(buffer));
-	snprintf(buffer, 64, "%llu", R_flint_get_length (object));
+	snprintf(buffer, 64, "%llu",                 R_flint_get_length (object)) ;
 	SET_STRING_ELT(ans, 1, Rf_mkChar(buffer));
-	snprintf(buffer, 64,   "%p", R_flint_get_pointer(object));
+	snprintf(buffer, 64,   "%p",                 R_flint_get_pointer(object)) ;
 	SET_STRING_ELT(ans, 2, Rf_mkChar(buffer));
 	UNPROTECT(1);
 	return ans;
@@ -166,6 +166,9 @@ SEXP R_flint_part(SEXP object, SEXP s_mode)
 	default:
 		return R_NilValue;
 	}
+
+#undef PART_CASE
+
 	SEXP part = PROTECT(newObject(s));
 	R_flint_set(part, p, n, f);
 	UNPROTECT(1);
