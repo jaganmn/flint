@@ -113,15 +113,16 @@ SEXP R_flint_triple(SEXP object)
 	return ans;
 }
 
-SEXP R_flint_part(SEXP object, SEXP s_mode)
+SEXP R_flint_part(SEXP from, SEXP s_mode)
 {
-	int mode = INTEGER(s_mode)[0];
-	void *p = R_flint_get_pointer(object);
-	unsigned long long int i, n = R_flint_get_length(object);
+	R_flint_class_t class = R_flint_get_class(from);
+	unsigned long long int i, n = R_flint_get_length(from);
+	void *p = R_flint_get_pointer(from);
 	R_CFinalizer_t f;
-	const char *s;
+	const char *what;
+	int mode = INTEGER(s_mode)[0];
 
-#define PART_CASE(part, xname, yname, xptr_t, yptr_t, yelt_t) \
+#define PART_CASE(xname, yname, xelt_t, yelt_t, xptr_t, yptr_t, part) \
 	do { \
 		xptr_t x = (xptr_t) p; \
 		yptr_t y = (yptr_t) ((n) ? flint_calloc(n, sizeof(yelt_t)) : 0); \
@@ -129,38 +130,32 @@ SEXP R_flint_part(SEXP object, SEXP s_mode)
 			yname##_set(y + i, xname##_##part##ref(x + i)); \
 		p = (void *) y; \
 		f = (R_CFinalizer_t) &R_flint_##yname##_finalize; \
-		s = #yname; \
+		what = #yname; \
 	} while (0)
 
-	switch (mode) {
-	case 0:
+	switch (class) {
+	case R_FLINT_CLASS_FMPQ:
 	{
-		PART_CASE(num, fmpq, fmpz, fmpq *, fmpz *, fmpz);
+		if (mode == 0)
+		PART_CASE(fmpq, fmpz, fmpq, fmpz, fmpq *, fmpz *, num);
+		else
+		PART_CASE(fmpq, fmpz, fmpq, fmpz, fmpq *, fmpz *, den);
 		break;
 	}
-	case 1:
+	case R_FLINT_CLASS_ARB:
 	{
-		PART_CASE(den, fmpq, fmpz, fmpq *, fmpz *, fmpz);
+		if (mode == 0)
+		PART_CASE(arb, arf, arb_t, arf_t, arb_ptr, arf_ptr, mid);
+		else
+		PART_CASE(arb, mag, arb_t, mag_t, arb_ptr, mag_ptr, rad);
 		break;
 	}
-	case 2:
+	case R_FLINT_CLASS_ACB:
 	{
-		PART_CASE(mid, arb, arf, arb_ptr, arf_ptr, arf_t);
-		break;
-	}
-	case 3:
-	{
-		PART_CASE(rad, arb, mag, arb_ptr, mag_ptr, mag_t);
-		break;
-	}
-	case 4:
-	{
-		PART_CASE(real, acb, arb, acb_ptr, arb_ptr, arb_t);
-		break;
-	}
-	case 5:
-	{
-		PART_CASE(imag, acb, arb, acb_ptr, arb_ptr, arb_t);
+		if (mode == 0)
+		PART_CASE(acb, arb, acb_t, arb_t, acb_ptr, arb_ptr, real);
+		else
+		PART_CASE(acb, arb, acb_t, arb_t, acb_ptr, arb_ptr, imag);
 		break;
 	}
 	default:
@@ -169,8 +164,8 @@ SEXP R_flint_part(SEXP object, SEXP s_mode)
 
 #undef PART_CASE
 
-	SEXP part = PROTECT(newObject(s));
-	R_flint_set(part, p, n, f);
+	SEXP to = PROTECT(newObject(what));
+	R_flint_set(to, p, n, f);
 	UNPROTECT(1);
-	return part;
+	return to;
 }

@@ -24,8 +24,8 @@ setAs("arb", "narb",
       function (from)
           .Call(R_flint_arb_narb, from, "N"))
 
-Mid <- function (x) .Call(R_flint_part, x, 2L)
-Rad <- function (x) .Call(R_flint_part, x, 3L)
+Mid <- function (x) .Call(R_flint_part, x, 0L)
+Rad <- function (x) .Call(R_flint_part, x, 1L)
 
 setMethod("format",
           c(x = "arb"),
