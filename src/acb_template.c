@@ -12,12 +12,12 @@ SEXP R_flint_acb_1ary(void (*fn)(acb_t, const acb_t, slong),
 	acb_ptr a0 = (acb_ptr) R_flint_get_pointer(s_a0);
 	slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
-	unsigned long long int i, n = RECYCLE2(na0, nprec);
+	unsigned long long int j, n = RECYCLE2(na0, nprec);
 	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (i = 0; i < n; ++i)
-		fn(res + i, a0 + i % na0, prec[i % nprec]);
+	for (j = 0; j < n; ++j)
+		fn(res + j, a0 + j % na0, prec[j % nprec]);
 	return R_NilValue;
 }
 
@@ -33,12 +33,12 @@ SEXP R_flint_acb_2ary(void (*fn)(acb_t, const acb_t, const acb_t, slong),
 		a1 = (acb_ptr) R_flint_get_pointer(s_a1);
 	slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
-	unsigned long long int i, n = RECYCLE3(na0, na1, nprec);
+	unsigned long long int j, n = RECYCLE3(na0, na1, nprec);
 	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (i = 0; i < n; ++i)
-		fn(res + i, a0 + i % na0, a1 + i % na1, prec[i % nprec]);
+	for (j = 0; j < n; ++j)
+		fn(res + j, a0 + j % na0, a1 + j % na1, prec[j % nprec]);
 	return R_NilValue;
 }
 
@@ -56,11 +56,11 @@ SEXP R_flint_acb_3ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, s
 		a2 = (acb_ptr) R_flint_get_pointer(s_a2);
 	slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
-	unsigned long long int i, n = RECYCLE4(na0, na1, na2, nprec);
+	unsigned long long int j, n = RECYCLE4(na0, na1, na2, nprec);
 	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (i = 0; i < n; ++i)
-		fn(res + i, a0 + i % na0, a1 + i % na1, a2 + i % na2, prec[i % nprec]);
+	for (j = 0; j < n; ++j)
+		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, prec[j % nprec]);
 	return R_NilValue;
 }

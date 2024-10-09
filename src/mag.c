@@ -7,18 +7,18 @@
 
 void R_flint_mag_finalize(SEXP x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	mag_ptr p = (mag_ptr) R_ExternalPtrAddr(x);
-	for (i = 0; i < n; ++i)
-		mag_clear(p + i);
+	for (j = 0; j < n; ++j)
+		mag_clear(p + j);
 	flint_free(p);
 	return;
 }
 
 SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	if (s_x == R_NilValue)
 		n = asLength(s_length, __func__);
 	else {
@@ -29,8 +29,8 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
-		for (i = 0; i < n; ++i)
-			mag_zero(y + i);
+		for (j = 0; j < n; ++j)
+			mag_zero(y + j);
 		break;
 	case RAWSXP:
 	case LGLSXP:
@@ -38,24 +38,24 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (tmp == NA_INTEGER)
 			Rf_error(_("NaN not representable by '%s'"), "mag");
 			else
-			mag_set_ui(y + i, (ulong) ((tmp < 0) ? -tmp : tmp));
+			mag_set_ui(y + j, (ulong) ((tmp < 0) ? -tmp : tmp));
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		double *x = REAL(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (ISNAN(tmp))
 			Rf_error(_("NaN not representable by '%s'"), "mag");
 			else
-			mag_set_d(y + i, tmp);
+			mag_set_d(y + j, tmp);
 		}
 		break;
 	}
@@ -65,7 +65,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_mag_nmag(SEXP from)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "mag", (long long int) R_XLEN_T_MAX);
@@ -76,11 +76,11 @@ SEXP R_flint_mag_nmag(SEXP from)
 	mag_init(ub);
 	mag_set_ui_2exp_si(ub, 1U, DBL_MAX_EXP);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		if (mag_cmp(x + i, ub) < 0)
-			y[i] = mag_get_d(x + i);
+	for (j = 0; j < n; ++j) {
+		if (mag_cmp(x + j, ub) < 0)
+			y[j] = mag_get_d(x + j);
 		else {
-			y[i] = R_PosInf;
+			y[j] = R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}
@@ -99,7 +99,7 @@ SEXP R_flint_mag_vector(SEXP from)
 SEXP R_flint_mag_format(SEXP from, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "mag", (long long int) R_XLEN_T_MAX);
@@ -122,8 +122,8 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 	mpz_init(z);
 	mpfr_init2(f, FLINT_BITS);
 	arf_init(tmp);
-	for (i = 0; i < n; ++i) {
-		arf_set_mag(tmp, x + i);
+	for (j = 0; j < n; ++j) {
+		arf_set_mag(tmp, x + j);
 		arf_get_mpfr(f, tmp, rnd);
 		if (mpfr_regular_p(f)) {
 			flags |= 1;
@@ -174,11 +174,11 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 	bufexp[-1] = '+';
 	SEXP s_zero    = Rf_mkChar(buffer);
 
-	for (i = 0; i < n; ++i) {
-		arf_set_mag(tmp, x + i);
+	for (j = 0; j < n; ++j) {
+		arf_set_mag(tmp, x + j);
 		arf_get_mpfr(f, tmp, rnd);
 		if (!mpfr_regular_p(f))
-			SET_STRING_ELT(to, (R_xlen_t) i,
+			SET_STRING_ELT(to, (R_xlen_t) j,
 			               (mpfr_zero_p(f)) ? s_zero : s_pos_inf);
 		else {
 			/* Mantissa */
@@ -206,15 +206,15 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 				memmove(bufexp + ns + 1, bufexp + ns, nc);
 				bufexp[ns] = '0';
 			}
-			SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+			SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
 		}
 	}
 
 	} else {
 
 	SEXP s_pos_inf = Rf_mkChar("Inf");
-	for (i = 0; i < n; ++i)
-		SET_STRING_ELT(to, (R_xlen_t) i, s_pos_inf);
+	for (j = 0; j < n; ++j)
+		SET_STRING_ELT(to, (R_xlen_t) j, s_pos_inf);
 
 	}
 

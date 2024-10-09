@@ -5,18 +5,18 @@
 
 void R_flint_fmpz_finalize(SEXP x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	fmpz *p = (fmpz *) R_ExternalPtrAddr(x);
-	for (i = 0; i < n; ++i)
-		fmpz_clear(p + i);
+	for (j = 0; j < n; ++j)
+		fmpz_clear(p + j);
 	flint_free(p);
 	return;
 }
 
 SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	if (s_x == R_NilValue)
 		n = asLength(s_length, __func__);
 	else {
@@ -35,24 +35,24 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (tmp == NA_INTEGER)
 			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 			else
-			fmpz_set_si(y + i, tmp);
+			fmpz_set_si(y + j, tmp);
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		double *x = REAL(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (!R_FINITE(tmp))
 			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
 			else
-			fmpz_set_d(y + i, (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+			fmpz_set_d(y + j, (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
 		}
 		break;
 	}
@@ -62,7 +62,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_fmpz_nfmpz(SEXP from)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
@@ -75,11 +75,11 @@ SEXP R_flint_fmpz_nfmpz(SEXP from)
 	fmpz_set_ui(ub, (unsigned int) INT_MAX + 1U);
 	fmpz_neg(lb, ub);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		if (fmpz_cmp(x + i, lb) > 0 && fmpz_cmp(x + i, ub) < 0)
-			y[i] = (int) fmpz_get_si(x + i);
+	for (j = 0; j < n; ++j) {
+		if (fmpz_cmp(x + j, lb) > 0 && fmpz_cmp(x + j, ub) < 0)
+			y[j] = (int) fmpz_get_si(x + j);
 		else {
-			y[i] = NA_INTEGER;
+			y[j] = NA_INTEGER;
 			WARNING_OOB_INTEGER(w);
 		}
 	}
@@ -91,7 +91,7 @@ SEXP R_flint_fmpz_nfmpz(SEXP from)
 
 SEXP R_flint_fmpz_vector(SEXP from)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
@@ -104,11 +104,11 @@ SEXP R_flint_fmpz_vector(SEXP from)
 	fmpz_init(ub);
 	fmpz_set_d(ub, DBL_MAX);
 	fmpz_neg(lb, ub);
-	for (i = 0; i < n; ++i) {
-		if (fmpz_cmp(x + i, lb) > 0 && fmpz_cmp(x + i, ub) < 0)
-			y[i] = fmpz_get_d(x + i);
+	for (j = 0; j < n; ++j) {
+		if (fmpz_cmp(x + j, lb) > 0 && fmpz_cmp(x + j, ub) < 0)
+			y[j] = fmpz_get_d(x + j);
 		else {
-			y[i] = (fmpz_sgn(x + i) < 0) ? R_NegInf : R_PosInf;
+			y[j] = (fmpz_sgn(x + j) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}
@@ -133,18 +133,18 @@ static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
 
 SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	fmpz *x = (fmpz *) R_flint_get_pointer(from), xmin = 0, xmax = 0;
-	for (i = 0; i < n; ++i) {
-		if (fmpz_cmp(x + i, &xmax) > 0)
-			xmax = x[i];
-		else if (fmpz_cmp(x + i, &xmin) < 0)
-			xmin = x[i];
+	for (j = 0; j < n; ++j) {
+		if (fmpz_cmp(x + j, &xmax) > 0)
+			xmax = x[j];
+		else if (fmpz_cmp(x + j, &xmin) < 0)
+			xmin = x[j];
 	}
 	size_t ns, nc, ncmax;
 	mpz_ptr z;
@@ -159,8 +159,8 @@ SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 	mpz_get_str(buffer, base, z);
 	if (buffer[ncmax] != '\0')
 		ncmax = strlen(buffer);
-	for (i = 0; i < n; ++i) {
-		z = as_mpz_ptr(x[i], work);
+	for (j = 0; j < n; ++j) {
+		z = as_mpz_ptr(x[j], work);
 		nc = mpz_sizeinbase(z, abase) + (mpz_sgn(z) < 0);
 		if (nc > ncmax)
 			nc = ncmax;
@@ -172,7 +172,7 @@ SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 			memmove(buffer + ns + 1, buffer + ns, nc);
 			buffer[ns] = ' ';
 		}
-		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+		SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
 	mpz_clear(work);
 	UNPROTECT(1);

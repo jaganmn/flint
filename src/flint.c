@@ -116,7 +116,7 @@ SEXP R_flint_triple(SEXP object)
 SEXP R_flint_part(SEXP from, SEXP s_mode)
 {
 	R_flint_class_t class = R_flint_get_class(from);
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	void *p = R_flint_get_pointer(from);
 	R_CFinalizer_t f;
 	const char *what;
@@ -126,8 +126,8 @@ SEXP R_flint_part(SEXP from, SEXP s_mode)
 	do { \
 		xptr_t x = (xptr_t) p; \
 		yptr_t y = (yptr_t) ((n) ? flint_calloc(n, sizeof(yelt_t)) : 0); \
-		for (i = 0; i < n; ++i) \
-			yname##_set(y + i, xname##_##part##ref(x + i)); \
+		for (j = 0; j < n; ++j) \
+			yname##_set(y + j, xname##_##part##ref(x + j)); \
 		p = (void *) y; \
 		f = (R_CFinalizer_t) &R_flint_##yname##_finalize; \
 		what = #yname; \

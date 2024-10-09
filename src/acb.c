@@ -5,11 +5,11 @@
 
 void R_flint_acb_finalize(SEXP x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	acb_ptr p = (acb_ptr) R_ExternalPtrAddr(x);
-	for (i = 0; i < n; ++i)
-		acb_clear(p + i);
+	for (j = 0; j < n; ++j)
+		acb_clear(p + j);
 	flint_free(p);
 	return;
 }
@@ -18,7 +18,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_realmid, SEXP s_realrad,
                             SEXP s_imagmid, SEXP s_imagrad)
 {
-	unsigned long long int i, n, nrm = 1, nrr = 1, nim = 1, nir = 1;
+	unsigned long long int j, n, nrm = 1, nrr = 1, nim = 1, nir = 1;
 	if (s_realmid != R_NilValue || s_realrad != R_NilValue ||
 	    s_imagmid != R_NilValue || s_imagrad != R_NilValue) {
 		if (s_realmid != R_NilValue) {
@@ -53,8 +53,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	    s_imagmid != R_NilValue || s_imagrad != R_NilValue) {
 		switch (TYPEOF(s_realmid)) {
 		case NILSXP:
-			for (i = 0; i < n; ++i)
-				arf_zero(arb_midref(acb_realref(y + i)));
+			for (j = 0; j < n; ++j)
+				arf_zero(arb_midref(acb_realref(y + j)));
 			break;
 		case RAWSXP:
 		case LGLSXP:
@@ -62,29 +62,29 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			int *xrm = INTEGER(s_realmid), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xrm[i % nrm];
+			for (j = 0; j < n; ++j) {
+				tmp = xrm[j % nrm];
 				if (tmp == NA_INTEGER)
-				arf_nan(arb_midref(acb_realref(y + i)));
+				arf_nan(arb_midref(acb_realref(y + j)));
 				else
-				arf_set_si(arb_midref(acb_realref(y + i)), tmp);
+				arf_set_si(arb_midref(acb_realref(y + j)), tmp);
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			double *xrm = REAL(s_realmid), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xrm[i % nrm];
-				arf_set_d(arb_midref(acb_realref(y + i)), tmp);
+			for (j = 0; j < n; ++j) {
+				tmp = xrm[j % nrm];
+				arf_set_d(arb_midref(acb_realref(y + j)), tmp);
 			}
 			break;
 		}
 		}
 		switch (TYPEOF(s_realrad)) {
 		case NILSXP:
-			for (i = 0; i < n; ++i)
-				mag_zero(arb_radref(acb_realref(y + i)));
+			for (j = 0; j < n; ++j)
+				mag_zero(arb_radref(acb_realref(y + j)));
 			break;
 		case RAWSXP:
 		case LGLSXP:
@@ -92,32 +92,32 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			int *xrr = INTEGER(s_realrad), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xrr[i % nrr];
+			for (j = 0; j < n; ++j) {
+				tmp = xrr[j % nrr];
 				if (tmp == NA_INTEGER)
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
-				mag_set_ui(arb_radref(acb_realref(y + i)), (ulong) ((tmp < 0) ? -tmp : tmp));
+				mag_set_ui(arb_radref(acb_realref(y + j)), (ulong) ((tmp < 0) ? -tmp : tmp));
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			double *xrr = REAL(s_realrad), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xrr[i % nrr];
+			for (j = 0; j < n; ++j) {
+				tmp = xrr[j % nrr];
 				if (ISNAN(tmp))
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
-				mag_set_d(arb_radref(acb_realref(y + i)), tmp);
+				mag_set_d(arb_radref(acb_realref(y + j)), tmp);
 			}
 			break;
 		}
 		}
 		switch (TYPEOF(s_imagmid)) {
 		case NILSXP:
-			for (i = 0; i < n; ++i)
-				arf_zero(arb_midref(acb_imagref(y + i)));
+			for (j = 0; j < n; ++j)
+				arf_zero(arb_midref(acb_imagref(y + j)));
 			break;
 		case RAWSXP:
 		case LGLSXP:
@@ -125,29 +125,29 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			int *xim = INTEGER(s_imagmid), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xim[i % nim];
+			for (j = 0; j < n; ++j) {
+				tmp = xim[j % nim];
 				if (tmp == NA_INTEGER)
-				arf_nan(arb_midref(acb_imagref(y + i)));
+				arf_nan(arb_midref(acb_imagref(y + j)));
 				else
-				arf_set_si(arb_midref(acb_imagref(y + i)), tmp);
+				arf_set_si(arb_midref(acb_imagref(y + j)), tmp);
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			double *xim = REAL(s_imagmid), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xim[i % nim];
-				arf_set_d(arb_midref(acb_imagref(y + i)), tmp);
+			for (j = 0; j < n; ++j) {
+				tmp = xim[j % nim];
+				arf_set_d(arb_midref(acb_imagref(y + j)), tmp);
 			}
 			break;
 		}
 		}
 		switch (TYPEOF(s_imagrad)) {
 		case NILSXP:
-			for (i = 0; i < n; ++i)
-				mag_zero(arb_radref(acb_imagref(y + i)));
+			for (j = 0; j < n; ++j)
+				mag_zero(arb_radref(acb_imagref(y + j)));
 			break;
 		case RAWSXP:
 		case LGLSXP:
@@ -155,46 +155,46 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			int *xir = INTEGER(s_imagrad), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xir[i % nir];
+			for (j = 0; j < n; ++j) {
+				tmp = xir[j % nir];
 				if (tmp == NA_INTEGER)
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
-				mag_set_ui(arb_radref(acb_imagref(y + i)), (ulong) ((tmp < 0) ? -tmp : tmp));
+				mag_set_ui(arb_radref(acb_imagref(y + j)), (ulong) ((tmp < 0) ? -tmp : tmp));
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			double *xir = REAL(s_imagrad), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xir[i % nir];
+			for (j = 0; j < n; ++j) {
+				tmp = xir[j % nir];
 				if (ISNAN(tmp))
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
-				mag_set_d(arb_radref(acb_imagref(y + i)), tmp);
+				mag_set_d(arb_radref(acb_imagref(y + j)), tmp);
 			}
 			break;
 		}
 		}
 	} else if (s_x != R_NilValue) {
 		Rcomplex *x = COMPLEX(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
-			arf_set_d(arb_midref(acb_realref(y + i)), tmp.r);
-			mag_zero(arb_radref(acb_realref(y + i)));
-			arf_set_d(arb_midref(acb_imagref(y + i)), tmp.i);
-			mag_zero(arb_radref(acb_imagref(y + i)));
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
+			arf_set_d(arb_midref(acb_realref(y + j)), tmp.r);
+			mag_zero(arb_radref(acb_realref(y + j)));
+			arf_set_d(arb_midref(acb_imagref(y + j)), tmp.i);
+			mag_zero(arb_radref(acb_imagref(y + j)));
 		}
 	} else
-		for (i = 0; i < n; ++i)
-			acb_zero(y + i);
+		for (j = 0; j < n; ++j)
+			acb_zero(y + j);
 	return object;
 }
 
 SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "acb", (long long int) R_XLEN_T_MAX);
@@ -224,37 +224,37 @@ SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 	mag_init(ubr);
 	mag_set_ui_2exp_si(ubr, 1U, DBL_MAX_EXP);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		m = arb_midref(acb_realref(x + i));
+	for (j = 0; j < n; ++j) {
+		m = arb_midref(acb_realref(x + j));
 		if (arf_is_nan(m))
-			yrm[i] = R_NaN;
+			yrm[j] = R_NaN;
 		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			yrm[i] = arf_get_d(m, rnd);
+			yrm[j] = arf_get_d(m, rnd);
 		else {
-			yrm[i] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			yrm[j] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
-		m = arb_midref(acb_imagref(x + i));
+		m = arb_midref(acb_imagref(x + j));
 		if (arf_is_nan(m))
-			yim[i] = R_NaN;
+			yim[j] = R_NaN;
 		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			yim[i] = arf_get_d(m, rnd);
+			yim[j] = arf_get_d(m, rnd);
 		else {
-			yim[i] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			yim[j] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
-		r = arb_radref(acb_realref(x + i));
+		r = arb_radref(acb_realref(x + j));
 		if (mag_cmp(r, ubr) < 0)
-			yrr[i] = mag_get_d(r);
+			yrr[j] = mag_get_d(r);
 		else {
-			yrr[i] = R_PosInf;
+			yrr[j] = R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
-		r = arb_radref(acb_imagref(x + i));
+		r = arb_radref(acb_imagref(x + j));
 		if (mag_cmp(r, ubr) < 0)
-			yir[i] = mag_get_d(r);
+			yir[j] = mag_get_d(r);
 		else {
-			yir[i] = R_PosInf;
+			yir[j] = R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}
@@ -267,7 +267,7 @@ SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 
 SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "acb", (long long int) R_XLEN_T_MAX);
@@ -282,23 +282,23 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);
 	arf_neg(lbm, ubm);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		m = arb_midref(acb_realref(x + i));
+	for (j = 0; j < n; ++j) {
+		m = arb_midref(acb_realref(x + j));
 		if (arf_is_nan(m))
-			y[i].r = R_NaN;
+			y[j].r = R_NaN;
 		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			y[i].r = arf_get_d(m, rnd);
+			y[j].r = arf_get_d(m, rnd);
 		else {
-			y[i].r = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			y[j].r = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
-		m = arb_midref(acb_imagref(x + i));
+		m = arb_midref(acb_imagref(x + j));
 		if (arf_is_nan(m))
-			y[i].i = R_NaN;
+			y[j].i = R_NaN;
 		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			y[i].i = arf_get_d(m, rnd);
+			y[j].i = arf_get_d(m, rnd);
 		else {
-			y[i].i = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			y[j].i = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}

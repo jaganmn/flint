@@ -12,7 +12,7 @@ void R_flint_slong_finalize(SEXP x)
 
 SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	if (s_x == R_NilValue)
 		n = asLength(s_length, __func__);
 	else {
@@ -30,20 +30,20 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (tmp == NA_INTEGER)
 			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
 			else
-			y[i] = (slong) tmp;
+			y[j] = (slong) tmp;
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		double *x = REAL(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (!R_FINITE(tmp))
 			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
 #if FLINT64
@@ -53,7 +53,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "slong");
 			else
-			y[i] = (slong) tmp;
+			y[j] = (slong) tmp;
 		}
 		break;
 	}
@@ -63,7 +63,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_slong_nslong(SEXP from)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "slong", (long long int) R_XLEN_T_MAX);
@@ -71,11 +71,11 @@ SEXP R_flint_slong_nslong(SEXP from)
 	slong *x = (slong *) R_flint_get_pointer(from);
 	int *y = INTEGER(to);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		if (x[i] > INT_MIN && x[i] <= INT_MAX)
-			y[i] = (int) x[i];
+	for (j = 0; j < n; ++j) {
+		if (x[j] > INT_MIN && x[j] <= INT_MAX)
+			y[j] = (int) x[j];
 		else {
-			y[i] = NA_INTEGER;
+			y[j] = NA_INTEGER;
 			WARNING_OOB_INTEGER(w);
 		}
 	}
@@ -85,7 +85,7 @@ SEXP R_flint_slong_nslong(SEXP from)
 
 SEXP R_flint_slong_vector(SEXP from)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "slong", (long long int) R_XLEN_T_MAX);
@@ -95,14 +95,14 @@ SEXP R_flint_slong_vector(SEXP from)
 #if FLINT64
 	fmpz_t tmp;
 	fmpz_init(tmp);
-	for (i = 0; i < n; ++i) {
-		fmpz_set_si(tmp, x[i]);
-		y[i] = fmpz_get_d(tmp);
+	for (j = 0; j < n; ++j) {
+		fmpz_set_si(tmp, x[j]);
+		y[j] = fmpz_get_d(tmp);
 	}
 	fmpz_clear(tmp);
 #else
-	for (i = 0; i < n; ++i)
-		y[i] = (double) x[i];
+	for (j = 0; j < n; ++j)
+		y[j] = (double) x[j];
 #endif
 	UNPROTECT(1);
 	return to;
@@ -110,18 +110,18 @@ SEXP R_flint_slong_vector(SEXP from)
 
 SEXP R_flint_slong_format(SEXP from, SEXP s_base)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "slong", (long long int) R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	slong *x = (slong *) R_flint_get_pointer(from), xmin = 0, xmax = 0;
-	for (i = 0; i < n; ++i) {
-		if (x[i] > xmax)
-			xmax = x[i];
-		else if (x[i] < xmin)
-			xmin = x[i];
+	for (j = 0; j < n; ++j) {
+		if (x[j] > xmax)
+			xmax = x[j];
+		else if (x[j] < xmin)
+			xmin = x[j];
 	}
 	size_t ns, nc, ncmax;
 	mpz_t z;
@@ -135,8 +135,8 @@ SEXP R_flint_slong_format(SEXP from, SEXP s_base)
 	mpz_get_str(buffer, base, z);
 	if (buffer[ncmax] != '\0')
 		ncmax = strlen(buffer);
-	for (i = 0; i < n; ++i) {
-		mpz_set_si(z, x[i]);
+	for (j = 0; j < n; ++j) {
+		mpz_set_si(z, x[j]);
 		nc = mpz_sizeinbase(z, abase) + (mpz_sgn(z) < 0);
 		if (nc > ncmax)
 			nc = ncmax;
@@ -148,7 +148,7 @@ SEXP R_flint_slong_format(SEXP from, SEXP s_base)
 			memmove(buffer + ns + 1, buffer + ns, nc);
 			buffer[ns] = ' ';
 		}
-		SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+		SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
 	mpz_clear(z);
 	UNPROTECT(1);

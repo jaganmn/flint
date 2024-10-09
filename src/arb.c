@@ -4,11 +4,11 @@
 
 void R_flint_arb_finalize(SEXP x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	arb_ptr p = (arb_ptr) R_ExternalPtrAddr(x);
-	for (i = 0; i < n; ++i)
-		arb_clear(p + i);
+	for (j = 0; j < n; ++j)
+		arb_clear(p + j);
 	flint_free(p);
 	return;
 }
@@ -16,7 +16,7 @@ void R_flint_arb_finalize(SEXP x)
 SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_mid, SEXP s_rad)
 {
-	unsigned long long int i, n, nm = 1, nr = 1;
+	unsigned long long int j, n, nm = 1, nr = 1;
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		if (s_mid != R_NilValue) {
 			checkType(s_mid, R_flint_sexptypes + 1, __func__);
@@ -39,8 +39,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		switch (TYPEOF(s_mid)) {
 		case NILSXP:
-			for (i = 0; i < n; ++i)
-				arf_zero(arb_midref(y + i));
+			for (j = 0; j < n; ++j)
+				arf_zero(arb_midref(y + j));
 			break;
 		case RAWSXP:
 		case LGLSXP:
@@ -48,29 +48,29 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			int *xm = INTEGER(s_mid), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xm[i % nm];
+			for (j = 0; j < n; ++j) {
+				tmp = xm[j % nm];
 				if (tmp == NA_INTEGER)
-				arf_nan(arb_midref(y + i));
+				arf_nan(arb_midref(y + j));
 				else
-				arf_set_si(arb_midref(y + i), tmp);
+				arf_set_si(arb_midref(y + j), tmp);
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			double *xm = REAL(s_mid), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = xm[i % nm];
-				arf_set_d(arb_midref(y + i), tmp);
+			for (j = 0; j < n; ++j) {
+				tmp = xm[j % nm];
+				arf_set_d(arb_midref(y + j), tmp);
 			}
 			break;
 		}
 		}
 		switch (TYPEOF(s_rad)) {
 		case NILSXP:
-			for (i = 0; i < n; ++i)
-				mag_zero(arb_radref(y + i));
+			for (j = 0; j < n; ++j)
+				mag_zero(arb_radref(y + j));
 			break;
 		case RAWSXP:
 		case LGLSXP:
@@ -78,37 +78,37 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			int *x = INTEGER(s_rad), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = x[i % nr];
+			for (j = 0; j < n; ++j) {
+				tmp = x[j % nr];
 				if (tmp == NA_INTEGER)
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
-				mag_set_ui(arb_radref(y + i), (ulong) ((tmp < 0) ? -tmp : tmp));
+				mag_set_ui(arb_radref(y + j), (ulong) ((tmp < 0) ? -tmp : tmp));
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			double *x = REAL(s_rad), tmp;
-			for (i = 0; i < n; ++i) {
-				tmp = x[i % nr];
+			for (j = 0; j < n; ++j) {
+				tmp = x[j % nr];
 				if (ISNAN(tmp))
 				Rf_error(_("NaN not representable by '%s'"), "mag");
 				else
-				mag_set_d(arb_radref(y + i), tmp);
+				mag_set_d(arb_radref(y + j), tmp);
 			}
 			break;
 		}
 		}
 	} else
-		for (i = 0; i < n; ++i)
-			arb_zero(y + i);
+		for (j = 0; j < n; ++j)
+			arb_zero(y + j);
 	return object;
 }
 
 SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arb", (long long int) R_XLEN_T_MAX);
@@ -131,21 +131,21 @@ SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 	mag_init(ubr);
 	mag_set_ui_2exp_si(ubr, 1U, DBL_MAX_EXP);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		m = arb_midref(x + i);
+	for (j = 0; j < n; ++j) {
+		m = arb_midref(x + j);
 		if (arf_is_nan(m))
-			ym[i] = R_NaN;
+			ym[j] = R_NaN;
 		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			ym[i] = arf_get_d(m, rnd);
+			ym[j] = arf_get_d(m, rnd);
 		else {
-			ym[i] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			ym[j] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
-		r = arb_radref(x + i);
+		r = arb_radref(x + j);
 		if (mag_cmp(r, ubr) < 0)
-			yr[i] = mag_get_d(r);
+			yr[j] = mag_get_d(r);
 		else {
-			yr[i] = R_PosInf;
+			yr[j] = R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}
@@ -158,7 +158,7 @@ SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 
 SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arb", (long long int) R_XLEN_T_MAX);
@@ -173,14 +173,14 @@ SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);
 	arf_neg(lbm, ubm);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		m = arb_midref(x + i);
+	for (j = 0; j < n; ++j) {
+		m = arb_midref(x + j);
 		if (arf_is_nan(m))
-			y[i] = R_NaN;
+			y[j] = R_NaN;
 		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			y[i] = arf_get_d(m, rnd);
+			y[j] = arf_get_d(m, rnd);
 		else {
-			y[i] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			y[j] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}

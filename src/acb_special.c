@@ -20,13 +20,13 @@ SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_p
 	int *flags = INTEGER(s_flags);
 	slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
-	unsigned long long int i, n = RECYCLE4(nz, nk, nflags, nprec);
+	unsigned long long int j, n = RECYCLE4(nz, nk, nflags, nprec);
 	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (i = 0; i < n; ++i)
-		acb_lambertw(res + i, z + i % nz, k + i % nk,
-		             flags[i % nflags], prec[i % nprec]);
+	for (j = 0; j < n; ++j)
+		acb_lambertw(res + j, z + j % nz, k + j % nk,
+		             flags[j % nflags], prec[j % nprec]);
 	return R_NilValue;
 }
 
@@ -85,12 +85,12 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z,
 	int *flags = INTEGER(s_flags);
 	slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
-	unsigned long long int i, n = RECYCLE6(na, nb, nc, nz, nflags, nprec);
+	unsigned long long int j, n = RECYCLE6(na, nb, nc, nz, nflags, nprec);
 	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (i = 0; i < n; ++i)
-		acb_hypgeom_2f1(res + i, a + i % na, b + i % nb, c + i % nc, z + i % nz,
-		                flags[i % nflags], prec[i % nprec]);
+	for (j = 0; j < n; ++j)
+		acb_hypgeom_2f1(res + j, a + j % na, b + j % nb, c + j % nc, z + j % nz,
+		                flags[j % nflags], prec[j % nprec]);
 	return R_NilValue;
 }

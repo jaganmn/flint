@@ -27,18 +27,18 @@ int asRnd(SEXP rnd, int gnu, const char *where)
 
 void R_flint_arf_finalize(SEXP x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
 	arf_ptr p = (arf_ptr) R_ExternalPtrAddr(x);
-	for (i = 0; i < n; ++i)
-		arf_clear(p + i);
+	for (j = 0; j < n; ++j)
+		arf_clear(p + j);
 	flint_free(p);
 	return;
 }
 
 SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int i, n;
+	unsigned long long int j, n;
 	if (s_x == R_NilValue)
 		n = asLength(s_length, __func__);
 	else {
@@ -49,8 +49,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
-		for (i = 0; i < n; ++i)
-			arf_zero(y + i);
+		for (j = 0; j < n; ++j)
+			arf_zero(y + j);
 		break;
 	case RAWSXP:
 	case LGLSXP:
@@ -58,21 +58,21 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		int *x = INTEGER(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
 			if (tmp == NA_INTEGER)
-			arf_nan(y + i);
+			arf_nan(y + j);
 			else
-			arf_set_si(y + i, tmp);
+			arf_set_si(y + j, tmp);
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		double *x = REAL(s_x), tmp;
-		for (i = 0; i < n; ++i) {
-			tmp = x[i];
-			arf_set_d(y + i, tmp);
+		for (j = 0; j < n; ++j) {
+			tmp = x[j];
+			arf_set_d(y + j, tmp);
 		}
 		break;
 	}
@@ -82,7 +82,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arf", (long long int) R_XLEN_T_MAX);
@@ -96,13 +96,13 @@ SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 	arf_set_d(ub, DBL_MAX);
 	arf_neg(lb, ub);
 	int w = 1;
-	for (i = 0; i < n; ++i) {
-		if (arf_is_nan(x + i))
-			y[i] = R_NaN;
-		else if (arf_cmp(x + i, lb) > 0 && arf_cmp(x + i, ub) < 0)
-			y[i] = arf_get_d(x + i, rnd);
+	for (j = 0; j < n; ++j) {
+		if (arf_is_nan(x + j))
+			y[j] = R_NaN;
+		else if (arf_cmp(x + j, lb) > 0 && arf_cmp(x + j, ub) < 0)
+			y[j] = arf_get_d(x + j, rnd);
 		else {
-			y[i] = (arf_sgn(x + i) < 0) ? R_NegInf : R_PosInf;
+			y[j] = (arf_sgn(x + j) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}
@@ -122,7 +122,7 @@ SEXP R_flint_arf_vector(SEXP from, SEXP s_rnd)
 SEXP R_flint_arf_format(SEXP from, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
-	unsigned long long int i, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "arf", (long long int) R_XLEN_T_MAX);
@@ -143,8 +143,8 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 	MPFR_ERANGE_SET;
 	mpz_init(z);
 	mpfr_init2(f, FLINT_BITS);
-	for (i = 0; i < n; ++i) {
-		arf_get_mpfr(f, x + i, rnd);
+	for (j = 0; j < n; ++j) {
+		arf_get_mpfr(f, x + j, rnd);
 		if (mpfr_regular_p(f)) {
 			flags |= 1;
 			if (mpfr_sgn(f) < 0)
@@ -153,7 +153,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 			e = (e__ <= 0) ? (mpfr_uexp_t) -(e__ + 1) + 2 : (mpfr_uexp_t) (e__ - 1);
 			if (e > emax)
 				emax = e;
-			p__ = arf_bits(x + i);
+			p__ = arf_bits(x + j);
 			p = (p__ <= MPFR_PREC_MAX) ? (mpfr_prec_t) p__ : MPFR_PREC_MAX;
 			if (p > pmax)
 				pmax = p;
@@ -205,10 +205,10 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 	bufexp[-1] = '+';
 	SEXP s_zero    = Rf_mkChar(buffer);
 
-	for (i = 0; i < n; ++i) {
-		arf_get_mpfr(f, x + i, rnd);
+	for (j = 0; j < n; ++j) {
+		arf_get_mpfr(f, x + j, rnd);
 		if (!mpfr_regular_p(f))
-			SET_STRING_ELT(to, (R_xlen_t) i,
+			SET_STRING_ELT(to, (R_xlen_t) j,
 			               (mpfr_zero_p(f)) ? s_zero :
 			               (mpfr_nan_p(f)) ? s_nan :
 			               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
@@ -242,7 +242,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 				memmove(bufexp + ns + 1, bufexp + ns, nc);
 				bufexp[ns] = '0';
 			}
-			SET_STRING_ELT(to, (R_xlen_t) i, Rf_mkChar(buffer));
+			SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
 		}
 	}
 
@@ -252,9 +252,9 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 		s_neg_inf = Rf_mkChar(              "-Inf"        ),
 		s_pos_inf = Rf_mkChar((flags & 4) ? " Inf" : "Inf"),
 		s_nan     = Rf_mkChar((flags & 4) ? " NaN" : "NaN");
-	for (i = 0; i < n; ++i) {
-		arf_get_mpfr(f, x + i, rnd);
-		SET_STRING_ELT(to, (R_xlen_t) i,
+	for (j = 0; j < n; ++j) {
+		arf_get_mpfr(f, x + j, rnd);
+		SET_STRING_ELT(to, (R_xlen_t) j,
 		               (mpfr_nan_p(f)) ? s_nan :
 		               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
 	}
