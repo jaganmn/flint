@@ -47,7 +47,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 	} else
 		n = asLength(s_length, __func__);
-	acb_ptr y = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
+	acb_ptr y = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	if (s_realmid != R_NilValue || s_realrad != R_NilValue ||
 	    s_imagmid != R_NilValue || s_imagrad != R_NilValue) {

@@ -34,7 +34,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		nm = n;
 	} else
 		n = asLength(s_length, __func__);
-	arb_ptr y = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
+	arb_ptr y = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		switch (TYPEOF(s_mid)) {

@@ -37,7 +37,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 	} else
 		n = asLength(s_length, __func__);
-	fmpq *y = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
+	fmpq *y = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		switch (TYPEOF(s_num)) {

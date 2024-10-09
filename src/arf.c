@@ -45,7 +45,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		checkType(s_x, R_flint_sexptypes + 1, __func__);
 		n = (unsigned long long int) XLENGTH(s_x);
 	}
-	arf_ptr y = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
+	arf_ptr y = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:

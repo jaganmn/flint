@@ -125,7 +125,7 @@ SEXP R_flint_part(SEXP from, SEXP s_mode)
 #define PART_CASE(xname, yname, xelt_t, yelt_t, xptr_t, yptr_t, part) \
 	do { \
 		xptr_t x = (xptr_t) p; \
-		yptr_t y = (yptr_t) ((n) ? flint_calloc(n, sizeof(yelt_t)) : 0); \
+		yptr_t y = (yptr_t) ((n) ? flint_calloc((size_t) n, sizeof(yelt_t)) : 0); \
 		for (j = 0; j < n; ++j) \
 			yname##_set(y + j, xname##_##part##ref(x + j)); \
 		p = (void *) y; \
@@ -182,7 +182,7 @@ SEXP R_flint_subscript(SEXP from, SEXP subscript)
 #define SUBSCRIPT_CASE(name, elt_t, ptr_t) \
 	do { \
 		ptr_t x = (ptr_t) p; \
-		ptr_t y = (ptr_t) ((n) ? flint_calloc(n, sizeof(elt_t)) : 0); \
+		ptr_t y = (ptr_t) ((n) ? flint_calloc((size_t) n, sizeof(elt_t)) : 0); \
 		if (TYPEOF(subscript) == INTSXP) { \
 			int *s = INTEGER(subscript); \
 			for (j = 0; j < n; ++j) \
@@ -266,7 +266,7 @@ SEXP R_flint_subassign(SEXP from, SEXP subscript, SEXP value)
 	do { \
 		ptr_t v = (ptr_t) p__; \
 		ptr_t x = (ptr_t) p; \
-		ptr_t y = (ptr_t) ((n) ? flint_calloc(n, sizeof(elt_t)) : 0); \
+		ptr_t y = (ptr_t) ((n) ? flint_calloc((size_t) n, sizeof(elt_t)) : 0); \
 		if (subscript == R_NilValue) { \
 			for (j = 0; j < n; ++j) \
 				name##_set(y + j, v + j % n__); \
