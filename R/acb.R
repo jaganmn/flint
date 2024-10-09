@@ -29,8 +29,8 @@ setAs("acb", "nacb",
       function (from)
           .Call(R_flint_acb_nacb, from, "N"))
 
-Real <- function (z) .Call(R_flint_acb_real, z)
-Imag <- function (z) .Call(R_flint_acb_imag, z)
+Real <- function (z) .Call(R_flint_part, z, 4L)
+Imag <- function (z) .Call(R_flint_part, z, 5L)
 
 setMethod("Re", c(z = "acb"), Real)
 setMethod("Im", c(z = "acb"), Imag)

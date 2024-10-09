@@ -307,13 +307,3 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 	UNPROTECT(1);
 	return to;
 }
-
-SEXP R_flint_acb_real(SEXP from)
-{
-	THISPART(real, acb, arb, acb_ptr, arb_ptr, arb_t);
-}
-
-SEXP R_flint_acb_imag(SEXP from)
-{
-	THISPART(imag, acb, arb, acb_ptr, arb_ptr, arb_t);
-}

@@ -206,13 +206,3 @@ SEXP R_flint_fmpq_vector(SEXP from)
 	UNPROTECT(1);
 	return to;
 }
-
-SEXP R_flint_fmpq_num(SEXP from)
-{
-	THISPART(num, fmpq, fmpz, fmpq *, fmpz *, fmpz);
-}
-
-SEXP R_flint_fmpq_den(SEXP from)
-{
-	THISPART(den, fmpq, fmpz, fmpq *, fmpz *, fmpz);
-}

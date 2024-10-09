@@ -24,8 +24,8 @@ setAs("fmpq", "nfmpq",
       function (from)
           .Call(R_flint_fmpq_nfmpq, from))
 
-Num <- function (q) .Call(R_flint_fmpq_num, q)
-Den <- function (q) .Call(R_flint_fmpq_den, q)
+Num <- function (q) .Call(R_flint_part, q, 0L)
+Den <- function (q) .Call(R_flint_part, q, 1L)
 
 setMethod("format",
           c(x = "fmpq"),

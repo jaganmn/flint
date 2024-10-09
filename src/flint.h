@@ -88,17 +88,6 @@ do { \
 		         func); \
 } while (0)
 
-#define THISPART(this, xname, yname, xptr_t, yptr_t, yelt_t) \
-	unsigned long long int i, n = R_flint_get_length(from); \
-	xptr_t x = (xptr_t) R_flint_get_pointer(from); \
-	yptr_t y = (yptr_t) ((n) ? flint_calloc(n, sizeof(yelt_t)) : 0); \
-	for (i = 0; i < n; ++i) \
-		yname##_set(y + i, xname##_##this##ref(x + i)); \
-	SEXP to = PROTECT(newObject(#yname)); \
-	R_flint_set(to, y, n, (R_CFinalizer_t) &R_flint_##yname##_finalize); \
-	UNPROTECT(1); \
-	return to; \
-
 #define MPFR_ERANGE_SET \
 mpfr_exp_t \
 	__emin_old = mpfr_get_emin(), __emin_new = mpfr_get_emin_min(), \
