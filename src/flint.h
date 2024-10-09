@@ -32,6 +32,9 @@
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
 
+#define slong_set(rop, op) *(rop) = *(op)
+#define ulong_set(rop, op) *(rop) = *(op)
+
 #define MAX2(a, b) \
 (((a) < (b)) ? (b)                 : (a))
 #define MAX3(a, b, c) \
