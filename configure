@@ -3524,8 +3524,8 @@ printf "%s\n" "yes" >&6; }
 			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs-only-l flint`"
 			CPPFLAGS="${CPPFLAGS} ${FLINT_CPPFLAGS}"
 			LDFLAGS="${LDFLAGS} ${FLINT_LDFLAGS}"
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if --libs suffices for linking libflint" >&5
-printf "%s\n" "$as_me: checking if --libs suffices for linking libflint" >&6;}
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether --libs suffices for linking libflint" >&5
+printf "%s\n" "$as_me: checking whether --libs suffices for linking libflint" >&6;}
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint_malloc in -lflint" >&5
 printf %s "checking for flint_malloc in -lflint... " >&6; }
@@ -3580,8 +3580,8 @@ fi
 
 			if test "x${have_libflint}" = "xno"; then
 			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs --static flint`"
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if --libs --static suffices for linking libflint" >&5
-printf "%s\n" "$as_me: checking if --libs --static suffices for linking libflint" >&6;}
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether --libs --static suffices for linking libflint" >&5
+printf "%s\n" "$as_me: checking whether --libs --static suffices for linking libflint" >&6;}
 			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint_malloc in -lflint" >&5
 printf %s "checking for flint_malloc in -lflint... " >&6; }
 if test ${ac_cv_lib_flint_flint_malloc+y}

@@ -73,13 +73,13 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs-only-l flint`"
 			CPPFLAGS="${CPPFLAGS} ${FLINT_CPPFLAGS}"
 			LDFLAGS="${LDFLAGS} ${FLINT_LDFLAGS}"
-			AC_MSG_NOTICE([checking if --libs suffices for linking libflint])
+			AC_MSG_NOTICE([checking whether --libs suffices for linking libflint])
 			AC_CHECK_LIB([flint], [flint_malloc],
 			             [have_libflint=yes], [have_libflint=no],
 			             [${R_FLINT_LIBS}])
 			if test "x${have_libflint}" = "xno"; then
 			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs --static flint`"
-			AC_MSG_NOTICE([checking if --libs --static suffices for linking libflint])
+			AC_MSG_NOTICE([checking whether --libs --static suffices for linking libflint])
 			AC_CHECK_LIB([flint], [flint_malloc],
 			             [have_libflint=yes], [have_libflint=no],
 			             [${R_FLINT_LIBS}])
