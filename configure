@@ -643,7 +643,6 @@ ac_includes_default="\
 ac_header_c_list=
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-FLINT_LIBS
 OBJEXT
 EXEEXT
 ac_ct_CC
@@ -651,9 +650,14 @@ CPPFLAGS
 LDFLAGS
 CFLAGS
 CC
-FLINT_LDFLAGS
-FLINT_CFLAGS
-FLINT_CPPFLAGS
+R_FLINT_LIBS
+R_FLINT_LDFLAGS
+R_FLINT_CFLAGS
+R_FLINT_CPPFLAGS
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
+PKG_CONFIG
+R_HOME
 target_alias
 host_alias
 build_alias
@@ -700,9 +704,14 @@ enable_option_checking
       ac_precious_vars='build_alias
 host_alias
 target_alias
-FLINT_CPPFLAGS
-FLINT_CFLAGS
-FLINT_LDFLAGS
+R_HOME
+PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
+R_FLINT_CPPFLAGS
+R_FLINT_CFLAGS
+R_FLINT_LDFLAGS
+R_FLINT_LIBS
 CC
 CFLAGS
 LDFLAGS
@@ -1323,12 +1332,23 @@ if test -n "$ac_init_help"; then
   cat <<\_ACEOF
 
 Some influential environment variables:
-  FLINT_CPPFLAGS
-              additional flags for the C preprocessor
-  FLINT_CFLAGS
-              additional flags for the C compiler
-  FLINT_LDFLAGS
-              additional flags for the linker (not -l)
+  R_HOME      R installation directory
+  PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              path to be prepended to pkg-config's default search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's default search path
+  R_FLINT_CPPFLAGS
+              preprocessor options for the C compiler, overriding pkg-config
+  R_FLINT_CFLAGS
+              debugging and optimization options for the C compiler,
+              overriding pkg-config
+  R_FLINT_LDFLAGS
+              options excluding libraries for the linker, overriding
+              pkg-config
+  R_FLINT_LIBS
+              libraries for the linker, overriding pkg-config
+              [default=${R_FLINT_LIBS_DEFAULT=-lflint -lmpfr -lgmp}]
   CC          C compiler command
   CFLAGS      C compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -1600,6 +1620,70 @@ printf "%s\n" "$ac_res" >&6; }
   eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
 
 } # ac_fn_c_check_type
+
+# ac_fn_c_check_func LINENO FUNC VAR
+# ----------------------------------
+# Tests whether FUNC exists, setting the cache variable VAR accordingly
+ac_fn_c_check_func ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+printf %s "checking for $2... " >&6; }
+if eval test \${$3+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+/* Define $2 to an innocuous variant, in case <limits.h> declares $2.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $2 innocuous_$2
+
+/* System header to define __stub macros and hopefully few prototypes,
+   which can conflict with char $2 (void); below.  */
+
+#include <limits.h>
+#undef $2
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char $2 (void);
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_$2 || defined __stub___$2
+choke me
+#endif
+
+int
+main (void)
+{
+return $2 ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  eval "$3=yes"
+else case e in #(
+  e) eval "$3=no" ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext ;;
+esac
+fi
+eval ac_res=\$$3
+	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+printf "%s\n" "$ac_res" >&6; }
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+
+} # ac_fn_c_check_func
 ac_configure_args_raw=
 for ac_arg
 do
@@ -2322,15 +2406,10 @@ _ACEOF
 
 
 
-: ${R_HOME=`R RHOME`}
-if test "x${R_HOME}" = "x"; then
-	echo "could not determine R_HOME"
-	exit 1
-fi
-CC=`"${R_HOME}/bin/R" CMD config CC`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS` ${FLINT_CPPFLAGS}
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS` ${FLINT_CFLAGS}
-LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS` ${FLINT_LDFLAGS}
+
+
+
+
 
 
 
@@ -3357,6 +3436,230 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for R" >&5
+printf %s "checking for R... " >&6; }
+if test "x${R_HOME=`R RHOME`}" != "x" &&
+   test -x "${R_HOME}/bin/R" &&
+   "${R_HOME}/bin/R" --version >/dev/null 2>&1; then
+	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ${R_HOME}/bin/R" >&5
+printf "%s\n" "${R_HOME}/bin/R" >&6; }
+else
+	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+	as_fn_error $? "install R before configuring R packages" "$LINENO" 5
+fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
+LIBS=
+
+have_libflint=no
+if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
+   test "x${R_FLINT_CFLAGS+x}"   = "x" &&
+   test "x${R_FLINT_LDFLAGS+x}"  = "x" &&
+   test "x${R_FLINT_LIBS+x}"     = "x"; then
+		for ac_prog in pkg-config pkgconf
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_PKG_CONFIG+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_PKG_CONFIG="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+printf "%s\n" "$PKG_CONFIG" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+  test -n "$PKG_CONFIG" && break
+done
+
+	if test "x${PKG_CONFIG}" = "x"; then
+		R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
+	else
+		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint.pc in pkg-config search path" >&5
+printf %s "checking for flint.pc in pkg-config search path... " >&6; }
+		if "${PKG_CONFIG}" --exists flint; then
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+			save_CPPFLAGS="${CPPFLAGS}"
+			save_LDFLAGS="${LDFLAGS}"
+			R_FLINT_CPPFLAGS="`"${PKG_CONFIG}" --cflags flint`"
+			R_FLINT_LDFLAGS="`"${PKG_CONFIG}" --libs-only-L --libs-only-other flint`"
+			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs-only-l flint`"
+			CPPFLAGS="${CPPFLAGS} ${FLINT_CPPFLAGS}"
+			LDFLAGS="${LDFLAGS} ${FLINT_LDFLAGS}"
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if --libs suffices for linking libflint" >&5
+printf "%s\n" "$as_me: checking if --libs suffices for linking libflint" >&6;}
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint_malloc in -lflint" >&5
+printf %s "checking for flint_malloc in -lflint... " >&6; }
+if test ${ac_cv_lib_flint_flint_malloc+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_check_lib_save_LIBS=$LIBS
+LIBS="-lflint ${R_FLINT_LIBS} $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.
+   The 'extern "C"' is for builds by C++ compilers;
+   although this is not generally supported in C code supporting it here
+   has little cost and some practical benefit (sr 110532).  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char flint_malloc (void);
+int
+main (void)
+{
+return flint_malloc ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_flint_flint_malloc=yes
+else case e in #(
+  e) ac_cv_lib_flint_flint_malloc=no ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flint_flint_malloc" >&5
+printf "%s\n" "$ac_cv_lib_flint_flint_malloc" >&6; }
+if test "x$ac_cv_lib_flint_flint_malloc" = xyes
+then :
+  have_libflint=yes
+fi
+
+			if test "x${have_libflint}" = "xno"; then
+			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs --static flint`"
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if --libs --static suffices for linking libflint" >&5
+printf "%s\n" "$as_me: checking if --libs --static suffices for linking libflint" >&6;}
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint_malloc in -lflint" >&5
+printf %s "checking for flint_malloc in -lflint... " >&6; }
+if test ${ac_cv_lib_flint_flint_malloc+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) ac_check_lib_save_LIBS=$LIBS
+LIBS="-lflint ${R_FLINT_LIBS} $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.
+   The 'extern "C"' is for builds by C++ compilers;
+   although this is not generally supported in C code supporting it here
+   has little cost and some practical benefit (sr 110532).  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char flint_malloc (void);
+int
+main (void)
+{
+return flint_malloc ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_flint_flint_malloc=yes
+else case e in #(
+  e) ac_cv_lib_flint_flint_malloc=no ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flint_flint_malloc" >&5
+printf "%s\n" "$ac_cv_lib_flint_flint_malloc" >&6; }
+if test "x$ac_cv_lib_flint_flint_malloc" = xyes
+then :
+  have_libflint=yes
+fi
+
+			if test "x${have_libflint}" = "xno"; then
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: reverting to default compiler and linker options" >&5
+printf "%s\n" "$as_me: reverting to default compiler and linker options" >&6;}
+			R_FLINT_CPPFLAGS=
+			R_FLINT_LDFLAGS=
+			R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
+			fi
+			fi
+			CPPFLAGS="${save_CPPFLAGS}"
+			LDFLAGS="${save_LDFLAGS}"
+		else
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+			R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
+		fi
+	fi
+else
+		: {R_FLINT_LIBS=${R_FLINT_LIBS_DEFAULT}}
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: using R_FLINT_CPPFLAGS=\"${R_FLINT_CPPFLAGS}\"" >&5
+printf "%s\n" "$as_me: using R_FLINT_CPPFLAGS=\"${R_FLINT_CPPFLAGS}\"" >&6;}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: using R_FLINT_CFLAGS=\"${R_FLINT_CFLAGS}\"" >&5
+printf "%s\n" "$as_me: using R_FLINT_CFLAGS=\"${R_FLINT_CFLAGS}\"" >&6;}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: using R_FLINT_LDFLAGS=\"${R_FLINT_LDFLAGS}\"" >&5
+printf "%s\n" "$as_me: using R_FLINT_LDFLAGS=\"${R_FLINT_LDFLAGS}\"" >&6;}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: using R_FLINT_LIBS=\"${R_FLINT_LIBS}\"" >&5
+printf "%s\n" "$as_me: using R_FLINT_LIBS=\"${R_FLINT_LIBS}\"" >&6;}
+CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
+CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"
+LDFLAGS="${LDFLAGS} ${R_FLINT_LDFLAGS}"
+LIBS="${LIBS} ${R_FLINT_LIBS}"
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for __gmpz_init in -lgmp" >&5
 printf %s "checking for __gmpz_init in -lgmp... " >&6; }
@@ -3403,12 +3706,9 @@ fi
 printf "%s\n" "$ac_cv_lib_gmp___gmpz_init" >&6; }
 if test "x$ac_cv_lib_gmp___gmpz_init" = xyes
 then :
-  printf "%s\n" "#define HAVE_LIBGMP 1" >>confdefs.h
-
-  LIBS="-lgmp $LIBS"
-
+  :
 else case e in #(
-  e) as_fn_error $? "GNU MP not found, see https://gmplib.org/" "$LINENO" 5 ;;
+  e) as_fn_error $? "failed to link GNU MP library, see https://gmplib.org/" "$LINENO" 5 ;;
 esac
 fi
 
@@ -3457,18 +3757,15 @@ fi
 printf "%s\n" "$ac_cv_lib_mpfr_mpfr_init" >&6; }
 if test "x$ac_cv_lib_mpfr_mpfr_init" = xyes
 then :
-  printf "%s\n" "#define HAVE_LIBMPFR 1" >>confdefs.h
-
-  LIBS="-lmpfr $LIBS"
-
+  :
 else case e in #(
-  e) as_fn_error $? "GNU MPFR not found, see https://www.mpfr.org/" "$LINENO" 5 ;;
+  e) as_fn_error $? "failed to link GNU MPFR library, see https://www.mpfr.org/" "$LINENO" 5 ;;
 esac
 fi
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for arb_init in -lflint" >&5
-printf %s "checking for arb_init in -lflint... " >&6; }
-if test ${ac_cv_lib_flint_arb_init+y}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for fmpz_init in -lflint" >&5
+printf %s "checking for fmpz_init in -lflint... " >&6; }
+if test ${ac_cv_lib_flint_fmpz_init+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -3486,20 +3783,20 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char arb_init (void);
+char fmpz_init (void);
 int
 main (void)
 {
-return arb_init ();
+return fmpz_init ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-  ac_cv_lib_flint_arb_init=yes
+  ac_cv_lib_flint_fmpz_init=yes
 else case e in #(
-  e) ac_cv_lib_flint_arb_init=no ;;
+  e) ac_cv_lib_flint_fmpz_init=no ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -3507,16 +3804,13 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 LIBS=$ac_check_lib_save_LIBS ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flint_arb_init" >&5
-printf "%s\n" "$ac_cv_lib_flint_arb_init" >&6; }
-if test "x$ac_cv_lib_flint_arb_init" = xyes
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flint_fmpz_init" >&5
+printf "%s\n" "$ac_cv_lib_flint_fmpz_init" >&6; }
+if test "x$ac_cv_lib_flint_fmpz_init" = xyes
 then :
-  printf "%s\n" "#define HAVE_LIBFLINT 1" >>confdefs.h
-
-  LIBS="-lflint $LIBS"
-
+  :
 else case e in #(
-  e) as_fn_error $? "FLINT not found, see https://flintlib.org/" "$LINENO" 5 ;;
+  e) as_fn_error $? "failed to link FLINT library, see https://flintlib.org/" "$LINENO" 5 ;;
 esac
 fi
 
@@ -3555,7 +3849,7 @@ if test "x$ac_cv_header_gmp_h" = xyes
 then :
 
 else case e in #(
-  e) as_fn_error $? "GNU MP not found, see https://gmplib.org/" "$LINENO" 5 ;;
+  e) as_fn_error $? "failed to compile GNU MP header, see https://gmplib.org/" "$LINENO" 5 ;;
 esac
 fi
 
@@ -3564,7 +3858,7 @@ if test "x$ac_cv_header_mpfr_h" = xyes
 then :
 
 else case e in #(
-  e) as_fn_error $? "GNU MPFR not found, see https://www.mpfr.org/" "$LINENO" 5 ;;
+  e) as_fn_error $? "failed to compile GNU MPFR header, see https://www.mpfr.org/" "$LINENO" 5 ;;
 esac
 fi
 
@@ -3573,7 +3867,7 @@ if test "x$ac_cv_header_flint_flint_h" = xyes
 then :
 
 else case e in #(
-  e) as_fn_error $? "FLINT not found, see https://flintlib.org/" "$LINENO" 5 ;;
+  e) as_fn_error $? "failed to compile FLINT header, see https://flintlib.org/" "$LINENO" 5 ;;
 esac
 fi
 
@@ -3595,6 +3889,15 @@ then :
 
 else case e in #(
   e) as_fn_error $? "GNU MPFR missing unsigned exponent type" "$LINENO" 5 ;;
+esac
+fi
+
+ac_fn_c_check_func "$LINENO" "flint" "ac_cv_func_flint"
+if test "x$ac_cv_func_flint" = xyes
+then :
+  arb_init
+else case e in #(
+  e) : ;;
 esac
 fi
 
@@ -3677,8 +3980,8 @@ esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mp_limb_t, mp_bits_per_limb consistent with FLINT_BITS" >&5
-printf %s "checking for mp_limb_t, mp_bits_per_limb consistent with FLINT_BITS... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for consistent limb size" >&5
+printf %s "checking for consistent limb size... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3708,8 +4011,6 @@ See 'config.log' for more details" "$LINENO" 5; }
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-FLINT_LIBS=${LIBS}
 
 
 
