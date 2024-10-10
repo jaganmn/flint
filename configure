@@ -2386,20 +2386,20 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers src/config.h"
 
 
+tail=PACKAGE_VERSION
+head=${tail%%.*}
 
-cat >>confdefs.h <<_ACEOF
-#define PACKAGE_VERSION_MAJOR `echo "${PACKAGE_VERSION}" | cut -f 1 -d .`
-_ACEOF
+printf "%s\n" "#define PACKAGE_VERSION_MAJOR ${head}" >>confdefs.h
 
+tail=${tail#*.}
+head=${tail%%.*}
 
-cat >>confdefs.h <<_ACEOF
-#define PACKAGE_VERSION_MINOR `echo "${PACKAGE_VERSION}" | cut -f 2 -d .`
-_ACEOF
+printf "%s\n" "#define PACKAGE_VERSION_MINOR ${head}" >>confdefs.h
 
+tail=${tail#*.}
+head=${tail}
 
-cat >>confdefs.h <<_ACEOF
-#define PACKAGE_VERSION_PATCHLEVEL `echo "${PACKAGE_VERSION}" | cut -f 3 -d .`
-_ACEOF
+printf "%s\n" "#define PACKAGE_VERSION_PATCHLEVEL ${head}" >>confdefs.h
 
 
 
