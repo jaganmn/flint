@@ -7,7 +7,7 @@ AC_INIT([flint],
 AC_CONFIG_SRCDIR([man/flint-class.Rd])
 AC_CONFIG_HEADERS([src/config.h])
 
-tail=PACKAGE_VERSION
+tail=${PACKAGE_VERSION}
 head=${tail%%.*}
 AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MAJOR], [${head}],
                    [Define to the first field of the version string.])
