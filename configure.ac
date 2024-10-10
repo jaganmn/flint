@@ -16,7 +16,7 @@ head=${tail%%.*}
 AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MINOR], [${head}],
                    [Define to the second field of the version string.])
 tail=${tail#*.}
-head=${tail}
+head=${tail%%.*}
 AC_DEFINE_UNQUOTED([PACKAGE_VERSION_PATCHLEVEL], [${head}],
                    [Define to the third field of the version string.])
 

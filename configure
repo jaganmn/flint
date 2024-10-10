@@ -2397,7 +2397,7 @@ head=${tail%%.*}
 printf "%s\n" "#define PACKAGE_VERSION_MINOR ${head}" >>confdefs.h
 
 tail=${tail#*.}
-head=${tail}
+head=${tail%%.*}
 
 printf "%s\n" "#define PACKAGE_VERSION_PATCHLEVEL ${head}" >>confdefs.h
 
