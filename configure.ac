@@ -33,9 +33,9 @@ AC_ARG_VAR([R_FLINT_CPPFLAGS],
 AC_ARG_VAR([R_FLINT_CFLAGS],
            [debugging and optimization options for the C compiler, overriding pkg-config])
 AC_ARG_VAR([R_FLINT_LDFLAGS],
-           [options excluding libraries for the linker, overriding pkg-config])
+           [options (except -lx) for the linker, overriding pkg-config])
 AC_ARG_VAR([R_FLINT_LIBS],
-           [libraries for the linker, overriding pkg-config [default=${R_FLINT_LIBS_DEFAULT=-lflint -lmpfr -lgmp}]])
+           [options (only -lx) and libraries for the linker, overriding pkg-config [default=-lflint -lmpfr -lgmp]])
 
 AC_PROG_CC([])
 AC_MSG_CHECKING([for R])
@@ -53,11 +53,11 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 LIBS=
 
-have_libflint=no
+R_FLINT_LIBS_DEFAULT="-lflint -lmpfr -lgmp"
 if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
-   test "x${R_FLINT_CFLAGS+x}"   = "x" &&
-   test "x${R_FLINT_LDFLAGS+x}"  = "x" &&
-   test "x${R_FLINT_LIBS+x}"     = "x"; then
+   test "x${R_FLINT_CFLAGS+x}" = "x" &&
+   test "x${R_FLINT_LDFLAGS+x}" = "x" &&
+   test "x${R_FLINT_LIBS+x}" = "x"; then
 	dnl All R_FLINT_* are unset.
 	AC_PATH_PROGS([PKG_CONFIG], [pkg-config pkgconf], [])
 	if test "x${PKG_CONFIG}" = "x"; then
@@ -74,12 +74,14 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 			CPPFLAGS="${CPPFLAGS} ${FLINT_CPPFLAGS}"
 			LDFLAGS="${LDFLAGS} ${FLINT_LDFLAGS}"
 			AC_MSG_NOTICE([checking if --libs suffices for linking libflint])
-			AC_CHECK_LIB([flint], [flint_malloc], [have_libflint=yes], [],
+			AC_CHECK_LIB([flint], [flint_malloc],
+			             [have_libflint=yes], [have_libflint=no],
 			             [${R_FLINT_LIBS}])
 			if test "x${have_libflint}" = "xno"; then
 			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs --static flint`"
 			AC_MSG_NOTICE([checking if --libs --static suffices for linking libflint])
-			AC_CHECK_LIB([flint], [flint_malloc], [have_libflint=yes], [],
+			AC_CHECK_LIB([flint], [flint_malloc],
+			             [have_libflint=yes], [have_libflint=no],
 			             [${R_FLINT_LIBS}])
 			if test "x${have_libflint}" = "xno"; then
 			AC_MSG_NOTICE([reverting to default compiler and linker options])
@@ -99,15 +101,15 @@ else
 	dnl At least one R_FLINT_* is set.
 	: {R_FLINT_LIBS=${R_FLINT_LIBS_DEFAULT}}
 fi
+CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
+CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"
+LDFLAGS="${LDFLAGS} ${R_FLINT_LDFLAGS}"
+LIBS="${LIBS} ${R_FLINT_LIBS}"
 
 AC_MSG_NOTICE([using R_FLINT_CPPFLAGS="${R_FLINT_CPPFLAGS}"])
 AC_MSG_NOTICE([using R_FLINT_CFLAGS="${R_FLINT_CFLAGS}"])
 AC_MSG_NOTICE([using R_FLINT_LDFLAGS="${R_FLINT_LDFLAGS}"])
 AC_MSG_NOTICE([using R_FLINT_LIBS="${R_FLINT_LIBS}"])
-CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
-CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"
-LDFLAGS="${LDFLAGS} ${R_FLINT_LDFLAGS}"
-LIBS="${LIBS} ${R_FLINT_LIBS}"
 
 AC_CHECK_LIB([gmp], [__gmpz_init], [:],
              [AC_MSG_ERROR([failed to link GNU MP library, see https://gmplib.org/])])

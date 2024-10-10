@@ -1344,11 +1344,10 @@ Some influential environment variables:
               debugging and optimization options for the C compiler,
               overriding pkg-config
   R_FLINT_LDFLAGS
-              options excluding libraries for the linker, overriding
-              pkg-config
+              options (except -lx) for the linker, overriding pkg-config
   R_FLINT_LIBS
-              libraries for the linker, overriding pkg-config
-              [default=${R_FLINT_LIBS_DEFAULT=-lflint -lmpfr -lgmp}]
+              options (only -lx) and libraries for the linker, overriding
+              pkg-config [default=-lflint -lmpfr -lgmp]
   CC          C compiler command
   CFLAGS      C compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -3454,11 +3453,11 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 LIBS=
 
-have_libflint=no
+R_FLINT_LIBS_DEFAULT="-lflint -lmpfr -lgmp"
 if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
-   test "x${R_FLINT_CFLAGS+x}"   = "x" &&
-   test "x${R_FLINT_LDFLAGS+x}"  = "x" &&
-   test "x${R_FLINT_LIBS+x}"     = "x"; then
+   test "x${R_FLINT_CFLAGS+x}" = "x" &&
+   test "x${R_FLINT_LDFLAGS+x}" = "x" &&
+   test "x${R_FLINT_LIBS+x}" = "x"; then
 		for ac_prog in pkg-config pkgconf
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -3574,6 +3573,9 @@ printf "%s\n" "$ac_cv_lib_flint_flint_malloc" >&6; }
 if test "x$ac_cv_lib_flint_flint_malloc" = xyes
 then :
   have_libflint=yes
+else case e in #(
+  e) have_libflint=no ;;
+esac
 fi
 
 			if test "x${have_libflint}" = "xno"; then
@@ -3626,6 +3628,9 @@ printf "%s\n" "$ac_cv_lib_flint_flint_malloc" >&6; }
 if test "x$ac_cv_lib_flint_flint_malloc" = xyes
 then :
   have_libflint=yes
+else case e in #(
+  e) have_libflint=no ;;
+esac
 fi
 
 			if test "x${have_libflint}" = "xno"; then
@@ -3647,6 +3652,10 @@ printf "%s\n" "no" >&6; }
 else
 		: {R_FLINT_LIBS=${R_FLINT_LIBS_DEFAULT}}
 fi
+CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
+CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"
+LDFLAGS="${LDFLAGS} ${R_FLINT_LDFLAGS}"
+LIBS="${LIBS} ${R_FLINT_LIBS}"
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: using R_FLINT_CPPFLAGS=\"${R_FLINT_CPPFLAGS}\"" >&5
 printf "%s\n" "$as_me: using R_FLINT_CPPFLAGS=\"${R_FLINT_CPPFLAGS}\"" >&6;}
@@ -3656,10 +3665,6 @@ printf "%s\n" "$as_me: using R_FLINT_CFLAGS=\"${R_FLINT_CFLAGS}\"" >&6;}
 printf "%s\n" "$as_me: using R_FLINT_LDFLAGS=\"${R_FLINT_LDFLAGS}\"" >&6;}
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: using R_FLINT_LIBS=\"${R_FLINT_LIBS}\"" >&5
 printf "%s\n" "$as_me: using R_FLINT_LIBS=\"${R_FLINT_LIBS}\"" >&6;}
-CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
-CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"
-LDFLAGS="${LDFLAGS} ${R_FLINT_LDFLAGS}"
-LIBS="${LIBS} ${R_FLINT_LIBS}"
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for __gmpz_init in -lgmp" >&5
 printf %s "checking for __gmpz_init in -lgmp... " >&6; }
