@@ -131,7 +131,7 @@ AC_CHECK_TYPE([mpfr_uprec_t], [],
 AC_CHECK_TYPE([mpfr_uexp_t], [],
               [AC_MSG_ERROR([GNU MPFR missing unsigned exponent type])],
               [[#include <mpfr.h>]])
-AC_CHECK_FUNC([flint], [arb_init], [:],
+AC_CHECK_FUNC([arb_init], [],
               [AC_MSG_ERROR([FLINT missing Arb sublibrary])])
 
 AC_MSG_CHECKING([for int with bit width 32])

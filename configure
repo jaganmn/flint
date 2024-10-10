@@ -3897,12 +3897,12 @@ else case e in #(
 esac
 fi
 
-ac_fn_c_check_func "$LINENO" "flint" "ac_cv_func_flint"
-if test "x$ac_cv_func_flint" = xyes
+ac_fn_c_check_func "$LINENO" "arb_init" "ac_cv_func_arb_init"
+if test "x$ac_cv_func_arb_init" = xyes
 then :
-  arb_init
+
 else case e in #(
-  e) : ;;
+  e) as_fn_error $? "FLINT missing Arb sublibrary" "$LINENO" 5 ;;
 esac
 fi
 
