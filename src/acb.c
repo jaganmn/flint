@@ -61,7 +61,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			s_realmid = Rf_coerceVector(s_realmid, INTSXP);
 		case INTSXP:
 		{
-			int *xrm = INTEGER(s_realmid), tmp;
+			const int *xrm = INTEGER_RO(s_realmid);
+			int tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xrm[j % nrm];
 				if (tmp == NA_INTEGER)
@@ -73,7 +74,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case REALSXP:
 		{
-			double *xrm = REAL(s_realmid), tmp;
+			const double *xrm = REAL_RO(s_realmid);
+			double tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xrm[j % nrm];
 				arf_set_d(arb_midref(acb_realref(y + j)), tmp);
@@ -91,7 +93,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			s_realrad = Rf_coerceVector(s_realrad, INTSXP);
 		case INTSXP:
 		{
-			int *xrr = INTEGER(s_realrad), tmp;
+			const int *xrr = INTEGER_RO(s_realrad);
+			int tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xrr[j % nrr];
 				if (tmp == NA_INTEGER)
@@ -103,7 +106,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case REALSXP:
 		{
-			double *xrr = REAL(s_realrad), tmp;
+			const double *xrr = REAL_RO(s_realrad);
+			double tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xrr[j % nrr];
 				if (ISNAN(tmp))
@@ -124,7 +128,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			s_imagmid = Rf_coerceVector(s_imagmid, INTSXP);
 		case INTSXP:
 		{
-			int *xim = INTEGER(s_imagmid), tmp;
+			const int *xim = INTEGER_RO(s_imagmid);
+			int tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xim[j % nim];
 				if (tmp == NA_INTEGER)
@@ -136,7 +141,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case REALSXP:
 		{
-			double *xim = REAL(s_imagmid), tmp;
+			const double *xim = REAL_RO(s_imagmid);
+			double tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xim[j % nim];
 				arf_set_d(arb_midref(acb_imagref(y + j)), tmp);
@@ -154,7 +160,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			s_imagrad = Rf_coerceVector(s_imagrad, INTSXP);
 		case INTSXP:
 		{
-			int *xir = INTEGER(s_imagrad), tmp;
+			const int *xir = INTEGER_RO(s_imagrad);
+			int tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xir[j % nir];
 				if (tmp == NA_INTEGER)
@@ -166,7 +173,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case REALSXP:
 		{
-			double *xir = REAL(s_imagrad), tmp;
+			const double *xir = REAL_RO(s_imagrad);
+			double tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xir[j % nir];
 				if (ISNAN(tmp))
@@ -178,7 +186,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		}
 	} else if (s_x != R_NilValue) {
-		Rcomplex *x = COMPLEX(s_x), tmp;
+		const Rcomplex *x = COMPLEX_RO(s_x);
+		Rcomplex tmp;
 		for (j = 0; j < n; ++j) {
 			tmp = x[j];
 			arf_set_d(arb_midref(acb_realref(y + j)), tmp.r);
@@ -210,17 +219,17 @@ SEXP R_flint_acb_nacb(SEXP from, SEXP s_rnd)
 	R_do_slot_assign(imag, R_flint_symbol_mid, imagmid);
 	R_do_slot_assign(real, R_flint_symbol_rad, realrad);
 	R_do_slot_assign(imag, R_flint_symbol_rad, imagrad);
-	acb_ptr x = (acb_ptr) R_flint_get_pointer(from);
+	acb_srcptr x = (acb_ptr) R_flint_get_pointer(from);
 	double *yrm = REAL(realmid), *yim = REAL(imagmid),
 		*yrr = REAL(realrad), *yir = REAL(imagrad);
 	arf_t lbm, ubm;
-	arf_ptr m;
+	arf_srcptr m;
 	arf_init(lbm);
 	arf_init(ubm);
 	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);
 	arf_neg(lbm, ubm);
 	mag_t ubr;
-	mag_ptr r;
+	mag_srcptr r;
 	mag_init(ubr);
 	mag_set_ui_2exp_si(ubr, 1U, DBL_MAX_EXP);
 	int w = 1;
@@ -273,10 +282,10 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 		         "acb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
-	acb_ptr x = (acb_ptr) R_flint_get_pointer(from);
+	acb_srcptr x = (acb_ptr) R_flint_get_pointer(from);
 	Rcomplex *y = COMPLEX(to);
 	arf_t lbm, ubm;
-	arf_ptr m;
+	arf_srcptr m;
 	arf_init(lbm);
 	arf_init(ubm);
 	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);

@@ -34,7 +34,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		s_x = Rf_coerceVector(s_x, INTSXP);
 	case INTSXP:
 	{
-		int *x = INTEGER(s_x), tmp;
+		const int *x = INTEGER_RO(s_x);
+		int tmp;
 		for (j = 0; j < n; ++j) {
 			tmp = x[j];
 			if (tmp == NA_INTEGER)
@@ -46,7 +47,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	}
 	case REALSXP:
 	{
-		double *x = REAL(s_x), tmp;
+		const double *x = REAL_RO(s_x);
+		double tmp;
 		for (j = 0; j < n; ++j) {
 			tmp = x[j];
 			if (!R_FINITE(tmp))
@@ -67,7 +69,7 @@ SEXP R_flint_fmpz_nfmpz(SEXP from)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
-	fmpz *x = (fmpz *) R_flint_get_pointer(from);
+	const fmpz *x = (fmpz *) R_flint_get_pointer(from);
 	int *y = INTEGER(to);
 	fmpz_t lb, ub;
 	fmpz_init(lb);
@@ -96,7 +98,7 @@ SEXP R_flint_fmpz_vector(SEXP from)
 		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	fmpz *x = (fmpz *) R_flint_get_pointer(from);
+	const fmpz *x = (fmpz *) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	int w = 1;
 	fmpz_t lb, ub;
@@ -139,7 +141,8 @@ SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 		         "fmpz", (long long int) R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	fmpz *x = (fmpz *) R_flint_get_pointer(from), xmin = 0, xmax = 0;
+	const fmpz *x = (fmpz *) R_flint_get_pointer(from);
+	fmpz xmin = 0, xmax = 0;
 	for (j = 0; j < n; ++j) {
 		if (fmpz_cmp(x + j, &xmax) > 0)
 			xmax = x[j];

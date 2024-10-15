@@ -60,14 +60,14 @@ unsigned long long int asLength(SEXP length, const char *where)
 	switch (TYPEOF(length)) {
 	case INTSXP:
 	{
-		int *s = INTEGER(length);
+		const int *s = INTEGER_RO(length);
 		if (XLENGTH(length) >= 1 && s[0] != NA_INTEGER && s[0] >= 0)
 			return (unsigned long long int) s[0];
 		break;
 	}
 	case REALSXP:
 	{
-		double *s = REAL(length);
+		const double *s = REAL_RO(length);
 		if (XLENGTH(length) >= 1 && !ISNAN(s[0]) && s[0] > -1.0 && s[0] < 0x1.0p+64)
 			return (unsigned long long int) s[0];
 		break;
@@ -82,14 +82,14 @@ int asBase(SEXP base, const char *where)
 	switch (TYPEOF(base)) {
 	case INTSXP:
 	{
-		int *s = INTEGER(base);
+		const int *s = INTEGER_RO(base);
 		if (XLENGTH(base) >= 1 && s[0] >= 2 && s[0] < 63)
 			return (s[0] < 37) ? -s[0] : s[0];
 		break;
 	}
 	case REALSXP:
 	{
-		double *s = REAL(base);
+		const double *s = REAL_RO(base);
 		if (XLENGTH(base) >= 1 && !ISNAN(s[0]) && s[0] >= 2.0 && s[0] < 63.0)
 			return (s[0] < 37.0) ? -(int) s[0] : (int) s[0];
 		break;
@@ -104,14 +104,14 @@ size_t asDigits(SEXP digits, const char *where)
 	switch (TYPEOF(digits)) {
 	case INTSXP:
 	{
-		int *s = INTEGER(digits);
+		const int *s = INTEGER_RO(digits);
 		if (XLENGTH(digits) >= 1 && s[0] >= 0)
 			return (size_t) s[0];
 		break;
 	}
 	case REALSXP:
 	{
-		double *s = REAL(digits);
+		const double *s = REAL_RO(digits);
 		if (XLENGTH(digits) >= 1 && s[0] >= 0.0 && s[0] < 0x1.0p+31)
 			return (size_t) s[0];
 		break;

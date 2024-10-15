@@ -57,7 +57,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		s_x = Rf_coerceVector(s_x, INTSXP);
 	case INTSXP:
 	{
-		int *x = INTEGER(s_x), tmp;
+		const int *x = INTEGER_RO(s_x);
+		int tmp;
 		for (j = 0; j < n; ++j) {
 			tmp = x[j];
 			if (tmp == NA_INTEGER)
@@ -69,7 +70,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	}
 	case REALSXP:
 	{
-		double *x = REAL(s_x), tmp;
+		const double *x = REAL_RO(s_x);
+		double tmp;
 		for (j = 0; j < n; ++j) {
 			tmp = x[j];
 			arf_set_d(y + j, tmp);
@@ -88,7 +90,7 @@ SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 		         "arf", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n));
-	arf_ptr x = (arf_ptr) R_flint_get_pointer(from);
+	arf_srcptr x = (arf_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	arf_t lb, ub;
 	arf_init(lb);
@@ -131,7 +133,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 	const char *sep = asSep(s_sep, __func__);
 	mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(s_rnd, 1, __func__);
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	arf_ptr x = (arf_ptr) R_flint_get_pointer(from);
+	arf_srcptr x = (arf_ptr) R_flint_get_pointer(from);
 	mpfr_exp_t e__;
 	slong p__;
 	mpfr_uexp_t e, emax = 0;

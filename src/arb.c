@@ -47,7 +47,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			s_mid = Rf_coerceVector(s_mid, INTSXP);
 		case INTSXP:
 		{
-			int *xm = INTEGER(s_mid), tmp;
+			const int *xm = INTEGER_RO(s_mid);
+			int tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xm[j % nm];
 				if (tmp == NA_INTEGER)
@@ -59,7 +60,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case REALSXP:
 		{
-			double *xm = REAL(s_mid), tmp;
+			const double *xm = REAL_RO(s_mid);
+			double tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = xm[j % nm];
 				arf_set_d(arb_midref(y + j), tmp);
@@ -77,7 +79,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			s_rad = Rf_coerceVector(s_rad, INTSXP);
 		case INTSXP:
 		{
-			int *x = INTEGER(s_rad), tmp;
+			const int *x = INTEGER_RO(s_rad);
+			int tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = x[j % nr];
 				if (tmp == NA_INTEGER)
@@ -89,7 +92,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case REALSXP:
 		{
-			double *x = REAL(s_rad), tmp;
+			const double *x = REAL_RO(s_rad);
+			double tmp;
 			for (j = 0; j < n; ++j) {
 				tmp = x[j % nr];
 				if (ISNAN(tmp))
@@ -118,7 +122,7 @@ SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 		rad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	R_do_slot_assign(to, R_flint_symbol_mid, mid);
 	R_do_slot_assign(to, R_flint_symbol_rad, rad);
-	arb_ptr x = (arb_ptr) R_flint_get_pointer(from);
+	arb_srcptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *ym = REAL(mid), *yr = REAL(rad);
 	arf_t lbm, ubm;
 	arf_ptr m;
@@ -164,10 +168,10 @@ SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 		         "arb", (long long int) R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	arb_ptr x = (arb_ptr) R_flint_get_pointer(from);
+	arb_srcptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	arf_t lbm, ubm;
-	arf_ptr m;
+	arf_srcptr m;
 	arf_init(lbm);
 	arf_init(ubm);
 	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);

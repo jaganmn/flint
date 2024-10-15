@@ -71,7 +71,7 @@ SEXP R_flint_valid(SEXP object)
 		return INVALID(_("type of protected field is not \"%s\""), "integer");
 	if (XLENGTH(length) != 2)
 		return INVALID(_("length of protected field is not %d"), 2);
-	int length0 = INTEGER(length)[0] == 0 && INTEGER(length)[1] == 0;
+	int length0 = INTEGER_RO(length)[0] == 0 && INTEGER_RO(length)[1] == 0;
 	if ((R_ExternalPtrAddr(x) == 0) != length0)
 		return INVALID((length0)
 		               ? _("length is zero and pointer field is non-zero")
@@ -120,7 +120,7 @@ SEXP R_flint_part(SEXP from, SEXP s_mode)
 	void *p = R_flint_get_pointer(from);
 	R_CFinalizer_t f;
 	const char *what;
-	int mode = INTEGER(s_mode)[0];
+	int mode = INTEGER_RO(s_mode)[0];
 
 #define PART_CASE(xname, yname, xelt_t, yelt_t, xptr_t, yptr_t, part) \
 	do { \
@@ -184,11 +184,11 @@ SEXP R_flint_subscript(SEXP from, SEXP subscript)
 		ptr_t x = (ptr_t) p; \
 		ptr_t y = (ptr_t) ((n) ? flint_calloc((size_t) n, sizeof(elt_t)) : 0); \
 		if (TYPEOF(subscript) == INTSXP) { \
-			int *s = INTEGER(subscript); \
+			const int *s = INTEGER_RO(subscript); \
 			for (j = 0; j < n; ++j) \
 				name##_set(y + j, x + s[j] - 1); \
 		} else { \
-			double *s = REAL(subscript); \
+			const double *s = REAL_RO(subscript); \
 			for (j = 0; j < n; ++j) \
 				name##_set(y + j, x + (unsigned long long int) s[j] - 1); \
 		} \
@@ -274,11 +274,11 @@ SEXP R_flint_subassign(SEXP from, SEXP subscript, SEXP value)
 			for (j = 0; j < n; ++j) \
 				name##_set(y + j, x + j); \
 			if (TYPEOF(subscript) == INTSXP) { \
-				int *s = INTEGER(subscript); \
+				const int *s = INTEGER_RO(subscript); \
 				for (i = 0; i < m; ++i) \
 					name##_set(y + s[i] - 1, v + i % n__); \
 			} else { \
-				double *s = REAL(subscript); \
+				const double *s = REAL_RO(subscript); \
 				for (i = 0; i < m; ++i) \
 					name##_set(y + (unsigned long long int) s[i] - 1, v + i % n__); \
 			} \
