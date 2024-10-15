@@ -8,7 +8,7 @@
 void R_flint_mag_finalize(SEXP x)
 {
 	unsigned long long int j, n;
-	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	uucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)));
 	mag_ptr p = (mag_ptr) R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		mag_clear(p + j);

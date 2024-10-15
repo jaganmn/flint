@@ -25,7 +25,7 @@ unsigned long long int R_flint_get_length(SEXP object)
 	SEXP x = R_do_slot(object, R_flint_symbol_dot_xdata),
 		length = R_ExternalPtrProtected(x);
 	unsigned long long int n;
-	ucopy(&n, (unsigned int *) INTEGER(length), 1);
+	uucopy(&n, (unsigned int *) INTEGER(length));
 	return n;
 }
 
@@ -40,7 +40,7 @@ void R_flint_set(SEXP object,
                  void *p, unsigned long long int n, R_CFinalizer_t f)
 {
 	SEXP length = PROTECT(Rf_allocVector(INTSXP, 2));
-	ucopy(&n, (unsigned int *) INTEGER(length), 0);
+	ucopy((unsigned int *) INTEGER(length), &n);
 	SEXP x = PROTECT(R_MakeExternalPtr(p, R_NilValue, length));
 	R_RegisterCFinalizer(x, f);
 	R_do_slot_assign(object, R_flint_symbol_dot_xdata, x);

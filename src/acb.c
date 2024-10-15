@@ -6,7 +6,7 @@
 void R_flint_acb_finalize(SEXP x)
 {
 	unsigned long long int j, n;
-	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	uucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)));
 	acb_ptr p = (acb_ptr) R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		acb_clear(p + j);

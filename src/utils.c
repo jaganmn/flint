@@ -136,16 +136,16 @@ const char *asSep(SEXP sep, const char *where)
 	return (const char *) 0;
 }
 
-void ucopy(unsigned long long int *u, unsigned int *uu, int from)
+void  ucopy(unsigned int *uu, const unsigned long long int *u)
 {
-	if (from != 0) {
-		/* uu -> u */
-		u[0] = (unsigned long long int) uu[1] << (sizeof(int) * CHAR_BIT) |
-			(unsigned long long int) uu[0];
-	} else {
-		/* u -> uu */
-		uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
-		uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
-	}
+	uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
+	uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
+	return;
+}
+
+void uucopy(unsigned long long int *u, const unsigned int *uu)
+{
+	u[0] = (unsigned long long int) uu[1] << (sizeof(int) * CHAR_BIT) |
+		(unsigned long long int) uu[0];
 	return;
 }

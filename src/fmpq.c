@@ -6,7 +6,7 @@
 void R_flint_fmpq_finalize(SEXP x)
 {
 	unsigned long long int j, n;
-	ucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)), 1);
+	uucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)));
 	fmpq *p = (fmpq *) R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		fmpq_clear(p + j);
