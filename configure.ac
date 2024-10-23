@@ -109,7 +109,7 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 				R_FLINT_LIBS="-l${pkg} ${R_FLINT_LIBS}"
 			fi
 		done
-		dnl Use pkg-config to deduplicate options.
+		dnl Use pkg-config machinery to deduplicate options.
 		printf "Name: config\n"                                   > config.pc
 		printf "Description: The config library\n"               >> config.pc
 		printf "URL: https://www.config.org/\n"                  >> config.pc
@@ -119,12 +119,12 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 		R_FLINT_CPPFLAGS=`"${PKG_CONFIG}" --cflags config.pc`
 		R_FLINT_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other config.pc`
 		R_FLINT_LIBS=`"${PKG_CONFIG}" --libs-only-l config.pc`
-		dnl Manually deduplicate -lmpfr -lgmp, because flint.pc and mpfr.pc
-		dnl have been seen to use Requires or Libs wrongly, foiling the above.
+		rm -f config.pc
+		dnl Handle -lmpfr and -lgmp manually, as we have seen flint.pc and
+		dnl mpfr.pc misusing Requires and Libs, polluting --libs-only-l output.
 		for opt in -lmpfr -lgmp; do
 			R_FLINT_LIBS=`echo "${R_FLINT_LIBS}" | ${SED} -e ":l" -e "s/\(.*\)${opt} \(.*${opt}.*\)/\1\2/" -e "tl"`
 		done
-		rm -f config.pc
 	else
 		dnl We do not seem to have a working pkg-config.
 		R_FLINT_LIBS="-lflint -lmpfr -lgmp"

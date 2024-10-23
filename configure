@@ -3750,10 +3750,10 @@ printf "%s\n" "no" >&6; }
 		R_FLINT_CPPFLAGS=`"${PKG_CONFIG}" --cflags config.pc`
 		R_FLINT_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other config.pc`
 		R_FLINT_LIBS=`"${PKG_CONFIG}" --libs-only-l config.pc`
+		rm -f config.pc
 						for opt in -lmpfr -lgmp; do
 			R_FLINT_LIBS=`echo "${R_FLINT_LIBS}" | ${SED} -e ":l" -e "s/\(.*\)${opt} \(.*${opt}.*\)/\1\2/" -e "tl"`
 		done
-		rm -f config.pc
 	else
 				R_FLINT_LIBS="-lflint -lmpfr -lgmp"
 	fi
