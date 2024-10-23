@@ -183,7 +183,8 @@ test -x / || exit 1"
   as_suggested="  as_lineno_1=";as_suggested=$as_suggested$LINENO;as_suggested=$as_suggested" as_lineno_1a=\$LINENO
   as_lineno_2=";as_suggested=$as_suggested$LINENO;as_suggested=$as_suggested" as_lineno_2a=\$LINENO
   eval 'test \"x\$as_lineno_1'\$as_run'\" != \"x\$as_lineno_2'\$as_run'\" &&
-  test \"x\`expr \$as_lineno_1'\$as_run' + 1\`\" = \"x\$as_lineno_2'\$as_run'\"' || exit 1"
+  test \"x\`expr \$as_lineno_1'\$as_run' + 1\`\" = \"x\$as_lineno_2'\$as_run'\"' || exit 1
+test \$(( 1 + 1 )) = 2 || exit 1"
   if (eval "$as_required") 2>/dev/null
 then :
   as_have_required=yes
@@ -643,6 +644,7 @@ ac_includes_default="\
 ac_header_c_list=
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+SED
 OBJEXT
 EXEEXT
 ac_ct_CC
@@ -2385,20 +2387,19 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers src/config.h"
 
 
-tail=${PACKAGE_VERSION}
-head=${tail%%.*}
+save_IFS="${IFS}"; IFS=.
+set x ${PACKAGE_VERSION}
+shift; v1=$1; v2=$2; shift; shift; v3=$*
+set --
+IFS="${save_IFS}"
 
-printf "%s\n" "#define PACKAGE_VERSION_MAJOR ${head}" >>confdefs.h
+printf "%s\n" "#define PACKAGE_VERSION_MAJOR ${v1}" >>confdefs.h
 
-tail=${tail#*.}
-head=${tail%%.*}
 
-printf "%s\n" "#define PACKAGE_VERSION_MINOR ${head}" >>confdefs.h
+printf "%s\n" "#define PACKAGE_VERSION_MINOR ${v2}" >>confdefs.h
 
-tail=${tail#*.}
-head=${tail%%.*}
 
-printf "%s\n" "#define PACKAGE_VERSION_PATCHLEVEL ${head}" >>confdefs.h
+printf "%s\n" "#define PACKAGE_VERSION_PATCHLEVEL ${v3}" >>confdefs.h
 
 
 
@@ -3435,6 +3436,83 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for a sed that does not truncate output" >&5
+printf %s "checking for a sed that does not truncate output... " >&6; }
+if test ${ac_cv_path_SED+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e)           ac_script=s/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/
+     for ac_i in 1 2 3 4 5 6 7; do
+       ac_script="$ac_script$as_nl$ac_script"
+     done
+     echo "$ac_script" 2>/dev/null | sed 99q >conftest.sed
+     { ac_script=; unset ac_script;}
+     if test -z "$SED"; then
+  ac_path_SED_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_prog in sed gsed
+   do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_SED="$as_dir$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_SED" || continue
+# Check for GNU ac_path_SED and select it if it is found.
+  # Check for GNU $ac_path_SED
+case `"$ac_path_SED" --version 2>&1` in #(
+*GNU*)
+  ac_cv_path_SED="$ac_path_SED" ac_path_SED_found=:;;
+#(
+*)
+  ac_count=0
+  printf %s 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    printf "%s\n" '' >> "conftest.nl"
+    "$ac_path_SED" -f conftest.sed < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_SED_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_SED="$ac_path_SED"
+      ac_path_SED_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_SED_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_SED"; then
+    as_fn_error $? "no acceptable sed could be found in \$PATH" "$LINENO" 5
+  fi
+else
+  ac_cv_path_SED=$SED
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_SED" >&5
+printf "%s\n" "$ac_cv_path_SED" >&6; }
+ SED="$ac_cv_path_SED"
+  rm -f conftest.sed
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for R" >&5
 printf %s "checking for R... " >&6; }
 if test "x${R_HOME=`R RHOME`}" != "x" &&
@@ -3453,7 +3531,6 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 LIBS=
 
-R_FLINT_LIBS_DEFAULT="-lflint -lmpfr -lgmp"
 if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
    test "x${R_FLINT_CFLAGS+x}" = "x" &&
    test "x${R_FLINT_LDFLAGS+x}" = "x" &&
@@ -3510,31 +3587,40 @@ fi
 done
 
 	if test "x${PKG_CONFIG}" = "x"; then
-		R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
+		R_FLINT_LIBS="-lflint -lmpfr -lgmp"
 	else
-		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint.pc in pkg-config search path" >&5
-printf %s "checking for flint.pc in pkg-config search path... " >&6; }
-		if "${PKG_CONFIG}" --exists flint; then
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+		for pkg in gmp mpfr flint; do
+			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ${pkg}.pc in pkg-config search path" >&5
+printf %s "checking for ${pkg}.pc in pkg-config search path... " >&6; }
+			if "${PKG_CONFIG}" --exists ${pkg}; then
+				{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-			save_CPPFLAGS="${CPPFLAGS}"
-			save_LDFLAGS="${LDFLAGS}"
-			R_FLINT_CPPFLAGS="`"${PKG_CONFIG}" --cflags flint`"
-			R_FLINT_LDFLAGS="`"${PKG_CONFIG}" --libs-only-L --libs-only-other flint`"
-			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs-only-l flint`"
-			CPPFLAGS="${CPPFLAGS} ${FLINT_CPPFLAGS}"
-			LDFLAGS="${LDFLAGS} ${FLINT_LDFLAGS}"
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether --libs suffices for linking libflint" >&5
-printf "%s\n" "$as_me: checking whether --libs suffices for linking libflint" >&6;}
+				save_CPPFLAGS="${CPPFLAGS}"
+				save_LDFLAGS="${LDFLAGS}"
+				save_LIBS="${LIBS}"
+				pkg_CPPFLAGS=`"${PKG_CONFIG}" --cflags ${pkg}`
+				pkg_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other ${pkg}`
+				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l ${pkg}`
+				CPPFLAGS="${pkg_CPPFLAGS} ${R_FLINT_CPPFLAGS} ${CPPFLAGS}"
+				LDFLAGS="${pkg_LDFLAGS} ${R_FLINT_CPPFLAGS} ${LDFLAGS}"
+				LIBS="${R_FLINT_LIBS} ${LIBS}"
+				{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether --libs suffices for linking lib${pkg}" >&5
+printf "%s\n" "$as_me: checking whether --libs suffices for linking lib${pkg}" >&6;}
+				case ${pkg} in
+					gmp ) pkg_fn=__gmpz_init ;;
+					mpfr ) pkg_fn=mpfr_init ;;
+					flint ) pkg_fn=fmpz_init ;;
+				esac
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint_malloc in -lflint" >&5
-printf %s "checking for flint_malloc in -lflint... " >&6; }
-if test ${ac_cv_lib_flint_flint_malloc+y}
+as_ac_Lib=`printf "%s\n" "ac_cv_lib_${pkg}""_${pkg_fn}" | sed "$as_sed_sh"`
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ${pkg_fn} in -l${pkg}" >&5
+printf %s "checking for ${pkg_fn} in -l${pkg}... " >&6; }
+if eval test \${$as_ac_Lib+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
   e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lflint ${R_FLINT_LIBS} $LIBS"
+LIBS="-l${pkg} ${pkg_LIBS} $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3547,20 +3633,20 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char flint_malloc (void);
+char ${pkg_fn} (void);
 int
 main (void)
 {
-return flint_malloc ();
+return ${pkg_fn} ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-  ac_cv_lib_flint_flint_malloc=yes
+  eval "$as_ac_Lib=yes"
 else case e in #(
-  e) ac_cv_lib_flint_flint_malloc=no ;;
+  e) eval "$as_ac_Lib=no" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -3568,28 +3654,30 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 LIBS=$ac_check_lib_save_LIBS ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flint_flint_malloc" >&5
-printf "%s\n" "$ac_cv_lib_flint_flint_malloc" >&6; }
-if test "x$ac_cv_lib_flint_flint_malloc" = xyes
+eval ac_res=\$$as_ac_Lib
+	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+printf "%s\n" "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"
 then :
-  have_libflint=yes
+  pkg_found=yes
 else case e in #(
-  e) have_libflint=no ;;
+  e) pkg_found=no ;;
 esac
 fi
 
-			if test "x${have_libflint}" = "xno"; then
-			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs --static flint`"
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether --libs --static suffices for linking libflint" >&5
-printf "%s\n" "$as_me: checking whether --libs --static suffices for linking libflint" >&6;}
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flint_malloc in -lflint" >&5
-printf %s "checking for flint_malloc in -lflint... " >&6; }
-if test ${ac_cv_lib_flint_flint_malloc+y}
+				if test "x${pkg_found}" = "xno"; then
+				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l --static flint`
+				{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether --libs --static suffices for linking lib${pkg}" >&5
+printf "%s\n" "$as_me: checking whether --libs --static suffices for linking lib${pkg}" >&6;}
+				as_ac_Lib=`printf "%s\n" "ac_cv_lib_${pkg}""_${pkg_fn}" | sed "$as_sed_sh"`
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ${pkg_fn} in -l${pkg}" >&5
+printf %s "checking for ${pkg_fn} in -l${pkg}... " >&6; }
+if eval test \${$as_ac_Lib+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
   e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lflint ${R_FLINT_LIBS} $LIBS"
+LIBS="-l${pkg} ${pkg_LIBS} $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3602,20 +3690,20 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char flint_malloc (void);
+char ${pkg_fn} (void);
 int
 main (void)
 {
-return flint_malloc ();
+return ${pkg_fn} ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-  ac_cv_lib_flint_flint_malloc=yes
+  eval "$as_ac_Lib=yes"
 else case e in #(
-  e) ac_cv_lib_flint_flint_malloc=no ;;
+  e) eval "$as_ac_Lib=no" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
@@ -3623,34 +3711,51 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 LIBS=$ac_check_lib_save_LIBS ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_flint_flint_malloc" >&5
-printf "%s\n" "$ac_cv_lib_flint_flint_malloc" >&6; }
-if test "x$ac_cv_lib_flint_flint_malloc" = xyes
+eval ac_res=\$$as_ac_Lib
+	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+printf "%s\n" "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"
 then :
-  have_libflint=yes
+  pkg_found=yes
 else case e in #(
-  e) have_libflint=no ;;
+  e) pkg_found=no ;;
 esac
 fi
 
-			if test "x${have_libflint}" = "xno"; then
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: reverting to default compiler and linker options" >&5
-printf "%s\n" "$as_me: reverting to default compiler and linker options" >&6;}
-			R_FLINT_CPPFLAGS=
-			R_FLINT_LDFLAGS=
-			R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
-			fi
-			fi
-			CPPFLAGS="${save_CPPFLAGS}"
-			LDFLAGS="${save_LDFLAGS}"
-		else
-			{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+				if test "x${pkg_found}" = "xno"; then
+				pkg_CPPFLAGS=
+				pkg_LDFLAGS=
+				pkg_LIBS=-l${pkg}
+				fi
+				fi
+				R_FLINT_CPPFLAGS="${pkg_CPPFLAGS} ${R_FLINT_CPPFLAGS}"
+				R_FLINT_LDFLAGS="${pkg_LDFLAGS} ${R_FLINT_LDFLAGS}"
+				R_FLINT_LIBS="${pkg_LIBS} ${R_FLINT_LIBS}"
+				CPPFLAGS="${save_CPPFLAGS}"
+				LDFLAGS="${save_LDFLAGS}"
+				LIBS="${save_LIBS}"
+			else
+				{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-			R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
-		fi
+				R_FLINT_LIBS="-l${pkg} ${R_FLINT_LIBS}"
+			fi
+		done
+				printf "Name: config\n"                                   > config.pc
+		printf "Description: The config library\n"               >> config.pc
+		printf "URL: https://www.config.org/\n"                  >> config.pc
+		printf "Version: %s\n" "${PACKAGE_VERSION}"              >> config.pc
+		printf "Cflags: %s\n" "${R_FLINT_CPPFLAGS}"              >> config.pc
+		printf "Libs: %s\n" "${R_FLINT_LDFLAGS} ${R_FLINT_LIBS}" >> config.pc
+		R_FLINT_CPPFLAGS=`"${PKG_CONFIG}" --cflags config.pc`
+		R_FLINT_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other config.pc`
+		R_FLINT_LIBS=`"${PKG_CONFIG}" --libs-only-l config.pc`
+				for opt in -lmpfr -lgmp; do
+			R_FLINT_LIBS=`echo "${R_FLINT_LIBS}" | ${SED} -e ":l" -e "s/\(.*\)${opt} \(.*${opt}.*\)/\1\2/" -e "tl"`
+		done
+		rm -f config.pc
 	fi
 else
-		: {R_FLINT_LIBS=${R_FLINT_LIBS_DEFAULT}}
+		: {R_FLINT_LIBS=-lflint -lmpfr -lgmp}
 fi
 CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
 CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"

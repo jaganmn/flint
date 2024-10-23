@@ -1,15 +1,14 @@
 #! /bin/sh
 
 version=0.0.1
+save_IFS="${IFS}"; IFS=.
+set x ${version}
+shift; v1=$1; v2=$2; shift; shift; v3=$*
+set --
+IFS="${save_IFS}"
 
 cp src/config.h.in src/config.h
-printf "%s\n" "#define PACKAGE_VERSION \"${version}\""     >> src/config.h
-tail=${version}
-head=${tail%%.*}
-printf "%s\n" "#define PACKAGE_VERSION_MAJOR ${head}"      >> src/config.h
-tail=${tail#*.}
-head=${tail%%.*}
-printf "%s\n" "#define PACKAGE_VERSION_MINOR ${head}"      >> src/config.h
-tail=${tail#*.}
-head=${tail%%.*}
-printf "%s\n" "#define PACKAGE_VERSION_PATCHLEVEL ${head}" >> src/config.h
+printf "%s\n" "#define PACKAGE_VERSION \"${version}\""   >> src/config.h
+printf "%s\n" "#define PACKAGE_VERSION_MAJOR ${v1}"      >> src/config.h
+printf "%s\n" "#define PACKAGE_VERSION_MINOR ${v2}"      >> src/config.h
+printf "%s\n" "#define PACKAGE_VERSION_PATCHLEVEL ${v3}" >> src/config.h

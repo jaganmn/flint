@@ -1,16 +1,16 @@
-ifeq (0,$(shell pkg-config --exists flint 2>/dev/null; echo $$?))
-
-## We have pkg-config and flint.pc is in its search path.
-PKG_CPPFLAGS = -DHAVE_CONFIG_H -DSTRICT_R_HEADERS -DR_NO_REMAP \
-	$(shell pkg-config --cflags flint)
+PKG_CPPFLAGS = -DHAVE_CONFIG_H -DSTRICT_R_HEADERS -DR_NO_REMAP
 PKG_CFLAGS = $(C_VISIBILITY)
-PKG_LIBS = $(shell pkg-config --libs flint)
+PKG_LIBS =
+
+ifeq (0,$(shell pkg-config --exists flint mpfr gmp 2>/dev/null; echo $$?))
+
+## We have pkg-config and all *.pc are in its search path.
+PKG_CPPFLAGS += $(shell pkg-config --cflags flint mpfr gmp)
+PKG_LIBS += $(shell pkg-config --libs flint mpfr gmp)
 
 else
 
-## We do not have pkg-config or flint.pc is not in its search path.
-PKG_CPPFLAGS = -DHAVE_CONFIG_H -DSTRICT_R_HEADERS -DR_NO_REMAP
-PKG_CFLAGS = $(C_VISIBILITY)
-PKG_LIBS = -lflint -lmpfr -lgmp
+## We do not have pkg-config or not all *.pc are in its search path.
+PKG_LIBS += -lflint -lmpfr -lgmp
 
 endif

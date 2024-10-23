@@ -7,17 +7,16 @@ AC_INIT([flint],
 AC_CONFIG_SRCDIR([man/flint-class.Rd])
 AC_CONFIG_HEADERS([src/config.h])
 
-tail=${PACKAGE_VERSION}
-head=${tail%%.*}
-AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MAJOR], [${head}],
+save_IFS="${IFS}"; IFS=.
+set x ${PACKAGE_VERSION}
+shift; v1=$1; v2=$2; shift; shift; v3=$*
+set --
+IFS="${save_IFS}"
+AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MAJOR], [${v1}],
                    [Define to the first field of the version string.])
-tail=${tail#*.}
-head=${tail%%.*}
-AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MINOR], [${head}],
+AC_DEFINE_UNQUOTED([PACKAGE_VERSION_MINOR], [${v2}],
                    [Define to the second field of the version string.])
-tail=${tail#*.}
-head=${tail%%.*}
-AC_DEFINE_UNQUOTED([PACKAGE_VERSION_PATCHLEVEL], [${head}],
+AC_DEFINE_UNQUOTED([PACKAGE_VERSION_PATCHLEVEL], [${v3}],
                    [Define to the third field of the version string.])
 
 AC_ARG_VAR([R_HOME],
@@ -38,6 +37,7 @@ AC_ARG_VAR([R_FLINT_LIBS],
            [options (only -lx) and libraries for the linker, overriding pkg-config [default=-lflint -lmpfr -lgmp]])
 
 AC_PROG_CC([])
+AC_PROG_SED([])
 AC_MSG_CHECKING([for R])
 if test "x${R_HOME=`R RHOME`}" != "x" &&
    test -x "${R_HOME}/bin/R" &&
@@ -53,7 +53,6 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 LIBS=
 
-R_FLINT_LIBS_DEFAULT="-lflint -lmpfr -lgmp"
 if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
    test "x${R_FLINT_CFLAGS+x}" = "x" &&
    test "x${R_FLINT_LDFLAGS+x}" = "x" &&
@@ -61,45 +60,72 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 	dnl All R_FLINT_* are unset.
 	AC_PATH_PROGS([PKG_CONFIG], [pkg-config pkgconf], [])
 	if test "x${PKG_CONFIG}" = "x"; then
-		R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
+		R_FLINT_LIBS="-lflint -lmpfr -lgmp"
 	else
-		AC_MSG_CHECKING([for flint.pc in pkg-config search path])
-		if "${PKG_CONFIG}" --exists flint; then
-			AC_MSG_RESULT([yes])
-			save_CPPFLAGS="${CPPFLAGS}"
-			save_LDFLAGS="${LDFLAGS}"
-			R_FLINT_CPPFLAGS="`"${PKG_CONFIG}" --cflags flint`"
-			R_FLINT_LDFLAGS="`"${PKG_CONFIG}" --libs-only-L --libs-only-other flint`"
-			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs-only-l flint`"
-			CPPFLAGS="${CPPFLAGS} ${FLINT_CPPFLAGS}"
-			LDFLAGS="${LDFLAGS} ${FLINT_LDFLAGS}"
-			AC_MSG_NOTICE([checking whether --libs suffices for linking libflint])
-			AC_CHECK_LIB([flint], [flint_malloc],
-			             [have_libflint=yes], [have_libflint=no],
-			             [${R_FLINT_LIBS}])
-			if test "x${have_libflint}" = "xno"; then
-			R_FLINT_LIBS="`"${PKG_CONFIG}" --libs --static flint`"
-			AC_MSG_NOTICE([checking whether --libs --static suffices for linking libflint])
-			AC_CHECK_LIB([flint], [flint_malloc],
-			             [have_libflint=yes], [have_libflint=no],
-			             [${R_FLINT_LIBS}])
-			if test "x${have_libflint}" = "xno"; then
-			AC_MSG_NOTICE([reverting to default compiler and linker options])
-			R_FLINT_CPPFLAGS=
-			R_FLINT_LDFLAGS=
-			R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
+		for pkg in gmp mpfr flint; do
+			AC_MSG_CHECKING([for ${pkg}.pc in pkg-config search path])
+			if "${PKG_CONFIG}" --exists ${pkg}; then
+				AC_MSG_RESULT([yes])
+				save_CPPFLAGS="${CPPFLAGS}"
+				save_LDFLAGS="${LDFLAGS}"
+				save_LIBS="${LIBS}"
+				pkg_CPPFLAGS=`"${PKG_CONFIG}" --cflags ${pkg}`
+				pkg_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other ${pkg}`
+				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l ${pkg}`
+				CPPFLAGS="${pkg_CPPFLAGS} ${R_FLINT_CPPFLAGS} ${CPPFLAGS}"
+				LDFLAGS="${pkg_LDFLAGS} ${R_FLINT_CPPFLAGS} ${LDFLAGS}"
+				LIBS="${R_FLINT_LIBS} ${LIBS}"
+				AC_MSG_NOTICE([checking whether --libs suffices for linking lib${pkg}])
+				case ${pkg} in
+					gmp ) pkg_fn=__gmpz_init ;;
+					mpfr ) pkg_fn=mpfr_init ;;
+					flint ) pkg_fn=fmpz_init ;;
+				esac
+				AC_CHECK_LIB([${pkg}], [${pkg_fn}],
+							 [pkg_found=yes], [pkg_found=no],
+							 [${pkg_LIBS}])
+				if test "x${pkg_found}" = "xno"; then
+				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l --static flint`
+				AC_MSG_NOTICE([checking whether --libs --static suffices for linking lib${pkg}])
+				AC_CHECK_LIB([${pkg}], [${pkg_fn}],
+							 [pkg_found=yes], [pkg_found=no],
+							 [${pkg_LIBS}])
+				if test "x${pkg_found}" = "xno"; then
+				pkg_CPPFLAGS=
+				pkg_LDFLAGS=
+				pkg_LIBS=-l${pkg}
+				fi
+				fi
+				R_FLINT_CPPFLAGS="${pkg_CPPFLAGS} ${R_FLINT_CPPFLAGS}"
+				R_FLINT_LDFLAGS="${pkg_LDFLAGS} ${R_FLINT_LDFLAGS}"
+				R_FLINT_LIBS="${pkg_LIBS} ${R_FLINT_LIBS}"
+				CPPFLAGS="${save_CPPFLAGS}"
+				LDFLAGS="${save_LDFLAGS}"
+				LIBS="${save_LIBS}"
+			else
+				AC_MSG_RESULT([no])
+				R_FLINT_LIBS="-l${pkg} ${R_FLINT_LIBS}"
 			fi
-			fi
-			CPPFLAGS="${save_CPPFLAGS}"
-			LDFLAGS="${save_LDFLAGS}"
-		else
-			AC_MSG_RESULT([no])
-			R_FLINT_LIBS="${R_FLINT_LIBS_DEFAULT}"
-		fi
+		done
+		dnl Use pkg-config to deduplicate options.
+		printf "Name: config\n"                                   > config.pc
+		printf "Description: The config library\n"               >> config.pc
+		printf "URL: https://www.config.org/\n"                  >> config.pc
+		printf "Version: %s\n" "${PACKAGE_VERSION}"              >> config.pc
+		printf "Cflags: %s\n" "${R_FLINT_CPPFLAGS}"              >> config.pc
+		printf "Libs: %s\n" "${R_FLINT_LDFLAGS} ${R_FLINT_LIBS}" >> config.pc
+		R_FLINT_CPPFLAGS=`"${PKG_CONFIG}" --cflags config.pc`
+		R_FLINT_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other config.pc`
+		R_FLINT_LIBS=`"${PKG_CONFIG}" --libs-only-l config.pc`
+		dnl Manually deduplicate -lmpfr -lgmp.
+		for opt in -lmpfr -lgmp; do
+			R_FLINT_LIBS=`echo "${R_FLINT_LIBS}" | ${SED} -e ":l" -e "s/\(.*\)${opt} \(.*${opt}.*\)/\1\2/" -e "tl"`
+		done
+		rm -f config.pc
 	fi
 else
 	dnl At least one R_FLINT_* is set.
-	: {R_FLINT_LIBS=${R_FLINT_LIBS_DEFAULT}}
+	: {R_FLINT_LIBS=-lflint -lmpfr -lgmp}
 fi
 CPPFLAGS="${CPPFLAGS} ${R_FLINT_CPPFLAGS}"
 CFLAGS="${CFLAGS} ${R_FLINT_CFLAGS}"
