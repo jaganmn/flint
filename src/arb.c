@@ -125,13 +125,13 @@ SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
 	arb_srcptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *ym = REAL(mid), *yr = REAL(rad);
 	arf_t lbm, ubm;
-	arf_ptr m;
+	arf_srcptr m;
 	arf_init(lbm);
 	arf_init(ubm);
 	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);
 	arf_neg(lbm, ubm);
 	mag_t ubr;
-	mag_ptr r;
+	mag_srcptr r;
 	mag_init(ubr);
 	mag_set_ui_2exp_si(ubr, 1U, DBL_MAX_EXP);
 	int w = 1;
