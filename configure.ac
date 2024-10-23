@@ -36,8 +36,6 @@ AC_ARG_VAR([R_FLINT_LDFLAGS],
 AC_ARG_VAR([R_FLINT_LIBS],
            [options (only -lx) and libraries for the linker, overriding pkg-config [default=-lflint -lmpfr -lgmp]])
 
-AC_PROG_CC([])
-AC_PROG_SED([])
 AC_MSG_CHECKING([for R])
 if test "x${R_HOME=`R RHOME`}" != "x" &&
    test -x "${R_HOME}/bin/R" &&
@@ -47,21 +45,25 @@ else
 	AC_MSG_RESULT([no])
 	AC_MSG_ERROR([install R before configuring R packages])
 fi
+
+AC_PROG_CC([])
+AC_PROG_SED([])
+
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 LIBS=
-
 if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
    test "x${R_FLINT_CFLAGS+x}" = "x" &&
    test "x${R_FLINT_LDFLAGS+x}" = "x" &&
    test "x${R_FLINT_LIBS+x}" = "x"; then
 	dnl All R_FLINT_* are unset.
 	AC_PATH_PROGS([PKG_CONFIG], [pkg-config pkgconf], [])
-	if test "x${PKG_CONFIG}" = "x"; then
-		R_FLINT_LIBS="-lflint -lmpfr -lgmp"
-	else
+	if test "x${PKG_CONFIG}" != "x" &&
+	   test -x "${PKG_CONFIG}" &&
+	   "${PKG_CONFIG}" --version >/dev/null 2>&1; then
+		dnl We seem to have a working pkg-config.
 		for pkg in gmp mpfr flint; do
 			AC_MSG_CHECKING([for ${pkg}.pc in pkg-config search path])
 			if "${PKG_CONFIG}" --exists ${pkg}; then
@@ -117,11 +119,15 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 		R_FLINT_CPPFLAGS=`"${PKG_CONFIG}" --cflags config.pc`
 		R_FLINT_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other config.pc`
 		R_FLINT_LIBS=`"${PKG_CONFIG}" --libs-only-l config.pc`
-		dnl Manually deduplicate -lmpfr -lgmp.
+		dnl Manually deduplicate -lmpfr -lgmp, because flint.pc and mpfr.pc
+		dnl have been seen to use Requires or Libs wrongly, foiling the above.
 		for opt in -lmpfr -lgmp; do
 			R_FLINT_LIBS=`echo "${R_FLINT_LIBS}" | ${SED} -e ":l" -e "s/\(.*\)${opt} \(.*${opt}.*\)/\1\2/" -e "tl"`
 		done
 		rm -f config.pc
+	else
+		dnl We do not seem to have a working pkg-config.
+		R_FLINT_LIBS="-lflint -lmpfr -lgmp"
 	fi
 else
 	dnl At least one R_FLINT_* is set.
