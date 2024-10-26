@@ -103,12 +103,13 @@ setMethod("[",
                          integer =,
                          double =,
                              {
-                                 r <- range(1L, i, na.rm = TRUE)
-                                 if (r[2L] - 1L >= nx)
+                                 r <- max(0L, i, na.rm = TRUE)
+                                 if (r - 1L >= nx)
                                      stop("subscript out of bounds")
-                                 else if (r[1L] >= 1L)
+                                 r <- min(1L, i, na.rm = TRUE)
+                                 if (r >= 1L)
                                      i
-                                 else if (r[1L] > -1L)
+                                 else if (r > -1L)
                                      i[i >= 1L]
                                  else seq_len(nx)[i]
                              })
@@ -156,12 +157,13 @@ setMethod("[<-",
                          integer =,
                          double =
                              {
-                                 r <- range(1L, i, na.rm = TRUE)
-                                 if (r[2L] - 1L >= nx)
+                                 r <- max(0L, i, na.rm = TRUE)
+                                 if (r - 1L >= nx)
                                      stop("subscript out of bounds")
-                                 else if (r[1L] >= 1L)
+                                 r <- min(1L, i, na.rm = TRUE)
+                                 if (r >= 1L)
                                      i
-                                 else if (r[1L] > -1L)
+                                 else if (r > -1L)
                                      i[i >= 1L]
                                  else seq_len(nx)[i]
                              })
@@ -211,12 +213,13 @@ setMethod("[[",
                          integer =,
                          double =
                              {
-                                 r <- range(1L, i, na.rm = TRUE)
-                                 if (r[[2L]] - 1L >= nx)
+                                 r <- max(0L, i, na.rm = TRUE)
+                                 if (r - 1L >= nx)
                                      stop("subscript out of bounds")
-                                 else if (r[[1L]] >= 1L)
+                                 r <- min(1L, i, na.rm = TRUE)
+                                 if (r >= 1L)
                                      i
-                                 else if (r[[1L]] > -1L)
+                                 else if (r > -1L)
                                      i[i >= 1L]
                                  else seq_len(nx)[i]
                              })
@@ -260,12 +263,13 @@ setMethod("[[<-",
                          integer =,
                          double =
                              {
-                                 r <- range(1L, i, na.rm = TRUE)
-                                 if (r[[2L]] - 1L >= nx)
+                                 r <- max(0L, i, na.rm = TRUE)
+                                 if (r - 1L >= nx)
                                      stop("subscript out of bounds")
-                                 else if (r[[1L]] >= 1L)
+                                 r <- min(1L, i, na.rm = TRUE)
+                                 if (r >= 1L)
                                      i
-                                 else if (r[[1L]] > -1L)
+                                 else if (r > -1L)
                                      i[i >= 1L]
                                  else seq_len(nx)[i]
                              })
