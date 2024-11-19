@@ -1,10 +1,11 @@
-flintBits <- function ()
+flintBits <-
+function ()
     .Call(R_flint_bits)
 
 flintVersion <-
 function () {
     n <- .Call(R_flint_version)
-    v <- .mapply(function(n, p, b, class) {
+    v <- .mapply(function (n, p, b, class) {
                      r <- integer(p)
                      while (p > 0L) {
                          r[p] <- tmp <- n %% b
