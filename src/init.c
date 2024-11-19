@@ -11,6 +11,7 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_rad,
 	R_flint_symbol_real,
 	R_flint_symbol_imag,
+	R_flint_symbol_off,
 	R_flint_symbol_prec,
 	R_flint_symbol_exp,
 	R_flint_symbol_sign,
@@ -147,6 +148,7 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_flint_symbol_rad       = Rf_install("rad");
 	R_flint_symbol_real      = Rf_install("real");
 	R_flint_symbol_imag      = Rf_install("imag");
+	R_flint_symbol_off       = Rf_install("off");
 	R_flint_symbol_prec      = Rf_install("prec");
 	R_flint_symbol_exp       = Rf_install("exp");
 	R_flint_symbol_sign      = Rf_install("sign");

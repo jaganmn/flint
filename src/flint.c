@@ -91,10 +91,19 @@ SEXP R_flint_length(SEXP object)
 		unsigned long long int n_ = (unsigned long long int) (double) n;
 		if (n_ >  n)
 			n_ = (unsigned long long int) nextafter((double) n, 0.0);
-		if (n_ != n)
-			Rf_warning(_("true length %llu truncated to %llu"), n, n_);
 		ans = Rf_allocVector(REALSXP, 1);
 		REAL(ans)[0] = (double) n_;
+		if (n_ != n) {
+			SEXP off;
+			PROTECT(ans);
+			PROTECT(off = Rf_allocVector(REALSXP, 1));
+			REAL(off)[0] = (double) (n - n_);
+			Rf_setAttrib(ans, R_flint_symbol_off, off);
+#if 0
+			Rf_warning(_("true length %llu truncated to %llu"), n, n_);
+#endif
+			UNPROTECT(2);
+		}
 	}
 	return ans;
 }
