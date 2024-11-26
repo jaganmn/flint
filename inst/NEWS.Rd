@@ -39,7 +39,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2024-11-19)}{
+\section{Changes in version 0.0.1 (2024-11-26)}{
   \subsection{New Features}{
     \itemize{
       \item Virtual class \code{flint} with nonvirtual subclasses
@@ -50,11 +50,12 @@
       pointers.
 
       \item Methods are defined for \code{[}, \code{[<-}, \code{[[},
-      \code{[[<-}, \code{Im}, \code{Re}, \code{as.raw},
-      \code{as.logical}, \code{as.integer}, \code{as.numeric},
-      \code{as.complex}, \code{as.list}, \code{as.expression},
-      \code{as.vector}, \code{coerce}, \code{format}, \code{initialize},
-      \code{length}, \code{print}, and \code{show}.
+      \code{[[<-}, \code{Complex}, \code{Math}, \code{Math2},
+      \code{Ops}, \code{Summary}, \code{as.raw}, \code{as.logical},
+      \code{as.integer}, \code{as.numeric}, \code{as.complex},
+      \code{as.list}, \code{as.expression}, \code{as.vector},
+      \code{coerce}, \code{format}, \code{initialize}, \code{length},
+      \code{print}, and \code{show}.
 
       \item Virtual class \code{nflint} with nonvirtual subclasses
       \code{nslong}, \code{nulong}, \code{nfmpz}, \code{nfmpq},

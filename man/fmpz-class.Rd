@@ -1,6 +1,15 @@
 \name{fmpz-class}
 \alias{fmpz-class}
 \alias{nfmpz-class}
+\alias{+,fmpz,missing-method}
+\alias{-,fmpz,missing-method}
+\alias{Complex,fmpz-method}
+\alias{Math,fmpz-method}
+\alias{Math2,fmpz-method}
+\alias{Ops,fmpz,fmpz-method}
+\alias{Summary,fmpz-method}
+\alias{as.vector,fmpz-method}
+\alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{coerce,vector,fmpz-method}
 \alias{coerce,nfmpz,fmpz-method}

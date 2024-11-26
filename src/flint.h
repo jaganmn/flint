@@ -136,6 +136,12 @@ SEXPTYPE R_flint_sexptypes[6];
 extern
 const char *R_flint_classes[9];
 
+extern
+const char *R_flint_ops2[16];
+
+extern
+const char *R_flint_ops1[52];
+
 #if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP);
 #endif /* < 4.5.0 */
@@ -156,6 +162,8 @@ int asRnd(SEXP, int, const char *);
 
 void  ucopy(unsigned int *, const unsigned long long int *);
 void uucopy(unsigned long long int *, const unsigned int *);
+
+size_t strmatch(const char *, const char **);
 
 void *R_flint_get_pointer(SEXP);
 unsigned long long int R_flint_get_length(SEXP);

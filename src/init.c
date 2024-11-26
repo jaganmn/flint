@@ -23,6 +23,36 @@ SEXPTYPE R_flint_sexptypes[] =
 const char *R_flint_classes[] =
 { "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };
 
+const char *R_flint_ops2[] =
+{
+	/* Arith (7) : */
+	"+", "-", "*", "%%", "%/%", "/", "^",
+	/* Compare (6) : */
+	"==", "!=", "<", ">", "<=", ">=",
+	/* Logic (2) : */
+	"&", "|",
+	NULL
+};
+
+const char *R_flint_ops1[] =
+{
+	/* Arith (2) : */
+	"+", "-",
+	/* Math (35) : */
+	"abs", "sign", "sqrt", "ceiling", "floor", "trunc", "cummax",
+	"cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p",
+	"acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1",
+	"cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh",
+	"tanpi", "gamma", "lgamma", "digamma", "trigamma",
+	/* Math2 (2) : */
+	"round", "signif",
+	/* Summary (7) : */
+	"max", "min", "range", "prod", "sum", "any", "all",
+	/* Complex (5) : */
+	"Arg", "Conj", "Im", "Mod", "Re",
+	NULL
+};
+
 SEXP R_flint_bits(void);
 SEXP R_flint_version(void);
 SEXP R_flint_class(SEXP);
@@ -48,6 +78,8 @@ SEXP R_flint_fmpz_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpz_nfmpz(SEXP);
 SEXP R_flint_fmpz_vector(SEXP);
 SEXP R_flint_fmpz_format(SEXP, SEXP);
+SEXP R_flint_fmpz_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_fmpz_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_fmpq_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_fmpq_nfmpq(SEXP);
@@ -106,6 +138,8 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_fmpz_nfmpz, 1),
 	CALL_ENTRY(R_flint_fmpz_vector, 1),
 	CALL_ENTRY(R_flint_fmpz_format, 2),
+	CALL_ENTRY(R_flint_fmpz_ops2, 3),
+	CALL_ENTRY(R_flint_fmpz_ops1, 3),
 	CALL_ENTRY(R_flint_fmpq_initialize, 5),
 	CALL_ENTRY(R_flint_fmpq_nfmpq, 1),
 	CALL_ENTRY(R_flint_fmpq_vector, 1),

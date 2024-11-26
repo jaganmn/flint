@@ -149,3 +149,16 @@ void uucopy(unsigned long long int *u, const unsigned int *uu)
 		(unsigned long long int) uu[0];
 	return;
 }
+
+size_t strmatch(const char *s, const char **ss)
+{
+	size_t pos = 0;
+	while (1) {
+		if (!ss[pos])
+			return 0;
+		if (!strcmp(s, ss[pos]))
+			return pos + 1;
+		pos += 1;
+	}
+	return 0;
+}

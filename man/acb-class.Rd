@@ -1,8 +1,7 @@
 \name{acb-class}
 \alias{acb-class}
 \alias{nacb-class}
-\alias{Re,acb-method}
-\alias{Im,acb-method}
+\alias{Complex,acb-method}
 \alias{as.vector,acb-method}
 \alias{coerce,vector,acb-method}
 \alias{coerce,nacb,acb-method}
@@ -86,10 +85,6 @@
     \item{\code{length}}{
       \code{signature(x = "nacb")}:\cr
       returns \code{length(x@real@mid)}.}
-    \item{\code{Re}, \code{Im}}{
-      \code{signature(z = "acb")}:\cr
-      return an \code{\linkS4class{arb}} vector containing the real and
-      imaginary parts, respectively.}
     \item{\code{format}}{
       \code{signature(x = "acb")}:\cr
       returns a character vector suitable for printing, using string

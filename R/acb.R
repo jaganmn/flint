@@ -32,9 +32,6 @@ setAs("acb", "nacb",
 Real <- function (z) .Call(R_flint_part, z, 0L)
 Imag <- function (z) .Call(R_flint_part, z, 1L)
 
-setMethod("Re", c(z = "acb"), Real)
-setMethod("Im", c(z = "acb"), Imag)
-
 setMethod("format",
           c(x = "acb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
@@ -45,3 +42,11 @@ setMethod("format",
                      format(Imag(x), base = base, digits = digits, sep = sep,
                             rnd = rnd, ...),
                      "i"))
+
+setMethod("Complex",
+          c(z = "acb"),
+          function (z)
+              switch(.Generic, "Re" = Real(z), "Im" = Imag(z),
+                     stop(gettextf("operation '%s' not yet implemented for class '%s'",
+                                   .Generic, "acb"),
+                          domain = NA)))
