@@ -28,12 +28,12 @@ setMethod("format",
 setMethod("+",
           c(e1 = "fmpz", e2 = "missing"),
           function (e1, e2)
-              .Call(R_flint_fmpz_ops1, "+", e1, NULL))
+              .Call(R_flint_fmpz_ops1, .Generic, e1, NULL))
 
 setMethod("-",
           c(e1 = "fmpz", e2 = "missing"),
           function (e1, e2)
-              .Call(R_flint_fmpz_ops1, "-", e1, NULL))
+              .Call(R_flint_fmpz_ops1, .Generic, e1, NULL))
 
 setMethod("Ops",
           c(e1 = "fmpz", e2 = "fmpz"),
@@ -50,6 +50,10 @@ setMethod("Math2",
           function (x, digits) {
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
+              else if (length(digits) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "digits", .Generic),
+                       domain = NA)
               digits <- as(digits, "slong")
               .Call(R_flint_fmpz_ops1, .Generic, x, digits)
           })

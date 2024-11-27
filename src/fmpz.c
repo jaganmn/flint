@@ -244,7 +244,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case 6: /*   "/" */
 			for (j = 0; j < n; ++j)
 				if (fmpz_is_zero(y + j % ny))
-				Rf_error(_("quotient with 0 undefined"));
+				Rf_error(_("quotient with 0 is undefined"));
 				else {
 				fmpz_set(fmpq_numref(z + j), x + j % nx);
 				fmpz_set(fmpq_denref(z + j), y + j % ny);
@@ -252,16 +252,28 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				}
 			break;
 		case 7: /*   "^" */
-			for (j = 0; j < n; ++j)
-				if (fmpz_sgn(y + j % ny) >= 0) {
-				fmpz_pow_fmpz(fmpq_numref(z + j), x + j % nx, y + j % ny);
+		{
+			fmpz_t exp;
+			fmpz_init(exp);
+			for (j = 0; j < n; ++j) {
+				fmpz_set(exp, y + j % ny);
+				if (!fmpz_abs_fits_ui(exp))
+				Rf_error(_("exponent exceeds maximum %llu in absolute value"),
+				         (unsigned long long int) (ulong) -1);
+				else if (fmpz_sgn(exp) >= 0) {
+				fmpz_pow_ui(fmpq_numref(z + j), x + j % nx, fmpz_get_ui(exp));
 				fmpz_one(fmpq_denref(z + j));
-				} else {
+				}
+				else {
+				fmpz_neg(exp, exp);
+				fmpz_pow_ui(fmpq_denref(z + j), x + j % nx, fmpz_get_ui(exp));
 				fmpz_one(fmpq_numref(z + j));
-				fmpz_neg(fmpq_denref(z + j), y + j % ny);
-				fmpz_pow_fmpz(fmpq_denref(z + j), x + j % nx, fmpq_denref(z + j));
 				fmpq_canonicalise(z + j);
 				}
+			}
+			fmpz_clear(exp);
+			break;
+		}
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		return ans;
@@ -276,7 +288,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 15: /*   "|" */
 	{
 		if (n > R_XLEN_T_MAX)
-			Rf_error(_("value length would exceed R maximum (%lld)"),
+			Rf_error(_("value length would exceed maximum %lld"),
 			         (long long int) R_XLEN_T_MAX);
 		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
 		int *z = LOGICAL(ans);
@@ -317,7 +329,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpz");
 		return R_NilValue;
 	}
@@ -393,32 +405,22 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 38: /*   "round" */
 		{
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
-			if (digits >= 0) {
+			if (digits >= 0)
 			for (j = 0; j < n; ++j)
 				fmpz_set(z + j, x + j);
-			} else {
-			fmpz_t a, d, h, p, q, r;
-			fmpz_init(a);
-			fmpz_init(d);
-			fmpz_init(h);
+			else {
+			fmpz_t p, q, r;
 			fmpz_init(p);
 			fmpz_init(q);
 			fmpz_init(r);
-			fmpz_set_si(d, digits);
-			fmpz_neg(d, d);
 			fmpz_set_si(p, 10);
-			fmpz_pow_fmpz(p, p, d);
-			fmpz_divexact_si(h, p, 2);
+			fmpz_pow_ui(p, p, (ulong) -1 - (ulong) digits + 1);
 			for (j = 0; j < n; ++j) {
 				fmpz_ndiv_qr(q, r, x + j, p);
-				fmpz_abs(a, r);
-				if (fmpz_equal(a, h) && fmpz_is_odd(q))
+				if (fmpz_cmp2abs(p, r) == 0 && fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
 				fmpz_mul(z + j, q, p);
 			}
-			fmpz_clear(a);
-			fmpz_clear(d);
-			fmpz_clear(h);
 			fmpz_clear(p);
 			fmpz_clear(q);
 			fmpz_clear(r);
@@ -431,10 +433,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				clog;
 			if (digits <= 0)
 				digits = 1;
-			fmpz_t a, d, h, p, q, r;
-			fmpz_init(a);
-			fmpz_init(d);
-			fmpz_init(h);
+			fmpz_t p, q, r;
 			fmpz_init(p);
 			fmpz_init(q);
 			fmpz_init(r);
@@ -442,26 +441,20 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_is_zero(x + j))
 				fmpz_zero(z + j);
 				else {
-				fmpz_abs(a, x + j);
-				clog = fmpz_clog_ui(a, 10);
+				fmpz_abs(z + j, x + j);
+				clog = fmpz_clog_ui(z + j, 10);
 				if (clog <= digits)
 				fmpz_set(z + j, x + j);
 				else {
-				fmpz_set_si(d, clog - digits);
 				fmpz_set_si(p, 10);
-				fmpz_pow_fmpz(p, p, d);
-				fmpz_divexact_si(h, p, 2);
+				fmpz_pow_ui(p, p, (ulong) (clog - digits));
 				fmpz_ndiv_qr(q, r, x + j, p);
-				fmpz_abs(a, r);
-				if (fmpz_equal(a, h) && fmpz_is_odd(q))
+				if (fmpz_cmp2abs(p, r) == 0 && fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
 				fmpz_mul(z + j, q, p);
 				}
 				}
 			}
-			fmpz_clear(a);
-			fmpz_clear(d);
-			fmpz_clear(h);
 			fmpz_clear(p);
 			fmpz_clear(q);
 			fmpz_clear(r);
@@ -475,7 +468,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 41: /*     "min" */
 	case 42: /*   "range" */
 		if (n == 0)
-			Rf_error(_("argument of length zero to '%s'"),
+			Rf_error(_("argument of length zero in '%s'"),
 			         CHAR(STRING_ELT(s_op, 0)));
 	case 43: /*    "prod" */
 	case 44: /*     "sum" */
@@ -537,7 +530,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpz");
 		return R_NilValue;
 	}
