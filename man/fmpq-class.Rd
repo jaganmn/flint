@@ -1,6 +1,13 @@
 \name{fmpq-class}
 \alias{fmpq-class}
 \alias{nfmpq-class}
+\alias{+,fmpq,missing-method}
+\alias{-,fmpq,missing-method}
+\alias{Complex,fmpq-method}
+\alias{Math,fmpq-method}
+\alias{Math2,fmpq-method}
+\alias{Ops,fmpq,fmpq-method}
+\alias{Summary,fmpq-method}
 \alias{as.vector,fmpq-method}
 \alias{coerce,vector,fmpq-method}
 \alias{coerce,nfmpq,fmpq-method}

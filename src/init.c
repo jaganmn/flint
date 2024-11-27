@@ -84,6 +84,8 @@ SEXP R_flint_fmpz_ops1(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpq_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_fmpq_nfmpq(SEXP);
 SEXP R_flint_fmpq_vector(SEXP);
+SEXP R_flint_fmpq_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_fmpq_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_arf_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_arf_narf(SEXP, SEXP);
@@ -143,6 +145,8 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_fmpq_initialize, 5),
 	CALL_ENTRY(R_flint_fmpq_nfmpq, 1),
 	CALL_ENTRY(R_flint_fmpq_vector, 1),
+	CALL_ENTRY(R_flint_fmpq_ops2, 3),
+	CALL_ENTRY(R_flint_fmpq_ops1, 3),
 	CALL_ENTRY(R_flint_arf_initialize, 3),
 	CALL_ENTRY(R_flint_arf_narf, 2),
 	CALL_ENTRY(R_flint_arf_vector, 2),
