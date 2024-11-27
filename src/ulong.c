@@ -68,9 +68,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 SEXP R_flint_ulong_nulong(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "ulong", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	SEXP to = PROTECT(newBasic("nulong", INTSXP, (R_xlen_t) n));
 	const ulong *x = (ulong *) R_flint_get_pointer(from);
 	int *y = INTEGER(to);
@@ -90,9 +88,7 @@ SEXP R_flint_ulong_nulong(SEXP from)
 SEXP R_flint_ulong_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "ulong", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const ulong *x = (ulong *) R_flint_get_pointer(from);
 	double *y = REAL(to);
@@ -115,9 +111,7 @@ SEXP R_flint_ulong_vector(SEXP from)
 SEXP R_flint_ulong_format(SEXP from, SEXP s_base)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "ulong", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	const ulong *x = (ulong *) R_flint_get_pointer(from);

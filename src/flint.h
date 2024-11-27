@@ -91,6 +91,13 @@ do { \
 		         func); \
 } while (0)
 
+#define ERROR_TOO_LONG(n) \
+do { \
+	if (n > R_XLEN_T_MAX) \
+		Rf_error(_("value length would exceed maximum %lld"), \
+		         (long long int) R_XLEN_T_MAX); \
+} while (0)
+
 #define MPFR_ERANGE_SET \
 mpfr_exp_t \
 	__emin_old = mpfr_get_emin(), __emin_new = mpfr_get_emin_min(), \

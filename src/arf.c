@@ -85,9 +85,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "arf", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
 	SEXP to = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n));
 	arf_srcptr x = (arf_ptr) R_flint_get_pointer(from);
@@ -125,9 +123,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "arf", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);

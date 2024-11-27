@@ -68,9 +68,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 SEXP R_flint_mag_nmag(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "mag", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	SEXP to = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
 	mag_srcptr x = (mag_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
@@ -102,9 +100,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
-	if (n > R_XLEN_T_MAX)
-		Rf_error(_("'%s' length exceeds R maximum (%lld)"),
-		         "mag", (long long int) R_XLEN_T_MAX);
+	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
