@@ -3,6 +3,8 @@
 \alias{nfmpq-class}
 \alias{+,fmpq,missing-method}
 \alias{-,fmpq,missing-method}
+\alias{^,fmpq,fmpq-method}
+\alias{^,fmpq,fmpz-method}
 \alias{Complex,fmpq-method}
 \alias{Math,fmpq-method}
 \alias{Math2,fmpq-method}

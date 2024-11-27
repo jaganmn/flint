@@ -251,13 +251,12 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 7: /*   "^" */
 		{
+			/* Only case in which the second operand is not 'fmpq' : */
+			fmpz *y__ = (fmpz *) R_flint_get_pointer(s_y);
 			fmpz_t exp;
 			fmpz_init(exp);
 			for (j = 0; j < n; ++j) {
-				if (!fmpz_is_one(fmpq_denref(y + j % ny)))
-				Rf_error(_("exponent is not an integer"));
-				else {
-				fmpz_set(exp, fmpq_numref(y + j % ny));
+				fmpz_set(exp, y__ + j % ny);
 				if (!fmpz_abs_fits_ui(exp))
 				Rf_error(_("exponent exceeds maximum %llu in absolute value"),
 				         (unsigned long long int) (ulong) -1);
@@ -270,7 +269,6 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				fmpz_pow_ui(fmpq_numref(z + j), fmpq_denref(x + j % nx), fmpz_get_ui(exp));
 				fmpz_pow_ui(fmpq_denref(z + j), fmpq_numref(x + j % nx), fmpz_get_ui(exp));
 				fmpq_canonicalise(z + j);
-				}
 				}
 			}
 			fmpz_clear(exp);
