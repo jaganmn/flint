@@ -39,17 +39,20 @@ const char *R_flint_ops1[] =
 	/* Arith (2) : */
 	"+", "-",
 	/* Math (35) : */
-	"abs", "sign", "sqrt", "ceiling", "floor", "trunc", "cummax",
-	"cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p",
-	"acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1",
-	"cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh",
-	"tanpi", "gamma", "lgamma", "digamma", "trigamma",
+	"abs", "sign", "sqrt",
+	"floor", "ceiling", "trunc",
+	"cummin", "cummax", "cumsum", "cumprod",
+	"log", "log10", "log2", "log1p", "exp", "expm1",
+	"cos", "cospi", "acos", "cosh", "acosh",
+	"sin", "sinpi", "asin", "sinh", "asinh",
+	"tan", "tanpi", "atan", "tanh", "atanh",
+	"gamma", "lgamma", "digamma", "trigamma",
 	/* Math2 (2) : */
 	"round", "signif",
 	/* Summary (7) : */
-	"max", "min", "range", "prod", "sum", "any", "all",
+	"min", "max", "range", "sum", "prod", "any", "all",
 	/* Complex (5) : */
-	"Arg", "Conj", "Im", "Mod", "Re",
+	"Conj", "Re", "Im", "Mod", "Arg",
 	NULL
 };
 
