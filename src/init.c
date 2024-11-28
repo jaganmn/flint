@@ -99,6 +99,8 @@ SEXP R_flint_mag_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_mag_nmag(SEXP);
 SEXP R_flint_mag_vector(SEXP);
 SEXP R_flint_mag_format(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_mag_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_mag_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_arb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_arb_narb(SEXP, SEXP);
@@ -158,6 +160,8 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_mag_nmag, 1),
 	CALL_ENTRY(R_flint_mag_vector, 1),
 	CALL_ENTRY(R_flint_mag_format, 5),
+	CALL_ENTRY(R_flint_mag_ops2, 3),
+	CALL_ENTRY(R_flint_mag_ops1, 3),
 	CALL_ENTRY(R_flint_arb_initialize, 5),
 	CALL_ENTRY(R_flint_arb_narb, 2),
 	CALL_ENTRY(R_flint_arb_vector, 2),

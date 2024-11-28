@@ -1,11 +1,21 @@
 \name{mag-class}
 \alias{mag-class}
 \alias{nmag-class}
+\alias{+,mag,missing-method}
+\alias{-,mag,missing-method}
+\alias{^,mag,arf-method}
+\alias{^,mag,mag-method}
+\alias{Complex,mag-method}
+\alias{Math,mag-method}
+\alias{Math2,mag-method}
+\alias{Ops,mag,mag-method}
+\alias{Summary,mag-method}
 \alias{as.vector,mag-method}
 \alias{coerce,vector,mag-method}
 \alias{coerce,nmag,mag-method}
 \alias{coerce,mag,nmag-method}
 \alias{initialize,mag-method}
+\alias{log,mag-method}
 \title{Class of Vectors of Magnitude (Error) Bounds}
 \docType{class}
 \description{
