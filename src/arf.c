@@ -333,42 +333,42 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case  8: /*  "==" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(x + j % ny))
-					? NA_LOGICAL
-					: arf_equal(x + j % nx, y + j % ny) != 0;
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+				? NA_LOGICAL
+				: arf_equal(x + j % nx, y + j % ny) != 0;
 			break;
 		case  9: /*  "!=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(x + j % ny))
-					? NA_LOGICAL
-					: arf_equal(x + j % nx, y + j % ny) == 0;
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+				? NA_LOGICAL
+				: arf_equal(x + j % nx, y + j % ny) == 0;
 			break;
 		case 10: /*   "<" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(x + j % ny))
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
 				? NA_LOGICAL
 				: arf_cmp(x + j % nx, y + j % ny) < 0;
 			break;
 		case 11: /*   ">" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(x + j % ny))
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
 				? NA_LOGICAL
 				: arf_cmp(x + j % nx, y + j % ny) > 0;
 			break;
 		case 12: /*  "<=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(x + j % ny))
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
 				? NA_LOGICAL
 				: arf_cmp(x + j % nx, y + j % ny) <= 0;
 			break;
 		case 13: /*  ">=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(x + j % ny))
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
 				? NA_LOGICAL
 				: arf_cmp(x + j % nx, y + j % ny) >= 0;
 			break;
@@ -378,18 +378,18 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				(arf_is_zero(x + j % nx) || arf_is_zero(y + j % ny))
 				? 0
 				:
-				(arf_is_nan (x + j % nx) || arf_is_nan (y + j % ny))
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_normal(x + j % nx) || arf_is_inf(x + j % nx) ||
-				 arf_is_normal(y + j % ny) || arf_is_inf(y + j % ny))
+				((!arf_is_nan(x + j % nx) && !arf_is_zero(x + j % nx)) ||
+				 (!arf_is_nan(y + j % ny) && !arf_is_zero(y + j % ny)))
 				? 1
 				:
-				(arf_is_nan (x + j % nx) || arf_is_nan (y + j % ny))
+				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
@@ -445,6 +445,9 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case  4: /*    "sign" */
 			for (j = 0; j < n; ++j)
+				if (arf_is_nan(x + j))
+				arf_nan(z + j);
+				else
 				arf_set_si(z + j, arf_sgn(x + j));
 			break;
 		case  5: /*    "sqrt" */
@@ -470,7 +473,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (n) {
 			arf_srcptr last = x;
 			for (j = 0; j < n && !arf_is_nan(x + j); ++j)
-				arf_set(z + j, (arf_cmp(last, x + j) <= 0) ? last : (last = x + j));
+				arf_min(z + j, last, x + j);
 			for (; j < n; ++j)
 				arf_nan(z + j);
 			}
@@ -479,7 +482,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (n) {
 			arf_srcptr last = x;
 			for (j = 0; j < n && !arf_is_nan(x + j); ++j)
-				arf_set(z + j, (arf_cmp(last, x + j) >= 0) ? last : (last = x + j));
+				arf_max(z + j, last, x + j);
 			for (; j < n; ++j)
 				arf_nan(z + j);
 			}
@@ -525,44 +528,41 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 40: /*     "min" */
 			arf_pos_inf(z);
 			for (j = 0; j < n; ++j)
-				if (arf_is_nan(x + j)) {
-					if (!narm) {
-						arf_nan(z);
-						break;
-					}
-				} else {
+				if (!arf_is_nan(x + j)) {
 					if (arf_cmp(z, x + j) > 0)
 						arf_set(z, x + j);
+				}
+				else if (!narm) {
+					arf_nan(z);
+					break;
 				}
 			break;
 		case 41: /*     "max" */
 			arf_neg_inf(z);
 			for (j = 0; j < n; ++j)
-				if (arf_is_nan(x + j)) {
-					if (!narm) {
-						arf_nan(z);
-						break;
-					}
-				} else {
+				if (!arf_is_nan(x + j)) {
 					if (arf_cmp(z, x + j) < 0)
 						arf_set(z, x + j);
+				}
+				else if (!narm) {
+					arf_nan(z);
+					break;
 				}
 			break;
 		case 42: /*   "range" */
 			arf_pos_inf(z);
 			arf_neg_inf(z + 1);
 			for (j = 0; j < n; ++j)
-				if (arf_is_nan(x + j)) {
-					if (!narm) {
-						arf_nan(z);
-						arf_nan(z + 1);
-						break;
-					}
-				} else {
+				if (!arf_is_nan(x + j)) {
 					if (arf_cmp(z, x + j) > 0)
 						arf_set(z, x + j);
 					if (arf_cmp(z + 1, x + j) < 0)
 						arf_set(z + 1, x + j);
+				}
+				else if (!narm) {
+					arf_nan(z);
+					arf_nan(z + 1);
+					break;
 				}
 			break;
 		case 43: /*     "sum" */

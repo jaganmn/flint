@@ -487,14 +487,14 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (n) {
 			mag_set(z, x);
 			for (j = 1; j < n; ++j)
-				mag_set(z + j, (mag_cmp(z + j - 1, x + j) <= 0) ? z + j - 1 : x + j);
+				mag_min(z + j, z + j - 1, x + j);
 			}
 			break;
 		case 10: /*  "cummax" */
 			if (n) {
 			mag_set(z, x);
 			for (j = 1; j < n; ++j)
-				mag_set(z + j, (mag_cmp(z + j - 1, x + j) >= 0) ? z + j - 1 : x + j);
+				mag_max(z + j, z + j - 1, x + j);
 			}
 			break;
 		case 11: /*  "cumsum" */
