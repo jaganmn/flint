@@ -398,28 +398,32 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			break;
 		case  9: /*  "cummin" */
-			if (n > 0)
+			if (n) {
 			fmpq_set(z, x);
 			for (j = 1; j < n; ++j)
-				fmpq_set(z + j, (fmpq_cmp(z + j - 1, x + j) < 0) ? z + j - 1 : x + j);
+				fmpq_set(z + j, (fmpq_cmp(z + j - 1, x + j) <= 0) ? z + j - 1 : x + j);
+			}
 			break;
 		case 10: /*  "cummax" */
-			if (n > 0)
+			if (n) {
 			fmpq_set(z, x);
 			for (j = 1; j < n; ++j)
-				fmpq_set(z + j, (fmpq_cmp(z + j - 1, x + j) < 0) ? x + j : z + j - 1);
+				fmpq_set(z + j, (fmpq_cmp(z + j - 1, x + j) >= 0) ? z + j - 1 : x + j);
+			}
 			break;
 		case 11: /*  "cumsum" */
-			if (n > 0)
+			if (n) {
 			fmpq_set(z, x);
 			for (j = 1; j < n; ++j)
 				fmpq_add(z + j, z + j - 1, x + j);
+			}
 			break;
 		case 12: /* "cumprod" */
-			if (n > 0)
+			if (n) {
 			fmpq_set(z, x);
 			for (j = 1; j < n; ++j)
 				fmpq_mul(z + j, z + j - 1, x + j);
+			}
 			break;
 		case 38: /*   "round" */
 		{
@@ -542,10 +546,10 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpq_set(z, x);
 			fmpq_set(z + 1, x);
 			for (j = 1; j < n; ++j)
-				if (fmpq_cmp(z + 1, x + j) < 0)
-					fmpq_set(z + 1, x + j);
-				else if (fmpq_cmp(z, x + j) > 0)
+				if (fmpq_cmp(z, x + j) > 0)
 					fmpq_set(z, x + j);
+				else if (fmpq_cmp(z + 1, x + j) < 0)
+					fmpq_set(z + 1, x + j);
 			break;
 		case 43: /*     "sum" */
 			fmpq_zero(z);
