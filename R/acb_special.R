@@ -5,13 +5,6 @@ function (z, k = 0L, flags = 0L, prec = flintPrec()) {
     res
 }
 
-acb_polygamma <-
-function (s = 0, z, prec = flintPrec()) {
-    res <- flintNew("acb")
-    .Call(R_flint_acb_polygamma, res, as(s, "acb"), as(z, "acb"), as(prec, "slong"))
-    res
-}
-
 acb_dirichlet_zeta <-
 function (s, prec = flintPrec()) {
     res <- flintNew("acb")
@@ -51,6 +44,14 @@ acb_hypgeom_lgamma <-
 function (z, prec = flintPrec()) {
     res <- flintNew("acb")
     .Call(R_flint_acb_hypgeom_lgamma, res, as(z, "acb"), as(prec, "slong"))
+    res
+}
+
+## acb_polygamma <-
+acb_hypgeom_polygamma <-
+function (s = 0, z, prec = flintPrec()) {
+    res <- flintNew("acb")
+    .Call(R_flint_acb_hypgeom_polygamma, res, as(s, "acb"), as(z, "acb"), as(prec, "slong"))
     res
 }
 

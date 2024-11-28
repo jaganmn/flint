@@ -1,6 +1,9 @@
 \name{acb_dirichlet_zeta}
+\alias{arb_dirichlet_zeta}
 \alias{acb_dirichlet_zeta}
+\alias{arb_dirichlet_hurwitz}
 \alias{acb_dirichlet_hurwitz}
+\alias{arb_dirichlet_lerch_phi}
 \alias{acb_dirichlet_lerch_phi}
 \title{Zeta and Related Functions}
 \description{
@@ -15,25 +18,31 @@
   for restrictions on \eqn{s} and \eqn{a}.
 }
 \usage{
+arb_dirichlet_zeta(s, prec = flintPrec())
 acb_dirichlet_zeta(s, prec = flintPrec())
+
+arb_dirichlet_hurwitz(s, a = 1, prec = flintPrec())
 acb_dirichlet_hurwitz(s, a = 1, prec = flintPrec())
-acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
+
+## arb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
+   acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
 }
 \arguments{
   \item{z, s, a}{
-    numeric, complex, or \code{\linkS4class{acb}} vectors.}
+    numeric, complex, \code{\linkS4class{arb}}, or
+    \code{\linkS4class{acb}} vectors.}
   \item{prec}{
     a numeric or \code{\linkS4class{slong}} vector indicating the
     desired precision as a number of bits.}
 }
 \value{
-  An \code{\linkS4class{acb}} vector storing function values with error
-  bounds.  Its length is the maximum of the lengths of the arguments or
-  zero (zero if any argument has length zero).  The arguments are
-  recycled as necessary.
+  An \code{\linkS4class{arb}} or \code{\linkS4class{acb}} vector
+  storing function values with error bounds.  Its length is the maximum
+  of the lengths of the arguments or zero (zero if any argument has
+  length zero).  The arguments are recycled as necessary.
 }
 \seealso{
-  Class \code{\linkS4class{acb}}.
+  Classes \code{\linkS4class{arb}} and \code{\linkS4class{acb}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}

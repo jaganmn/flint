@@ -1,4 +1,5 @@
 \name{acb_hypgeom_2f1}
+\alias{arb_hypgeom_2f1}
 \alias{acb_hypgeom_2f1}
 \title{Hypergeometric Functions}
 \description{
@@ -11,11 +12,13 @@
   \eqn{{}_{2}F_{1}(a, b, c, z) / \Gamma(c)}{F(a, b, c, z)/Gamma(c)}.
 }
 \usage{
+arb_hypgeom_2f1(a, b, c, x, flags = 0L, prec = flintPrec())
 acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = flintPrec())
 }
 \arguments{
-  \item{a, b, c, z}{
-    numeric, complex, or \code{\linkS4class{acb}} vectors.}
+  \item{a, b, c, x, z}{
+    numeric, complex, \code{\linkS4class{arb}}, or
+    \code{\linkS4class{acb}} vectors.}
   \item{flags}{
     an integer vector.  The lowest bit of the integer element(s)
     indicates whether to regularize.  Later bits indicate special cases
@@ -26,17 +29,18 @@ acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = flintPrec())
     desired precision as a number of bits.}
 }
 \value{
-  An \code{\linkS4class{acb}} vector storing function values with error
-  bounds.  Its length is the maximum of the lengths of the arguments or
-  zero (zero if any argument has length zero).  The arguments are
-  recycled as necessary.
+  An \code{\linkS4class{arb}} or \code{\linkS4class{acb}} vector
+  storing function values with error bounds.  Its length is the maximum
+  of the lengths of the arguments or zero (zero if any argument has
+  length zero).  The arguments are recycled as necessary.
 }
 \seealso{
-  Class \code{\linkS4class{acb}}.
+  Classes \code{\linkS4class{arb}} and \code{\linkS4class{acb}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
-  function: \url{https://flintlib.org/doc/acb_hypgeom.html}
+  functions: \url{https://flintlib.org/doc/arb_hypgeom.html},
+  \url{https://flintlib.org/doc/acb_hypgeom.html}
 
   \acronym{NIST} Digital Library of Mathematical Functions:
   \url{https://dlmf.nist.gov/15}

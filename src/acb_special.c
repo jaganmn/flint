@@ -25,14 +25,8 @@ SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_p
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
 	for (j = 0; j < n; ++j)
-		acb_lambertw(res + j, z + j % nz, k + j % nk,
-		             flags[j % nflags], prec[j % nprec]);
+		acb_lambertw(res + j, z + j % nz, k + j % nk, flags[j % nflags], prec[j % nprec]);
 	return R_NilValue;
-}
-
-SEXP R_flint_acb_polygamma(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_prec)
-{
-	return R_flint_acb_2ary(&acb_polygamma, s_res, s_s, s_z, s_prec);
 }
 
 SEXP R_flint_acb_dirichlet_zeta(SEXP s_res, SEXP s_s, SEXP s_prec)
@@ -65,6 +59,11 @@ SEXP R_flint_acb_hypgeom_lgamma(SEXP s_res, SEXP s_z, SEXP s_prec)
 	return R_flint_acb_1ary(&acb_hypgeom_lgamma, s_res, s_z, s_prec);
 }
 
+SEXP R_flint_acb_hypgeom_polygamma(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_prec)
+{
+	return R_flint_acb_2ary(&acb_polygamma, s_res, s_s, s_z, s_prec);
+}
+
 SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z, SEXP s_flags, SEXP s_prec)
 {
 	if (TYPEOF(s_flags) != INTSXP)
@@ -90,7 +89,6 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z,
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
 	for (j = 0; j < n; ++j)
-		acb_hypgeom_2f1(res + j, a + j % na, b + j % nb, c + j % nc, z + j % nz,
-		                flags[j % nflags], prec[j % nprec]);
+		acb_hypgeom_2f1(res + j, a + j % na, b + j % nb, c + j % nc, z + j % nz, flags[j % nflags], prec[j % nprec]);
 	return R_NilValue;
 }
