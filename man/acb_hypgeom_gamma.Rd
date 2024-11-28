@@ -14,10 +14,10 @@
   \eqn{z = 0, -1, \ldots}.
 }
 \usage{
-acb_hypgeom_gamma(z, prec = 53L)
-acb_hypgeom_rgamma(z, prec = 53L)
-acb_hypgeom_lgamma(z, prec = 53L)
-acb_polygamma(s = 0, z, prec = 53L)
+acb_hypgeom_gamma(z, prec = flintPrec())
+acb_hypgeom_rgamma(z, prec = flintPrec())
+acb_hypgeom_lgamma(z, prec = flintPrec())
+acb_polygamma(s = 0, z, prec = flintPrec())
 }
 \arguments{
   \item{z, s}{

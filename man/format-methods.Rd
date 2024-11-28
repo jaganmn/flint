@@ -18,10 +18,14 @@
 \S4method{format}{ulong}(x, base = 10L, \dots)
 \S4method{format}{fmpz}(x, base = 10L, \dots)
 \S4method{format}{fmpq}(x, base = 10L, \dots)
-\S4method{format}{arf}(x, base = 10L, digits = NULL, sep = NULL, rnd = "N", \dots)
-\S4method{format}{mag}(x, base = 10L, digits = NULL, sep = NULL, rnd = "U", \dots)
-\S4method{format}{arb}(x, base = 10L, digits = NULL, sep = NULL, rnd = c("N", "U"), \dots)
-\S4method{format}{acb}(x, base = 10L, digits = NULL, sep = NULL, rnd = c("N", "U"), \dots)
+\S4method{format}{arf}(x, base = 10L, digits = NULL, sep = NULL,
+       rnd = flintRnd()["signed"], \dots)
+\S4method{format}{mag}(x, base = 10L, digits = NULL, sep = NULL,
+       rnd = flintRnd()["unsigned"], \dots)
+\S4method{format}{arb}(x, base = 10L, digits = NULL, sep = NULL,
+       rnd = flintRnd(), \dots)
+\S4method{format}{acb}(x, base = 10L, digits = NULL, sep = NULL,
+       rnd = flintRnd(), \dots)
 }
 \arguments{
   \item{x}{
@@ -46,13 +50,11 @@
     other bases.}
   \item{rnd}{
     a non-empty character string whose first character indicates a
-    rounding mode.  Valid characters are \samp{[Uu]} (towards positive
-    infinity), \samp{[Dd]} (towards negative infinity), \samp{[Zz]}
-    (towards zero), \samp{[Aa]} (away from zero), and \samp{[Nn]} (to
-    nearest, with precedence to even significands).  Methods for
-    \code{\linkS4class{arb}} and \code{\linkS4class{acb}} require
-    \code{rnd} of length 2, specifying rounding modes separately for
-    midpoints and radii.}
+    rounding mode.  Methods for \code{\linkS4class{arb}} and
+    \code{\linkS4class{acb}} require \code{rnd} of length 2, specifying
+    rounding modes separately for midpoints and radii.  See
+    \code{\link{flintRnd}} for information about valid character
+    strings.}
   \item{\dots}{
      further optional arguments, though these are currently unused.}
 }

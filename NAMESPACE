@@ -10,6 +10,8 @@ exportMethods("+", "-", "^", "[", "[<-", "[[", "[[<-", Complex, Math,
               coerce, format, initialize, length, log, print, show)
 export(flintBits,
        flintVersion,
+       flintPrec,
+       flintRnd,
        acb_lambertw,
        acb_polygamma,
        acb_dirichlet_zeta,

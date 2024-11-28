@@ -22,7 +22,8 @@ setAs("arf", "narf",
 
 setMethod("format",
           c(x = "arf"),
-          function (x, base = 10L, digits = NULL, sep = NULL, rnd = "N", ...) {
+          function (x, base = 10L, digits = NULL, sep = NULL,
+                    rnd = flintRnd()["signed"], ...) {
               if (is.null(digits))
                   digits <- getOption("digits")
               if (is.null(sep))

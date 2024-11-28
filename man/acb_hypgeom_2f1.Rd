@@ -11,7 +11,7 @@
   \eqn{{}_{2}F_{1}(a, b, c, z) / \Gamma(c)}{F(a, b, c, z)/Gamma(c)}.
 }
 \usage{
-acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = 53L)
+acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = flintPrec())
 }
 \arguments{
   \item{a, b, c, z}{

@@ -27,7 +27,6 @@
 \alias{coerce,ulong,nulong-method}
 \alias{initialize,slong-method}
 \alias{initialize,ulong-method}
-\alias{flintBits}
 \title{Classes of Vectors of Signed or Unsigned Integers}
 \docType{class}
 \description{
@@ -35,7 +34,7 @@
   \code{\linkS4class{flint}}.  They represent vectors of signed and
   unsigned integers, respectively.  The integer size is 32 or 64 bits,
   depending on the configuration of the linked \acronym{FLINT} library.
-  The number of bits is given by \code{flintBits()}.
+  The number of bits is given by \code{\link{flintBits}()}.
 
   Classes \code{nslong} and \code{nulong} extend virtual class
   \code{\linkS4class{nflint}} and basic vector class
@@ -84,7 +83,7 @@
       \proglang{C} type, in particular if any \code{x[i]} is \code{NaN}.
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
-      \code{flintBits()}.}
+      \code{\link{flintBits}()}.}
     \item{\code{coerce}}{
       \code{signature(from = "vector", to = "slong")}:\cr
       \code{signature(from = "nslong", to = "slong")}:\cr
@@ -117,5 +116,4 @@ showClass("slong")
 showClass("ulong")
 showClass("nslong")
 showClass("nulong")
-flintBits()
 }

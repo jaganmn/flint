@@ -15,9 +15,9 @@
   for restrictions on \eqn{s} and \eqn{a}.
 }
 \usage{
-acb_dirichlet_zeta(s, prec = 53L)
-acb_dirichlet_hurwitz(s, a = 1, prec = 53L)
-acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = 53L)
+acb_dirichlet_zeta(s, prec = flintPrec())
+acb_dirichlet_hurwitz(s, a = 1, prec = flintPrec())
+acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
 }
 \arguments{
   \item{z, s, a}{

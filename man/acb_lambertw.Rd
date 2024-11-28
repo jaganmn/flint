@@ -7,7 +7,7 @@
   equation \eqn{w e^{w} = z}{w * exp(w) = z}.
 }
 \usage{
-acb_lambertw(z, k = 0L, flags = 0L, prec = 53L)
+acb_lambertw(z, k = 0L, flags = 0L, prec = flintPrec())
 }
 \arguments{
   \item{z}{

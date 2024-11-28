@@ -42,3 +42,23 @@ function (object)
 flintTriple <-
 function (object)
     .Call(R_flint_triple, object)
+
+flintPrec <-
+function (prec = NULL) {
+    default <- .Machine[["double.digits"]]
+    if (is.null(prec))
+        getOption("flint.prec", default)
+    else if (is.null(oop <- options(flint.prec = prec)[["flint.prec"]]))
+        default
+    else oop
+}
+
+flintRnd <-
+function (rnd = NULL) {
+    default <- c(signed = "N", unsigned = "U")
+    if (is.null(rnd))
+        getOption("flint.rnd", default)
+    else if (is.null(oop <- options(flint.rnd = rnd)[["flint.rnd"]]))
+        default
+    else oop
+}

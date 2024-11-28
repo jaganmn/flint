@@ -22,7 +22,8 @@ setAs("mag", "nmag",
 
 setMethod("format",
           c(x = "mag"),
-          function (x, base = 10L, digits = NULL, sep = NULL, rnd = "U", ...) {
+          function (x, base = 10L, digits = NULL, sep = NULL,
+                    rnd = flintRnd()["unsigned"], ...) {
               if (is.null(digits))
                   digits <- getOption("digits")
               if (is.null(sep))
