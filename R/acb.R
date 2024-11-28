@@ -35,7 +35,7 @@ Imag <- function (z) .Call(R_flint_part, z, 1L)
 setMethod("format",
           c(x = "acb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = c("N", "A"), ...)
+                    rnd = c("N", "U"), ...)
               paste0(format(Real(x), base = base, digits = digits, sep = sep,
                             rnd = rnd, ...),
                      "+",

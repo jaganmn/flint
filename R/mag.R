@@ -22,7 +22,7 @@ setAs("mag", "nmag",
 
 setMethod("format",
           c(x = "mag"),
-          function (x, base = 10L, digits = NULL, sep = NULL, rnd = "A", ...) {
+          function (x, base = 10L, digits = NULL, sep = NULL, rnd = "U", ...) {
               if (is.null(digits))
                   digits <- getOption("digits")
               if (is.null(sep))

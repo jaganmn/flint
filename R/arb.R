@@ -30,7 +30,7 @@ Rad <- function (x) .Call(R_flint_part, x, 1L)
 setMethod("format",
           c(x = "arb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = c("N", "A"), ...)
+                    rnd = c("N", "U"), ...)
               paste0("(",
                      format(Mid(x), base = base, digits = digits, sep = sep,
                             rnd = rnd[[1L]], ...),
