@@ -22,7 +22,9 @@ acb_lambertw(z, k = 0L, flags = 0L, prec = flintPrec())
   \item{flags}{
     for \code{arb_lambertw}:\cr
     an integer vector indicating which of the index 0 and index -1
-    branches is computed (0 means index 0, 1 means index -1).\cr
+    branches is computed (\code{0} means index 0, \code{1} means index
+    -1).\cr
+    \cr
     for \code{acb_lambertw}:\cr
     an integer vector indicating how branch cuts are defined.
     Non-zero values are non-standard; see the first reference.}
