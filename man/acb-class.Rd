@@ -1,13 +1,20 @@
 \name{acb-class}
 \alias{acb-class}
 \alias{nacb-class}
+\alias{+,acb,missing-method}
+\alias{-,acb,missing-method}
 \alias{Complex,acb-method}
+\alias{Math,acb-method}
+\alias{Math2,acb-method}
+\alias{Ops,acb,acb-method}
+\alias{Summary,acb-method}
 \alias{as.vector,acb-method}
 \alias{coerce,vector,acb-method}
 \alias{coerce,nacb,acb-method}
 \alias{coerce,acb,nacb-method}
 \alias{initialize,acb-method}
 \alias{length,nacb-method}
+\alias{log,acb-method}
 \title{Class of Complex Numbers with Error Bounds}
 \docType{class}
 \description{

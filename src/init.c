@@ -113,6 +113,8 @@ SEXP R_flint_arb_ops1(SEXP, SEXP, SEXP);
 SEXP R_flint_acb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_nacb(SEXP, SEXP);
 SEXP R_flint_acb_vector(SEXP, SEXP);
+SEXP R_flint_acb_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_acb_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_acb_lambertw(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_polygamma(SEXP, SEXP, SEXP, SEXP);
@@ -177,6 +179,8 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_acb_nacb, 2),
 	CALL_ENTRY(R_flint_acb_vector, 2),
 	CALL_ENTRY(R_flint_acb_lambertw, 5),
+	CALL_ENTRY(R_flint_acb_ops2, 3),
+	CALL_ENTRY(R_flint_acb_ops1, 3),
 	CALL_ENTRY(R_flint_acb_polygamma, 4),
 	CALL_ENTRY(R_flint_acb_dirichlet_zeta, 3),
 	CALL_ENTRY(R_flint_acb_dirichlet_hurwitz, 4),

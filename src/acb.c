@@ -312,3 +312,422 @@ SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
 	UNPROTECT(1);
 	return to;
 }
+
+SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
+{
+	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
+	unsigned long long int
+		nx = R_flint_get_length(s_x),
+		ny = R_flint_get_length(s_y);
+	acb_srcptr
+		x = (acb_ptr) R_flint_get_pointer(s_x),
+		y = (acb_ptr) R_flint_get_pointer(s_y);
+	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
+		Rf_warning(_("longer object length is not a multiple of shorter object length"));
+	unsigned long long int j, n = RECYCLE2(nx, ny);
+	slong prec = (slong) asPrec(R_NilValue, __func__);
+	switch (op) {
+	case  1: /*   "+" */
+	case  2: /*   "-" */
+	case  3: /*   "*" */
+	case  6: /*   "/" */
+	case  7: /*   "/" */
+	{
+		SEXP ans = newObject("acb");
+		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
+		switch (op) {
+		case 1: /*   "+" */
+			for (j = 0; j < n; ++j)
+				acb_add(z + j, x + j % nx, y + j % ny, prec);
+			break;
+		case 2: /*   "-" */
+			for (j = 0; j < n; ++j)
+				acb_sub(z + j, x + j % nx, y + j % ny, prec);
+			break;
+		case 3: /*   "*" */
+			for (j = 0; j < n; ++j)
+				acb_mul(z + j, x + j % nx, y + j % ny, prec);
+			break;
+		case 6: /*   "/" */
+			for (j = 0; j < n; ++j)
+				acb_div(z + j, x + j % nx, y + j % ny, prec);
+			break;
+		case 7: /*   "^" */
+			for (j = 0; j < n; ++j)
+				acb_pow(z + j, x + j % nx, y + j % ny, prec);
+			break;
+		}
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
+		return ans;
+	}
+	case  8: /*  "==" */
+	case  9: /*  "!=" */
+	case 14: /*   "&" */
+	case 15: /*   "|" */
+	{
+		ERROR_TOO_LONG(n);
+		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		int *z = LOGICAL(ans);
+		switch (op) {
+		case  8: /*  "==" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
+				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				? NA_LOGICAL
+				: acb_eq(x + j % nx, y + j % ny) != 0;
+			break;
+		case  9: /*  "!=" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
+				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				? NA_LOGICAL
+				: acb_ne(x + j % nx, y + j % ny) != 0;
+			break;
+		case 14: /*   "&" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+				((!arf_is_nan(arb_midref(acb_realref(x + j % nx))) &&
+				  !arf_is_nan(arb_midref(acb_imagref(x + j % nx))) &&
+				  acb_contains_zero(x + j % nx)) ||
+				 (!arf_is_nan(arb_midref(acb_realref(y + j % ny))) &&
+				  !arf_is_nan(arb_midref(acb_imagref(y + j % ny))) &&
+				  acb_contains_zero(y + j % ny)))
+				? 0
+				:
+				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
+				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				? NA_LOGICAL
+				: 1;
+			break;
+		case 15: /*   "|" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+				((!arf_is_nan(arb_midref(acb_realref(x + j % nx))) &&
+				  !arf_is_nan(arb_midref(acb_imagref(x + j % nx))) &&
+				  !acb_contains_zero(x + j % nx)) &&
+				 (!arf_is_nan(arb_midref(acb_realref(y + j % ny))) &&
+				  !arf_is_nan(arb_midref(acb_imagref(y + j % ny))) &&
+				  !acb_contains_zero(y + j % ny)))
+				? 1
+				:
+				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
+				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
+				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				? NA_LOGICAL
+				: 0;
+			break;
+		}
+		return ans;
+	}
+	default:
+		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		         CHAR(STRING_ELT(s_op, 0)), "acb");
+		return R_NilValue;
+	}
+}
+
+SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
+{
+	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
+	unsigned long long int j, n = R_flint_get_length(s_x);
+	acb_srcptr x = (acb_ptr) R_flint_get_pointer(s_x);
+	slong prec = (slong) asPrec(R_NilValue, __func__);
+	switch (op) {
+	case  1: /*        "+" */
+	case  2: /*        "-" */
+	case  4: /*     "sign" */
+	case  5: /*     "sqrt" */
+	case 11: /*   "cumsum" */
+	case 12: /*  "cumprod" */
+	case 13: /*      "log" */
+	case 14: /*    "log10" */
+	case 15: /*     "log2" */
+	case 16: /*    "log1p" */
+	case 17: /*      "exp" */
+	case 18: /*    "expm1" */
+	case 19: /*      "cos" */
+	case 20: /*    "cospi" */
+	case 21: /*     "acos" */
+	case 22: /*     "cosh" */
+	case 23: /*    "acosh" */
+	case 24: /*      "sin" */
+	case 25: /*    "sinpi" */
+	case 26: /*     "asin" */
+	case 27: /*     "sinh" */
+	case 28: /*    "asinh" */
+	case 29: /*      "tan" */
+	case 30: /*    "tanpi" */
+	case 31: /*     "atan" */
+	case 32: /*     "tanh" */
+	case 33: /*    "atanh" */
+	case 34: /*    "gamma" */
+	case 35: /*   "lgamma" */
+	case 36: /*  "digamma" */
+	case 37: /* "trigamma" */
+#if 0 /* TODO */
+	case 38: /*    "round" */
+	case 39: /*   "signif" */
+#endif
+	case 47: /*     "Conj" */
+	{
+		SEXP ans = newObject("acb");
+		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
+		switch (op) {
+		case  1: /*        "+" */
+			for (j = 0; j < n; ++j)
+				acb_set(z + j, x + j);
+			break;
+		case  2: /*        "-" */
+			for (j = 0; j < n; ++j)
+				acb_neg(z + j, x + j);
+			break;
+		case  4: /*     "sign" */
+			for (j = 0; j < n; ++j)
+				acb_sgn(z + j, x + j, prec);
+			break;
+		case  5: /*     "sqrt" */
+			for (j = 0; j < n; ++j)
+				acb_sqrt(z + j, x + j, prec);
+			break;
+		case 11: /*   "cumsum" */
+			if (n) {
+			acb_set(z, x);
+			for (j = 1; j < n; ++j)
+				acb_add(z + j, z + j - 1, x + j, prec);
+			}
+			break;
+		case 12: /*  "cumprod" */
+			if (n)
+			acb_set(z, x);
+			for (j = 1; j < n; ++j)
+				acb_mul(z + j, z + j - 1, x + j, prec);
+			break;
+		case 13: /*      "log" */
+		case 14: /*    "log10" */
+		case 15: /*     "log2" */
+			for (j = 0; j < n; ++j)
+				acb_log(z + j, x + j, prec);
+			if (op != 13 || s_dots != R_NilValue) {
+			acb_t tmp;
+			acb_init(tmp);
+			if (op != 13)
+				acb_set_ui(tmp, (op == 14) ? 10 : 2);
+			else {
+				acb_srcptr base = (acb_ptr) R_flint_get_pointer(s_dots);
+				acb_set(tmp, base);
+			}
+			acb_log(tmp, tmp, prec);
+			for (j = 0; j < n; ++j)
+				acb_div(z + j, z + j, tmp, prec);
+			acb_clear(tmp);
+			}
+			break;
+		case 16: /*    "log1p" */
+			for (j = 0; j < n; ++j)
+				acb_log1p(z + j, x + j, prec);
+			break;
+		case 17: /*      "exp" */
+			for (j = 0; j < n; ++j)
+				acb_exp(z + j, x + j, prec);
+			break;
+		case 18: /*    "expm1" */
+			for (j = 0; j < n; ++j)
+				acb_expm1(z + j, x + j, prec);
+			break;
+		case 19: /*      "cos" */
+			for (j = 0; j < n; ++j)
+				acb_cos(z + j, x + j, prec);
+			break;
+		case 20: /*    "cospi" */
+			for (j = 0; j < n; ++j)
+				acb_cos_pi(z + j, x + j, prec);
+			break;
+		case 21: /*     "acos" */
+			for (j = 0; j < n; ++j)
+				acb_acos(z + j, x + j, prec);
+			break;
+		case 22: /*     "cosh" */
+			for (j = 0; j < n; ++j)
+				acb_cosh(z + j, x + j, prec);
+			break;
+		case 23: /*    "acosh" */
+			for (j = 0; j < n; ++j)
+				acb_acosh(z + j, x + j, prec);
+			break;
+		case 24: /*      "sin" */
+			for (j = 0; j < n; ++j)
+				acb_sin(z + j, x + j, prec);
+			break;
+		case 25: /*    "sinpi" */
+			for (j = 0; j < n; ++j)
+				acb_sin_pi(z + j, x + j, prec);
+			break;
+		case 26: /*     "asin" */
+			for (j = 0; j < n; ++j)
+				acb_asin(z + j, x + j, prec);
+			break;
+		case 27: /*     "sinh" */
+			for (j = 0; j < n; ++j)
+				acb_sinh(z + j, x + j, prec);
+			break;
+		case 28: /*    "asinh" */
+			for (j = 0; j < n; ++j)
+				acb_asinh(z + j, x + j, prec);
+			break;
+		case 29: /*      "tan" */
+			for (j = 0; j < n; ++j)
+				acb_tan(z + j, x + j, prec);
+			break;
+		case 30: /*    "tanpi" */
+			for (j = 0; j < n; ++j)
+				acb_tan_pi(z + j, x + j, prec);
+			break;
+		case 31: /*     "atan" */
+			for (j = 0; j < n; ++j)
+				acb_atan(z + j, x + j, prec);
+			break;
+		case 32: /*     "tanh" */
+			for (j = 0; j < n; ++j)
+				acb_tanh(z + j, x + j, prec);
+			break;
+		case 33: /*    "atanh" */
+			for (j = 0; j < n; ++j)
+				acb_atanh(z + j, x + j, prec);
+			break;
+		case 34: /*    "gamma" */
+			for (j = 0; j < n; ++j)
+				acb_gamma(z + j, x + j, prec);
+			break;
+		case 35: /*   "lgamma" */
+			for (j = 0; j < n; ++j)
+				acb_lgamma(z + j, x + j, prec);
+			break;
+		case 36: /*  "digamma" */
+			for (j = 0; j < n; ++j)
+				acb_digamma(z + j, x + j, prec);
+			break;
+		case 37: /* "trigamma" */
+		{
+			acb_t tmp;
+			acb_init(tmp);
+			acb_set_si(tmp, 1);
+			for (j = 0; j < n; ++j)
+				acb_polygamma(z + j, tmp, x + j, prec);
+			acb_clear(tmp);
+			break;
+		}
+#if 0 /* TODO */
+		case 38: /*    "round" */
+			for (j = 0; j < n; ++j)
+				;
+			break;
+		case 39: /*   "signif" */
+			for (j = 0; j < n; ++j)
+				;
+			break;
+#endif
+		}
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
+		return ans;
+	}
+	case 43: /*     "sum" */
+	case 44: /*    "prod" */
+	{
+		SEXP ans = newObject("acb");
+		size_t s = (op == 42) ? 2 : 1;
+		acb_ptr z = (acb_ptr) flint_calloc(s, sizeof(acb_t));
+		int narm = LOGICAL_RO(s_dots)[0];
+		switch (op) {
+		case 43: /*     "sum" */
+			acb_zero(z);
+			for (j = 0; j < n; ++j)
+				if (!(narm &&
+					  (arf_is_nan(arb_midref(acb_realref(x + j))) ||
+					   arf_is_nan(arb_midref(acb_imagref(x + j))))))
+				acb_add(z, z, x + j, prec);
+			break;
+		case 44: /*    "prod" */
+			acb_one(z);
+			for (j = 0; j < n; ++j)
+				if (!(narm &&
+					  (arf_is_nan(arb_midref(acb_realref(x + j))) ||
+					   arf_is_nan(arb_midref(acb_imagref(x + j))))))
+				acb_mul(z, z, x + j, prec);
+			break;
+		}
+		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
+		return ans;
+	}
+	case 45: /*     "any" */
+	case 46: /*     "all" */
+	{
+		SEXP ans = Rf_allocVector(LGLSXP, 1);
+		int *z = LOGICAL(ans);
+		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
+		switch (op) {
+		case 45: /*     "any" */
+			for (j = 0; j < n; ++j)
+				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
+					arf_is_nan(arb_midref(acb_imagref(x + j))))
+					anyna = 1;
+				else if (!acb_contains_zero(x + j))
+					break;
+			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
+			break;
+		case 46: /*     "all" */
+			for (j = 0; j < n; ++j)
+				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
+					arf_is_nan(arb_midref(acb_imagref(x + j))))
+					anyna = 1;
+				else if (acb_contains_zero(x + j))
+					break;
+			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
+			break;
+		}
+		return ans;
+	}
+	case  3: /*      "abs" */
+	case 48: /*       "Re" */
+	case 49: /*       "Im" */
+	case 50: /*      "Mod" */
+	case 51: /*      "Arg" */
+	{
+		SEXP ans = newObject("arb");
+		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+		switch (op) {
+		case 48: /*       "Re" */
+			for (j = 0; j < n; ++j)
+				arb_set(z + j, acb_realref(x + j));
+			break;
+		case 49: /*       "Im" */
+			for (j = 0; j < n; ++j)
+				arb_set(z + j, acb_imagref(x + j));
+			break;
+		case  3: /*      "abs" */
+		case 50: /*      "Mod" */
+			for (j = 0; j < n; ++j)
+				acb_abs(z + j, x + j, prec);
+			break;
+		case 51: /*      "Arg" */
+			for (j = 0; j < n; ++j)
+				acb_arg(z + j, x + j, prec);
+			break;
+		}
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
+		return ans;
+	}
+	default:
+		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		         CHAR(STRING_ELT(s_op, 0)), "acb");
+		return R_NilValue;
+	}
+}
