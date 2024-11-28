@@ -162,6 +162,7 @@ SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
 unsigned long long int asLength(SEXP, const char *);
+int asPrec(SEXP, const char *);
 int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
 const char *asSep(SEXP, const char *);

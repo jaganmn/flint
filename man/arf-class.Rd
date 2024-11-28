@@ -1,6 +1,13 @@
 \name{arf-class}
 \alias{arf-class}
 \alias{narf-class}
+\alias{+,arf,missing-method}
+\alias{-,arf,missing-method}
+\alias{Complex,arf-method}
+\alias{Math,arf-method}
+\alias{Math2,arf-method}
+\alias{Ops,arf,arf-method}
+\alias{Summary,arf-method}
 \alias{as.vector,arf-method}
 \alias{coerce,vector,arf-method}
 \alias{coerce,narf,arf-method}

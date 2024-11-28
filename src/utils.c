@@ -61,7 +61,7 @@ unsigned long long int asLength(SEXP length, const char *where)
 	case INTSXP:
 	{
 		const int *s = INTEGER_RO(length);
-		if (XLENGTH(length) >= 1 && s[0] != NA_INTEGER && s[0] >= 0)
+		if (XLENGTH(length) >= 1 && s[0] != NA_INTEGER && s[0] > -1)
 			return (unsigned long long int) s[0];
 		break;
 	}
@@ -75,6 +75,36 @@ unsigned long long int asLength(SEXP length, const char *where)
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "length", where);
 	return 0ull;
+}
+
+int asPrec(SEXP prec, const char *where)
+{
+	if (prec == R_NilValue) {
+		static SEXP tag = NULL;
+		if (!tag)
+			tag = Rf_install("flint.prec");
+		prec = Rf_GetOption1(tag);
+		if (prec == R_NilValue)
+			return DBL_MANT_DIG;
+	}
+	switch (TYPEOF(prec)) {
+	case INTSXP:
+	{
+		const int *s = INTEGER_RO(prec);
+		if (XLENGTH(prec) >= 1 && s[0] >= 1)
+			return s[0];
+		break;
+	}
+	case REALSXP:
+	{
+		const double *s = REAL_RO(prec);
+		if (XLENGTH(prec) >= 1 && !ISNAN(s[0]) && s[0] >= 1.0 && s[0] < 0x1.0p+31)
+			return (int) s[0];
+		break;
+	}
+	}
+	Rf_error(_("invalid '%s' in '%s'"), "prec", where);
+	return 0;
 }
 
 int asBase(SEXP base, const char *where)
@@ -105,14 +135,14 @@ size_t asDigits(SEXP digits, const char *where)
 	case INTSXP:
 	{
 		const int *s = INTEGER_RO(digits);
-		if (XLENGTH(digits) >= 1 && s[0] >= 0)
+		if (XLENGTH(digits) >= 1 && s[0] > -1)
 			return (size_t) s[0];
 		break;
 	}
 	case REALSXP:
 	{
 		const double *s = REAL_RO(digits);
-		if (XLENGTH(digits) >= 1 && s[0] >= 0.0 && s[0] < 0x1.0p+31)
+		if (XLENGTH(digits) >= 1 && !ISNAN(s[0]) && s[0] > -1.0 && s[0] < 0x1.0p+31)
 			return (size_t) s[0];
 		break;
 	}
