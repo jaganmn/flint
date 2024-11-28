@@ -1,12 +1,20 @@
 \name{arb-class}
 \alias{arb-class}
 \alias{narb-class}
+\alias{+,arb,missing-method}
+\alias{-,arb,missing-method}
+\alias{Complex,arb-method}
+\alias{Math,arb-method}
+\alias{Math2,arb-method}
+\alias{Ops,arb,arb-method}
+\alias{Summary,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,vector,arb-method}
 \alias{coerce,narb,arb-method}
 \alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}
 \alias{length,narb-method}
+\alias{log,arb-method}
 \title{Class of Real Numbers with Error Bounds}
 \docType{class}
 \description{
