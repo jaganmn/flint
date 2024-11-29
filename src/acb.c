@@ -372,56 +372,40 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case  8: /*  "==" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
-				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				(ACB_CONTAINS_NAN(x + j % nx) ||
+				 ACB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: acb_eq(x + j % nx, y + j % ny) != 0;
 			break;
 		case  9: /*  "!=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
-				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				(ACB_CONTAINS_NAN(x + j % nx) ||
+				 ACB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: acb_ne(x + j % nx, y + j % ny) != 0;
 			break;
 		case 14: /*   "&" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				((!arf_is_nan(arb_midref(acb_realref(x + j % nx))) &&
-				  !arf_is_nan(arb_midref(acb_imagref(x + j % nx))) &&
-				  acb_contains_zero(x + j % nx)) ||
-				 (!arf_is_nan(arb_midref(acb_realref(y + j % ny))) &&
-				  !arf_is_nan(arb_midref(acb_imagref(y + j % ny))) &&
-				  acb_contains_zero(y + j % ny)))
+				(ACB_CONTAINS_ZERO(x + j % nx) ||
+				 ACB_CONTAINS_ZERO(y + j % ny))
 				? 0
 				:
-				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
-				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				(ACB_CONTAINS_NAN(x + j % nx) ||
+				 ACB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				((!arf_is_nan(arb_midref(acb_realref(x + j % nx))) &&
-				  !arf_is_nan(arb_midref(acb_imagref(x + j % nx))) &&
-				  !acb_contains_zero(x + j % nx)) &&
-				 (!arf_is_nan(arb_midref(acb_realref(y + j % ny))) &&
-				  !arf_is_nan(arb_midref(acb_imagref(y + j % ny))) &&
-				  !acb_contains_zero(y + j % ny)))
+				(ACB_CONTAINS_NONZERO(x + j % nx) ||
+				 ACB_CONTAINS_NONZERO(y + j % ny))
 				? 1
 				:
-				(arf_is_nan(arb_midref(acb_realref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_imagref(x + j % nx))) ||
-				 arf_is_nan(arb_midref(acb_realref(y + j % ny))) ||
-				 arf_is_nan(arb_midref(acb_imagref(y + j % ny))))
+				(ACB_CONTAINS_NAN(x + j % nx) ||
+				 ACB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
@@ -650,17 +634,13 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 43: /*     "sum" */
 			acb_zero(z);
 			for (j = 0; j < n; ++j)
-				if (!(narm &&
-					  (arf_is_nan(arb_midref(acb_realref(x + j))) ||
-					   arf_is_nan(arb_midref(acb_imagref(x + j))))))
+				if (!(narm && ACB_CONTAINS_NAN(x + j)))
 				acb_add(z, z, x + j, prec);
 			break;
 		case 44: /*    "prod" */
 			acb_one(z);
 			for (j = 0; j < n; ++j)
-				if (!(narm &&
-					  (arf_is_nan(arb_midref(acb_realref(x + j))) ||
-					   arf_is_nan(arb_midref(acb_imagref(x + j))))))
+				if (!(narm && ACB_CONTAINS_NAN(x + j)))
 				acb_mul(z, z, x + j, prec);
 			break;
 		}
@@ -675,20 +655,24 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
 		switch (op) {
 		case 45: /*     "any" */
+			/* Return 1 if and only if any does not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
 					arf_is_nan(arb_midref(acb_imagref(x + j))))
 					anyna = 1;
-				else if (!acb_contains_zero(x + j))
+				else if (arf_cmpabs_mag(arb_midref(acb_realref(x + j)), arb_radref(acb_realref(x + j))) >  0 ||
+						 arf_cmpabs_mag(arb_midref(acb_imagref(x + j)), arb_radref(acb_imagref(x + j))) >  0)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
 		case 46: /*     "all" */
+			/* Return 1 if and only if all do   not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
 					arf_is_nan(arb_midref(acb_imagref(x + j))))
 					anyna = 1;
-				else if (acb_contains_zero(x + j))
+				else if (arf_cmpabs_mag(arb_midref(acb_realref(x + j)), arb_radref(acb_realref(x + j))) <= 0 ||
+						 arf_cmpabs_mag(arb_midref(acb_imagref(x + j)), arb_radref(acb_imagref(x + j))) <= 0)
 					break;
 			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
 			break;

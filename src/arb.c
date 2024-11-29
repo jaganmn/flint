@@ -254,76 +254,72 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case  8: /*  "==" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: arb_eq(x + j % nx, y + j % ny) != 0;
 			break;
 		case  9: /*  "!=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: arb_ne(x + j % nx, y + j % ny) != 0;
 			break;
 		case 10: /*   "<" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: arb_lt(x + j % nx, y + j % ny) != 0;
 			break;
 		case 11: /*   ">" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: arb_gt(x + j % nx, y + j % ny) != 0;
 			break;
 		case 12: /*  "<=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: arb_le(x + j % nx, y + j % ny) != 0;
 			break;
 		case 13: /*  ">=" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: arb_ge(x + j % nx, y + j % ny) != 0;
 			break;
 		case 14: /*   "&" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				((!arf_is_nan(arb_midref(x + j % nx)) &&
-				  arb_contains_zero(x + j % nx)) ||
-				 (!arf_is_nan(arb_midref(y + j % ny)) &&
-				  arb_contains_zero(y + j % ny)))
+				(ARB_CONTAINS_ZERO(x + j % nx) ||
+				 ARB_CONTAINS_ZERO(y + j % ny))
 				? 0
 				:
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				((!arf_is_nan(arb_midref(x + j % nx)) &&
-				  !arb_contains_zero(x + j % nx)) &&
-				 (!arf_is_nan(arb_midref(y + j % ny)) &&
-				  !arb_contains_zero(y + j % ny)))
+				(ARB_CONTAINS_NONZERO(x + j % nx) ||
+				 ARB_CONTAINS_NONZERO(y + j % ny))
 				? 1
 				:
-				(arf_is_nan(arb_midref(x + j % nx)) ||
-				 arf_is_nan(arb_midref(y + j % ny)))
+				(ARB_CONTAINS_NAN(x + j % nx) ||
+				 ARB_CONTAINS_NAN(y + j % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
@@ -424,7 +420,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case  9: /*   "cummin" */
 			if (n) {
 			arb_srcptr last = x;
-			for (j = 0; j < n && !arf_is_nan(arb_midref(x + j)); ++j)
+			for (j = 0; j < n && !ARB_CONTAINS_NAN(x + j); ++j)
 				arb_min(z + j, last, x + j, prec);
 			for (; j < n; ++j)
 				arb_indeterminate(z + j);
@@ -433,7 +429,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 10: /*   "cummax" */
 			if (n) {
 			arb_srcptr last = x;
-			for (j = 0; j < n && !arf_is_nan(arb_midref(x + j)); ++j)
+			for (j = 0; j < n && !ARB_CONTAINS_NAN(x + j); ++j)
 				arb_max(z + j, last, x + j, prec);
 			for (; j < n; ++j)
 				arb_indeterminate(z + j);
@@ -602,7 +598,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 40: /*     "min" */
 			arb_pos_inf(z);
 			for (j = 0; j < n; ++j)
-				if (!arf_is_nan(arb_midref(x + j)))
+				if (!ARB_CONTAINS_NAN(x + j))
 					arb_min(z, z, x + j, prec);
 				else if (!narm) {
 					arb_indeterminate(z);
@@ -612,7 +608,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 41: /*     "max" */
 			arb_neg_inf(z);
 			for (j = 0; j < n; ++j)
-				if (!arf_is_nan(arb_midref(x + j)))
+				if (!ARB_CONTAINS_NAN(x + j))
 					arb_max(z, z, x + j, prec);
 				else if (!narm) {
 					arb_indeterminate(z);
@@ -623,7 +619,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arb_pos_inf(z);
 			arb_neg_inf(z + 1);
 			for (j = 0; j < n; ++j)
-				if (!arf_is_nan(arb_midref(x + j))) {
+				if (!ARB_CONTAINS_NAN(x + j)) {
 					arb_min(z, z, x + j, prec);
 					arb_max(z + 1, z + 1, x + j, prec);
 				} else if (!narm) {
@@ -635,13 +631,13 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 43: /*     "sum" */
 			arb_zero(z);
 			for (j = 0; j < n; ++j)
-				if (!(narm && arf_is_nan(arb_midref(x + j))))
+				if (!(narm && ARB_CONTAINS_NAN(x + j)))
 				arb_add(z, z, x + j, prec);
 			break;
 		case 44: /*    "prod" */
 			arb_one(z);
 			for (j = 0; j < n; ++j)
-				if (!(narm && arf_is_nan(arb_midref(x + j))))
+				if (!(narm && ARB_CONTAINS_NAN(x + j)))
 				arb_mul(z, z, x + j, prec);
 			break;
 		}
@@ -656,18 +652,20 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
 		switch (op) {
 		case 45: /*     "any" */
+			/* Return 1 if and only if any does not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(x + j)))
 					anyna = 1;
-				else if (!arb_contains_zero(x + j))
+				else if (arf_cmpabs_mag(arb_midref(x + j), arb_radref(x + j)) >  0)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
 		case 46: /*     "all" */
+			/* Return 1 if and only if all do   not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(x + j)))
 					anyna = 1;
-				else if (arb_contains_zero(x + j))
+				else if (arf_cmpabs_mag(arb_midref(x + j), arb_radref(x + j)) <= 0)
 					break;
 			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
 			break;

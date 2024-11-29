@@ -98,6 +98,26 @@ do { \
 		         (long long int) R_XLEN_T_MAX); \
 } while (0)
 
+#define ARB_CONTAINS_NAN(x) \
+	(arf_is_nan(arb_midref(x)))
+#define ACB_CONTAINS_NAN(x) \
+	(ARB_CONTAINS_NAN(acb_realref(x)) || \
+	 ARB_CONTAINS_NAN(acb_imagref(x)))
+
+#define ARB_CONTAINS_ZERO(x) \
+	(!arf_is_nan(arb_midref(x)) && \
+	 arf_cmpabs_mag(arb_midref(x), arb_radref(x)) <= 0)
+#define ACB_CONTAINS_ZERO(x) \
+	(ARB_CONTAINS_ZERO(acb_realref(x)) && \
+	 ARB_CONTAINS_ZERO(acb_imagref(x)))
+
+#define ARB_CONTAINS_NONZERO(x) \
+	(!mag_is_zero(arb_radref(x)) || \
+	 !(arf_is_nan(arb_midref(x)) || arf_is_zero(arb_midref(x))))
+#define ACB_CONTAINS_NONZERO(x) \
+	(ARB_CONTAINS_NONZERO(acb_realref(x)) || \
+	 ARB_CONTAINS_NONZERO(acb_imagref(x)))
+
 #define MPFR_ERANGE_SET \
 mpfr_exp_t \
 	__emin_old = mpfr_get_emin(), __emin_new = mpfr_get_emin_min(), \
