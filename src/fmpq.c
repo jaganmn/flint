@@ -434,7 +434,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_init(r);
 			fmpz_set_si(p, 10);
 			if (digits >= 0) {
-			/* a/b ~ c/10^+digits   <=>   c ~ (a * 10^+digits)/b */
+			/* a/b ~ c/10^+digits   <=>   c ~ (a*10^+digits)/b */
 			fmpz_pow_ui(p, p, (ulong) digits);
 			for (j = 0; j < n; ++j) {
 				fmpz_mul(fmpq_numref(z + j), fmpq_numref(x + j), p);
@@ -447,7 +447,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpq_canonicalise(z + j);
 			}
 			} else {
-			/* a/b ~ c*10^-digits   <=>   c ~ a/(10^-digits * b) */
+			/* a/b ~ c*10^-digits   <=>   c ~ a/(b*10^-digits) */
 			fmpz_pow_ui(p, p, (ulong) -1 - (ulong) digits + 1);
 			for (j = 0; j < n; ++j) {
 				fmpz_set(fmpq_numref(z + j), fmpq_numref(x + j));
@@ -470,7 +470,9 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				clog;
 			if (digits <= 0)
 				digits = 1;
+			fmpq_t a;
 			fmpz_t p, q, r;
+			fmpq_init(a);
 			fmpz_init(p);
 			fmpz_init(q);
 			fmpz_init(r);
@@ -478,36 +480,51 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpq_is_zero(x + j))
 				fmpq_zero(z + j);
 				else {
-				fmpq_abs(z + j, x + j);
-				clog = fmpz_clog_ui(fmpq_numref(z + j), 10) -
-					fmpz_flog_ui(fmpq_denref(z + j), 10);
-				if (clog <= digits) {
+				fmpq_abs(a, x + j);
+				clog = fmpz_clog_ui(fmpq_numref(a), 10) -
+					fmpz_flog_ui(fmpq_denref(a), 10);
+				/* 'clog' can be off by 1: test if 10^(clog-1) < a  */
+				clog -= 1;
 				fmpz_set_si(p, 10);
+				if (clog >= 0) {
+					fmpz_pow_ui(p, p, (ulong) clog);
+					if (fmpq_cmp_fmpz(a, p) > 0)
+						clog += 1;
+				} else {
+					fmpq_inv(a, a);
+					fmpz_pow_ui(p, p, (ulong) -1 - (ulong) clog + 1);
+					if (fmpq_cmp_fmpz(a, p) < 0)
+						clog += 1;
+				}
+				fmpz_set_si(p, 10);
+				if (clog <= digits) {
 				if (clog >= 0)
 				fmpz_pow_ui(p, p, (ulong) (digits - clog));
 				else
 				fmpz_pow_ui(p, p, (ulong) digits + ((ulong) -1 - (ulong) clog + 1));
-				fmpz_mul(fmpq_numref(z + j), fmpq_numref(x + j), p);
-				fmpz_set(fmpq_denref(z + j), fmpq_denref(x + j));
-				fmpz_ndiv_qr(q, r, fmpq_numref(z + j), fmpq_denref(z + j));
-				if (fmpz_cmp2abs(fmpq_denref(z + j), r) == 0 && fmpz_is_odd(q))
+				fmpz_mul(fmpq_numref(a), fmpq_numref(x + j), p);
+				fmpz_set(fmpq_denref(a), fmpq_denref(x + j));
+				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
+				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
+				    fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
 				fmpz_set(fmpq_numref(z + j), q);
 				fmpz_set(fmpq_denref(z + j), p);
 				fmpq_canonicalise(z + j);
 				} else {
-				fmpz_set_si(p, 10);
 				fmpz_pow_ui(p, p, (ulong) (clog - digits));
-				fmpz_set(fmpq_numref(z + j), fmpq_numref(x + j));
-				fmpz_mul(fmpq_denref(z + j), fmpq_denref(x + j), p);
-				fmpz_ndiv_qr(q, r, fmpq_numref(z + j), fmpq_denref(z + j));
-				if (fmpz_cmp2abs(fmpq_denref(z + j), r) == 0 && fmpz_is_odd(q))
+				fmpz_set(fmpq_numref(a), fmpq_numref(x + j));
+				fmpz_mul(fmpq_denref(a), fmpq_denref(x + j), p);
+				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
+				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
+				    fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
 				fmpz_mul(fmpq_numref(z + j), q, p);
 				fmpz_one(fmpq_denref(z + j));
 				}
 				}
 			}
+			fmpq_clear(a);
 			fmpz_clear(p);
 			fmpz_clear(q);
 			fmpz_clear(r);
