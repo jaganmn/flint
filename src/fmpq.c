@@ -1,5 +1,6 @@
 #include <gmp.h>
 #include <flint/flint.h>
+#include <flint/fmpz.h>
 #include <flint/fmpq.h>
 #include "flint.h"
 
@@ -338,6 +339,35 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	}
 }
 
+#ifndef HAVE_FMPQ_CLOG_UI
+/* TODO: use configure to conditionally define HAVE_FMPQ_CLOG_UI */
+slong fmpq_clog_ui(const fmpq_t x, ulong b)
+{
+	slong clog = fmpz_clog_ui(fmpq_numref(x), b) -
+		fmpz_flog_ui(fmpq_denref(x), b);
+	/* 'clog' can be off by 1: test if b^(clog-1) < x  */
+	clog -= 1;
+	fmpz_t p;
+	fmpz_init(p);
+	fmpz_set_si(p, 10);
+	if (clog >= 0) {
+		fmpz_pow_ui(p, p, (ulong) clog);
+		if (fmpq_cmp_fmpz(x, p) > 0)
+			clog += 1;
+	} else {
+		fmpq_t y;
+		fmpq_init(y);
+		fmpq_inv(y, x);
+		fmpz_pow_ui(p, p, (ulong) -1 - (ulong) clog + 1);
+		if (fmpq_cmp_fmpz(y, p) < 0)
+			clog += 1;
+		fmpq_clear(y);
+	}
+	fmpz_clear(p);
+	return clog;
+}
+#endif
+
 SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
@@ -481,29 +511,16 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpq_zero(z + j);
 				else {
 				fmpq_abs(a, x + j);
-				clog = fmpz_clog_ui(fmpq_numref(a), 10) -
-					fmpz_flog_ui(fmpq_denref(a), 10);
-				/* 'clog' can be off by 1: test if 10^(clog-1) < a  */
-				clog -= 1;
-				fmpz_set_si(p, 10);
-				if (clog >= 0) {
-					fmpz_pow_ui(p, p, (ulong) clog);
-					if (fmpq_cmp_fmpz(a, p) > 0)
-						clog += 1;
-				} else {
-					fmpq_inv(a, a);
-					fmpz_pow_ui(p, p, (ulong) -1 - (ulong) clog + 1);
-					if (fmpq_cmp_fmpz(a, p) < 0)
-						clog += 1;
-				}
+				clog = fmpq_clog_ui(a, 10);
+				if (fmpq_sgn(x + j) < 0)
+					fmpq_neg(a, a);
 				fmpz_set_si(p, 10);
 				if (clog <= digits) {
 				if (clog >= 0)
 				fmpz_pow_ui(p, p, (ulong) (digits - clog));
 				else
 				fmpz_pow_ui(p, p, (ulong) digits + ((ulong) -1 - (ulong) clog + 1));
-				fmpz_mul(fmpq_numref(a), fmpq_numref(x + j), p);
-				fmpz_set(fmpq_denref(a), fmpq_denref(x + j));
+				fmpz_mul(fmpq_numref(a), fmpq_numref(a), p);
 				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
 				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
 				    fmpz_is_odd(q))
@@ -513,8 +530,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpq_canonicalise(z + j);
 				} else {
 				fmpz_pow_ui(p, p, (ulong) (clog - digits));
-				fmpz_set(fmpq_numref(a), fmpq_numref(x + j));
-				fmpz_mul(fmpq_denref(a), fmpq_denref(x + j), p);
+				fmpz_mul(fmpq_denref(a), fmpq_denref(a), p);
 				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
 				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
 				    fmpz_is_odd(q))

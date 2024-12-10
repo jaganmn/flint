@@ -1,6 +1,8 @@
 #include <gmp.h>
 #include <mpfr.h>
 #include <flint/flint.h>
+#include <flint/fmpz.h>
+#include <flint/fmpq.h>
 #include <flint/arf.h>
 #include "flint.h"
 
@@ -423,10 +425,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 10: /*  "cummax" */
 	case 11: /*  "cumsum" */
 	case 12: /* "cumprod" */
-#if 0 /* TODO */
 	case 38: /*   "round" */
 	case 39: /*  "signif" */
-#endif
 	{
 		SEXP ans = newObject("arf");
 		arf_ptr z = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
@@ -500,16 +500,100 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 1; j < n; ++j)
 				arf_mul(z + j, z + j - 1, x + j, prec, rnd);
 			break;
-#if 0 /* TODO */
 		case 38: /*   "round" */
-			for (j = 0; j < n; ++j)
-				;
+		{
+			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+				prec = asPrec(R_NilValue, __func__);
+			fmpz_t p, q;
+			arf_t s;
+			fmpz_init(p);
+			fmpz_init(q);
+			arf_init(s);
+			fmpz_set_si(p, 10);
+			if (digits >= 0) {
+			/* f ~ c/10^+digits   <=>   c ~ f*10^+digits */
+			fmpz_pow_ui(p, p, (ulong) digits);
+			for (j = 0; j < n; ++j) {
+				if (!arf_is_finite(x + j))
+				arf_set(z + j, x + j);
+				else {
+				arf_mul_fmpz(s, x + j, p, ARF_PREC_EXACT, ARF_RND_NEAR);
+				arf_get_fmpz(q, s, ARF_RND_NEAR);
+				arf_fmpz_div_fmpz(z + j, q, p, prec, ARF_RND_NEAR);
+				}
+			}
+			} else {
+			/* f ~ c*10^-digits   <=>   c ~ f/10^-digits */
+			fmpz_pow_ui(p, p, (ulong) -1 - (ulong) digits + 1);
+			for (j = 0; j < n; ++j) {
+				if (!arf_is_finite(x + j))
+				arf_set(z + j, x + j);
+				else {
+				arf_div_fmpz(s, x + j, p, prec, ARF_RND_NEAR);
+				arf_get_fmpz(q, s, ARF_RND_NEAR);
+				fmpz_mul(q, q, p);
+				arf_set_fmpz(z + j, q);
+				}
+			}
+			}
+			fmpz_clear(p);
+			fmpz_clear(q);
+			arf_clear(s);
 			break;
+		}
 		case 39: /*  "signif" */
-			for (j = 0; j < n; ++j)
-				;
+		{
+			slong fmpq_clog_ui(const fmpq_t, ulong);
+			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+				prec = asPrec(R_NilValue, __func__),
+				clog;
+			if (digits <= 0)
+				digits = 1;
+			fmpq_t a;
+			fmpz_t p, q, r;
+			fmpq_init(a);
+			fmpz_init(p);
+			fmpz_init(q);
+			fmpz_init(r);
+			for (j = 0; j < n; ++j) {
+				if (!arf_is_finite(x + j))
+				arf_set(z + j, x + j);
+				else {
+				arf_get_fmpq(a, x + j);
+				fmpq_abs(a, a);
+				clog = fmpq_clog_ui(a, 10);
+				if (arf_sgn(x + j) < 0)
+					fmpq_neg(a, a);
+				fmpz_set_si(p, 10);
+				if (clog <= digits) {
+				if (clog >= 0)
+				fmpz_pow_ui(p, p, (ulong) (digits - clog));
+				else
+				fmpz_pow_ui(p, p, (ulong) digits + ((ulong) -1 - (ulong) clog + 1));
+				fmpz_mul(fmpq_numref(a), fmpq_numref(a), p);
+				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
+				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
+				    fmpz_is_odd(q))
+					fmpz_add_si(q, q, fmpz_sgn(r));
+				arf_fmpz_div_fmpz(z + j, q, p, prec, ARF_RND_NEAR);
+				} else {
+				fmpz_pow_ui(p, p, (ulong) (clog - digits));
+				fmpz_mul(fmpq_denref(a), fmpq_denref(a), p);
+				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
+				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
+				    fmpz_is_odd(q))
+					fmpz_add_si(q, q, fmpz_sgn(r));
+				fmpz_mul(q, q, p);
+				arf_set_fmpz(z + j, q);
+				}
+				}
+			}
+			fmpq_clear(a);
+			fmpz_clear(p);
+			fmpz_clear(q);
+			fmpz_clear(r);
 			break;
-#endif
+		}
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		return ans;

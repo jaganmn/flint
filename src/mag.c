@@ -1,6 +1,8 @@
 #include <gmp.h>
 #include <mpfr.h>
 #include <flint/flint.h>
+#include <flint/fmpz.h>
+#include <flint/fmpq.h>
 #include <flint/arf.h>
 #include <flint/mag.h>
 #include "flint.h"
@@ -413,10 +415,8 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 16: /*   "log1p" */
 	case 17: /*     "exp" */
 	case 18: /*   "expm1" */
-#if 0 /* TODO */
 	case 38: /*   "round" */
 	case 39: /*  "signif" */
-#endif
 	{
 		SEXP ans = newObject("mag");
 		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
@@ -453,7 +453,6 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				else if (fmpz_cmp_si(MAG_EXPREF(x + j), MAG_BITS) >= 0)
 					mag_set(z + j, x + j);
 				else {
-					/* FIXME: mag_set_fmpz does not guarantee exact */
 					mag_get_fmpz_lower(r, x + j);
 					mag_set_fmpz(z + j, r);
 				}
@@ -475,7 +474,6 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				else if (fmpz_cmp_si(MAG_EXPREF(x + j), MAG_BITS) >= 0)
 					mag_set(z + j, x + j);
 				else {
-					/* FIXME: mag_set_fmpz does not guarantee exact */
 					mag_get_fmpz(r, x + j);
 					mag_set_fmpz(z + j, r);
 				}
@@ -567,16 +565,102 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				mag_expm1(z + j, x + j);
 			break;
-#if 0 /* TODO */
 		case 38: /*   "round" */
-			for (j = 0; j < n; ++j)
-				;
+		{
+			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
+			fmpz_t p, q;
+			arf_t s;
+			fmpz_init(p);
+			fmpz_init(q);
+			arf_init(s);
+			fmpz_set_si(p, 10);
+			if (digits >= 0) {
+			/* f ~ c/10^+digits   <=>   c ~ f*10^+digits */
+			fmpz_pow_ui(p, p, (ulong) digits);
+			for (j = 0; j < n; ++j) {
+				if (mag_is_special(x + j))
+				mag_set(z + j, x + j);
+				else {
+				arf_set_mag(s, x + j);
+				arf_mul_fmpz(s, s, p, ARF_PREC_EXACT, ARF_RND_UP);
+				arf_get_fmpz(q, s, ARF_RND_NEAR);
+				arf_fmpz_div_fmpz(s, q, p, MAG_BITS << 1, ARF_RND_UP);
+				arf_get_mag(z + j, s);
+				}
+			}
+			} else {
+			/* f ~ c*10^-digits   <=>   c ~ f/10^-digits */
+			fmpz_pow_ui(p, p, (ulong) -1 - (ulong) digits + 1);
+			for (j = 0; j < n; ++j) {
+				if (mag_is_special(x + j))
+				mag_set(z + j, x + j);
+				else {
+				arf_set_mag(s, x + j);
+				arf_div_fmpz(s, s, p, MAG_BITS << 1, ARF_RND_UP);
+				arf_get_fmpz(q, s, ARF_RND_NEAR);
+				fmpz_mul(q, q, p);
+				mag_set_fmpz(z + j, q);
+				}
+			}
+			}
+			fmpz_clear(p);
+			fmpz_clear(q);
+			arf_clear(s);
 			break;
+		}
 		case 39: /*  "signif" */
-			for (j = 0; j < n; ++j)
-				;
+		{
+			slong fmpq_clog_ui(const fmpq_t, ulong);
+			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+				clog;
+			if (digits <= 0)
+				digits = 1;
+			fmpq_t a;
+			fmpz_t p, q, r;
+			arf_t s;
+			fmpq_init(a);
+			fmpz_init(p);
+			fmpz_init(q);
+			fmpz_init(r);
+			arf_init(s);
+			for (j = 0; j < n; ++j) {
+				if (mag_is_special(x + j))
+				mag_set(z + j, x + j);
+				else {
+				mag_get_fmpq(a, x + j);
+				clog = fmpq_clog_ui(a, 10);
+				fmpz_set_si(p, 10);
+				if (clog <= digits) {
+				if (clog >= 0)
+				fmpz_pow_ui(p, p, (ulong) (digits - clog));
+				else
+				fmpz_pow_ui(p, p, (ulong) digits + ((ulong) -1 - (ulong) clog + 1));
+				fmpz_mul(fmpq_numref(a), fmpq_numref(a), p);
+				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
+				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
+				    fmpz_is_odd(q))
+					fmpz_add_si(q, q, fmpz_sgn(r));
+				arf_fmpz_div_fmpz(s, q, p, MAG_BITS << 1, ARF_RND_UP);
+				arf_get_mag(z + j, s);
+				} else {
+				fmpz_pow_ui(p, p, (ulong) (clog - digits));
+				fmpz_mul(fmpq_denref(a), fmpq_denref(a), p);
+				fmpz_ndiv_qr(q, r, fmpq_numref(a), fmpq_denref(a));
+				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
+				    fmpz_is_odd(q))
+					fmpz_add_si(q, q, fmpz_sgn(r));
+				fmpz_mul(q, q, p);
+				mag_set_fmpz(z + j, q);
+				}
+				}
+			}
+			fmpq_clear(a);
+			fmpz_clear(p);
+			fmpz_clear(q);
+			fmpz_clear(r);
+			arf_clear(s);
 			break;
-#endif
+		}
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		return ans;

@@ -438,7 +438,8 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				clog;
 			if (digits <= 0)
 				digits = 1;
-			fmpz_t p, q, r;
+			fmpz_t a, p, q, r;
+			fmpz_init(a);
 			fmpz_init(p);
 			fmpz_init(q);
 			fmpz_init(r);
@@ -446,8 +447,8 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_is_zero(x + j))
 				fmpz_zero(z + j);
 				else {
-				fmpz_abs(z + j, x + j);
-				clog = fmpz_clog_ui(z + j, 10);
+				fmpz_abs(a, x + j);
+				clog = fmpz_clog_ui(a, 10);
 				if (clog <= digits)
 				fmpz_set(z + j, x + j);
 				else {
@@ -460,6 +461,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				}
 				}
 			}
+			fmpz_clear(a);
 			fmpz_clear(p);
 			fmpz_clear(q);
 			fmpz_clear(r);
