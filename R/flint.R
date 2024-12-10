@@ -1,3 +1,27 @@
+setAs("flint", "slong",
+      function(from) new("slong", x = from))
+
+setAs("flint", "ulong",
+      function(from) new("ulong", x = from))
+
+setAs("flint", "fmpz",
+      function(from) new("fmpz", x = from))
+
+setAs("flint", "fmpq",
+      function(from) new("fmpq", x = from))
+
+setAs("flint", "arf",
+      function(from) new("arf", x = from))
+
+setAs("flint", "mag",
+      function(from) new("mag", x = from))
+
+setAs("flint", "arb",
+      function(from) new("arb", x = from))
+
+setAs("flint", "acb",
+      function(from) new("acb", x = from))
+
 setMethod("as.raw",
           c(x = "flint"),
           function (x     ) as.vector(x, "raw"))
