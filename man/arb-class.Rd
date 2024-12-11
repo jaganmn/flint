@@ -6,7 +6,16 @@
 \alias{Complex,arb-method}
 \alias{Math,arb-method}
 \alias{Math2,arb-method}
+\alias{Ops,ANY,arb-method}
+\alias{Ops,arb,ANY-method}
+\alias{Ops,arb,slong-method}
+\alias{Ops,arb,ulong-method}
+\alias{Ops,arb,fmpz-method}
+\alias{Ops,arb,fmpq-method}
+\alias{Ops,arb,arf-method}
+\alias{Ops,arb,mag-method}
 \alias{Ops,arb,arb-method}
+\alias{Ops,arb,acb-method}
 \alias{Summary,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}

@@ -8,7 +8,16 @@
 \alias{Complex,fmpq-method}
 \alias{Math,fmpq-method}
 \alias{Math2,fmpq-method}
+\alias{Ops,ANY,fmpq-method}
+\alias{Ops,fmpq,ANY-method}
+\alias{Ops,fmpq,slong-method}
+\alias{Ops,fmpq,ulong-method}
+\alias{Ops,fmpq,fmpz-method}
 \alias{Ops,fmpq,fmpq-method}
+\alias{Ops,fmpq,arf-method}
+\alias{Ops,fmpq,mag-method}
+\alias{Ops,fmpq,arb-method}
+\alias{Ops,fmpq,acb-method}
 \alias{Summary,fmpq-method}
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}

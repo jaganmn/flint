@@ -6,7 +6,16 @@
 \alias{Complex,fmpz-method}
 \alias{Math,fmpz-method}
 \alias{Math2,fmpz-method}
+\alias{Ops,ANY,fmpz-method}
+\alias{Ops,fmpz,ANY-method}
+\alias{Ops,fmpz,slong-method}
+\alias{Ops,fmpz,ulong-method}
 \alias{Ops,fmpz,fmpz-method}
+\alias{Ops,fmpz,fmpq-method}
+\alias{Ops,fmpz,arf-method}
+\alias{Ops,fmpz,mag-method}
+\alias{Ops,fmpz,arb-method}
+\alias{Ops,fmpz,acb-method}
 \alias{Summary,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}

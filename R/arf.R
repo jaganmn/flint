@@ -42,9 +42,68 @@ setMethod("-",
               .Call(R_flint_arf_ops1, "-", e1, NULL))
 
 setMethod("Ops",
+          c(e1 = "ANY", e2 = "arf"),
+          function (e1, e2) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(e1),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         g(new("arf", x = e1), e2),
+                     stop(gettextf("<%s> %s <%s> is not yet implemented",
+                                   if (isS4(e1)) class(e1) else typeof(e1), .Generic, "arf"),
+                          domain = NA))
+          })
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "ANY"),
+          function (e1, e2) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(e2),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         g(e1, new("arf", x = e2)),
+                     stop(gettextf("<%s> %s <%s> is not yet implemented",
+                                   "arf", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
+                          domain = NA))
+          })
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "slong"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("arf", x = e2)))
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "ulong"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("arf", x = e2)))
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "fmpz"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("arf", x = e2)))
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "fmpq"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("arf", x = e2)))
+
+setMethod("Ops",
           c(e1 = "arf", e2 = "arf"),
           function (e1, e2)
               .Call(R_flint_arf_ops2, .Generic, e1, e2))
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "mag"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("arf", x = e2)))
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "arb"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(new("arb", x = e1), e2))
+
+setMethod("Ops",
+          c(e1 = "arf", e2 = "acb"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(new("acb", x = e1), e2))
 
 setMethod("Math",
           c(x = "arf"),

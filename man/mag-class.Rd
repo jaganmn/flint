@@ -8,7 +8,16 @@
 \alias{Complex,mag-method}
 \alias{Math,mag-method}
 \alias{Math2,mag-method}
+\alias{Ops,ANY,mag-method}
+\alias{Ops,mag,ANY-method}
+\alias{Ops,mag,slong-method}
+\alias{Ops,mag,ulong-method}
+\alias{Ops,mag,fmpz-method}
+\alias{Ops,mag,fmpq-method}
+\alias{Ops,mag,arf-method}
 \alias{Ops,mag,mag-method}
+\alias{Ops,mag,arb-method}
+\alias{Ops,mag,acb-method}
 \alias{Summary,mag-method}
 \alias{as.vector,mag-method}
 \alias{coerce,ANY,mag-method}
