@@ -39,7 +39,7 @@
 \section{Slots}{
   \code{fmpq}:
   \describe{
-    \item{\code{length}, \code{x}}{
+    \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
   \code{nfmpq}:

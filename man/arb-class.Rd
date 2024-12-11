@@ -39,7 +39,7 @@
 \section{Slots}{
   \code{arb}:
   \describe{
-    \item{\code{length}, \code{x}}{
+    \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
   \code{narb}:
