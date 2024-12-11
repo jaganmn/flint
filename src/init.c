@@ -2,6 +2,11 @@
 #include <R_ext/Rdynload.h> /* DL_FUNC, ... */
 #include <R_ext/Visibility.h> /* attribute_visible */
 #include <Rinternals.h> /* SEXP, ... */
+#include <Rversion.h> /* R_VERSION */
+
+#if R_VERSION < R_Version(4, 4, 0)
+# define OBJSXP S4SXP
+#endif /* < 4.4.0 */
 
 SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_dot_data,
@@ -18,7 +23,7 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_d;
 
 SEXPTYPE R_flint_sexptypes[] =
-{ EXTPTRSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
+{ OBJSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
 
 const char *R_flint_classes[] =
 { "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };

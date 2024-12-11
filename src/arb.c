@@ -31,7 +31,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		n = RECYCLE2(nm, nr);
 	} else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
-		if (TYPEOF(s_x) != EXTPTRSXP)
+		if (TYPEOF(s_x) != OBJSXP)
 		n = (unsigned long long int) XLENGTH(s_x);
 		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
 		n = R_flint_get_length(s_x);
@@ -90,7 +90,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				arb_set_d(y + j, x[j]);
 			break;
 		}
-		case EXTPTRSXP:
+		case OBJSXP:
 			switch (class) {
 			case R_FLINT_CLASS_SLONG:
 			{
