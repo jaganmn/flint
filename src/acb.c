@@ -747,6 +747,10 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_clear(d);
 			break;
 		}
+		case 47: /*     "Conj" */
+			for (j = 0; j < n; ++j)
+				acb_conj(z + j, x + j);
+			break;
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		return ans;
