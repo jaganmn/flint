@@ -101,10 +101,10 @@
       \code{signature(e1 = "ANY", e2 = "ulong")}:\cr
       \code{signature(e1 = "slong", e2 = "ANY")}:\cr
       \code{signature(e1 = "ulong", e2 = "ANY")}:\cr
-      binary arithmetic, comparison, and logical operators.  The
-      \dQuote{other} operand must be atomic or inherit from virtual
-      class \code{\linkS4class{flint}}.  The operands are recycled and
-      promoted as necessary.}
+      coerces \code{slong} and \code{ulong} operands to a different
+      subclass of \code{\linkS4class{flint}} (never \code{slong} or
+      \code{ulong}, but always a class that can represent their range)
+      and dispatches.}
     \item{\code{Summary}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr

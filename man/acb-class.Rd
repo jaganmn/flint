@@ -68,27 +68,35 @@
       returns the negation of the argument.}
     \item{\code{Complex}}{
       \code{signature(z = "acb")}:\cr
-      mathematical functions of one argument.}
+      mathematical functions of one argument; see
+      \code{\link[methods]{S4groupGeneric}}.}
     \item{\code{Math}}{
       \code{signature(x = "acb")}:\cr
-      mathematical functions of one argument, where supported.}
+      mathematical functions of one argument; see
+      \code{\link[methods]{S4groupGeneric}}.  Member functions
+      \code{floor}, \code{ceiling}, \code{trunc}, \code{cummin},
+      \code{cummax} are not implemented.}
     \item{\code{Math2}}{
       \code{signature(x = "acb")}:\cr
       decimal rounding according to a second argument \code{digits}; see
-      \code{\link{round}}, \code{\link{signif}}.}
+      \code{\link[methods]{S4groupGeneric}}.  There are just two member
+      member functions: \code{\link{round}}, \code{\link{signif}}.}
     \item{\code{Ops}}{
       \code{signature(e1 = "ANY", e2 = "acb")}:\cr
       \code{signature(e1 = "acb", e2 = "ANY")}:\cr
-      binary arithmetic, comparison, and logical operators.  The
-      \dQuote{other} operand must be atomic or inherit from virtual
-      class \code{\linkS4class{flint}}.  The operands are recycled and
+      binary arithmetic, comparison, and logical operators; see
+      \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
+      must be atomic or inherit from virtual class
+      \code{\linkS4class{flint}}.  The operands are recycled and
       promoted as necessary.}
     \item{\code{Summary}}{
       \code{signature(x = "acb")}:\cr
-      univariate summary statistics, returning a logical vector of
-      length 1 (\code{any}, \code{all}) or an \code{acb} vector of
-      length 1 or 2 (\code{sum}, \code{prod}, \code{min}, \code{max},
-      \code{range}).}
+      univariate summary statistics; see
+      \code{\link[methods]{S4groupGeneric}}.  The return value is a
+      logical vector of length 1 (\code{any}, \code{all}) or an
+      \code{acb} vector of length 1 or 2 (\code{sum}, \code{prod}).
+      Member functions \code{min}, \code{max}, \code{range} are not
+      implemented.}
     \item{\code{as.vector}}{
       \code{signature(x = "acb")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a complex
