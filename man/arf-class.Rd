@@ -48,7 +48,40 @@
   }
 }
 \section{Methods}{
+  Due to constraints imposed by generic functions, methods typically
+  do \emph{not} provide a formal argument \code{prec} allowing for a
+  precision to be indicated in the function call.  Such methods use
+  the current default precision set by \code{\link{flintPrec}}.
   \describe{
+    \item{\code{+}}{
+      \code{signature(e1 = "arf", e2 = "missing")}:\cr
+      returns a copy of the argument.}
+    \item{\code{-}}{
+      \code{signature(e1 = "arf", e2 = "missing")}:\cr
+      returns the negation of the argument.}
+    \item{\code{Complex}}{
+      \code{signature(z = "arf")}:\cr
+      a placeholder signaling a \dQuote{not yet implemented} error.}
+    \item{\code{Math}}{
+      \code{signature(x = "arf")}:\cr
+      mathematical functions of one argument, where supported.}
+    \item{\code{Math2}}{
+      \code{signature(x = "arf")}:\cr
+      decimal rounding according to a second argument \code{digits}; see
+      \code{\link{round}}, \code{\link{signif}}.}
+    \item{\code{Ops}}{
+      \code{signature(e1 = "ANY", e2 = "arf")}:\cr
+      \code{signature(e1 = "arf", e2 = "ANY")}:\cr
+      binary arithmetic, comparison, and logical operators.  The
+      \dQuote{other} operand must be atomic or inherit from virtual
+      class \code{\linkS4class{flint}}.  The operands are recycled and
+      promoted as necessary.}
+    \item{\code{Summary}}{
+      \code{signature(x = "arf")}:\cr
+      univariate summary statistics, returning a logical vector of
+      length 1 (\code{any}, \code{all}) or an \code{arf} vector of
+      length 1 or 2 (\code{sum}, \code{prod}, \code{min}, \code{max},
+      \code{range}).}
     \item{\code{as.vector}}{
       \code{signature(x = "arf")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double
@@ -95,5 +128,7 @@
 }
 \examples{
 showClass("arf")
+showMethods(classes = "arf")
 showClass("narf")
+showMethods(classes = "narf")
 }

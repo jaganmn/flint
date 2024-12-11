@@ -76,6 +76,39 @@
 }
 \section{Methods}{
   \describe{
+    \item{\code{+}}{
+      \code{signature(e1 = "slong", e2 = "missing")}:\cr
+      \code{signature(e1 = "ulong", e2 = "missing")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+    \item{\code{-}}{
+      \code{signature(e1 = "slong", e2 = "missing")}:\cr
+      \code{signature(e1 = "ulong", e2 = "missing")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+    \item{\code{Complex}}{
+      \code{signature(z = "slong")}:\cr
+      \code{signature(z = "ulong")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+    \item{\code{Math}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+    \item{\code{Math2}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+    \item{\code{Ops}}{
+      \code{signature(e1 = "ANY", e2 = "slong")}:\cr
+      \code{signature(e1 = "ANY", e2 = "ulong")}:\cr
+      \code{signature(e1 = "slong", e2 = "ANY")}:\cr
+      \code{signature(e1 = "ulong", e2 = "ANY")}:\cr
+      binary arithmetic, comparison, and logical operators.  The
+      \dQuote{other} operand must be atomic or inherit from virtual
+      class \code{\linkS4class{flint}}.  The operands are recycled and
+      promoted as necessary.}
+    \item{\code{Summary}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
     \item{\code{as.vector}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
@@ -132,6 +165,8 @@
 \examples{
 showClass("slong")
 showClass("ulong")
+showMethods(classes = c("slong", "ulong"))
 showClass("nslong")
 showClass("nulong")
+showMethods(classes = c("nslong", "nulong"))
 }

@@ -54,6 +54,46 @@
 }
 \section{Methods}{
   \describe{
+    \item{\code{+}}{
+      \code{signature(e1 = "mag", e2 = "missing")}:\cr
+      returns a copy of the argument.}
+    \item{\code{-}}{
+      \code{signature(e1 = "mag", e2 = "missing")}:\cr
+      returns a copy of the argument, to be consistent with the binary
+      operation which returns an upper bound for the absolute value of
+      the difference.}
+    \item{\code{Complex}}{
+      \code{signature(z = "mag")}:\cr
+      a placeholder signaling a \dQuote{not yet implemented} error.}
+    \item{\code{Math}}{
+      \code{signature(x = "mag")}:\cr
+      mathematical functions of one argument, where supported.  The
+      return value is an upper bound for the absolute value of the exact
+      answer.}
+    \item{\code{Math2}}{
+      \code{signature(x = "mag")}:\cr
+      decimal rounding according to a second argument \code{digits}; see
+      \code{\link{round}}, \code{\link{signif}}.  The return value is an
+      upper bound for the absolute value of the exact answer.}
+    \item{\code{Ops}}{
+      \code{signature(e1 = "ANY", e2 = "mag")}:\cr
+      \code{signature(e1 = "mag", e2 = "ANY")}:\cr
+      binary arithmetic, comparison, and logical operators.  The
+      \dQuote{other} operand must be atomic or inherit from virtual
+      class \code{\linkS4class{flint}}.  The operands are recycled and
+      promoted as necessary.  For arithmetic, the value is a \code{mag}
+      vector only if both operands are \code{mag} vectors.  In that
+      case, the return value is an upper bound for the absolute value of
+      the exact answer.  Users wanting \dQuote{standard} floating-point
+      arithmetic must ensure that at least one operand is not a
+      \code{mag} vector.}
+    \item{\code{Summary}}{
+      \code{signature(x = "mag")}:\cr
+      univariate summary statistics, returning a logical vector of
+      length 1 (\code{any}, \code{all}) or a \code{mag} vector of
+      length 1 or 2 (\code{sum}, \code{prod}, \code{min}, \code{max},
+      \code{range}).  For \code{sum} and \code{prod}, the return value
+      is an upper bound for the absolute value of the exact answer.}
     \item{\code{as.vector}}{
       \code{signature(x = "mag")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double
@@ -85,6 +125,11 @@
       as above, except that the new slot value points to an array
       initialized with upper bounds for \code{abs(x)}.  An error is
       signaled if any \code{x[i]} is \code{NaN}.}
+    \item{\code{log}}{
+      \code{signature(x = "mag")}:\cr
+      returns an upper bound for the absolute value of the logarithm of
+      the argument.  The natural logarithm is computed by default (when
+      optional argument \code{base} is unset).}
   }
 }
 \seealso{
@@ -97,5 +142,7 @@
 }
 \examples{
 showClass("mag")
+showMethods(classes = "mag")
 showClass("nmag")
+showMethods(classes = "nmag")
 }

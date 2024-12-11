@@ -51,6 +51,36 @@
 }
 \section{Methods}{
   \describe{
+    \item{\code{+}}{
+      \code{signature(e1 = "fmpz", e2 = "missing")}:\cr
+      returns a copy of the argument.}
+    \item{\code{-}}{
+      \code{signature(e1 = "fmpz", e2 = "missing")}:\cr
+      returns the negation of the argument.}
+    \item{\code{Complex}}{
+      \code{signature(z = "fmpz")}:\cr
+      a placeholder signaling a \dQuote{not yet implemented} error.}
+    \item{\code{Math}}{
+      \code{signature(x = "fmpz")}:\cr
+      mathematical functions of one argument, where supported
+      \emph{without} promotion to a floating-point type.}
+    \item{\code{Math2}}{
+      \code{signature(x = "fmpz")}:\cr
+      decimal rounding according to a second argument \code{digits}; see
+      \code{\link{round}}, \code{\link{signif}}.}
+    \item{\code{Ops}}{
+      \code{signature(e1 = "ANY", e2 = "fmpz")}:\cr
+      \code{signature(e1 = "fmpz", e2 = "ANY")}:\cr
+      binary arithmetic, comparison, and logical operators.  The
+      \dQuote{other} operand must be atomic or inherit from virtual
+      class \code{\linkS4class{flint}}.  The operands are recycled and
+      promoted as necessary.}
+    \item{\code{Summary}}{
+      \code{signature(x = "fmpz")}:\cr
+      univariate summary statistics, returning a logical vector of
+      length 1 (\code{any}, \code{all}) or an \code{fmpz} vector of
+      length 1 or 2 (\code{sum}, \code{prod}, \code{min}, \code{max},
+      \code{range}).}
     \item{\code{as.vector}}{
       \code{signature(x = "fmpz")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double
@@ -98,5 +128,7 @@
 }
 \examples{
 showClass("fmpz")
+showMethods(classes = "fmpz")
 showClass("nfmpz")
+showMethods(classes = "nfmpz")
 }
