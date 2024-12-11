@@ -447,6 +447,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  2: /*       "-" */
 	case  3: /*     "abs" */
 	case  4: /*    "sign" */
+	case  5: /*    "sqrt" */
 	case  6: /*   "floor" */
 	case  7: /* "ceiling" */
 	case  8: /*   "trunc" */
@@ -456,11 +457,17 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 12: /* "cumprod" */
 	case 38: /*   "round" */
 	case 39: /*  "signif" */
+	case 47: /*    "Conj" */
+	case 48: /*      "Re" */
+	case 49: /*      "Im" */
+	case 50: /*     "Mod" */
 	{
 		SEXP ans = newObject("fmpq");
 		fmpq *z = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
 		switch (op) {
 		case  1: /*       "+" */
+		case 47: /*    "Conj" */
+		case 48: /*      "Re" */
 			for (j = 0; j < n; ++j)
 				fmpq_set(z + j, x + j);
 			break;
@@ -469,6 +476,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpq_neg(z + j, x + j);
 			break;
 		case  3: /*     "abs" */
+		case 50: /*     "Mod" */
 			for (j = 0; j < n; ++j)
 				fmpq_abs(z + j, x + j);
 			break;
@@ -478,6 +486,23 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_one(fmpq_denref(z + j));
 			}
 			break;
+		case  5: /*    "sqrt" */
+		{
+			fmpz_t r;
+			fmpz_init(r);
+			for (j = 0; j < n; ++j) {
+				if (fmpq_sgn(x + j) >= 0) {
+				fmpz_sqrtrem(fmpq_numref(z + j), r, fmpq_numref(x + j));
+				if (fmpz_is_zero(r))
+				fmpz_sqrtrem(fmpq_denref(z + j), r, fmpq_denref(x + j));
+				}
+				if (!(fmpq_sgn(x + j) >= 0 && fmpz_is_zero(r)))
+				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
+				         "sqrt", "fmpq", "fmpq");
+			}
+			fmpz_clear(r);
+			break;
+		}
 		case  6: /*   "floor" */
 			for (j = 0; j < n; ++j) {
 				fmpz_fdiv_q(fmpq_numref(z + j), fmpq_numref(x + j), fmpq_denref(x + j));
@@ -615,6 +640,10 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			break;
 		}
+		case 49: /*      "Im" */
+			for (j = 0; j < n; ++j)
+				fmpz_one(fmpq_denref(z + j));
+			break;
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		return ans;

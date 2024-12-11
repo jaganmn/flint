@@ -484,6 +484,11 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 18: /*   "expm1" */
 	case 38: /*   "round" */
 	case 39: /*  "signif" */
+	case 47: /*    "Conj" */
+	case 48: /*      "Re" */
+	case 49: /*      "Im" */
+	case 50: /*     "Mod" */
+	case 51: /*     "Arg" */
 	{
 		SEXP ans = newObject("mag");
 		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
@@ -491,6 +496,9 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case  1: /*       "+" */
 		case  2: /*       "-" */
 		case  3: /*     "abs" */
+		case 47: /*    "Conj" */
+		case 48: /*      "Re" */
+		case 50: /*     "Mod" */
 			for (j = 0; j < n; ++j)
 				mag_set(z + j, x + j);
 			break;
@@ -728,6 +736,17 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_clear(s);
 			break;
 		}
+		case 49: /*      "Im" */
+			for (j = 0; j < n; ++j)
+				mag_zero(z + j);
+			break;
+		case 51: /*     "Arg" */
+			for (j = 0; j < n; ++j)
+				if (mag_is_zero(x + j))
+					mag_zero(z + j);
+				else
+					mag_const_pi(z + j);
+			break;
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		return ans;

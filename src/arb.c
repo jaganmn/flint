@@ -431,11 +431,18 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 37: /* "trigamma" */
 	case 38: /*    "round" */
 	case 39: /*   "signif" */
+	case 47: /*     "Conj" */
+	case 48: /*       "Re" */
+	case 49: /*       "Im" */
+	case 50: /*      "Mod" */
+	case 51: /*      "Arg" */
 	{
 		SEXP ans = newObject("arb");
 		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
 		switch (op) {
 		case  1: /*        "+" */
+		case 47: /*     "Conj" */
+		case 48: /*       "Re" */
 			for (j = 0; j < n; ++j)
 				arb_set(z + j, x + j);
 			break;
@@ -444,6 +451,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arb_neg(z + j, x + j);
 			break;
 		case  3: /*      "abs" */
+		case 50: /*      "Mod" */
 			for (j = 0; j < n; ++j)
 				arb_nonnegative_abs(z + j, x + j);
 			break;
@@ -768,6 +776,33 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			arf_clear(s);
 			mag_clear(d);
+			break;
+		}
+		case 49: /*       "Im" */
+			for (j = 0; j < n; ++j)
+				arb_zero(z + j);
+			break;
+		case 51: /*      "Arg" */
+		{
+			arb_t pi;
+			arb_init(pi);
+			arb_const_pi(pi, asPrec(R_NilValue, __func__));
+			for (j = 0; j < n; ++j) {
+				if (arf_is_nan(arb_midref(x + j)) ||
+				    mag_is_inf(arb_radref(x + j)) ||
+				    arf_cmpabs_mag(arb_midref(x + j), arb_radref(x + j)) < 0) {
+					arf_zero(arb_midref(z + j));
+					mag_const_pi(arb_radref(z + j));
+				}
+				else if (arf_is_zero(arb_midref(x + j)))
+					arb_zero(z + j);
+				else {
+					arb_set(z + j, pi);
+					if (arf_sgn(arb_midref(x + j)) < 0)
+					arb_neg(z + j, z + j);
+				}
+			}
+			arb_clear(pi);
 			break;
 		}
 		}

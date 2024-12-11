@@ -420,6 +420,10 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 12: /* "cumprod" */
 	case 38: /*   "round" */
 	case 39: /*  "signif" */
+	case 47: /*    "Conj" */
+	case 48: /*      "Re" */
+	case 49: /*      "Im" */
+	case 50: /*     "Mod" */
 	{
 		SEXP ans = newObject("fmpz");
 		fmpz *z = (fmpz *) ((n) ? flint_calloc((size_t) n, sizeof(fmpz)) : 0);
@@ -428,6 +432,8 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case  6: /*   "floor" */
 		case  7: /* "ceiling" */
 		case  8: /*   "trunc" */
+		case 47: /*    "Conj" */
+		case 48: /*      "Re" */
 			for (j = 0; j < n; ++j)
 				fmpz_set(z + j, x + j);
 			break;
@@ -436,6 +442,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_neg(z + j, x + j);
 			break;
 		case  3: /*     "abs" */
+		case 50: /*     "Mod" */
 			for (j = 0; j < n; ++j)
 				fmpz_abs(z + j, x + j);
 			break;
@@ -444,9 +451,19 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_set_si(z + j, fmpz_sgn(x + j));
 			break;
 		case  5: /*    "sqrt" */
-			for (j = 0; j < n; ++j)
-				fmpz_sqrt(z + j, x + j);
+		{
+			fmpz_t r;
+			fmpz_init(r);
+			for (j = 0; j < n; ++j) {
+				if (fmpz_sgn(x + j) >= 0)
+				fmpz_sqrtrem(z + j, r, x + j);
+				if (!(fmpz_sgn(x + j) >= 0 && fmpz_is_zero(r)))
+				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
+				         "sqrt", "fmpz", "fmpz");
+			}
+			fmpz_clear(r);
 			break;
+		}
 		case  9: /*  "cummin" */
 			if (n) {
 			fmpz_set(z, x);
@@ -535,6 +552,8 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			break;
 		}
+		case 49: /*      "Im" */
+			break;
 		}
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		return ans;

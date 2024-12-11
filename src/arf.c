@@ -4,6 +4,7 @@
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
 #include <flint/arf.h>
+#include <flint/arb.h>
 #include "flint.h"
 
 int asRnd(SEXP rnd, int gnu, const char *where)
@@ -483,11 +484,18 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 12: /* "cumprod" */
 	case 38: /*   "round" */
 	case 39: /*  "signif" */
+	case 47: /*    "Conj" */
+	case 48: /*      "Re" */
+	case 49: /*      "Im" */
+	case 50: /*     "Mod" */
+	case 51: /*     "Arg" */
 	{
 		SEXP ans = newObject("arf");
 		arf_ptr z = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
 		switch (op) {
 		case  1: /*       "+" */
+		case 47: /*    "Conj" */
+		case 48: /*      "Re" */
 			for (j = 0; j < n; ++j)
 				arf_set(z + j, x + j);
 			break;
@@ -496,6 +504,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_neg(z + j, x + j);
 			break;
 		case  3: /*     "abs" */
+		case 50: /*     "Mod" */
 			for (j = 0; j < n; ++j)
 				arf_abs(z + j, x + j);
 			break;
@@ -648,6 +657,25 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(p);
 			fmpz_clear(q);
 			fmpz_clear(r);
+			break;
+		}
+		case 49: /*      "Im" */
+			for (j = 0; j < n; ++j)
+				arf_zero(z + j);
+			break;
+		case 51: /*     "Arg" */
+		{
+			arb_t pi;
+			arb_init(pi);
+			arb_const_pi(pi, asPrec(R_NilValue, __func__));
+			for (j = 0; j < n; ++j)
+				if (arf_is_nan(x + j) || arf_is_zero(x + j))
+					arf_set(z + j, x + j);
+				else if (arf_sgn(x + j) > 0)
+					arf_set(z + j, arb_midref(pi));
+				else
+					arf_neg(z + j, arb_midref(pi));
+			arb_clear(pi);
 			break;
 		}
 		}
