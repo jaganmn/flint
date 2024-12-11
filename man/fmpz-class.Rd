@@ -53,20 +53,20 @@
       absolute value, in which case \code{-Inf} or \code{Inf} is
       introduced with a warning.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpz", length = "numeric")}:\cr
+      \code{signature(.Object = "fmpz", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpz", x = "numeric")}:\cr
+      \code{signature(.Object = "fmpz", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x} truncated towards zero.  An
       error is signaled if any \code{x[i]} is \code{NaN}, \code{-Inf},
       \code{Inf}, or subnormal.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "fmpz")}:\cr
+      \code{signature(from = "ANY", to = "fmpz")}:\cr
       \code{signature(from = "nfmpz", to = "fmpz")}:\cr
       returns \code{new("fmpz", x = from)}.}
     \item{\code{coerce}}{

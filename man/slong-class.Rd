@@ -67,16 +67,16 @@
       exactly representable in double precision.  The rounding mode is
       to the nearest representable number in the direction of zero.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "slong", length = "numeric")}:\cr
-      \code{signature(.Object = "ulong", length = "numeric")}:\cr
+      \code{signature(.Object = "slong", length = "\var{numeric}")}:\cr
+      \code{signature(.Object = "ulong", length = "\var{numeric}")}:\cr
       return \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "slong", x = "numeric")}:\cr
-      \code{signature(.Object = "ulong", x = "numeric")}:\cr
+      \code{signature(.Object = "slong", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "ulong", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x} truncated towards zero.  An
       error is signaled if any \code{x[i]} is not in the range of the
@@ -85,17 +85,17 @@
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{\link{flintBits}()}.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "slong")}:\cr
+      \code{signature(from = "ANY", to = "slong")}:\cr
+      \code{signature(from = "ANY", to = "ulong")}:\cr
       \code{signature(from = "nslong", to = "slong")}:\cr
-      \code{signature(from = "vector", to = "ulong")}:\cr
       \code{signature(from = "nulong", to = "ulong")}:\cr
       return \code{new("slong", x = from)} or
       \code{new("ulong", x = from)}.}
     \item{\code{coerce}}{
       \code{signature(from = "slong", to = "nslong")}:\cr
       \code{signature(from = "ulong", to = "nulong")}:\cr
-      return an object of class \code{nslong} or \code{nulong}
-      whose data part is \code{as.vector(from, "integer")}.}
+      return an object of class \code{nslong} or \code{nulong} whose
+      data part is \code{as.vector(from, "integer")}.}
     \item{\code{format}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr

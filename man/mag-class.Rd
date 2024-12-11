@@ -50,26 +50,21 @@
       returns \code{as.vector(y, mode)}, where \code{y} is a double
       vector containing the result of converting each element of
       \code{x} to the range of double, rounding in the direction of
-      \code{Inf}, not always to nearest.  For a precise description of
-      the conversion, consult the definition of function
-      \code{mag_set_d} in the \acronym{FLINT} sources.}
+      \code{Inf}, not always to nearest.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "mag", length = "numeric")}:\cr
+      \code{signature(.Object = "mag", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "mag", x = "numeric")}:\cr
+      \code{signature(.Object = "mag", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
-      initialized with values from \code{abs(x)} rounded in the
-      direction of \code{Inf}, not always to nearest.  An error is
-      signaled if any \code{x[i]} is \code{NaN}.  For a precise
-      description of the conversion, consult the definition of function
-      \code{mag_get_d} in the \acronym{FLINT} sources.}
+      initialized with upper bounds for \code{abs(x)}.  An error is
+      signaled if any \code{x[i]} is \code{NaN}.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "mag")}:\cr
+      \code{signature(from = "ANY", to = "mag")}:\cr
       \code{signature(from = "nmag", to = "mag")}:\cr
       returns \code{new("mag", x = from)}.}
     \item{\code{coerce}}{

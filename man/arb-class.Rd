@@ -55,26 +55,28 @@
       \code{.Machine[["double.xmax"]]} in absolute value, in which case
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arb", length = "numeric")}:\cr
+      \code{signature(.Object = "arb", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
       initialized entirely with zeros (zero midpoint, zero radius).
       \code{.Object} is not copied, so all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arb", x = "numeric")}:\cr
+      \code{signature(.Object = "arb", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
-      initialized with midpoints from \code{x} and radii equal to zero.}
+      initialized by the elements of \code{x}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arb", mid = "numeric", rad = "numeric")}:\cr
-      as above, except that the new slot value points to an array
-      initialized with midpoints from \code{mid} and radii from
-      \code{rad}, both recycled as necessary.  The result length is the
-      maximum initializer length or zero if any initializer has length
-      zero.  An error is signaled if any \code{rad[i]} is \code{NaN}.}
+      \code{signature(.Object = "arb", mid = "\var{atomic|flint}", rad = "\var{atomic|flint}")}:\cr
+      as above, except that the new slot value points to an array whose
+      midpoints and radii are initialized separately with values from
+      \code{mid} and \code{rad}, which are coerced to classes
+      \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
+      as necessary.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "arb")}:\cr
-      returns \code{new("arb", x = from)}.}
+      \code{signature(from = "ANY", to = "arb")}:\cr
+      returns \code{new("arb", x = from)}.  An error is signaled if the
+      class or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
     \item{\code{coerce}}{
       \code{signature(from = "narb", to = "arb")}:\cr
       returns \code{new("arb", mid = from@mid, rad = from@rad)}.}

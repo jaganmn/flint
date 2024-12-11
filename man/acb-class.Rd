@@ -50,8 +50,8 @@
     \item{\code{as.vector}}{
       \code{signature(x = "acb")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a complex
-      vector containing the result of converting the midpoints of
-      the real and imaginary parts of \code{x} to the range of double,
+      vector containing the result of converting the midpoints of the
+      real and imaginary parts of \code{x} to the range of double,
       rounding if the value is not exactly representable in double
       precision.  The rounding mode is to the nearest representable
       number (with precedence to even significands in case of ties),
@@ -59,33 +59,31 @@
       absolute value, in which case \code{-Inf} or \code{Inf} is
       introduced with a warning.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acb", length = "numeric")}:\cr
+      \code{signature(.Object = "acb", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
-      initialized entirely with zeros (zero midpoint, zero radius
-      in the real and imaginary parts).  \code{.Object} is not copied,
-      so all references are affected.}
+      initialized entirely with zeros (zero midpoint, zero radius in the
+      real and imaginary parts).  \code{.Object} is not copied, so all
+      references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acb", x = "complex")}:\cr
-      \code{signature(.Object = "acb", x = "numeric")}:\cr
-      as above, except that the new \code{x} slot points to an array
-      initialized with midpoints from \code{x} and radii equal to zero.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "acb", real.mid = "numeric", real.rad = "numeric", imag.mid = "numeric", imag.rad = "numeric")}:\cr
+      \code{signature(.Object = "acb", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
-      initialized with midpoints from \code{*.mid} and radii from
-      \code{*.rad}, all recycled as necessary.  The result length is the
-      maximum initializer length or zero if any initializer has length
-      zero.  An error is signaled if any \code{*.rad[i]} is \code{NaN}.}
+      initialized with values from \code{x}.}
+    \item{\code{initialize}}{
+      \code{signature(.Object = "acb", real = "\var{atomic|flint}", imag = "\var{atomic|flint}")}:\cr
+      as above, except that the new slot value points to an array whose
+      real and imaginary parts are initialized separately with values
+      from \code{real} and \code{imag}, which are coerced to class
+      \code{\linkS4class{arb}} and recycled as necessary.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "acb")}:\cr
-      returns
-      \code{new("acb", x = from)}.}
+      \code{signature(from = "ANY", to = "acb")}:\cr
+      returns \code{new("acb", x = from)}.  An error is signaled if the
+      class or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
     \item{\code{coerce}}{
       \code{signature(from = "nacb", to = "acb")}:\cr
-      returns
-      \code{new("acb", real.mid = from@real@mid, real.rad = from@real@rad, imag.mid = from@imag@mid, imag.rad = from@imag@rad)}.}
+      returns \code{new("acb", real = from@real, imag = from@imag)}.}
     \item{\code{coerce}}{
       \code{signature(from = "acb", to = "nacb")}:\cr
       returns the analogous object of class \code{nacb}.}

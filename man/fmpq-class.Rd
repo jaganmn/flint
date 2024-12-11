@@ -56,7 +56,7 @@
       absolute value, in which case \code{-Inf} or \code{Inf} is
       introduced with a warning.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq", length = "numeric")}:\cr
+      \code{signature(.Object = "fmpq", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
@@ -64,21 +64,21 @@
       denominator).  \code{.Object} is not copied, so all references are
       affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq", x = "numeric")}:\cr
+      \code{signature(.Object = "fmpq", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.  An error is signaled if
       any \code{x[i]} is \code{NaN}, \code{-Inf}, or \code{Inf}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq", num = "numeric", den = "numeric")}:\cr
-      as above, except that the new slot value points to an array
-      initialized with numerators from \code{num} and denominators from
-      \code{den}, both truncated towards zero and recycled as necessary.
-      The result length is the maximum initializer length or zero if any
-      initializer has length zero.  An error is signaled if any
-      \code{num[i]} or \code{den[i]} is \code{NaN}, \code{-Inf},
-      \code{Inf}, or subnormal or if any \code{den[i]} is zero.}
+      \code{signature(.Object = "fmpq", num = "\var{atomic|flint}", den = "\var{atomic|flint}")}:\cr
+      as above, except that the new slot value points to an array whose
+      numerators and denominators are initialized independently with
+      values from \code{num} and \code{den}, which are coerced to class
+      \code{\linkS4class{fmpz}} and recycled as necessary.  An error is
+      signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
+      \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
+      zero.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "fmpq")}:\cr
+      \code{signature(from = "ANY", to = "fmpq")}:\cr
       returns \code{new("fmpq", x = from)}.}
     \item{\code{coerce}}{
       \code{signature(from = "nfmpq", to = "fmpq")}:\cr
@@ -96,8 +96,8 @@
     \item{\code{format}}{
       \code{signature(x = "fmpq")}:\cr
       returns a character vector suitable for printing, using string
-      format \code{"(p/q)"}.  Optional arguments control the output;
-      see \code{\link{format-methods}}.}
+      format \code{"(p/q)"}.  Optional arguments control the output; see
+      \code{\link{format-methods}}.}
   }
 }
 \seealso{

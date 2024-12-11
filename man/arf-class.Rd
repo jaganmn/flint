@@ -51,18 +51,18 @@
       \code{.Machine[["double.xmax"]]} in absolute value, in which case
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arf", length = "numeric")}:\cr
+      \code{signature(.Object = "arf", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arf", x = "numeric")}:\cr
+      \code{signature(.Object = "arf", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
     \item{\code{coerce}}{
-      \code{signature(from = "vector", to = "arf")}:\cr
+      \code{signature(from = "ANY", to = "arf")}:\cr
       \code{signature(from = "narf", to = "arf")}:\cr
       returns \code{new("arf", x = from)}.}
     \item{\code{coerce}}{
