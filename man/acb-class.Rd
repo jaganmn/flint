@@ -67,6 +67,23 @@
       unless a midpoint exceeds \code{.Machine[["double.xmax"]]} in
       absolute value, in which case \code{-Inf} or \code{Inf} is
       introduced with a warning.}
+    \item{\code{coerce}}{
+      \code{signature(from = "ANY", to = "acb")}:\cr
+      returns \code{new("acb", x = from)}.  An error is signaled if the
+      class or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "nacb", to = "acb")}:\cr
+      returns \code{new("acb", real = from@real, imag = from@imag)}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "acb", to = "nacb")}:\cr
+      returns the analogous object of class \code{nacb}.}
+    \item{\code{format}}{
+      \code{signature(x = "acb")}:\cr
+      returns a character vector suitable for printing, using string
+      format \code{"(m +/- r)+(m +/- r)i"} and scientific format for
+      each \code{m} and \code{r}.  Optional arguments control the
+      output; see \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "acb", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
@@ -85,26 +102,9 @@
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class
       \code{\linkS4class{arb}} and recycled as necessary.}
-    \item{\code{coerce}}{
-      \code{signature(from = "ANY", to = "acb")}:\cr
-      returns \code{new("acb", x = from)}.  An error is signaled if the
-      class or type of \code{from} is not supported by the method for
-      \code{\link{initialize}}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "nacb", to = "acb")}:\cr
-      returns \code{new("acb", real = from@real, imag = from@imag)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "acb", to = "nacb")}:\cr
-      returns the analogous object of class \code{nacb}.}
     \item{\code{length}}{
       \code{signature(x = "nacb")}:\cr
       returns \code{length(x@real@mid)}.}
-    \item{\code{format}}{
-      \code{signature(x = "acb")}:\cr
-      returns a character vector suitable for printing, using string
-      format \code{"(m +/- r)+(m +/- r)i"} and scientific format for
-      each \code{m} and \code{r}.  Optional arguments control the
-      output; see \code{\link{format-methods}}.}
   }
 }
 \seealso{

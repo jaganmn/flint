@@ -84,6 +84,23 @@
       \code{x} to the range of double, rounding if the value is not
       exactly representable in double precision.  The rounding mode is
       to the nearest representable number in the direction of zero.}
+    \item{\code{coerce}}{
+      \code{signature(from = "ANY", to = "slong")}:\cr
+      \code{signature(from = "ANY", to = "ulong")}:\cr
+      \code{signature(from = "nslong", to = "slong")}:\cr
+      \code{signature(from = "nulong", to = "ulong")}:\cr
+      return \code{new("slong", x = from)} or
+      \code{new("ulong", x = from)}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "slong", to = "nslong")}:\cr
+      \code{signature(from = "ulong", to = "nulong")}:\cr
+      return an object of class \code{nslong} or \code{nulong} whose
+      data part is \code{as.vector(from, "integer")}.}
+    \item{\code{format}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      return a character vector suitable for printing.  Optional
+      arguments control the output; see \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "slong", length = "\var{numeric}")}:\cr
       \code{signature(.Object = "ulong", length = "\var{numeric}")}:\cr
@@ -102,23 +119,6 @@
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{\link{flintBits}()}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "ANY", to = "slong")}:\cr
-      \code{signature(from = "ANY", to = "ulong")}:\cr
-      \code{signature(from = "nslong", to = "slong")}:\cr
-      \code{signature(from = "nulong", to = "ulong")}:\cr
-      return \code{new("slong", x = from)} or
-      \code{new("ulong", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "slong", to = "nslong")}:\cr
-      \code{signature(from = "ulong", to = "nulong")}:\cr
-      return an object of class \code{nslong} or \code{nulong} whose
-      data part is \code{as.vector(from, "integer")}.}
-    \item{\code{format}}{
-      \code{signature(x = "slong")}:\cr
-      \code{signature(x = "ulong")}:\cr
-      return a character vector suitable for printing.  Optional
-      arguments control the output; see \code{\link{format-methods}}.}
   }
 }
 \seealso{

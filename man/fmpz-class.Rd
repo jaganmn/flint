@@ -61,6 +61,18 @@
       unless the element exceeds \code{.Machine[["double.xmax"]]} in
       absolute value, in which case \code{-Inf} or \code{Inf} is
       introduced with a warning.}
+    \item{\code{coerce}}{
+      \code{signature(from = "ANY", to = "fmpz")}:\cr
+      \code{signature(from = "nfmpz", to = "fmpz")}:\cr
+      returns \code{new("fmpz", x = from)}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "fmpz", to = "nfmpz")}:\cr
+      returns an object of class \code{nfmpz} whose data part is
+      \code{as.vector(from, "integer")}.}
+    \item{\code{format}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns a character vector suitable for printing.  Optional
+      arguments control the output; see \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "fmpz", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
@@ -74,18 +86,6 @@
       initialized with values from \code{x} truncated towards zero.  An
       error is signaled if any \code{x[i]} is \code{NaN}, \code{-Inf},
       \code{Inf}, or subnormal.}
-    \item{\code{coerce}}{
-      \code{signature(from = "ANY", to = "fmpz")}:\cr
-      \code{signature(from = "nfmpz", to = "fmpz")}:\cr
-      returns \code{new("fmpz", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "fmpz", to = "nfmpz")}:\cr
-      returns an object of class \code{nfmpz} whose data part is
-      \code{as.vector(from, "integer")}.}
-    \item{\code{format}}{
-      \code{signature(x = "fmpz")}:\cr
-      returns a character vector suitable for printing.  Optional
-      arguments control the output; see \code{\link{format-methods}}.}
   }
 }
 \seealso{

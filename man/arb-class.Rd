@@ -63,6 +63,23 @@
       significands in case of ties), unless a midpoint exceeds
       \code{.Machine[["double.xmax"]]} in absolute value, in which case
       \code{-Inf} or \code{Inf} is introduced with a warning.}
+    \item{\code{coerce}}{
+      \code{signature(from = "ANY", to = "arb")}:\cr
+      returns \code{new("arb", x = from)}.  An error is signaled if the
+      class or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "narb", to = "arb")}:\cr
+      returns \code{new("arb", mid = from@mid, rad = from@rad)}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "arb", to = "narb")}:\cr
+      returns the analogous object of class \code{narb}.}
+    \item{\code{format}}{
+      \code{signature(x = "arb")}:\cr
+      returns a character vector suitable for printing, using string
+      format \code{"(m +/- r)"} and scientific format for \code{m} and
+      \code{r}.  Optional arguments control the output; see
+      \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "arb", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
@@ -81,26 +98,9 @@
       \code{mid} and \code{rad}, which are coerced to classes
       \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
       as necessary.}
-    \item{\code{coerce}}{
-      \code{signature(from = "ANY", to = "arb")}:\cr
-      returns \code{new("arb", x = from)}.  An error is signaled if the
-      class or type of \code{from} is not supported by the method for
-      \code{\link{initialize}}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "narb", to = "arb")}:\cr
-      returns \code{new("arb", mid = from@mid, rad = from@rad)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "arb", to = "narb")}:\cr
-      returns the analogous object of class \code{narb}.}
     \item{\code{length}}{
       \code{signature(x = "narb")}:\cr
       returns \code{length(x@mid)}.}
-    \item{\code{format}}{
-      \code{signature(x = "arb")}:\cr
-      returns a character vector suitable for printing, using string
-      format \code{"(m +/- r)"} and scientific format for \code{m} and
-      \code{r}.  Optional arguments control the output; see
-      \code{\link{format-methods}}.}
   }
 }
 \seealso{

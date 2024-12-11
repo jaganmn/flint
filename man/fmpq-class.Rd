@@ -64,6 +64,24 @@
       unless the element exceeds \code{.Machine[["double.xmax"]]} in
       absolute value, in which case \code{-Inf} or \code{Inf} is
       introduced with a warning.}
+    \item{\code{coerce}}{
+      \code{signature(from = "ANY", to = "fmpq")}:\cr
+      returns \code{new("fmpq", x = from)}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "nfmpq", to = "fmpq")}:\cr
+      returns \code{new("fmpq", num = from@num, den = from@den)}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "fmpq", to = "nfmpq")}:\cr
+      returns the analogous object of class \code{nfmpq} with slots
+      \code{num} and \code{den} such that \code{den[i]} positive and
+      coprime with \code{num[i]} for all \code{i}, except where
+      \code{NA} is introduced (where the numerator or the denominator
+      exceeds the range of \R{}'s integer type).}
+    \item{\code{format}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a character vector suitable for printing, using string
+      format \code{"(p/q)"}.  Optional arguments control the output; see
+      \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "fmpq", length = "\var{numeric}")}:\cr
       returns \code{.Object} after setting its \code{.xData} slot.  The
@@ -86,27 +104,9 @@
       signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
       \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
       zero.}
-    \item{\code{coerce}}{
-      \code{signature(from = "ANY", to = "fmpq")}:\cr
-      returns \code{new("fmpq", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "nfmpq", to = "fmpq")}:\cr
-      returns \code{new("fmpq", num = from@num, den = from@den)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "fmpq", to = "nfmpq")}:\cr
-      returns the analogous object of class \code{nfmpq} with slots
-      \code{num} and \code{den} such that \code{den[i]} positive and
-      coprime with \code{num[i]} for all \code{i}, except where
-      \code{NA} is introduced (where the numerator or the denominator
-      exceeds the range of \R{}'s integer type).}
     \item{\code{length}}{
       \code{signature(x = "nfmpq")}:\cr
       returns \code{length(x@num)}.}
-    \item{\code{format}}{
-      \code{signature(x = "fmpq")}:\cr
-      returns a character vector suitable for printing, using string
-      format \code{"(p/q)"}.  Optional arguments control the output; see
-      \code{\link{format-methods}}.}
   }
 }
 \seealso{
