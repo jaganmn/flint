@@ -14,14 +14,6 @@
 \alias{as.complex,flint-method}
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
-\alias{coerce,flint,slong-method}
-\alias{coerce,flint,ulong-method}
-\alias{coerce,flint,fmpz-method}
-\alias{coerce,flint,fmpq-method}
-\alias{coerce,flint,arf-method}
-\alias{coerce,flint,mag-method}
-\alias{coerce,flint,arb-method}
-\alias{coerce,flint,acb-method}
 \alias{length,flint-method}
 \alias{print,flint-method}
 \alias{show,flint-method}

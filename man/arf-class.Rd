@@ -9,7 +9,7 @@
 \alias{Ops,arf,arf-method}
 \alias{Summary,arf-method}
 \alias{as.vector,arf-method}
-\alias{coerce,vector,arf-method}
+\alias{coerce,ANY,arf-method}
 \alias{coerce,narf,arf-method}
 \alias{coerce,arf,narf-method}
 \alias{initialize,arf-method}

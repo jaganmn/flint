@@ -11,7 +11,7 @@
 \alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}
-\alias{coerce,vector,fmpz-method}
+\alias{coerce,ANY,fmpz-method}
 \alias{coerce,nfmpz,fmpz-method}
 \alias{coerce,fmpz,nfmpz-method}
 \alias{initialize,fmpz-method}

@@ -14,7 +14,7 @@ setMethod("length",
           c(x = "narb"),
           function (x) length(x@mid))
 
-setAs("vector", "arb",
+setAs("ANY", "arb",
       function (from)
           new("arb", x = from))
 

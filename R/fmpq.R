@@ -14,7 +14,7 @@ setMethod("length",
           c(x = "nfmpq"),
           function (x) length(x@num))
 
-setAs("vector", "fmpq",
+setAs("ANY", "fmpq",
       function (from)
           new("fmpq", x = from))
 

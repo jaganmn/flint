@@ -8,7 +8,7 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_mag_vector, x), mode))
 
-setAs("vector", "mag",
+setAs("ANY", "mag",
       function (from)
           new("mag", x = from))
 

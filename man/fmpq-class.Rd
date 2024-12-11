@@ -11,7 +11,7 @@
 \alias{Ops,fmpq,fmpq-method}
 \alias{Summary,fmpq-method}
 \alias{as.vector,fmpq-method}
-\alias{coerce,vector,fmpq-method}
+\alias{coerce,ANY,fmpq-method}
 \alias{coerce,nfmpq,fmpq-method}
 \alias{coerce,fmpq,nfmpq-method}
 \alias{initialize,fmpq-method}

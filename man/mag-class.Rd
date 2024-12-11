@@ -11,7 +11,7 @@
 \alias{Ops,mag,mag-method}
 \alias{Summary,mag-method}
 \alias{as.vector,mag-method}
-\alias{coerce,vector,mag-method}
+\alias{coerce,ANY,mag-method}
 \alias{coerce,nmag,mag-method}
 \alias{coerce,mag,nmag-method}
 \alias{initialize,mag-method}

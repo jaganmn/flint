@@ -9,7 +9,7 @@
 \alias{Ops,acb,acb-method}
 \alias{Summary,acb-method}
 \alias{as.vector,acb-method}
-\alias{coerce,vector,acb-method}
+\alias{coerce,ANY,acb-method}
 \alias{coerce,nacb,acb-method}
 \alias{coerce,acb,nacb-method}
 \alias{initialize,acb-method}

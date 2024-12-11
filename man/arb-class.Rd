@@ -9,7 +9,7 @@
 \alias{Ops,arb,arb-method}
 \alias{Summary,arb-method}
 \alias{as.vector,arb-method}
-\alias{coerce,vector,arb-method}
+\alias{coerce,ANY,arb-method}
 \alias{coerce,narb,arb-method}
 \alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}

@@ -19,9 +19,9 @@
 \alias{Summary,ulong-method}
 \alias{as.vector,slong-method}
 \alias{as.vector,ulong-method}
-\alias{coerce,vector,slong-method}
+\alias{coerce,ANY,slong-method}
+\alias{coerce,ANY,ulong-method}
 \alias{coerce,nslong,slong-method}
-\alias{coerce,vector,ulong-method}
 \alias{coerce,nulong,ulong-method}
 \alias{coerce,slong,nslong-method}
 \alias{coerce,ulong,nulong-method}

@@ -8,7 +8,7 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_fmpz_vector, x), mode))
 
-setAs("vector", "fmpz",
+setAs("ANY", "fmpz",
       function (from)
           new("fmpz", x = from))
 
