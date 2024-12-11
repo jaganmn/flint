@@ -315,28 +315,30 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		{
 			const fmpz *b, *e;
 			ulong u;
-			fmpz_t tmp;
-			fmpz_init(tmp);
+			fmpz_t a;
+			fmpz_init(a);
 			for (j = 0; j < n; ++j) {
 				b = x + j % nx;
 				e = y + j % ny;
+				if (fmpz_is_zero(b) && fmpz_sgn(e) < 0)
+				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				         "fmpz", "^", "fmpz", "fmpz");
 				if (!fmpz_abs_fits_ui(e))
-				Rf_error(_("exponent exceeds maximum %llu in absolute value"),
-				         (unsigned long long int) (ulong) -1);
-				else if (fmpz_sgn(e) >= 0) {
+				Rf_error(_("<%s> %s <%s>: exponent exceeds maximum %llu in absolute value"),
+				         "fmpz", "^", "fmpz", (unsigned long long int) (ulong) -1);
+				if (fmpz_sgn(e) >= 0) {
 				u = fmpz_get_ui(e);
 				fmpz_pow_ui(fmpq_numref(z + j), b, u);
 				fmpz_one(fmpq_denref(z + j));
-				}
-				else {
-				fmpz_neg(tmp, e);
-				u = fmpz_get_ui(tmp);
+				} else {
+				fmpz_neg(a, e);
+				u = fmpz_get_ui(a);
 				fmpz_pow_ui(fmpq_denref(z + j), b, u);
 				fmpz_one(fmpq_numref(z + j));
 				fmpq_canonicalise(z + j);
 				}
 			}
-			fmpz_clear(tmp);
+			fmpz_clear(a);
 			break;
 		}
 		}

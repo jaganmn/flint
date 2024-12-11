@@ -300,32 +300,53 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 7: /*   "^" */
 		{
-			/* Only case in which the second operand is not 'fmpq' : */
-			const fmpz *y__ = (fmpz *) R_flint_get_pointer(s_y), *e;
-			const fmpq *b;
+			const fmpq *b, *e;
 			ulong u;
-			fmpz_t tmp;
-			fmpz_init(tmp);
+			slong s;
+			fmpz_t a, p;
+			int exact;
+			fmpz_init(a);
+			fmpz_init(p);
 			for (j = 0; j < n; ++j) {
-				b = x   + j % nx;
-				e = y__ + j % ny;
-				if (!fmpz_abs_fits_ui(e))
-				Rf_error(_("exponent exceeds maximum %llu in absolute value"),
-				         (unsigned long long int) (ulong) -1);
-				else if (fmpz_sgn(e) >= 0) {
-				u = fmpz_get_ui(e);
-				fmpz_pow_ui(fmpq_numref(z + j), fmpq_numref(b), u);
-				fmpz_pow_ui(fmpq_denref(z + j), fmpq_denref(b), u);
+				b = x + j % nx;
+				e = y + j % ny;
+				if ((fmpq_sgn(b) == 0 && fmpq_sgn(e) < 0) ||
+				    (fmpq_sgn(b) <  0 && fmpz_is_even(fmpq_denref(e))))
+				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				         "fmpq", "^", "fmpq", "fmpq");
+				if (!fmpz_abs_fits_ui(fmpq_numref(e)))
+				Rf_error(_("<%s> %s <%s>: exponent numerator exceeds maximum %llu in absolute value"),
+				         "fmpq", "^", "fmpq", (unsigned long long int) (ulong) -1);
+				if (!fmpz_fits_si(fmpq_denref(e)))
+				Rf_error(_("<%s> %s <%s>: exponent denominator exceeds maximum %llu"),
+				         "fmpq", "^", "fmpq", (unsigned long long int) ((ulong) -1 >> 1));
+				s = fmpz_get_si(fmpq_denref(e));
+				if (fmpz_sgn(fmpq_numref(e)) >= 0) {
+				u = fmpz_get_ui(fmpq_numref(e));
+				fmpz_pow_ui(p, fmpq_numref(b), u);
+				exact = fmpz_root(fmpq_numref(z + j), p, s);
+				if (exact) {
+				fmpz_pow_ui(p, fmpq_denref(b), u);
+				exact = fmpz_root(fmpq_denref(z + j), p, s);
 				}
-				else {
-				fmpz_neg(tmp, e);
-				u = fmpz_get_ui(tmp);
-				fmpz_pow_ui(fmpq_numref(z + j), fmpq_denref(b), u);
-				fmpz_pow_ui(fmpq_denref(z + j), fmpq_numref(b), u);
+				} else {
+				fmpz_neg(a, fmpq_numref(e));
+				u = fmpz_get_ui(fmpq_numref(e));
+				fmpz_pow_ui(p, fmpq_denref(b), u);
+				exact = fmpz_root(fmpq_numref(z + j), p, s);
+				if (exact) {
+				fmpz_pow_ui(p, fmpq_numref(b), u);
+				exact = fmpz_root(fmpq_denref(z + j), p, s);
+				if (exact)
 				fmpq_canonicalise(z + j);
 				}
+				}
+				if (!exact)
+				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				         "fmpq", "^", "fmpq", "fmpq");
 			}
-			fmpz_clear(tmp);
+			fmpz_clear(a);
+			fmpz_clear(p);
 			break;
 		}
 		}

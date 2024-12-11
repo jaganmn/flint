@@ -48,18 +48,6 @@ setMethod("-",
           function (e1, e2)
               .Call(R_flint_fmpq_ops1, "-", e1, NULL))
 
-setMethod("^",
-          c(e1 = "fmpq", e2 = "fmpz"),
-          function (e1, e2)
-              .Call(R_flint_fmpq_ops2, "^", e1, e2))
-
-setMethod("^",
-          c(e1 = "fmpq", e2 = "fmpq"),
-          function (e1, e2)
-              stop(gettextf("exponentiation of '%s' requires integer exponent",
-                            "fmpq"),
-                   domain = NA))
-
 setMethod("Ops",
           c(e1 = "ANY", e2 = "fmpq"),
           function (e1, e2) {
