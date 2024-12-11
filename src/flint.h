@@ -158,7 +158,7 @@ typedef enum {
 } R_flint_class_t;
 
 extern
-SEXPTYPE R_flint_sexptypes[6];
+SEXPTYPE R_flint_sexptypes[7];
 
 extern
 const char *R_flint_classes[9];

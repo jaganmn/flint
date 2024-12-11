@@ -2,6 +2,8 @@
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
+#include <flint/arf.h>
+#include <flint/mag.h>
 #include "flint.h"
 
 void R_flint_fmpq_finalize(SEXP x)
@@ -19,125 +21,171 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
                              SEXP s_num, SEXP s_den)
 {
 	unsigned long long int j, n, np = 1, nq = 1;
+	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_num != R_NilValue || s_den != R_NilValue) {
-		if (s_num != R_NilValue) {
-			checkType(s_num, R_flint_sexptypes + 1, __func__);
-			np = (unsigned long long int) XLENGTH(s_num);
-		}
-		if (s_den != R_NilValue) {
-			checkType(s_den, R_flint_sexptypes + 1, __func__);
-			nq = (unsigned long long int) XLENGTH(s_den);
-		}
+		if (s_num != R_NilValue)
+			np = R_flint_get_length(s_num);
+		if (s_den != R_NilValue)
+			nq = R_flint_get_length(s_den);
 		n = RECYCLE2(np, nq);
 	} else if (s_x != R_NilValue) {
-		checkType(s_x, R_flint_sexptypes + 1, __func__);
+		checkType(s_x, R_flint_sexptypes, __func__);
+		if (TYPEOF(s_x) != EXTPTRSXP)
 		n = (unsigned long long int) XLENGTH(s_x);
-		if (TYPEOF(s_x) != REALSXP) {
-			s_num = s_x;
-			np = n;
-		}
+		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
+		n = R_flint_get_length(s_x);
+		else
+		n = 0;
 	} else
 		n = asLength(s_length, __func__);
 	fmpq *y = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
-	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
-		switch (TYPEOF(s_num)) {
-		case NILSXP:
-			break;
-		case RAWSXP:
-		case LGLSXP:
-			s_num = Rf_coerceVector(s_num, INTSXP);
-		case INTSXP:
-		{
-			const int *xp = INTEGER_RO(s_num);
-			int tmp;
-			for (j = 0; j < n; ++j) {
-				tmp = xp[j % np];
-				if (tmp == NA_INTEGER)
-				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
-				else
-				fmpz_set_si(fmpq_numref(y + j), tmp);
+		if (s_num != R_NilValue) {
+			const fmpz *xp = (fmpz *) R_flint_get_pointer(s_num);
+			if (s_den != R_NilValue) {
+				const fmpz *xq = (fmpz *) R_flint_get_pointer(s_den);
+				for (j = 0; j < n; ++j) {
+					if (fmpz_is_zero(xq + j % nq))
+					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
+					else {
+					fmpz_set(fmpq_numref(y + j), xp + j % np);
+					fmpz_set(fmpq_denref(y + j), xq + j % nq);
+					fmpq_canonicalise(y + j);
+					}
+				}
+			} else {
+				for (j = 0; j < n; ++j) {
+					fmpz_set(fmpq_numref(y + j), xp + j);
+					fmpz_one(fmpq_denref(y + j));
+				}
 			}
-			break;
-		}
-		case REALSXP:
-		{
-			const double *xp = REAL_RO(s_num);
-			double tmp;
-			for (j = 0; j < n; ++j) {
-				tmp = xp[j % np];
-				if (!R_FINITE(tmp))
-				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
-				else
-				fmpz_set_d(fmpq_numref(y + j), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+		} else {
+			if (s_den != R_NilValue) {
+				const fmpz *xq = (fmpz *) R_flint_get_pointer(s_den);
+				for (j = 0; j < n; ++j) {
+					if (fmpz_is_zero(xq + j))
+					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
+					else
+					fmpz_one(fmpq_denref(y + j));
+				}
 			}
-			break;
 		}
-		}
-		switch (TYPEOF(s_den)) {
+	} else {
+		switch (TYPEOF(s_x)) {
 		case NILSXP:
 			for (j = 0; j < n; ++j)
 				fmpz_one(fmpq_denref(y + j));
 			break;
 		case RAWSXP:
 		case LGLSXP:
-			s_den = Rf_coerceVector(s_den, INTSXP);
+			s_x = Rf_coerceVector(s_x, INTSXP);
 		case INTSXP:
 		{
-			const int *xq = INTEGER_RO(s_den);
-			int tmp;
+			const int *x = INTEGER_RO(s_x);
 			for (j = 0; j < n; ++j) {
-				tmp = xq[j % nq];
-				if (tmp == NA_INTEGER)
-				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
-				else
-				fmpz_set_si(fmpq_denref(y + j), tmp);
+				if (x[j] == NA_INTEGER)
+				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				else {
+				fmpz_set_si(fmpq_numref(y + j), x[j]);
+				fmpz_one(fmpq_denref(y + j));
+				}
 			}
 			break;
 		}
+		case CPLXSXP:
+			s_x = Rf_coerceVector(s_x, REALSXP);
 		case REALSXP:
 		{
-			const double *xq = REAL_RO(s_den);
-			double tmp;
+			const double *x = REAL_RO(s_x);
+			int e;
 			for (j = 0; j < n; ++j) {
-				tmp = xq[j % nq];
-				if (!R_FINITE(tmp))
-				Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
-				else
-				fmpz_set_d(fmpq_denref(y + j), (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
-			}
-			break;
-		}
-		}
-	} else if (s_x != R_NilValue) {
-		const double *x = REAL_RO(s_x);
-		double tmp;
-		int e;
-		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			if (!R_FINITE(tmp))
-			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpq");
-			else {
-			fmpz_set_d(fmpq_numref(y + j), ldexp(frexp(tmp, &e), DBL_MANT_DIG));
-			e -= DBL_MANT_DIG;
-			if (e < 0)
+				if (!R_FINITE(x[j]))
+				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+				else {
+				fmpz_set_d(fmpq_numref(y + j), ldexp(frexp(x[j], &e), DBL_MANT_DIG));
+				e -= DBL_MANT_DIG;
+				if (e < 0) {
 				fmpz_one_2exp(fmpq_denref(y + j),
-				              (ulong) -e);
-			else {
+				              (ulong) -e); /* fear not as e > INT_MIN */
+				fmpq_canonicalise(y + j);
+				} else {
 				fmpz_mul_2exp(fmpq_numref(y + j), fmpq_numref(y + j),
 				              (ulong)  e);
 				fmpz_one(fmpq_denref(y + j));
+				}
+				}
 			}
-			}
+			break;
 		}
-	} else
-		for (j = 0; j < n; ++j)
-			fmpq_zero(y + j);
-	for (j = 0; j < n; ++j) {
-		if (fmpz_is_zero(fmpq_denref(y + j)))
-		Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
-		else
-		fmpq_canonicalise(y + j);
+		case EXTPTRSXP:
+			switch (class) {
+			case R_FLINT_CLASS_SLONG:
+			{
+				const slong *x = (slong *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					fmpz_set_si(fmpq_numref(y + j), x[j]);
+					fmpz_one(fmpq_denref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_ULONG:
+			{
+				const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					fmpz_set_ui(fmpq_numref(y + j), x[j]);
+					fmpz_one(fmpq_denref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_FMPZ:
+			{
+				const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					fmpz_set(fmpq_numref(y + j), x + j);
+					fmpz_one(fmpq_denref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_FMPQ:
+			{
+				const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j)
+					fmpq_set(y + j, x + j);
+				break;
+			}
+			case R_FLINT_CLASS_ARF:
+			{
+				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					if (!arf_is_finite(x + j))
+					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+					else
+					arf_get_fmpq(y + j, x + j);
+				}
+				break;
+			}
+			case R_FLINT_CLASS_MAG:
+			{
+				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					if (mag_is_inf(x + j))
+					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+					else
+					mag_get_fmpq(y + j, x + j);
+				}
+				break;
+			}
+			case R_FLINT_CLASS_ARB:
+			case R_FLINT_CLASS_ACB:
+				Rf_error(_("coercion from ball to point is not yet supported"));
+				break;
+			case R_FLINT_CLASS_INVALID:
+				Rf_error(_("foreign external pointer"));
+				break;
+			}
+			break;
+		}
 	}
 	return object;
 }

@@ -1,7 +1,9 @@
 setMethod("initialize",
           c(.Object = "fmpq"),
-          function (.Object, length = 0L, x = NULL, num = NULL, den = NULL, ...)
-              .Call(R_flint_fmpq_initialize, .Object, length, x, num, den))
+          function (.Object, length = 0L, x = NULL, num, den, ...)
+              .Call(R_flint_fmpq_initialize, .Object, length, x,
+                    if (!missing(num)) as(num, "fmpz"),
+                    if (!missing(den)) as(den, "fmpz")))
 
 setMethod("as.vector",
           c(x = "fmpq"),

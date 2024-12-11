@@ -1,7 +1,9 @@
 setMethod("initialize",
           c(.Object = "arb"),
-          function (.Object, length = 0L, x = NULL, mid = NULL, rad = NULL, ...)
-              .Call(R_flint_arb_initialize, .Object, length, x, mid, rad))
+          function (.Object, length = 0L, x = NULL, mid, rad, ...)
+              .Call(R_flint_arb_initialize, .Object, length, x,
+                    if (!missing(mid)) as(mid, "arf"),
+                    if (!missing(rad)) as(rad, "mag")))
 
 setMethod("as.vector",
           c(x = "arb"),

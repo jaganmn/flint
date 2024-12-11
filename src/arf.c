@@ -49,14 +49,19 @@ void R_flint_arf_finalize(SEXP x)
 SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
 	unsigned long long int j, n;
-	if (s_x == R_NilValue)
-		n = asLength(s_length, __func__);
-	else {
-		checkType(s_x, R_flint_sexptypes + 1, __func__);
+	R_flint_class_t class = R_FLINT_CLASS_INVALID;
+	if (s_x != R_NilValue) {
+		checkType(s_x, R_flint_sexptypes, __func__);
+		if (TYPEOF(s_x) != EXTPTRSXP)
 		n = (unsigned long long int) XLENGTH(s_x);
-	}
+		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
+		n = R_flint_get_length(s_x);
+		else
+		n = 0;
+	} else
+		n = asLength(s_length, __func__);
 	arf_ptr y = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
-	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		for (j = 0; j < n; ++j)
@@ -68,26 +73,77 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		int tmp;
 		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			if (tmp == NA_INTEGER)
+			if (x[j] == NA_INTEGER)
 			arf_nan(y + j);
 			else
-			arf_set_si(y + j, tmp);
+			arf_set_si(y + j, x[j]);
 		}
 		break;
 	}
+	case CPLXSXP:
+		s_x = Rf_coerceVector(s_x, REALSXP);
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		double tmp;
-		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			arf_set_d(y + j, tmp);
-		}
+		for (j = 0; j < n; ++j)
+			arf_set_d(y + j, x[j]);
 		break;
 	}
+	case EXTPTRSXP:
+		switch (class) {
+		case R_FLINT_CLASS_SLONG:
+		{
+			const slong *x = (slong *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				arf_set_si(y + j, x[j]);
+			break;
+		}
+		case R_FLINT_CLASS_ULONG:
+		{
+			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				arf_set_ui(y + j, x[j]);
+			break;
+		}
+		case R_FLINT_CLASS_FMPZ:
+		{
+			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				arf_set_fmpz(y + j, x + j);
+			break;
+		}
+		case R_FLINT_CLASS_FMPQ:
+		{
+			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+			int prec = asPrec(R_NilValue, __func__);
+			for (j = 0; j < n; ++j)
+				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j), fmpq_denref(x + j), prec, ARF_RND_NEAR);
+			break;
+		}
+		case R_FLINT_CLASS_ARF:
+		{
+			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				arf_set(y + j, x + j);
+			break;
+		}
+		case R_FLINT_CLASS_MAG:
+		{
+			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				arf_set_mag(y + j, x + j);
+			break;
+		}
+		case R_FLINT_CLASS_ARB:
+		case R_FLINT_CLASS_ACB:
+			Rf_error(_("coercion from ball to point is not yet supported"));
+			break;
+		case R_FLINT_CLASS_INVALID:
+			Rf_error(_("foreign external pointer"));
+			break;
+		}
+		break;
 	}
 	return object;
 }

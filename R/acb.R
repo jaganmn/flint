@@ -1,10 +1,9 @@
 setMethod("initialize",
           c(.Object = "acb"),
-          function (.Object, length = 0L, x = NULL,
-                    real.mid = NULL, real.rad = NULL,
-                    imag.mid = NULL, imag.rad = NULL, ...)
+          function (.Object, length = 0L, x = NULL, real, imag, ...)
               .Call(R_flint_acb_initialize, .Object, length, x,
-                    real.mid, real.rad, imag.mid, imag.rad))
+                    if (!missing(real)) as(real, "arb"),
+                    if (!missing(imag)) as(imag, "arb")))
 
 setMethod("as.vector",
           c(x = "acb"),
@@ -21,9 +20,7 @@ setAs("vector", "acb",
 
 setAs("nacb", "acb",
       function (from)
-          new("acb",
-              real.mid = from@real@mid, real.rad = from@real@rad,
-              imag.mid = from@imag@mid, imag.rad = from@imag@rad))
+          new("acb", real = from@real, imag = from@imag))
 
 setAs("acb", "nacb",
       function (from)

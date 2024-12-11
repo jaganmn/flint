@@ -1,6 +1,9 @@
 #include <gmp.h>
 #include <flint/flint.h>
 #include <flint/fmpz.h>
+#include <flint/fmpq.h>
+#include <flint/arf.h>
+#include <flint/mag.h>
 #include "flint.h"
 
 void R_flint_slong_finalize(SEXP x)
@@ -13,12 +16,17 @@ void R_flint_slong_finalize(SEXP x)
 SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
 	unsigned long long int j, n;
-	if (s_x == R_NilValue)
-		n = asLength(s_length, __func__);
-	else {
-		checkType(s_x, R_flint_sexptypes + 1, __func__);
+	R_flint_class_t class = R_FLINT_CLASS_INVALID;
+	if (s_x != R_NilValue) {
+		checkType(s_x, R_flint_sexptypes, __func__);
+		if (TYPEOF(s_x) != EXTPTRSXP)
 		n = (unsigned long long int) XLENGTH(s_x);
-	}
+		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
+		n = R_flint_get_length(s_x);
+		else
+		n = 0;
+	} else
+		n = asLength(s_length, __func__);
 	slong *y = (slong *) ((n) ? flint_calloc((size_t) n, sizeof(slong)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
@@ -30,35 +38,118 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		int tmp;
 		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			if (tmp == NA_INTEGER)
-			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
+			if (x[j] == NA_INTEGER)
+			Rf_error(_("NaN is not representable by '%s'"), "slong");
 			else
-			y[j] = (slong) tmp;
+			y[j] = (slong) x[j];
 		}
 		break;
 	}
+	case CPLXSXP:
+		s_x = Rf_coerceVector(s_x, REALSXP);
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		double tmp;
 		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			if (!R_FINITE(tmp))
-			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "slong");
+			if (ISNAN(x[j]))
+			Rf_error(_("NaN is not representable by '%s'"), "slong");
 #if FLINT64
-			else if (tmp <  -0x1.0p+63       || tmp >= 0x1.0p+63)
+			else if (x[j] <  -0x1.0p+63       || x[j] >= 0x1.0p+63)
 #else
-			else if (tmp <= -0x1.0p+31 - 1.0 || tmp >= 0x1.0p+31)
+			else if (x[j] <= -0x1.0p+31 - 1.0 || x[j] >= 0x1.0p+31)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "slong");
 			else
-			y[j] = (slong) tmp;
+			y[j] = (slong) x[j];
 		}
 		break;
 	}
+	case EXTPTRSXP:
+		switch (class) {
+		case R_FLINT_CLASS_SLONG:
+		{
+			const slong *x = (slong *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				y[j] = x[j];
+			break;
+		}
+		case R_FLINT_CLASS_ULONG:
+		{
+			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j) {
+				if (x[j] > ((ulong) -1) >> 1)
+				Rf_error(_("integer not in range of '%s'"), "slong");
+				else
+				y[j] = (slong) x[j];
+			}
+			break;
+		}
+		case R_FLINT_CLASS_FMPZ:
+		{
+			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j) {
+				if (!fmpz_fits_si(x + j))
+				Rf_error(_("integer not in range of '%s'"), "slong");
+				else
+				y[j] = fmpz_get_si(x + j);
+			}
+			break;
+		}
+		case R_FLINT_CLASS_FMPQ:
+		{
+			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			for (j = 0; j < n; ++j) {
+				fmpz_tdiv_q(q, fmpq_numref(x + j), fmpq_denref(x + j));
+				if (!fmpz_fits_si(q))
+				Rf_error(_("rational not in range of '%s'"), "slong");
+				else
+				y[j] = fmpz_get_si(q);
+			}
+			fmpz_clear(q);
+			break;
+		}
+		case R_FLINT_CLASS_ARF:
+		{
+			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			for (j = 0; j < n; ++j) {
+				arf_get_fmpz(q, x + j, ARF_RND_DOWN);
+				if (!fmpz_fits_si(q))
+				Rf_error(_("floating point number not in range of '%s'"), "slong");
+				else
+				y[j] = fmpz_get_si(q);
+			}
+			fmpz_clear(q);
+			break;
+		}
+		case R_FLINT_CLASS_MAG:
+		{
+			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			for (j = 0; j < n; ++j) {
+				mag_get_fmpz_lower(q, x + j);
+				if (!fmpz_fits_si(q))
+				Rf_error(_("floating point number not in range of '%s'"), "slong");
+				else
+				y[j] = fmpz_get_si(q);
+			}
+			fmpz_clear(q);
+			break;
+		}
+		case R_FLINT_CLASS_ARB:
+		case R_FLINT_CLASS_ACB:
+			Rf_error(_("coercion from ball to point is not yet supported"));
+			break;
+		case R_FLINT_CLASS_INVALID:
+			Rf_error(_("foreign external pointer"));
+			break;
+		}
+		break;
 	}
 	return object;
 }

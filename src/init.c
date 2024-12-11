@@ -18,7 +18,7 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_d;
 
 SEXPTYPE R_flint_sexptypes[] =
-{ CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
+{ EXTPTRSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
 
 const char *R_flint_classes[] =
 { "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };
@@ -110,7 +110,7 @@ SEXP R_flint_arb_vector(SEXP, SEXP);
 SEXP R_flint_arb_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_arb_ops1(SEXP, SEXP, SEXP);
 
-SEXP R_flint_acb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_nacb(SEXP, SEXP);
 SEXP R_flint_acb_vector(SEXP, SEXP);
 SEXP R_flint_acb_ops2(SEXP, SEXP, SEXP);
@@ -190,7 +190,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arb_vector, 2),
 	CALL_ENTRY(R_flint_arb_ops2, 3),
 	CALL_ENTRY(R_flint_arb_ops1, 3),
-	CALL_ENTRY(R_flint_acb_initialize, 7),
+	CALL_ENTRY(R_flint_acb_initialize, 5),
 	CALL_ENTRY(R_flint_acb_nacb, 2),
 	CALL_ENTRY(R_flint_acb_vector, 2),
 	CALL_ENTRY(R_flint_acb_ops2, 3),

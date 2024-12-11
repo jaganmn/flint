@@ -2,6 +2,8 @@
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
+#include <flint/arf.h>
+#include <flint/mag.h>
 #include "flint.h"
 
 void R_flint_fmpz_finalize(SEXP x)
@@ -18,14 +20,19 @@ void R_flint_fmpz_finalize(SEXP x)
 SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
 	unsigned long long int j, n;
-	if (s_x == R_NilValue)
-		n = asLength(s_length, __func__);
-	else {
-		checkType(s_x, R_flint_sexptypes + 1, __func__);
+	R_flint_class_t class = R_FLINT_CLASS_INVALID;
+	if (s_x != R_NilValue) {
+		checkType(s_x, R_flint_sexptypes, __func__);
+		if (TYPEOF(s_x) != EXTPTRSXP)
 		n = (unsigned long long int) XLENGTH(s_x);
-	}
+		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
+		n = R_flint_get_length(s_x);
+		else
+		n = 0;
+	} else
+		n = asLength(s_length, __func__);
 	fmpz *y = (fmpz *) ((n) ? flint_calloc((size_t) n, sizeof(fmpz)) : 0);
-	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		/* nothing to do */
@@ -36,29 +43,88 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		int tmp;
 		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			if (tmp == NA_INTEGER)
-			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
+			if (x[j] == NA_INTEGER)
+			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
 			else
-			fmpz_set_si(y + j, tmp);
+			fmpz_set_si(y + j, x[j]);
 		}
 		break;
 	}
+	case CPLXSXP:
+		s_x = Rf_coerceVector(s_x, REALSXP);
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		double tmp;
 		for (j = 0; j < n; ++j) {
-			tmp = x[j];
-			if (!R_FINITE(tmp))
-			Rf_error(_("NaN, -Inf, Inf not representable by '%s'"), "fmpz");
+			if (!R_FINITE(x[j]))
+			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
 			else
-			fmpz_set_d(y + j, (fabs(tmp) < DBL_MIN) ? 0.0 : tmp);
+			fmpz_set_d(y + j, (fabs(x[j]) < DBL_MIN) ? 0.0 : x[j]);
 		}
 		break;
 	}
+	case EXTPTRSXP:
+		switch (class) {
+		case R_FLINT_CLASS_SLONG:
+		{
+			const slong *x = (slong *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				fmpz_set_si(y + j, x[j]);
+			break;
+		}
+		case R_FLINT_CLASS_ULONG:
+		{
+			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				fmpz_set_ui(y + j, x[j]);
+			break;
+		}
+		case R_FLINT_CLASS_FMPZ:
+		{
+			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				fmpz_set(y + j, x + j);
+			break;
+		}
+		case R_FLINT_CLASS_FMPQ:
+		{
+			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				fmpz_tdiv_q(y + j, fmpq_numref(x + j), fmpq_denref(x + j));
+			break;
+		}
+		case R_FLINT_CLASS_ARF:
+		{
+			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j) {
+				if (!arf_is_finite(x + j))
+				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				else
+				arf_get_fmpz(y + j, x + j, ARF_RND_DOWN);
+			}
+			break;
+		}
+		case R_FLINT_CLASS_MAG:
+		{
+			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j) {
+				if (mag_is_inf(x + j))
+				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				else
+				mag_get_fmpz_lower(y + j, x + j);
+			}
+			break;
+		}
+		case R_FLINT_CLASS_ARB:
+		case R_FLINT_CLASS_ACB:
+			Rf_error(_("coercion from ball to point is not yet supported"));
+			break;
+		case R_FLINT_CLASS_INVALID:
+			Rf_error(_("foreign external pointer"));
+			break;
+		}
+		break;
 	}
 	return object;
 }

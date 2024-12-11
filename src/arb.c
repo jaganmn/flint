@@ -22,96 +22,144 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_mid, SEXP s_rad)
 {
 	unsigned long long int j, n, nm = 1, nr = 1;
+	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
-		if (s_mid != R_NilValue) {
-			checkType(s_mid, R_flint_sexptypes + 1, __func__);
-			nm = (unsigned long long int) XLENGTH(s_mid);
-		}
-		if (s_rad != R_NilValue) {
-			checkType(s_rad, R_flint_sexptypes + 1, __func__);
-			nr = (unsigned long long int) XLENGTH(s_rad);
-		}
+		if (s_mid != R_NilValue)
+			nm = R_flint_get_length(s_mid);
+		if (s_rad != R_NilValue)
+			nr = R_flint_get_length(s_rad);
 		n = RECYCLE2(nm, nr);
 	} else if (s_x != R_NilValue) {
-		checkType(s_x, R_flint_sexptypes + 1, __func__);
+		checkType(s_x, R_flint_sexptypes, __func__);
+		if (TYPEOF(s_x) != EXTPTRSXP)
 		n = (unsigned long long int) XLENGTH(s_x);
-		s_mid = s_x;
-		nm = n;
+		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
+		n = R_flint_get_length(s_x);
+		else
+		n = 0;
 	} else
 		n = asLength(s_length, __func__);
 	arb_ptr y = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
-	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
-		switch (TYPEOF(s_mid)) {
+		if (s_mid != R_NilValue) {
+			arf_srcptr xm = (arf_ptr) R_flint_get_pointer(s_mid);
+			if (s_rad != R_NilValue) {
+				mag_srcptr xr = (mag_ptr) R_flint_get_pointer(s_rad);
+				for (j = 0; j < n; ++j) {
+					arf_set(arb_midref(y + j), xm + j % nm);
+					mag_set(arb_radref(y + j), xr + j % nr);
+				}
+			} else {
+				for (j = 0; j < n; ++j) {
+					arf_set(arb_midref(y + j), xm + j);
+					mag_zero(arb_radref(y + j));
+				}
+			}
+		} else {
+			if (s_rad != R_NilValue) {
+				mag_srcptr xr = (mag_ptr) R_flint_get_pointer(s_rad);
+				for (j = 0; j < n; ++j) {
+					arf_zero(arb_midref(y + j));
+					mag_set(arb_radref(y + j), xr + j);
+				}
+			}
+		}
+	} else {
+		switch (TYPEOF(s_x)) {
 		case NILSXP:
 			for (j = 0; j < n; ++j)
-				arf_zero(arb_midref(y + j));
+				arb_zero(y + j);
 			break;
 		case RAWSXP:
 		case LGLSXP:
-			s_mid = Rf_coerceVector(s_mid, INTSXP);
+			s_x = Rf_coerceVector(s_x, INTSXP);
 		case INTSXP:
 		{
-			const int *xm = INTEGER_RO(s_mid);
-			int tmp;
-			for (j = 0; j < n; ++j) {
-				tmp = xm[j % nm];
-				if (tmp == NA_INTEGER)
-				arf_nan(arb_midref(y + j));
-				else
-				arf_set_si(arb_midref(y + j), tmp);
-			}
-			break;
-		}
-		case REALSXP:
-		{
-			const double *xm = REAL_RO(s_mid);
-			double tmp;
-			for (j = 0; j < n; ++j) {
-				tmp = xm[j % nm];
-				arf_set_d(arb_midref(y + j), tmp);
-			}
-			break;
-		}
-		}
-		switch (TYPEOF(s_rad)) {
-		case NILSXP:
+			const int *x = INTEGER_RO(s_x);
 			for (j = 0; j < n; ++j)
-				mag_zero(arb_radref(y + j));
-			break;
-		case RAWSXP:
-		case LGLSXP:
-			s_rad = Rf_coerceVector(s_rad, INTSXP);
-		case INTSXP:
-		{
-			const int *x = INTEGER_RO(s_rad);
-			int tmp;
-			for (j = 0; j < n; ++j) {
-				tmp = x[j % nr];
-				if (tmp == NA_INTEGER)
-				Rf_error(_("NaN not representable by '%s'"), "mag");
-				else
-				mag_set_ui(arb_radref(y + j), (ulong) ((tmp < 0) ? -tmp : tmp));
-			}
+				arb_set_si(y + j, x[j]);
 			break;
 		}
+		case CPLXSXP:
+			s_x = Rf_coerceVector(s_x, REALSXP);
 		case REALSXP:
 		{
-			const double *x = REAL_RO(s_rad);
-			double tmp;
-			for (j = 0; j < n; ++j) {
-				tmp = x[j % nr];
-				if (ISNAN(tmp))
-				Rf_error(_("NaN not representable by '%s'"), "mag");
-				else
-				mag_set_d(arb_radref(y + j), tmp);
+			const double *x = REAL_RO(s_x);
+			for (j = 0; j < n; ++j)
+				arb_set_d(y + j, x[j]);
+			break;
+		}
+		case EXTPTRSXP:
+			switch (class) {
+			case R_FLINT_CLASS_SLONG:
+			{
+				const slong *x = (slong *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j)
+					arb_set_si(y + j, x[j]);
+				break;
+			}
+			case R_FLINT_CLASS_ULONG:
+			{
+				const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j)
+					arb_set_ui(y + j, x[j]);
+				break;
+			}
+			case R_FLINT_CLASS_FMPZ:
+			{
+				const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j)
+					arb_set_fmpz(y + j, x + j);
+				break;
+			}
+			case R_FLINT_CLASS_FMPQ:
+			{
+				const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+				int prec = asPrec(R_NilValue, __func__);
+				for (j = 0; j < n; ++j)
+					arb_fmpz_div_fmpz(y + j, fmpq_numref(x + j), fmpq_denref(x + j), prec);
+				break;
+			}
+			case R_FLINT_CLASS_ARF:
+			{
+				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					arf_set(arb_midref(y + j), x + j);
+					mag_zero(arb_radref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_MAG:
+			{
+				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					arf_set_mag(arb_midref(y + j), x + j);
+					mag_zero(arb_radref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_ARB:
+			{
+				arb_srcptr x = (arb_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j)
+					arb_set(y + j, x + j);
+				break;
+			}
+			case R_FLINT_CLASS_ACB:
+			{
+				acb_srcptr x = (acb_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j)
+					arb_set(y + j, acb_realref(x + j));
+				break;
+			}
+			case R_FLINT_CLASS_INVALID:
+				Rf_error(_("foreign external pointer"));
+				break;
 			}
 			break;
 		}
-		}
-	} else
-		for (j = 0; j < n; ++j)
-			arb_zero(y + j);
+	}
 	return object;
 }
 

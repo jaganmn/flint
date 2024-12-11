@@ -22,19 +22,20 @@ new.arb <-
 function (Class, mid = 0, rad = 0, ...)
     new(Class, mid = mid, rad = rad)
 new.acb <-
-function (Class, real.mid = 0, real.rad = 0, imag.mid = 0, imag.rad = 0, ...)
-    new(Class, real.mid = real.mid, real.rad = real.rad, imag.mid = imag.mid, imag.rad = imag.rad)
+function (Class, real = 0, imag = 0, ...)
+    new(Class, real = real, imag = imag)
 
 e <- expression(as(new(, 1), ), )
-for (s in list(c("fmpq",      "num",      "den"),
-               c( "arb",      "mid",      "rad"),
-               c( "acb", "real.mid", "real.rad", "imag.mid", "imag.rad"))) {
+for (s in list(c("fmpq",  "num",  "den"),
+               c( "arb",  "mid",  "rad"),
+               c( "acb", "real", "imag"))) {
     e[[c(1L, 3L)]] <- paste0("n", e[[c(1L, 2L, 2L)]] <- s[1L])
     e[[2L]] <- e[[1L]]
     e[[c(2L, 2L, 1L)]] <- as.name(paste0("new.", s[1L]))
     for (nm in s[-1L]) {
         for (i in 1:2)
             names(e[[c(i, 2L)]])[3L] <- nm
+        print(e)
         v <- lapply(e, eval)
         stopifnot(identical(v[[1L]], v[[2L]]))
     }
@@ -48,15 +49,15 @@ e <- expression(as(new(,  a, bb), ),
                 as(new(, aa, bb), ),
                 as(new(,  ., bb), ),
                 as(new(,  .,  .), ))
-for (s in list(c("fmpq",      "num",      "den"),
-               c( "arb",      "mid",      "rad"),
-               c( "acb", "real.mid", "real.rad"),
-               c( "acb", "imag.mid", "imag.rad"))) {
+for (s in list(c("fmpq",  "num",  "den"),
+               c( "arb",  "mid",  "rad"),
+               c( "acb", "real", "imag"))) {
     for (p in list(1:2, 2:1)) {
         for (i in 1:4) {
             e[[c(i, 3L)]] <- paste0("n", e[[c(i, 2L, 2L)]] <- s[1L])
             names(e[[c(i, 2L)]])[3:4] <- s[-1L][p]
         }
+        print(e)
         v <- lapply(e, eval)
         stopifnot(identical(v[[1L]], v[[2L]]),
                   identical(v[[3L]], v[[4L]]))
@@ -111,34 +112,30 @@ allError <- function (call, l) {
 
 o <- list()
 allError(new("slong", x = .),
-         list(NA_integer_, 1i, o))
+         list(NA_integer_, o))
 allError(new("ulong", x = .),
-         list(NA_integer_, -1L, 1i, o))
+         list(NA_integer_, -1L, o))
 allError(new( "fmpz", x = .),
-         list(NA_integer_, NaN, -Inf, Inf, 1i, o))
+         list(NA_integer_, NaN, -Inf, Inf, o))
 allError(new( "fmpq", x = .),
-         list(NA_integer_, NaN, -Inf, Inf, 1i, o))
+         list(NA_integer_, NaN, -Inf, Inf, o))
 allError(new( "fmpq", num = .),
-         list(NA_integer_, NaN, -Inf, Inf, 1i, o))
+         list(NA_integer_, NaN, -Inf, Inf, o))
 allError(new( "fmpq", den = .),
-         list(NA_integer_, 0L, NaN, -Inf, Inf, 1i, o))
+         list(NA_integer_, 0L, NaN, -Inf, Inf, o))
 allError(new(  "arf", x = .),
-         list(1i, o))
+         list(o))
 allError(new(  "mag", x = .),
-         list(NaN, 1i, o))
+         list(NaN, o))
 allError(new(  "arb", x = .),
-         list(1i, o))
+         list(o))
 allError(new(  "arb", mid = .),
-         list(1i, o))
+         list(o))
 allError(new(  "arb", rad = .),
-         list(NaN, 1i, o))
+         list(NaN, o))
 allError(new(  "acb", x = .),
          list(o))
-allError(new(  "acb", real.mid = .),
-         list(1i, o))
-allError(new(  "acb", real.rad = .),
-         list(NaN, 1i, o))
-allError(new(  "acb", imag.mid = .),
-         list(1i, o))
-allError(new(  "acb", imag.rad = .),
-         list(NaN, 1i, o))
+allError(new(  "acb", real = .),
+         list(o))
+allError(new(  "acb", imag = .),
+         list(o))
