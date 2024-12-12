@@ -1,6 +1,4 @@
-library(methods) # initialize, new
-loadNamespace("flint") # work with or without attaching
-flintIdentical <- flint:::flintIdentical
+library(flint)
 
 
 ## Test that length(new(., length = value)) ==        value

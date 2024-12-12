@@ -1,6 +1,4 @@
-library(methods) # is, new
-loadNamespace("flint") # work with or without attaching
-flintIdentical <- flint:::flintIdentical
+library(flint)
 
 
 x0 <- new("slong")[0L] # signaled wrong OOB error

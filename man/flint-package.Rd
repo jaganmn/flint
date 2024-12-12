@@ -2,9 +2,10 @@
 \alias{flint}
 \alias{flint-package}
 \alias{flintBits}
-\alias{flintVersion}
+\alias{flintIdentical}
 \alias{flintPrec}
 \alias{flintRnd}
+\alias{flintVersion}
 \title{\R{} Package \pkg{flint}}
 \docType{package}
 \description{
@@ -16,11 +17,14 @@
 }
 \usage{
 flintBits()
-flintVersion()
+flintIdentical(object, reference)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
+flintVersion()
 }
 \arguments{
+  \item{object, reference}{
+    objects inheriting from virtual class \code{\linkS4class{flint}}.}
   \item{prec}{
     a new default value for the precision of inexact floating point
     operations, if non-\code{NULL}.  The value should be a positive
@@ -47,6 +51,15 @@ flintRnd(rnd = NULL)
   either \code{32L} or \code{64L}.  The value depends on the
   configuration of the linked \acronym{FLINT} library.
 
+  \code{flintIdentical} tests whether its arguments inherit from the
+  same nonvirtual subclass of \code{\linkS4class{flint}} and have equal
+  length and equal (in the bitwise sense) elements.  If the elements
+  are recursive structures, then they are compared recursively.
+
+  \code{flintPrec} returns the previous default precision.
+
+  \code{flintRnd} returns the previous default rounding mode.
+
   \code{flintVersion} returns a named list of numeric versions with
   elements:
 
@@ -61,10 +74,6 @@ flintRnd(rnd = NULL)
   Header versions are determined at compile time.  Library versions are
   determined at compile time (static linking) or at load time (dynamic
   linking).
-
-  \code{flintPrec} returns the previous default precision.
-
-  \code{flintRnd} returns the previous default rounding mode.
 }
 \author{
   Mikael Jagan

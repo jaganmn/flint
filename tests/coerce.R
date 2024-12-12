@@ -1,6 +1,4 @@
-library(methods) # as, new
-loadNamespace("flint") # work with or without attaching
-flintIdentical <- flint:::flintIdentical
+library(flint)
 
 
 ## Test that as(<class>, "<type>") and as.<type>(<class>) work correctly
