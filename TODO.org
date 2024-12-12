@@ -1,9 +1,10 @@
 * TODO flint 0.0.1
 
-** TODO flintIdentical testing for identical-modulo-address
+** DONE flintIdentical testing for identical-modulo-address
+** DONE export, document flintIdentical
 ** TODO methods for all.equal
-** TODO more comprehensive tests using flintIdentical, all.equal
-** TODO abandon 'nflint' and subclasses
+** TODO examples and tests using flintIdentical, methods for all.equal
+** DONE abandon 'nflint' and subclasses
 ** TODO methods for !, is.na, is.nan, is.finite, is.infinite
-** TODO export, document Num, Den, Mid, Rad, Real, Imag
+** DONE export, document Num, Den, Mid, Rad, Real, Imag
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk, ...
