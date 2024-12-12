@@ -337,70 +337,39 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 7: /*   "^" */
 		{
-			/* Only case in which the second operand is not 'mag' : */
-			arf_srcptr y__ = (arf_ptr) R_flint_get_pointer(s_y), e;
-			mag_srcptr b;
-			mag_t a0, a1;
-			mag_init(a0);
-			mag_init(a1);
+			mag_srcptr b, e;
+			mag_t a;
+			mag_init(a);
 			for (j = 0; j < n; ++j) {
-				b = x   + j % nx;
-				e = y__ + j % ny;
-				if (arf_is_nan(e)) {
-					/* b^NaN = NaN */
-					mag_clear(a0);
-					mag_clear(a1);
-					Rf_error(_("NaN not representable by '%s'"), "mag");
-				}
-				else if (arf_is_zero(e) || mag_cmp_2exp_si(b, 0) == 0)
+				b = x + j % nx;
+				e = y + j % ny;
+				if (mag_is_zero(e) || mag_cmp_2exp_si(b, 0) == 0)
 					/* b^0, 1^e = 1 */
 					mag_one(z + j);
-				else if (arf_is_one(e))
+				else if (mag_cmp_2exp_si(e, 0) == 0)
 					/* b^1 = b */
 					mag_set(z + j, b);
-				else if (arf_is_inf(e) || mag_is_special(b)) {
-					/* b^Inf, b^-Inf, 0^e, Inf^e = 0|Inf */
-					if ((arf_sgn(e) > 0) != (mag_cmp_2exp_si(b, 0) > 0))
+				else if (mag_is_inf(e) || mag_is_special(b)) {
+					/* b^Inf, 0^e, Inf^e = 0|Inf */
+					if (mag_cmp_2exp_si(b, 0) < 0)
 						mag_zero(z + j);
 					else
 						mag_inf(z + j);
 				}
+				else if (mag_cmp_2exp_si(b, 0) > 0) {
+					/* b^e = exp(e * log(b)) */
+					mag_log(a, b);
+					mag_mul(a, e, a);
+					mag_exp(z + j, a);
+				}
 				else {
-					/* b^e = exp(e * log(b))           */
-					/* a0 := abs(e), a1 := abs(log(b)) */
-					if (arf_sgn(e) > 0) {
-						if (mag_cmp_2exp_si(b, 0) > 0) {
-							/* b > 1, e > 0 */
-							arf_get_mag(a0, e);
-							mag_log(a1, b);
-							mag_mul(a0, a0, a1);
-							mag_exp(z + j, a0);
-						} else {
-							/* b < 1, e > 0 */
-							arf_get_mag_lower(a0, e);
-							mag_neg_log_lower(a1, b);
-							mag_mul_lower(a0, a0, a1);
-							mag_expinv(z + j, a0);
-						}
-					} else {
-						if (mag_cmp_2exp_si(b, 0) > 0) {
-							/* b > 1, e < 0 */
-							arf_get_mag_lower(a0, e);
-							mag_log_lower(a1, b);
-							mag_mul_lower(a0, a0, a1);
-							mag_expinv(z + j, a0);
-						} else {
-							/* b < 1, e < 0 */
-							arf_get_mag(a0, e);
-							mag_neg_log(a1, b);
-							mag_mul(a0, a0, a1);
-							mag_exp(z + j, a0);
-						}
-					}
+					/* b^e = exp(-(e * -log(b))) */
+					mag_neg_log_lower(a, b);
+					mag_mul_lower(a, e, a);
+					mag_expinv(z + j, a);
 				}
 			}
-			mag_clear(a0);
-			mag_clear(a1);
+			mag_clear(a);
 			break;
 		}
 		}

@@ -3,8 +3,6 @@
 \alias{nmag-class}
 \alias{+,mag,missing-method}
 \alias{-,mag,missing-method}
-\alias{^,mag,arf-method}
-\alias{^,mag,mag-method}
 \alias{Complex,mag-method}
 \alias{Math,mag-method}
 \alias{Math2,mag-method}
@@ -90,12 +88,12 @@
       \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
       must be atomic or inherit from virtual class
       \code{\linkS4class{flint}}.  The operands are recycled and
-      promoted as necessary.  For arithmetic, the value is a \code{mag}
-      vector only if both operands are \code{mag} vectors.  In that
-      case, the return value is an upper bound for the absolute value of
-      the exact answer.  Users wanting \dQuote{standard} floating-point
-      arithmetic must ensure that at least one operand is not a
-      \code{mag} vector.}
+      promoted as necessary.  For arithmetic, the return value is a
+      \code{mag} vector only if both operands are \code{mag} vectors.
+      In that case, the return value is an upper bound for the absolute
+      value of the exact answer.  Users wanting \dQuote{standard}
+      floating-point arithmetic must ensure that at least one operand is
+      not a \code{mag} vector.}
     \item{\code{Summary}}{
       \code{signature(x = "mag")}:\cr
       univariate summary statistics; see

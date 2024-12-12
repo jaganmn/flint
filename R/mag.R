@@ -41,18 +41,6 @@ setMethod("-",
           function (e1, e2)
               .Call(R_flint_mag_ops1, "-", e1, NULL))
 
-setMethod("^",
-          c(e1 = "mag", e2 = "arf"),
-          function (e1, e2)
-              .Call(R_flint_mag_ops2, "^", e1, e2))
-
-setMethod("^",
-          c(e1 = "mag", e2 = "mag"),
-          function (e1, e2)
-              stop(gettextf("exponentiation of '%s' requires signed exponent",
-                            "mag"),
-                   domain = NA))
-
 setMethod("Ops",
           c(e1 = "ANY", e2 = "mag"),
           function (e1, e2) {
