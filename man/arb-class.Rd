@@ -20,6 +20,8 @@
 \alias{coerce,ANY,arb-method}
 \alias{initialize,arb-method}
 \alias{log,arb-method}
+\alias{Mid}
+\alias{Rad}
 \title{Class of Real Numbers with Error Bounds}
 \docType{class}
 \description{
@@ -28,6 +30,18 @@
   a pair of mixed format floating-point numbers: an
   \code{\linkS4class{arf}} midpoint and a \code{\linkS4class{mag}}
   radius.
+}
+\usage{
+Mid(x)
+Rad(x)
+}
+\arguments{
+  \item{x}{an object of class \code{arb}.}
+}
+\value{
+  \code{Mid(x)} and \code{Rad(x)} are \code{\linkS4class{arf}} and
+  \code{\linkS4class{mag}} vectors whose elements are the midpoints and
+  and radii of \code{x}.
 }
 \section{Slots}{
   \describe{

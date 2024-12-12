@@ -21,13 +21,27 @@
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}
 \alias{initialize,fmpq-method}
+\alias{Num}
+\alias{Den}
 \title{Class of Vectors of Rational Numbers}
 \docType{class}
 \description{
   Class \code{fmpq} extends virtual class \code{\linkS4class{flint}}.
   It represents vectors of rational numbers.  Elements are specified by
-  a pair of arbitrary precision integers a numerator and a (typically
-  positive, coprime) denominator.
+  a pair of arbitrary precision integers: an \code{\linkS4class{fmpz}}
+  numerator and a positive, coprime \code{\linkS4class{fmpz}}
+  denominator.
+}
+\usage{
+Num(q)
+Den(q)
+}
+\arguments{
+  \item{q}{an object of class \code{fmpq}.}
+}
+\value{
+  \code{Num(q)} and \code{Den(q)} are \code{\linkS4class{fmpz}} vectors
+  whose elements are the numerators and denominators of \code{q}.
 }
 \section{Slots}{
   \describe{

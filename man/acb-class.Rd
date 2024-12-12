@@ -20,15 +20,29 @@
 \alias{coerce,ANY,acb-method}
 \alias{initialize,acb-method}
 \alias{log,acb-method}
+\alias{Real}
+\alias{Imag}
 \title{Class of Complex Numbers with Error Bounds}
 \docType{class}
 \description{
   Class \code{acb} extends virtual class \code{flint}.  It represents
   vectors of complex numbers with error bounds on the real and imaginary
   parts.  Elements are specified by two pairs of mixed format
-  floating-point numbers: for each of the real and imaginary parts, an
+  floating-point numbers: an \code{\linkS4class{arb}} real part and an
+  \code{\linkS4class{arb}} imaginary part, each specified by an
   \code{\linkS4class{arf}} midpoint and a \code{\linkS4class{mag}}
   radius.
+}
+\usage{
+Real(z)
+Imag(z)
+}
+\arguments{
+  \item{z}{an object of class \code{acb}.}
+}
+\value{
+  \code{Real(z)} and \code{Imag(z)} are \code{\linkS4class{arb}}
+  vectors whose elements are the real and imaginary parts of \code{z}.
 }
 \section{Slots}{
   \describe{
