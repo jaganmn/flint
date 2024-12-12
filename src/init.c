@@ -43,6 +43,12 @@ const char *R_flint_ops1[] =
 {
 	/* Arith (2) : */
 	"+", "-",
+	/* Compare (4) : */
+	"is.na", "is.nan", "is.infinite", "is.finite",
+	/* Logic (1) : */
+	"!",
+	/* Complex (5) : */
+	"Conj", "Re", "Im", "Mod", "Arg",
 	/* Math (35) : */
 	"abs", "sign", "sqrt",
 	"floor", "ceiling", "trunc",
@@ -56,8 +62,6 @@ const char *R_flint_ops1[] =
 	"round", "signif",
 	/* Summary (7) : */
 	"min", "max", "range", "sum", "prod", "any", "all",
-	/* Complex (5) : */
-	"Conj", "Re", "Im", "Mod", "Arg",
 	NULL
 };
 

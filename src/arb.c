@@ -346,56 +346,56 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	switch (op) {
 	case  1: /*        "+" */
 	case  2: /*        "-" */
-	case  3: /*      "abs" */
-	case  4: /*     "sign" */
-	case  5: /*     "sqrt" */
-	case  6: /*    "floor" */
-	case  7: /*  "ceiling" */
-	case  8: /*    "trunc" */
-	case  9: /*   "cummin" */
-	case 10: /*   "cummax" */
-	case 11: /*   "cumsum" */
-	case 12: /*  "cumprod" */
-	case 13: /*      "log" */
-	case 14: /*    "log10" */
-	case 15: /*     "log2" */
-	case 16: /*    "log1p" */
-	case 17: /*      "exp" */
-	case 18: /*    "expm1" */
-	case 19: /*      "cos" */
-	case 20: /*    "cospi" */
-	case 21: /*     "acos" */
-	case 22: /*     "cosh" */
-	case 23: /*    "acosh" */
-	case 24: /*      "sin" */
-	case 25: /*    "sinpi" */
-	case 26: /*     "asin" */
-	case 27: /*     "sinh" */
-	case 28: /*    "asinh" */
-	case 29: /*      "tan" */
-	case 30: /*    "tanpi" */
-	case 31: /*     "atan" */
-	case 32: /*     "tanh" */
-	case 33: /*    "atanh" */
-	case 34: /*    "gamma" */
-	case 35: /*   "lgamma" */
-	case 36: /*  "digamma" */
-	case 37: /* "trigamma" */
-	case 38: /*    "round" */
-	case 39: /*   "signif" */
-	case 47: /*     "Conj" */
-	case 48: /*       "Re" */
-	case 49: /*       "Im" */
-	case 50: /*      "Mod" */
-	case 51: /*      "Arg" */
+	case  8: /*     "Conj" */
+	case  9: /*       "Re" */
+	case 10: /*       "Im" */
+	case 11: /*      "Mod" */
+	case 12: /*      "Arg" */
+	case 13: /*      "abs" */
+	case 14: /*     "sign" */
+	case 15: /*     "sqrt" */
+	case 16: /*    "floor" */
+	case 17: /*  "ceiling" */
+	case 18: /*    "trunc" */
+	case 19: /*   "cummin" */
+	case 20: /*   "cummax" */
+	case 21: /*   "cumsum" */
+	case 22: /*  "cumprod" */
+	case 23: /*      "log" */
+	case 24: /*    "log10" */
+	case 25: /*     "log2" */
+	case 26: /*    "log1p" */
+	case 27: /*      "exp" */
+	case 28: /*    "expm1" */
+	case 29: /*      "cos" */
+	case 30: /*    "cospi" */
+	case 31: /*     "acos" */
+	case 32: /*     "cosh" */
+	case 33: /*    "acosh" */
+	case 34: /*      "sin" */
+	case 35: /*    "sinpi" */
+	case 36: /*     "asin" */
+	case 37: /*     "sinh" */
+	case 38: /*    "asinh" */
+	case 39: /*      "tan" */
+	case 40: /*    "tanpi" */
+	case 41: /*     "atan" */
+	case 42: /*     "tanh" */
+	case 43: /*    "atanh" */
+	case 44: /*    "gamma" */
+	case 45: /*   "lgamma" */
+	case 46: /*  "digamma" */
+	case 47: /* "trigamma" */
+	case 48: /*    "round" */
+	case 49: /*   "signif" */
 	{
 		SEXP ans = newObject("arb");
 		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
 		case  1: /*        "+" */
-		case 47: /*     "Conj" */
-		case 48: /*       "Re" */
+		case  8: /*     "Conj" */
+		case  9: /*       "Re" */
 			for (j = 0; j < n; ++j)
 				arb_set(z + j, x + j);
 			break;
@@ -403,32 +403,59 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				arb_neg(z + j, x + j);
 			break;
-		case  3: /*      "abs" */
-		case 50: /*      "Mod" */
+		case 10: /*       "Im" */
+			for (j = 0; j < n; ++j)
+				arb_zero(z + j);
+			break;
+		case 11: /*      "Mod" */
+		case 13: /*      "abs" */
 			for (j = 0; j < n; ++j)
 				arb_nonnegative_abs(z + j, x + j);
 			break;
-		case  4: /*     "sign" */
+		case 12: /*      "Arg" */
+		{
+			arb_t pi;
+			arb_init(pi);
+			arb_const_pi(pi, asPrec(R_NilValue, __func__));
+			for (j = 0; j < n; ++j) {
+				if (arf_is_nan(arb_midref(x + j)) ||
+				    mag_is_inf(arb_radref(x + j)) ||
+				    arf_cmpabs_mag(arb_midref(x + j), arb_radref(x + j)) < 0) {
+					arf_zero(arb_midref(z + j));
+					mag_const_pi(arb_radref(z + j));
+				}
+				else if (arf_is_zero(arb_midref(x + j)))
+					arb_zero(z + j);
+				else {
+					arb_set(z + j, pi);
+					if (arf_sgn(arb_midref(x + j)) < 0)
+					arb_neg(z + j, z + j);
+				}
+			}
+			arb_clear(pi);
+			break;
+		}
+		case 14: /*     "sign" */
 			for (j = 0; j < n; ++j)
 				arb_sgn(z + j, x + j);
 			break;
-		case  5: /*     "sqrt" */
+		case 15: /*     "sqrt" */
 			for (j = 0; j < n; ++j)
 				arb_sqrt(z + j, x + j, prec);
 			break;
-		case  6: /*    "floor" */
+		case 16: /*    "floor" */
 			for (j = 0; j < n; ++j)
 				arb_floor(z + j, x + j, prec);
 			break;
-		case  7: /*  "ceiling" */
+		case 17: /*  "ceiling" */
 			for (j = 0; j < n; ++j)
 				arb_ceil(z + j, x + j, prec);
 			break;
-		case  8: /*    "trunc" */
+		case 18: /*    "trunc" */
 			for (j = 0; j < n; ++j)
 				arb_trunc(z + j, x + j, prec);
 			break;
-		case  9: /*   "cummin" */
+		case 19: /*   "cummin" */
 			if (n) {
 			arb_srcptr last = x;
 			for (j = 0; j < n && !ARB_CONTAINS_NAN(x + j); ++j)
@@ -437,7 +464,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arb_indeterminate(z + j);
 			}
 			break;
-		case 10: /*   "cummax" */
+		case 20: /*   "cummax" */
 			if (n) {
 			arb_srcptr last = x;
 			for (j = 0; j < n && !ARB_CONTAINS_NAN(x + j); ++j)
@@ -446,22 +473,22 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arb_indeterminate(z + j);
 			}
 			break;
-		case 11: /*   "cumsum" */
+		case 21: /*   "cumsum" */
 			if (n) {
 			arb_set(z, x);
 			for (j = 1; j < n; ++j)
 				arb_add(z + j, z + j - 1, x + j, prec);
 			}
 			break;
-		case 12: /*  "cumprod" */
+		case 22: /*  "cumprod" */
 			if (n)
 			arb_set(z, x);
 			for (j = 1; j < n; ++j)
 				arb_mul(z + j, z + j - 1, x + j, prec);
 			break;
-		case 13: /*      "log" */
-		case 14: /*    "log10" */
-		case 15: /*     "log2" */
+		case 23: /*      "log" */
+		case 24: /*    "log10" */
+		case 25: /*     "log2" */
 			for (j = 0; j < n; ++j)
 				arb_log(z + j, x + j, prec);
 			if (op != 13 || s_dots != R_NilValue) {
@@ -479,91 +506,91 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arb_clear(tmp);
 			}
 			break;
-		case 16: /*    "log1p" */
+		case 26: /*    "log1p" */
 			for (j = 0; j < n; ++j)
 				arb_log1p(z + j, x + j, prec);
 			break;
-		case 17: /*      "exp" */
+		case 27: /*      "exp" */
 			for (j = 0; j < n; ++j)
 				arb_exp(z + j, x + j, prec);
 			break;
-		case 18: /*    "expm1" */
+		case 28: /*    "expm1" */
 			for (j = 0; j < n; ++j)
 				arb_expm1(z + j, x + j, prec);
 			break;
-		case 19: /*      "cos" */
+		case 29: /*      "cos" */
 			for (j = 0; j < n; ++j)
 				arb_cos(z + j, x + j, prec);
 			break;
-		case 20: /*    "cospi" */
+		case 30: /*    "cospi" */
 			for (j = 0; j < n; ++j)
 				arb_cos_pi(z + j, x + j, prec);
 			break;
-		case 21: /*     "acos" */
+		case 31: /*     "acos" */
 			for (j = 0; j < n; ++j)
 				arb_acos(z + j, x + j, prec);
 			break;
-		case 22: /*     "cosh" */
+		case 32: /*     "cosh" */
 			for (j = 0; j < n; ++j)
 				arb_cosh(z + j, x + j, prec);
 			break;
-		case 23: /*    "acosh" */
+		case 33: /*    "acosh" */
 			for (j = 0; j < n; ++j)
 				arb_acosh(z + j, x + j, prec);
 			break;
-		case 24: /*      "sin" */
+		case 34: /*      "sin" */
 			for (j = 0; j < n; ++j)
 				arb_sin(z + j, x + j, prec);
 			break;
-		case 25: /*    "sinpi" */
+		case 35: /*    "sinpi" */
 			for (j = 0; j < n; ++j)
 				arb_sin_pi(z + j, x + j, prec);
 			break;
-		case 26: /*     "asin" */
+		case 36: /*     "asin" */
 			for (j = 0; j < n; ++j)
 				arb_asin(z + j, x + j, prec);
 			break;
-		case 27: /*     "sinh" */
+		case 37: /*     "sinh" */
 			for (j = 0; j < n; ++j)
 				arb_sinh(z + j, x + j, prec);
 			break;
-		case 28: /*    "asinh" */
+		case 38: /*    "asinh" */
 			for (j = 0; j < n; ++j)
 				arb_asinh(z + j, x + j, prec);
 			break;
-		case 29: /*      "tan" */
+		case 39: /*      "tan" */
 			for (j = 0; j < n; ++j)
 				arb_tan(z + j, x + j, prec);
 			break;
-		case 30: /*    "tanpi" */
+		case 40: /*    "tanpi" */
 			for (j = 0; j < n; ++j)
 				arb_tan_pi(z + j, x + j, prec);
 			break;
-		case 31: /*     "atan" */
+		case 41: /*     "atan" */
 			for (j = 0; j < n; ++j)
 				arb_atan(z + j, x + j, prec);
 			break;
-		case 32: /*     "tanh" */
+		case 42: /*     "tanh" */
 			for (j = 0; j < n; ++j)
 				arb_tanh(z + j, x + j, prec);
 			break;
-		case 33: /*    "atanh" */
+		case 43: /*    "atanh" */
 			for (j = 0; j < n; ++j)
 				arb_atanh(z + j, x + j, prec);
 			break;
-		case 34: /*    "gamma" */
+		case 44: /*    "gamma" */
 			for (j = 0; j < n; ++j)
 				arb_gamma(z + j, x + j, prec);
 			break;
-		case 35: /*   "lgamma" */
+		case 45: /*   "lgamma" */
 			for (j = 0; j < n; ++j)
 				arb_lgamma(z + j, x + j, prec);
 			break;
-		case 36: /*  "digamma" */
+		case 46: /*  "digamma" */
 			for (j = 0; j < n; ++j)
 				arb_digamma(z + j, x + j, prec);
 			break;
-		case 37: /* "trigamma" */
+		case 47: /* "trigamma" */
 		{
 			acb_t tmp0, tmp1, tmp2;
 			acb_init(tmp0);
@@ -581,7 +608,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			acb_clear(tmp2);
 			break;
 		}
-		case 38: /*    "round" */
+		case 48: /*    "round" */
 		{
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
 				prec = asPrec(R_NilValue, __func__);
@@ -653,7 +680,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_clear(d);
 			break;
 		}
-		case 39: /*   "signif" */
+		case 49: /*   "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
@@ -731,41 +758,14 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_clear(d);
 			break;
 		}
-		case 49: /*       "Im" */
-			for (j = 0; j < n; ++j)
-				arb_zero(z + j);
-			break;
-		case 51: /*      "Arg" */
-		{
-			arb_t pi;
-			arb_init(pi);
-			arb_const_pi(pi, asPrec(R_NilValue, __func__));
-			for (j = 0; j < n; ++j) {
-				if (arf_is_nan(arb_midref(x + j)) ||
-				    mag_is_inf(arb_radref(x + j)) ||
-				    arf_cmpabs_mag(arb_midref(x + j), arb_radref(x + j)) < 0) {
-					arf_zero(arb_midref(z + j));
-					mag_const_pi(arb_radref(z + j));
-				}
-				else if (arf_is_zero(arb_midref(x + j)))
-					arb_zero(z + j);
-				else {
-					arb_set(z + j, pi);
-					if (arf_sgn(arb_midref(x + j)) < 0)
-					arb_neg(z + j, z + j);
-				}
-			}
-			arb_clear(pi);
-			break;
-		}
 		}
 		return ans;
 	}
-	case 40: /*     "min" */
-	case 41: /*     "max" */
-	case 42: /*   "range" */
-	case 43: /*     "sum" */
-	case 44: /*    "prod" */
+	case 50: /*     "min" */
+	case 51: /*     "max" */
+	case 52: /*   "range" */
+	case 53: /*     "sum" */
+	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("arb");
 		size_t s = (op == 42) ? 2 : 1;
@@ -773,7 +773,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arb_finalize);
 		int narm = LOGICAL_RO(s_dots)[0];
 		switch (op) {
-		case 40: /*     "min" */
+		case 50: /*     "min" */
 			arb_pos_inf(z);
 			for (j = 0; j < n; ++j)
 				if (!ARB_CONTAINS_NAN(x + j))
@@ -783,7 +783,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 				}
 			break;
-		case 41: /*     "max" */
+		case 51: /*     "max" */
 			arb_neg_inf(z);
 			for (j = 0; j < n; ++j)
 				if (!ARB_CONTAINS_NAN(x + j))
@@ -793,7 +793,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 				}
 			break;
-		case 42: /*   "range" */
+		case 52: /*   "range" */
 			arb_pos_inf(z);
 			arb_neg_inf(z + 1);
 			for (j = 0; j < n; ++j)
@@ -806,13 +806,13 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 				}
 			break;
-		case 43: /*     "sum" */
+		case 53: /*     "sum" */
 			arb_zero(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && ARB_CONTAINS_NAN(x + j)))
 				arb_add(z, z, x + j, prec);
 			break;
-		case 44: /*    "prod" */
+		case 54: /*    "prod" */
 			arb_one(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && ARB_CONTAINS_NAN(x + j)))
@@ -821,14 +821,14 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 45: /*     "any" */
-	case 46: /*     "all" */
+	case 55: /*     "any" */
+	case 56: /*     "all" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
 		switch (op) {
-		case 45: /*     "any" */
+		case 55: /*     "any" */
 			/* Return 1 if and only if any does not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(x + j)))
@@ -837,7 +837,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
-		case 46: /*     "all" */
+		case 56: /*     "all" */
 			/* Return 1 if and only if all do   not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(x + j)))

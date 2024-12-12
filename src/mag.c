@@ -431,29 +431,29 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */
-	case  3: /*     "abs" */
-	case  4: /*    "sign" */
-	case  5: /*    "sqrt" */
-	case  6: /*   "floor" */
-	case  7: /* "ceiling" */
-	case  8: /*   "trunc" */
-	case  9: /*  "cummin" */
-	case 10: /*  "cummax" */
-	case 11: /*  "cumsum" */
-	case 12: /* "cumprod" */
-	case 13: /*     "log" */
-	case 14: /*   "log10" */
-	case 15: /*    "log2" */
-	case 16: /*   "log1p" */
-	case 17: /*     "exp" */
-	case 18: /*   "expm1" */
-	case 38: /*   "round" */
-	case 39: /*  "signif" */
-	case 47: /*    "Conj" */
-	case 48: /*      "Re" */
-	case 49: /*      "Im" */
-	case 50: /*     "Mod" */
-	case 51: /*     "Arg" */
+	case  8: /*    "Conj" */
+	case  9: /*      "Re" */
+	case 10: /*      "Im" */
+	case 11: /*     "Mod" */
+	case 12: /*     "Arg" */
+	case 13: /*     "abs" */
+	case 14: /*    "sign" */
+	case 15: /*    "sqrt" */
+	case 16: /*   "floor" */
+	case 17: /* "ceiling" */
+	case 18: /*   "trunc" */
+	case 19: /*  "cummin" */
+	case 20: /*  "cummax" */
+	case 21: /*  "cumsum" */
+	case 22: /* "cumprod" */
+	case 23: /*     "log" */
+	case 24: /*   "log10" */
+	case 25: /*    "log2" */
+	case 26: /*   "log1p" */
+	case 27: /*     "exp" */
+	case 28: /*   "expm1" */
+	case 48: /*   "round" */
+	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("mag");
 		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
@@ -461,26 +461,37 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		switch (op) {
 		case  1: /*       "+" */
 		case  2: /*       "-" */
-		case  3: /*     "abs" */
-		case 47: /*    "Conj" */
-		case 48: /*      "Re" */
-		case 50: /*     "Mod" */
+		case  8: /*    "Conj" */
+		case  9: /*      "Re" */
+		case 11: /*     "Mod" */
+		case 13: /*     "abs" */
 			for (j = 0; j < n; ++j)
 				mag_set(z + j, x + j);
 			break;
-		case  4: /*    "sign" */
+		case 10: /*      "Im" */
+			for (j = 0; j < n; ++j)
+				mag_zero(z + j);
+			break;
+		case 12: /*     "Arg" */
+			for (j = 0; j < n; ++j)
+				if (mag_is_zero(x + j))
+					mag_zero(z + j);
+				else
+					mag_const_pi(z + j);
+			break;
+		case 14: /*    "sign" */
 			for (j = 0; j < n; ++j)
 				if (mag_is_zero(x + j))
 					mag_zero(z + j);
 				else
 					mag_one(z + j);
 			break;
-		case  5: /*    "sqrt" */
+		case 15: /*    "sqrt" */
 			for (j = 0; j < n; ++j)
 				mag_sqrt(z + j, x + j);
 			break;
-		case  6: /*   "floor" */
-		case  8: /*   "trunc" */
+		case 16: /*   "floor" */
+		case 18: /*   "trunc" */
 		{
 			fmpz_t r;
 			fmpz_init(r);
@@ -501,7 +512,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			break;
 		}
-		case  7: /* "ceiling" */
+		case 17: /* "ceiling" */
 		{
 			fmpz_t r;
 			fmpz_init(r);
@@ -522,37 +533,37 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			break;
 		}
-		case  9: /*  "cummin" */
+		case 19: /*  "cummin" */
 			if (n) {
 			mag_set(z, x);
 			for (j = 1; j < n; ++j)
 				mag_min(z + j, z + j - 1, x + j);
 			}
 			break;
-		case 10: /*  "cummax" */
+		case 20: /*  "cummax" */
 			if (n) {
 			mag_set(z, x);
 			for (j = 1; j < n; ++j)
 				mag_max(z + j, z + j - 1, x + j);
 			}
 			break;
-		case 11: /*  "cumsum" */
+		case 21: /*  "cumsum" */
 			if (n) {
 			mag_set(z, x);
 			for (j = 1; j < n; ++j)
 				mag_add(z + j, z + j - 1, x + j);
 			}
 			break;
-		case 12: /* "cumprod" */
+		case 22: /* "cumprod" */
 			if (n) {
 			mag_set(z, x);
 			for (j = 1; j < n; ++j)
 				mag_mul(z + j, z + j - 1, x + j);
 			}
 			break;
-		case 13: /*     "log" */
-		case 14: /*   "log10" */
-		case 15: /*    "log2" */
+		case 23: /*     "log" */
+		case 24: /*   "log10" */
+		case 25: /*    "log2" */
 			for (j = 0; j < n; ++j)
 				if (mag_cmp_2exp_si(x + j, 0) >= 0)
 					mag_log(z + j, x + j);
@@ -600,19 +611,19 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_clear(tmp);
 			}
 			break;
-		case 16: /*   "log1p" */
+		case 26: /*   "log1p" */
 			for (j = 0; j < n; ++j)
 				mag_log1p(z + j, x + j);
 			break;
-		case 17: /*     "exp" */
+		case 27: /*     "exp" */
 			for (j = 0; j < n; ++j)
 				mag_exp(z + j, x + j);
 			break;
-		case 18: /*   "expm1" */
+		case 28: /*   "expm1" */
 			for (j = 0; j < n; ++j)
 				mag_expm1(z + j, x + j);
 			break;
-		case 38: /*   "round" */
+		case 48: /*   "round" */
 		{
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
 			fmpz_t p, q;
@@ -655,7 +666,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_clear(s);
 			break;
 		}
-		case 39: /*  "signif" */
+		case 49: /*  "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
@@ -708,44 +719,33 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_clear(s);
 			break;
 		}
-		case 49: /*      "Im" */
-			for (j = 0; j < n; ++j)
-				mag_zero(z + j);
-			break;
-		case 51: /*     "Arg" */
-			for (j = 0; j < n; ++j)
-				if (mag_is_zero(x + j))
-					mag_zero(z + j);
-				else
-					mag_const_pi(z + j);
-			break;
 		}
 		return ans;
 	}
-	case 40: /*     "min" */
-	case 41: /*     "max" */
-	case 42: /*   "range" */
-	case 43: /*     "sum" */
-	case 44: /*    "prod" */
+	case 50: /*     "min" */
+	case 51: /*     "max" */
+	case 52: /*   "range" */
+	case 53: /*     "sum" */
+	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("mag");
 		size_t s = (op == 42) ? 2 : 1;
 		mag_ptr z = (mag_ptr) flint_calloc(s, sizeof(mag_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
-		case 40: /*     "min" */
+		case 50: /*     "min" */
 			mag_inf(z);
 			for (j = 0; j < n; ++j)
 				if (mag_cmp(z, x + j) > 0)
 					mag_set(z, x + j);
 			break;
-		case 41: /*     "max" */
+		case 51: /*     "max" */
 			mag_zero(z);
 			for (j = 0; j < n; ++j)
 				if (mag_cmp(z, x + j) < 0)
 					mag_set(z, x + j);
 			break;
-		case 42: /*   "range" */
+		case 52: /*   "range" */
 			mag_inf(z);
 			mag_zero(z + 1);
 			for (j = 0; j < n; ++j)
@@ -754,12 +754,12 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				else if (mag_cmp(z + 1, x + j) < 0)
 					mag_set(z + 1, x + j);
 			break;
-		case 43: /*     "sum" */
+		case 53: /*     "sum" */
 			mag_zero(z);
 			for (j = 0; j < n; ++j)
 				mag_add(z, z, x + j);
 			break;
-		case 44: /*    "prod" */
+		case 54: /*    "prod" */
 			mag_one(z);
 			for (j = 0; j < n; ++j)
 				mag_mul(z, z, x + j);
@@ -767,17 +767,17 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 45: /*     "any" */
-	case 46: /*     "all" */
+	case 55: /*     "any" */
+	case 56: /*     "all" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 45: /*     "any" */
+		case 55: /*     "any" */
 			for (j = 0; j < n &&  mag_is_zero(x + j); ++j) ;
 			z[0] = j <  n;
 			break;
-		case 46: /*     "all" */
+		case 56: /*     "all" */
 			for (j = 0; j < n && !mag_is_zero(x + j); ++j) ;
 			z[0] = j >= n;
 			break;

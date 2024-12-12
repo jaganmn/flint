@@ -465,31 +465,31 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */
-	case  3: /*     "abs" */
-	case  4: /*    "sign" */
-	case  5: /*    "sqrt" */
-	case  6: /*   "floor" */
-	case  7: /* "ceiling" */
-	case  8: /*   "trunc" */
-	case  9: /*  "cummin" */
-	case 10: /*  "cummax" */
-	case 11: /*  "cumsum" */
-	case 12: /* "cumprod" */
-	case 38: /*   "round" */
-	case 39: /*  "signif" */
-	case 47: /*    "Conj" */
-	case 48: /*      "Re" */
-	case 49: /*      "Im" */
-	case 50: /*     "Mod" */
-	case 51: /*     "Arg" */
+	case  8: /*    "Conj" */
+	case  9: /*      "Re" */
+	case 10: /*      "Im" */
+	case 11: /*     "Mod" */
+	case 12: /*     "Arg" */
+	case 13: /*     "abs" */
+	case 14: /*    "sign" */
+	case 15: /*    "sqrt" */
+	case 16: /*   "floor" */
+	case 17: /* "ceiling" */
+	case 18: /*   "trunc" */
+	case 19: /*  "cummin" */
+	case 20: /*  "cummax" */
+	case 21: /*  "cumsum" */
+	case 22: /* "cumprod" */
+	case 48: /*   "round" */
+	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("arf");
 		arf_ptr z = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case  1: /*       "+" */
-		case 47: /*    "Conj" */
-		case 48: /*      "Re" */
+		case  8: /*    "Conj" */
+		case  9: /*      "Re" */
 			for (j = 0; j < n; ++j)
 				arf_set(z + j, x + j);
 			break;
@@ -497,38 +497,57 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				arf_neg(z + j, x + j);
 			break;
-		case  3: /*     "abs" */
-		case 50: /*     "Mod" */
+		case 10: /*      "Im" */
+			for (j = 0; j < n; ++j)
+				arf_zero(z + j);
+			break;
+		case 11: /*     "Mod" */
+		case 13: /*     "abs" */
 			for (j = 0; j < n; ++j)
 				arf_abs(z + j, x + j);
 			break;
-		case  4: /*    "sign" */
+		case 12: /*     "Arg" */
+		{
+			arb_t pi;
+			arb_init(pi);
+			arb_const_pi(pi, asPrec(R_NilValue, __func__));
+			for (j = 0; j < n; ++j)
+				if (arf_is_nan(x + j) || arf_is_zero(x + j))
+					arf_set(z + j, x + j);
+				else if (arf_sgn(x + j) > 0)
+					arf_set(z + j, arb_midref(pi));
+				else
+					arf_neg(z + j, arb_midref(pi));
+			arb_clear(pi);
+			break;
+		}
+		case 14: /*    "sign" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 				arf_nan(z + j);
 				else
 				arf_set_si(z + j, arf_sgn(x + j));
 			break;
-		case  5: /*    "sqrt" */
+		case 15: /*    "sqrt" */
 			for (j = 0; j < n; ++j)
 				arf_sqrt(z + j, x + j, prec, rnd);
 			break;
-		case  6: /*   "floor" */
+		case 16: /*   "floor" */
 			for (j = 0; j < n; ++j)
 				arf_floor(z + j, x + j);
 			break;
-		case  7: /* "ceiling" */
+		case 17: /* "ceiling" */
 			for (j = 0; j < n; ++j)
 				arf_ceil(z + j, x + j);
 			break;
-		case  8: /*   "trunc" */
+		case 18: /*   "trunc" */
 			for (j = 0; j < n; ++j)
 				if (arf_sgn(x + j) >= 0)
 				arf_floor(z + j, x + j);
 				else
 				arf_ceil(z + j, x + j);
 			break;
-		case  9: /*  "cummin" */
+		case 19: /*  "cummin" */
 			if (n) {
 			arf_srcptr last = x;
 			for (j = 0; j < n && !arf_is_nan(x + j); ++j)
@@ -537,7 +556,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_nan(z + j);
 			}
 			break;
-		case 10: /*  "cummax" */
+		case 20: /*  "cummax" */
 			if (n) {
 			arf_srcptr last = x;
 			for (j = 0; j < n && !arf_is_nan(x + j); ++j)
@@ -546,20 +565,20 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_nan(z + j);
 			}
 			break;
-		case 11: /*  "cumsum" */
+		case 21: /*  "cumsum" */
 			if (n) {
 			arf_set(z, x);
 			for (j = 1; j < n; ++j)
 				arf_add(z + j, z + j - 1, x + j, prec, rnd);
 			}
 			break;
-		case 12: /* "cumprod" */
+		case 22: /* "cumprod" */
 			if (n)
 			arf_set(z, x);
 			for (j = 1; j < n; ++j)
 				arf_mul(z + j, z + j - 1, x + j, prec, rnd);
 			break;
-		case 38: /*   "round" */
+		case 48: /*   "round" */
 		{
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
 				prec = asPrec(R_NilValue, __func__);
@@ -600,7 +619,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_clear(s);
 			break;
 		}
-		case 39: /*  "signif" */
+		case 49: /*  "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
@@ -653,33 +672,14 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			break;
 		}
-		case 49: /*      "Im" */
-			for (j = 0; j < n; ++j)
-				arf_zero(z + j);
-			break;
-		case 51: /*     "Arg" */
-		{
-			arb_t pi;
-			arb_init(pi);
-			arb_const_pi(pi, asPrec(R_NilValue, __func__));
-			for (j = 0; j < n; ++j)
-				if (arf_is_nan(x + j) || arf_is_zero(x + j))
-					arf_set(z + j, x + j);
-				else if (arf_sgn(x + j) > 0)
-					arf_set(z + j, arb_midref(pi));
-				else
-					arf_neg(z + j, arb_midref(pi));
-			arb_clear(pi);
-			break;
-		}
 		}
 		return ans;
 	}
-	case 40: /*     "min" */
-	case 41: /*     "max" */
-	case 42: /*   "range" */
-	case 43: /*     "sum" */
-	case 44: /*    "prod" */
+	case 50: /*     "min" */
+	case 51: /*     "max" */
+	case 52: /*   "range" */
+	case 53: /*     "sum" */
+	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("arf");
 		size_t s = (op == 42) ? 2 : 1;
@@ -687,7 +687,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arf_finalize);
 		int narm = LOGICAL_RO(s_dots)[0];
 		switch (op) {
-		case 40: /*     "min" */
+		case 50: /*     "min" */
 			arf_pos_inf(z);
 			for (j = 0; j < n; ++j)
 				if (!arf_is_nan(x + j)) {
@@ -699,7 +699,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 				}
 			break;
-		case 41: /*     "max" */
+		case 51: /*     "max" */
 			arf_neg_inf(z);
 			for (j = 0; j < n; ++j)
 				if (!arf_is_nan(x + j)) {
@@ -711,7 +711,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 				}
 			break;
-		case 42: /*   "range" */
+		case 52: /*   "range" */
 			arf_pos_inf(z);
 			arf_neg_inf(z + 1);
 			for (j = 0; j < n; ++j)
@@ -727,13 +727,13 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 				}
 			break;
-		case 43: /*     "sum" */
+		case 53: /*     "sum" */
 			arf_zero(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && arf_is_nan(x + j)))
 				arf_add(z, z, x + j, prec, rnd);
 			break;
-		case 44: /*    "prod" */
+		case 54: /*    "prod" */
 			arf_one(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && arf_is_nan(x + j)))
@@ -742,14 +742,14 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 45: /*     "any" */
-	case 46: /*     "all" */
+	case 55: /*     "any" */
+	case 56: /*     "all" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
 		switch (op) {
-		case 45: /*     "any" */
+		case 55: /*     "any" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					anyna = 1;
@@ -757,7 +757,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
-		case 46: /*     "all" */
+		case 56: /*     "all" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					anyna = 1;

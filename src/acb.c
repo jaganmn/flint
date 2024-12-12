@@ -330,38 +330,38 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	switch (op) {
 	case  1: /*        "+" */
 	case  2: /*        "-" */
-	case  4: /*     "sign" */
-	case  5: /*     "sqrt" */
-	case 11: /*   "cumsum" */
-	case 12: /*  "cumprod" */
-	case 13: /*      "log" */
-	case 14: /*    "log10" */
-	case 15: /*     "log2" */
-	case 16: /*    "log1p" */
-	case 17: /*      "exp" */
-	case 18: /*    "expm1" */
-	case 19: /*      "cos" */
-	case 20: /*    "cospi" */
-	case 21: /*     "acos" */
-	case 22: /*     "cosh" */
-	case 23: /*    "acosh" */
-	case 24: /*      "sin" */
-	case 25: /*    "sinpi" */
-	case 26: /*     "asin" */
-	case 27: /*     "sinh" */
-	case 28: /*    "asinh" */
-	case 29: /*      "tan" */
-	case 30: /*    "tanpi" */
-	case 31: /*     "atan" */
-	case 32: /*     "tanh" */
-	case 33: /*    "atanh" */
-	case 34: /*    "gamma" */
-	case 35: /*   "lgamma" */
-	case 36: /*  "digamma" */
-	case 37: /* "trigamma" */
-	case 38: /*    "round" */
-	case 39: /*   "signif" */
-	case 47: /*     "Conj" */
+	case  8: /*     "Conj" */
+	case 14: /*     "sign" */
+	case 15: /*     "sqrt" */
+	case 21: /*   "cumsum" */
+	case 22: /*  "cumprod" */
+	case 23: /*      "log" */
+	case 24: /*    "log10" */
+	case 25: /*     "log2" */
+	case 26: /*    "log1p" */
+	case 27: /*      "exp" */
+	case 28: /*    "expm1" */
+	case 29: /*      "cos" */
+	case 30: /*    "cospi" */
+	case 31: /*     "acos" */
+	case 32: /*     "cosh" */
+	case 33: /*    "acosh" */
+	case 34: /*      "sin" */
+	case 35: /*    "sinpi" */
+	case 36: /*     "asin" */
+	case 37: /*     "sinh" */
+	case 38: /*    "asinh" */
+	case 39: /*      "tan" */
+	case 40: /*    "tanpi" */
+	case 41: /*     "atan" */
+	case 42: /*     "tanh" */
+	case 43: /*    "atanh" */
+	case 44: /*    "gamma" */
+	case 45: /*   "lgamma" */
+	case 46: /*  "digamma" */
+	case 47: /* "trigamma" */
+	case 48: /*    "round" */
+	case 49: /*   "signif" */
 	{
 		SEXP ans = newObject("acb");
 		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
@@ -375,30 +375,34 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				acb_neg(z + j, x + j);
 			break;
-		case  4: /*     "sign" */
+		case  8: /*     "Conj" */
+			for (j = 0; j < n; ++j)
+				acb_conj(z + j, x + j);
+			break;
+		case 14: /*     "sign" */
 			for (j = 0; j < n; ++j)
 				acb_sgn(z + j, x + j, prec);
 			break;
-		case  5: /*     "sqrt" */
+		case 15: /*     "sqrt" */
 			for (j = 0; j < n; ++j)
 				acb_sqrt(z + j, x + j, prec);
 			break;
-		case 11: /*   "cumsum" */
+		case 21: /*   "cumsum" */
 			if (n) {
 			acb_set(z, x);
 			for (j = 1; j < n; ++j)
 				acb_add(z + j, z + j - 1, x + j, prec);
 			}
 			break;
-		case 12: /*  "cumprod" */
+		case 22: /*  "cumprod" */
 			if (n)
 			acb_set(z, x);
 			for (j = 1; j < n; ++j)
 				acb_mul(z + j, z + j - 1, x + j, prec);
 			break;
-		case 13: /*      "log" */
-		case 14: /*    "log10" */
-		case 15: /*     "log2" */
+		case 23: /*      "log" */
+		case 24: /*    "log10" */
+		case 25: /*     "log2" */
 			for (j = 0; j < n; ++j)
 				acb_log(z + j, x + j, prec);
 			if (op != 13 || s_dots != R_NilValue) {
@@ -416,91 +420,91 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			acb_clear(tmp);
 			}
 			break;
-		case 16: /*    "log1p" */
+		case 26: /*    "log1p" */
 			for (j = 0; j < n; ++j)
 				acb_log1p(z + j, x + j, prec);
 			break;
-		case 17: /*      "exp" */
+		case 27: /*      "exp" */
 			for (j = 0; j < n; ++j)
 				acb_exp(z + j, x + j, prec);
 			break;
-		case 18: /*    "expm1" */
+		case 28: /*    "expm1" */
 			for (j = 0; j < n; ++j)
 				acb_expm1(z + j, x + j, prec);
 			break;
-		case 19: /*      "cos" */
+		case 29: /*      "cos" */
 			for (j = 0; j < n; ++j)
 				acb_cos(z + j, x + j, prec);
 			break;
-		case 20: /*    "cospi" */
+		case 30: /*    "cospi" */
 			for (j = 0; j < n; ++j)
 				acb_cos_pi(z + j, x + j, prec);
 			break;
-		case 21: /*     "acos" */
+		case 31: /*     "acos" */
 			for (j = 0; j < n; ++j)
 				acb_acos(z + j, x + j, prec);
 			break;
-		case 22: /*     "cosh" */
+		case 32: /*     "cosh" */
 			for (j = 0; j < n; ++j)
 				acb_cosh(z + j, x + j, prec);
 			break;
-		case 23: /*    "acosh" */
+		case 33: /*    "acosh" */
 			for (j = 0; j < n; ++j)
 				acb_acosh(z + j, x + j, prec);
 			break;
-		case 24: /*      "sin" */
+		case 34: /*      "sin" */
 			for (j = 0; j < n; ++j)
 				acb_sin(z + j, x + j, prec);
 			break;
-		case 25: /*    "sinpi" */
+		case 35: /*    "sinpi" */
 			for (j = 0; j < n; ++j)
 				acb_sin_pi(z + j, x + j, prec);
 			break;
-		case 26: /*     "asin" */
+		case 36: /*     "asin" */
 			for (j = 0; j < n; ++j)
 				acb_asin(z + j, x + j, prec);
 			break;
-		case 27: /*     "sinh" */
+		case 37: /*     "sinh" */
 			for (j = 0; j < n; ++j)
 				acb_sinh(z + j, x + j, prec);
 			break;
-		case 28: /*    "asinh" */
+		case 38: /*    "asinh" */
 			for (j = 0; j < n; ++j)
 				acb_asinh(z + j, x + j, prec);
 			break;
-		case 29: /*      "tan" */
+		case 39: /*      "tan" */
 			for (j = 0; j < n; ++j)
 				acb_tan(z + j, x + j, prec);
 			break;
-		case 30: /*    "tanpi" */
+		case 40: /*    "tanpi" */
 			for (j = 0; j < n; ++j)
 				acb_tan_pi(z + j, x + j, prec);
 			break;
-		case 31: /*     "atan" */
+		case 41: /*     "atan" */
 			for (j = 0; j < n; ++j)
 				acb_atan(z + j, x + j, prec);
 			break;
-		case 32: /*     "tanh" */
+		case 42: /*     "tanh" */
 			for (j = 0; j < n; ++j)
 				acb_tanh(z + j, x + j, prec);
 			break;
-		case 33: /*    "atanh" */
+		case 43: /*    "atanh" */
 			for (j = 0; j < n; ++j)
 				acb_atanh(z + j, x + j, prec);
 			break;
-		case 34: /*    "gamma" */
+		case 44: /*    "gamma" */
 			for (j = 0; j < n; ++j)
 				acb_gamma(z + j, x + j, prec);
 			break;
-		case 35: /*   "lgamma" */
+		case 45: /*   "lgamma" */
 			for (j = 0; j < n; ++j)
 				acb_lgamma(z + j, x + j, prec);
 			break;
-		case 36: /*  "digamma" */
+		case 46: /*  "digamma" */
 			for (j = 0; j < n; ++j)
 				acb_digamma(z + j, x + j, prec);
 			break;
-		case 37: /* "trigamma" */
+		case 47: /* "trigamma" */
 		{
 			acb_t tmp;
 			acb_init(tmp);
@@ -510,7 +514,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			acb_clear(tmp);
 			break;
 		}
-		case 38: /*    "round" */
+		case 48: /*    "round" */
 		{
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
 				prec = asPrec(R_NilValue, __func__);
@@ -594,7 +598,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_clear(d);
 			break;
 		}
-		case 39: /*   "signif" */
+		case 49: /*   "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
@@ -677,15 +681,11 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_clear(d);
 			break;
 		}
-		case 47: /*     "Conj" */
-			for (j = 0; j < n; ++j)
-				acb_conj(z + j, x + j);
-			break;
 		}
 		return ans;
 	}
-	case 43: /*     "sum" */
-	case 44: /*    "prod" */
+	case 53: /*     "sum" */
+	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("acb");
 		size_t s = (op == 42) ? 2 : 1;
@@ -708,8 +708,8 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 45: /*     "any" */
-	case 46: /*     "all" */
+	case 55: /*     "any" */
+	case 56: /*     "all" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
@@ -740,30 +740,30 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case  3: /*      "abs" */
-	case 48: /*       "Re" */
-	case 49: /*       "Im" */
-	case 50: /*      "Mod" */
-	case 51: /*      "Arg" */
+	case  9: /*       "Re" */
+	case 10: /*       "Im" */
+	case 11: /*      "Mod" */
+	case 12: /*      "Arg" */
+	case 13: /*      "abs" */
 	{
 		SEXP ans = newObject("arb");
 		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
-		case 48: /*       "Re" */
+		case  9: /*       "Re" */
 			for (j = 0; j < n; ++j)
 				arb_set(z + j, acb_realref(x + j));
 			break;
-		case 49: /*       "Im" */
+		case 10: /*       "Im" */
 			for (j = 0; j < n; ++j)
 				arb_set(z + j, acb_imagref(x + j));
 			break;
-		case  3: /*      "abs" */
-		case 50: /*      "Mod" */
+		case 11: /*      "Mod" */
+		case 13: /*      "abs" */
 			for (j = 0; j < n; ++j)
 				acb_abs(z + j, x + j, prec);
 			break;
-		case 51: /*      "Arg" */
+		case 12: /*      "Arg" */
 			for (j = 0; j < n; ++j)
 				acb_arg(z + j, x + j, prec);
 			break;
