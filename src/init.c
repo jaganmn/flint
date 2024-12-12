@@ -209,7 +209,7 @@ void attribute_visible R_init_flint(DllInfo *info)
 {
 	R_registerRoutines(info, NULL, CallEntries, NULL, NULL);
 	R_useDynamicSymbols(info, FALSE);
-	/* R_forceSymbols(info, TRUE); */
+	R_forceSymbols(info, TRUE);
 	R_flint_symbol_dot_xdata = Rf_install(".xData");
 	R_flint_symbol_dot_data  = Rf_install(".Data");
 	R_flint_symbol_num       = Rf_install("num");
