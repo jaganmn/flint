@@ -1,5 +1,6 @@
 library(methods) # as, new
 loadNamespace("flint") # work with or without attaching
+flintIdentical <- flint:::flintIdentical
 
 
 ## Test that as(<class>, "<type>") and as.<type>(<class>) work correctly
@@ -22,45 +23,16 @@ for (t in basic) {
 }
 
 
-## Test that typeof(as.vector(.)) is "complex" for 'acb', "double" otherwise.
+## Test that typeof(as.vector(.)) is "complex" for 'acb', "double"
+## otherwise.
 
 stopifnot(identical(vapply(lapply(zu, as.vector), typeof, ""),
                     rep(c("double", "complex"), c(7L, 1L))))
 
 
-## Test that as(<class>, <nclass>) works correctly.
-
-ncl <- paste0("n", cl)
-nzu <- .mapply(as, list(zu, ncl), NULL)
-stopifnot(identical(nzu[-6L], list(new("nslong", c(0L, 1L)),
-                                   new("nulong", c(0L, 1L)),
-                                   new("nfmpz" , c(0L, 1L)),
-                                   new("nfmpq" ,
-                                       num = new("nfmpz", c(0L, 1L)),
-                                       den = new("nfmpz", c(1L, 1L))),
-                                   new("narf"  , c(0, 1)),
-                                   new("narb"  ,
-                                       mid = new("narf", c(0, 1)),
-                                       rad = new("nmag", c(0, 0))),
-                                   new("nacb",
-                                       real = new("narb",
-                                                  mid = new("narf", c(0, 1)),
-                                                  rad = new("nmag", c(0, 0))),
-                                       imag = new("narb",
-                                                  mid = new("narf", c(0, 0)),
-                                                  rad = new("nmag", c(0, 0)))))),
-          all.equal(nzu[ 6L], list(new("nmag", c(0, 1)))))
-
-
-## Test that as(<nclass>, <class>) works correctly.
-
-nzu. <- .mapply(as, list(.mapply(as, list(nzu, cl), NULL), ncl), NULL)
-stopifnot(identical(nzu[-6L], nzu.[-6L]),
-          all.equal(nzu[ 6L], nzu.[ 6L]))
-
-
-## Test that exactly one condition (a warning) is signaled when nonzero
-## imaginary parts are discarded and that no condition is signaled otherwise.
+## Test that exactly one condition (a warning) is signaled when
+## nonzero imaginary parts are discarded and that no condition is
+## signaled otherwise.
 
 zi <- new("acb", x = 0i)
 ui <- new("acb", x = 1i)

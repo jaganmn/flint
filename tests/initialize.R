@@ -1,5 +1,6 @@
 library(methods) # initialize, new
 loadNamespace("flint") # work with or without attaching
+flintIdentical <- flint:::flintIdentical
 
 
 ## Test that length(new(., length = value)) ==        value
@@ -25,19 +26,19 @@ new.acb <-
 function (Class, real = 0, imag = 0, ...)
     new(Class, real = real, imag = imag)
 
-e <- expression(as(new(, 1), ), )
+e <- expression(new(, 1), )
 for (s in list(c("fmpq",  "num",  "den"),
                c( "arb",  "mid",  "rad"),
                c( "acb", "real", "imag"))) {
-    e[[c(1L, 3L)]] <- paste0("n", e[[c(1L, 2L, 2L)]] <- s[1L])
+    e[[c(1L, 2L)]] <- s[1L]
     e[[2L]] <- e[[1L]]
-    e[[c(2L, 2L, 1L)]] <- as.name(paste0("new.", s[1L]))
+    e[[c(2L, 1L)]] <- as.name(paste0("new.", s[1L]))
     for (nm in s[-1L]) {
         for (i in 1:2)
-            names(e[[c(i, 2L)]])[3L] <- nm
+            names(e[[i]])[3L] <- nm
         print(e)
         v <- lapply(e, eval)
-        stopifnot(identical(v[[1L]], v[[2L]]))
+        stopifnot(flintIdentical(v[[1L]], v[[2L]]))
     }
 }
 
@@ -45,22 +46,22 @@ for (s in list(c("fmpq",  "num",  "den"),
 ## Test recycling of initializers.
 
 . <- integer(0L); a <- 1:2; b <- 3:4; aa <- c(a, a); bb <- c(b, b)
-e <- expression(as(new(,  a, bb), ),
-                as(new(, aa, bb), ),
-                as(new(,  ., bb), ),
-                as(new(,  .,  .), ))
+e <- expression(new(,  a, bb),
+                new(, aa, bb),
+                new(,  ., bb),
+                new(,  .,  .))
 for (s in list(c("fmpq",  "num",  "den"),
                c( "arb",  "mid",  "rad"),
                c( "acb", "real", "imag"))) {
     for (p in list(1:2, 2:1)) {
         for (i in 1:4) {
-            e[[c(i, 3L)]] <- paste0("n", e[[c(i, 2L, 2L)]] <- s[1L])
-            names(e[[c(i, 2L)]])[3:4] <- s[-1L][p]
+            e[[c(i, 2L)]] <- s[1L]
+            names(e[[i]])[3:4] <- s[-1L][p]
         }
         print(e)
         v <- lapply(e, eval)
-        stopifnot(identical(v[[1L]], v[[2L]]),
-                  identical(v[[3L]], v[[4L]]))
+        stopifnot(flintIdentical(v[[1L]], v[[2L]]),
+                  flintIdentical(v[[3L]], v[[4L]]))
     }
 }
 
@@ -68,35 +69,27 @@ for (s in list(c("fmpq",  "num",  "den"),
 ## Test single initialization of 'fmpq'.
 
 x <- c(-10, -0.125, 0, 1.25, 2.5)
-a <- as(new("fmpq", x = x), "nfmpq")
-b <- new("nfmpq",
-         num = new("nfmpz", c(-10L, -1L, 0L, 5L, 5L)),
-         den = new("nfmpz", c(  1L,  8L, 1L, 4L, 2L)))
-stopifnot(identical(a, b))
+a <- new("fmpq", x = x)
+b <- new("fmpq",
+         num = c(-10L, -1L, 0L, 5L, 5L),
+         den = c(  1L,  8L, 1L, 4L, 2L))
+stopifnot(flintIdentical(a, b))
 
 
 ## Test single initialization of 'arb'.
 
 x <- atan(-2:2)
-a <- as(new("arb", x = x), "narb")
-b <- new("narb",
-         mid = new("narf", x),
-         rad = new("nmag", double(length(x))))
-stopifnot(identical(a, b))
+a <- new("arb", x = x)
+b <- new("arb", mid = x, rad = 0)
+stopifnot(flintIdentical(a, b))
 
 
 ## Test single initialization of 'acb'.
 
 x <- complex(real = exp(-2:2), imaginary = sin(-2:2))
-a <- as(new("acb", x = x), "nacb")
-b <- new("nacb",
-         real = new("narb",
-                    mid = new("narf", Re(x)),
-                    rad = new("nmag", double(length(x)))),
-         imag = new("narb",
-                    mid = new("narf", Im(x)),
-                    rad = new("nmag", double(length(x)))))
-stopifnot(identical(a, b))
+a <- new("acb", x = x)
+b <- new("acb", real = Re(x), imag = Im(x))
+stopifnot(flintIdentical(a, b))
 
 
 ## Test handling of unrepresentable values.
