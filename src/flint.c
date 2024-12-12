@@ -122,230 +122,202 @@ SEXP R_flint_triple(SEXP object)
 	return ans;
 }
 
-SEXP R_flint_part(SEXP from, SEXP s_mode)
+SEXP R_flint_part(SEXP object, SEXP s_mode)
 {
-	R_flint_class_t class = R_flint_get_class(from);
-	unsigned long long int j, n = R_flint_get_length(from);
-	void *p = R_flint_get_pointer(from);
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y;
+	unsigned long long int j,
+		nx = R_flint_get_length(object),
+		ny = nx;
 	R_CFinalizer_t f;
 	const char *what;
 	int mode = INTEGER_RO(s_mode)[0];
 
 #define PART_CASE(xname, yname, xelt_t, yelt_t, xptr_t, yptr_t, part) \
 	do { \
-		xptr_t x = (xptr_t) p; \
-		yptr_t y = (yptr_t) ((n) ? flint_calloc((size_t) n, sizeof(yelt_t)) : 0); \
-		for (j = 0; j < n; ++j) \
-			yname##_set(y + j, xname##_##part##ref(x + j)); \
-		p = (void *) y; \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(yelt_t)) : 0); \
+		for (j = 0; j < ny; ++j) \
+			yname##_set(y__ + j, xname##_##part##ref(x__ + j)); \
+		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##yname##_finalize; \
 		what = #yname; \
 	} while (0)
 
 	switch (class) {
 	case R_FLINT_CLASS_FMPQ:
-	{
 		if (mode == 0)
-		PART_CASE(fmpq, fmpz, fmpq, fmpz, fmpq *, fmpz *, num);
+		PART_CASE(fmpq, fmpz, fmpq, fmpz, const fmpq *, fmpz *, num);
 		else
-		PART_CASE(fmpq, fmpz, fmpq, fmpz, fmpq *, fmpz *, den);
+		PART_CASE(fmpq, fmpz, fmpq, fmpz, const fmpq *, fmpz *, den);
 		break;
-	}
 	case R_FLINT_CLASS_ARB:
-	{
 		if (mode == 0)
-		PART_CASE(arb, arf, arb_t, arf_t, arb_ptr, arf_ptr, mid);
+		PART_CASE(arb, arf, arb_t, arf_t, arb_srcptr, arf_ptr, mid);
 		else
-		PART_CASE(arb, mag, arb_t, mag_t, arb_ptr, mag_ptr, rad);
+		PART_CASE(arb, mag, arb_t, mag_t, arb_srcptr, mag_ptr, rad);
 		break;
-	}
 	case R_FLINT_CLASS_ACB:
-	{
 		if (mode == 0)
-		PART_CASE(acb, arb, acb_t, arb_t, acb_ptr, arb_ptr, real);
+		PART_CASE(acb, arb, acb_t, arb_t, acb_srcptr, arb_ptr, real);
 		else
-		PART_CASE(acb, arb, acb_t, arb_t, acb_ptr, arb_ptr, imag);
+		PART_CASE(acb, arb, acb_t, arb_t, acb_srcptr, arb_ptr, imag);
 		break;
-	}
 	default:
 		return R_NilValue;
 	}
 
 #undef PART_CASE
 
-	SEXP to = PROTECT(newObject(what));
-	R_flint_set(to, p, n, f);
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
-SEXP R_flint_subscript(SEXP from, SEXP subscript)
+SEXP R_flint_subscript(SEXP object, SEXP subscript)
 {
-	R_flint_class_t class = R_flint_get_class(from);
-	void *p = R_flint_get_pointer(from);
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y;
 	unsigned long long int j,
-		n = (unsigned long long int) XLENGTH(subscript);
+#if 0
+		nx = R_flint_get_length(object),
+#endif
+		ny = (unsigned long long int) XLENGTH(subscript);
 	R_CFinalizer_t f;
 	const char *what;
 
-#define SUBSCRIPT_CASE(name, elt_t, ptr_t) \
+#define SUBSCRIPT_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		ptr_t x = (ptr_t) p; \
-		ptr_t y = (ptr_t) ((n) ? flint_calloc((size_t) n, sizeof(elt_t)) : 0); \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
 		if (TYPEOF(subscript) == INTSXP) { \
-			const int *s = INTEGER_RO(subscript); \
-			for (j = 0; j < n; ++j) \
-				name##_set(y + j, x + s[j] - 1); \
+			const int *s__ = INTEGER_RO(subscript); \
+			for (j = 0; j < ny; ++j) \
+				name##_set(y__ + j, x__ + s__[j] - 1); \
 		} else { \
-			const double *s = REAL_RO(subscript); \
-			for (j = 0; j < n; ++j) \
-				name##_set(y + j, x + (unsigned long long int) s[j] - 1); \
+			const double *s__ = REAL_RO(subscript); \
+			for (j = 0; j < ny; ++j) \
+				name##_set(y__ + j, x__ + (unsigned long long int) s__[j] - 1); \
 		} \
-		p = (void *) y; \
+		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 	} while (0)
 
 	switch (class) {
 	case R_FLINT_CLASS_SLONG:
-	{
-		SUBSCRIPT_CASE(slong, slong, slong *);
+		SUBSCRIPT_CASE(slong, slong, const slong *, slong *);
 		break;
-	}
 	case R_FLINT_CLASS_ULONG:
-	{
-		SUBSCRIPT_CASE(ulong, ulong, ulong *);
+		SUBSCRIPT_CASE(ulong, ulong, const ulong *, ulong *);
 		break;
-	}
 	case R_FLINT_CLASS_FMPZ:
-	{
-		SUBSCRIPT_CASE(fmpz, fmpz, fmpz *);
+		SUBSCRIPT_CASE(fmpz, fmpz, const fmpz *, fmpz *);
 		break;
-	}
 	case R_FLINT_CLASS_FMPQ:
-	{
-		SUBSCRIPT_CASE(fmpq, fmpq, fmpq *);
+		SUBSCRIPT_CASE(fmpq, fmpq, const fmpq *, fmpq *);
 		break;
-	}
 	case R_FLINT_CLASS_ARF:
-	{
-		SUBSCRIPT_CASE(arf, arf_t, arf_ptr);
+		SUBSCRIPT_CASE(arf, arf_t, arf_srcptr, arf_ptr);
 		break;
-	}
 	case R_FLINT_CLASS_MAG:
-	{
-		SUBSCRIPT_CASE(mag, mag_t, mag_ptr);
+		SUBSCRIPT_CASE(mag, mag_t, mag_srcptr, mag_ptr);
 		break;
-	}
 	case R_FLINT_CLASS_ARB:
-	{
-		SUBSCRIPT_CASE(arb, arb_t, arb_ptr);
+		SUBSCRIPT_CASE(arb, arb_t, arb_srcptr, arb_ptr);
 		break;
-	}
 	case R_FLINT_CLASS_ACB:
-	{
-		SUBSCRIPT_CASE(acb, acb_t, acb_ptr);
+		SUBSCRIPT_CASE(acb, acb_t, acb_srcptr, acb_ptr);
 		break;
-	}
 	default:
 		return R_NilValue;
 	}
 
 #undef SUBSCRIPT_CASE
 
-	SEXP to = PROTECT(newObject(what));
-	R_flint_set(to, p, n, f);
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
-SEXP R_flint_subassign(SEXP from, SEXP subscript, SEXP value)
+SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 {
-	R_flint_class_t class = R_flint_get_class(from);
-	void *p = R_flint_get_pointer(from),
-		*p__ = R_flint_get_pointer(value);
-	unsigned long long int i, j,
-		m = (unsigned long long int) XLENGTH(subscript),
-		n = R_flint_get_length(from),
-		n__ = R_flint_get_length(value);
+	R_flint_class_t class = R_flint_get_class(object);
+	const void
+		*v = R_flint_get_pointer(value),
+		*x = R_flint_get_pointer(object);
+	void *y;
+	unsigned long long int j,
+		ns = (unsigned long long int) XLENGTH(subscript),
+		nv = R_flint_get_length(value),
+		nx = R_flint_get_length(object),
+		ny = nx;
 	R_CFinalizer_t f;
 	const char *what;
 
-#define SUBASSIGN_CASE(name, elt_t, ptr_t) \
+#define SUBASSIGN_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		ptr_t v = (ptr_t) p__; \
-		ptr_t x = (ptr_t) p; \
-		ptr_t y = (ptr_t) ((n) ? flint_calloc((size_t) n, sizeof(elt_t)) : 0); \
+		xptr_t v__ = (xptr_t) v; \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
 		if (subscript == R_NilValue) { \
-			for (j = 0; j < n; ++j) \
-				name##_set(y + j, v + j % n__); \
+			for (j = 0; j < ny; ++j) \
+				name##_set(y__ + j, v__ + j % nv); \
 		} else { \
-			for (j = 0; j < n; ++j) \
-				name##_set(y + j, x + j); \
+			for (j = 0; j < ny; ++j) \
+				name##_set(y__ + j, x__ + j); \
 			if (TYPEOF(subscript) == INTSXP) { \
-				const int *s = INTEGER_RO(subscript); \
-				for (i = 0; i < m; ++i) \
-					name##_set(y + s[i] - 1, v + i % n__); \
+				const int *s__ = INTEGER_RO(subscript); \
+				for (j = 0; j < ns; ++j) \
+					name##_set(y__ + s__[j] - 1, v__ + j % nv); \
 			} else { \
-				const double *s = REAL_RO(subscript); \
-				for (i = 0; i < m; ++i) \
-					name##_set(y + (unsigned long long int) s[i] - 1, v + i % n__); \
+				const double *s__ = REAL_RO(subscript); \
+				for (j = 0; j < ns; ++j) \
+					name##_set(y__ + (unsigned long long int) s__[j] - 1, v__ + j % nv); \
 			} \
 		} \
-		p = (void *) y; \
+		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 	} while (0)
 
 	switch (class) {
 	case R_FLINT_CLASS_SLONG:
-	{
-		SUBASSIGN_CASE(slong, slong, slong *);
+		SUBASSIGN_CASE(slong, slong, const slong *, slong *);
 		break;
-	}
 	case R_FLINT_CLASS_ULONG:
-	{
-		SUBASSIGN_CASE(ulong, ulong, ulong *);
+		SUBASSIGN_CASE(ulong, ulong, const ulong *, ulong *);
 		break;
-	}
 	case R_FLINT_CLASS_FMPZ:
-	{
-		SUBASSIGN_CASE(fmpz, fmpz, fmpz *);
+		SUBASSIGN_CASE(fmpz, fmpz, const fmpz *, fmpz *);
 		break;
-	}
 	case R_FLINT_CLASS_FMPQ:
-	{
-		SUBASSIGN_CASE(fmpq, fmpq, fmpq *);
+		SUBASSIGN_CASE(fmpq, fmpq, const fmpq *, fmpq *);
 		break;
-	}
 	case R_FLINT_CLASS_ARF:
-	{
-		SUBASSIGN_CASE(arf, arf_t, arf_ptr);
+		SUBASSIGN_CASE(arf, arf_t, arf_srcptr, arf_ptr);
 		break;
-	}
 	case R_FLINT_CLASS_MAG:
-	{
-		SUBASSIGN_CASE(mag, mag_t, mag_ptr);
+		SUBASSIGN_CASE(mag, mag_t, mag_srcptr, mag_ptr);
 		break;
-	}
 	case R_FLINT_CLASS_ARB:
-	{
-		SUBASSIGN_CASE(arb, arb_t, arb_ptr);
+		SUBASSIGN_CASE(arb, arb_t, arb_srcptr, arb_ptr);
 		break;
-	}
 	case R_FLINT_CLASS_ACB:
-	{
-		SUBASSIGN_CASE(acb, acb_t, acb_ptr);
+		SUBASSIGN_CASE(acb, acb_t, acb_srcptr, acb_ptr);
 		break;
-	}
 	default:
 		return R_NilValue;
 	}
 
-#undef SUBASSIGN_CASES
+#undef SUBASSIGN_CASE
 
 	SEXP to = PROTECT(newObject(what));
-	R_flint_set(to, p, n, f);
+	R_flint_set(to, y, ny, f);
 	UNPROTECT(1);
 	return to;
 }
