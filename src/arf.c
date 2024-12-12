@@ -149,12 +149,12 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
+SEXP R_flint_arf_vector(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
 	ERROR_TOO_LONG(n);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
-	SEXP to = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arf_srcptr x = (arf_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	arf_t lb, ub;
@@ -176,13 +176,6 @@ SEXP R_flint_arf_narf(SEXP from, SEXP s_rnd)
 	arf_clear(lb);
 	arf_clear(ub);
 	UNPROTECT(1);
-	return to;
-}
-
-SEXP R_flint_arf_vector(SEXP from, SEXP s_rnd)
-{
-	SEXP to = R_flint_arf_narf(from, s_rnd);
-	CLEAR_ATTRIB(to);
 	return to;
 }
 

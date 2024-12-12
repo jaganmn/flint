@@ -1,6 +1,5 @@
 \name{fmpq-class}
 \alias{fmpq-class}
-\alias{nfmpq-class}
 \alias{+,fmpq,missing-method}
 \alias{-,fmpq,missing-method}
 \alias{^,fmpq,fmpq-method}
@@ -21,10 +20,7 @@
 \alias{Summary,fmpq-method}
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}
-\alias{coerce,nfmpq,fmpq-method}
-\alias{coerce,fmpq,nfmpq-method}
 \alias{initialize,fmpq-method}
-\alias{length,nfmpq-method}
 \title{Class of Vectors of Rational Numbers}
 \docType{class}
 \description{
@@ -32,25 +28,12 @@
   It represents vectors of rational numbers.  Elements are specified by
   a pair of arbitrary precision integers a numerator and a (typically
   positive, coprime) denominator.
-
-  Class \code{nfmpq} extends virtual class \code{\linkS4class{nflint}}.
-  It is the \dQuote{native} analogue of \code{fmpq}.
 }
 \section{Slots}{
-  \code{fmpq}:
   \describe{
     \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
-  \code{nfmpq}:
-  \describe{
-    \item{\code{num}}{
-      an \code{\linkS4class{nfmpz}} vector listing numerators.}
-    \item{\code{den}}{
-      an \code{\linkS4class{nfmpz}} vector listing non-zero
-      denominators.}
-  }
-  The lengths of \code{num} and \code{den} must be equal.
 }
 \section{Methods}{
   \describe{
@@ -103,16 +86,6 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpq")}:\cr
       returns \code{new("fmpq", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "nfmpq", to = "fmpq")}:\cr
-      returns \code{new("fmpq", num = from@num, den = from@den)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "fmpq", to = "nfmpq")}:\cr
-      returns the analogous object of class \code{nfmpq} with slots
-      \code{num} and \code{den} such that \code{den[i]} positive and
-      coprime with \code{num[i]} for all \code{i}, except where
-      \code{NA} is introduced (where the numerator or the denominator
-      exceeds the range of \R{}'s integer type).}
     \item{\code{format}}{
       \code{signature(x = "fmpq")}:\cr
       returns a character vector suitable for printing, using string
@@ -140,14 +113,10 @@
       signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
       \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
       zero.}
-    \item{\code{length}}{
-      \code{signature(x = "nfmpq")}:\cr
-      returns \code{length(x@num)}.}
   }
 }
 \seealso{
-  Virtual classes \code{\linkS4class{flint}} and
-  \code{\linkS4class{nflint}}.
+  Virtual class \code{\linkS4class{flint}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -156,6 +125,4 @@
 \examples{
 showClass("fmpq")
 showMethods(classes = "fmpq")
-showClass("nfmpq")
-showMethods(classes = "nfmpq")
 }

@@ -10,21 +10,9 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_arb_vector, x, "N"), mode))
 
-setMethod("length",
-          c(x = "narb"),
-          function (x) length(x@mid))
-
 setAs("ANY", "arb",
       function (from)
           new("arb", x = from))
-
-setAs("narb", "arb",
-      function (from)
-          new("arb", mid = from@mid, rad = from@rad))
-
-setAs("arb", "narb",
-      function (from)
-          .Call(R_flint_arb_narb, from, "N"))
 
 Mid <- function (x) .Call(R_flint_part, x, 0L)
 Rad <- function (x) .Call(R_flint_part, x, 1L)

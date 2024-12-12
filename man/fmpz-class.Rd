@@ -1,6 +1,5 @@
 \name{fmpz-class}
 \alias{fmpz-class}
-\alias{nfmpz-class}
 \alias{+,fmpz,missing-method}
 \alias{-,fmpz,missing-method}
 \alias{Complex,fmpz-method}
@@ -21,32 +20,17 @@
 \alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{coerce,ANY,fmpz-method}
-\alias{coerce,nfmpz,fmpz-method}
-\alias{coerce,fmpz,nfmpz-method}
 \alias{initialize,fmpz-method}
 \title{Class of Vectors of Arbitrary Precision Integers}
 \docType{class}
 \description{
   Class \code{fmpz} extends virtual class \code{flint}.  It represents
   vectors of arbitrary precision integers.
-
-  Class \code{nfmpz} extends virtual class \code{\linkS4class{nflint}}
-  and basic vector class \code{\linkS4class{integer}}.  It is the
-  \dQuote{native} analogue of \code{fmpz}.
 }
 \section{Slots}{
-  \code{fmpz}:
   \describe{
     \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
-  }
-  \code{nfmpz}:
-  \describe{
-    \item{\code{.Data}}{
-      a pseudo-slot whose \emph{apparent} value is the
-      \dQuote{data part} of the object: a copy of the object with S4 bit
-      unset and attributes removed.  \code{NA} represents integers not
-      in \eqn{(-2^{31}, 2^{31})}, the range of \R{}'s integer type.}
   }
 }
 \section{Methods}{
@@ -99,12 +83,7 @@
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
-      \code{signature(from = "nfmpz", to = "fmpz")}:\cr
       returns \code{new("fmpz", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "fmpz", to = "nfmpz")}:\cr
-      returns an object of class \code{nfmpz} whose data part is
-      \code{as.vector(from, "integer")}.}
     \item{\code{format}}{
       \code{signature(x = "fmpz")}:\cr
       returns a character vector suitable for printing.  Optional
@@ -125,8 +104,7 @@
   }
 }
 \seealso{
-  Virtual classes \code{\linkS4class{flint}} and
-  \code{\linkS4class{nflint}}.
+  Virtual class \code{\linkS4class{flint}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -135,6 +113,4 @@
 \examples{
 showClass("fmpz")
 showMethods(classes = "fmpz")
-showClass("nfmpz")
-showMethods(classes = "nfmpz")
 }

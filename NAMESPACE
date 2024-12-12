@@ -1,9 +1,7 @@
 useDynLib(flint, .registration = TRUE)
 importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
            initialize, new, setAs, setClass, setMethod, show)
-exportClasses(flint, slong, ulong, fmpz, fmpq, arf, mag, arb, acb,
-              nflint, nslong, nulong, nfmpz, nfmpq, narf, nmag, narb,
-              nacb)
+exportClasses(flint, slong, ulong, fmpz, fmpq, arf, mag, arb, acb)
 exportMethods("+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
               Math2, Ops, Summary, as.raw, as.logical, as.integer,
               as.numeric, as.complex, as.list, as.expression, as.vector,

@@ -96,8 +96,6 @@
   }
 }
 \seealso{
-  Virtual class \code{\linkS4class{nflint}}.
-
   The nonvirtual subclasses:
   \code{\linkS4class{slong}}, \code{\linkS4class{ulong}},
   \code{\linkS4class{fmpz}}, \code{\linkS4class{fmpq}},

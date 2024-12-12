@@ -160,26 +160,6 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_slong_nslong(SEXP from)
-{
-	unsigned long long int j, n = R_flint_get_length(from);
-	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(newBasic("nslong", INTSXP, (R_xlen_t) n));
-	const slong *x = (slong *) R_flint_get_pointer(from);
-	int *y = INTEGER(to);
-	int w = 1;
-	for (j = 0; j < n; ++j) {
-		if (x[j] > INT_MIN && x[j] <= INT_MAX)
-			y[j] = (int) x[j];
-		else {
-			y[j] = NA_INTEGER;
-			WARNING_OOB_INTEGER(w);
-		}
-	}
-	UNPROTECT(1);
-	return to;
-}
-
 SEXP R_flint_slong_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

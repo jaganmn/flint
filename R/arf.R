@@ -12,14 +12,6 @@ setAs("ANY", "arf",
       function (from)
           new("arf", x = from))
 
-setAs("narf", "arf",
-      function (from)
-          new("arf", x = from))
-
-setAs("arf", "narf",
-      function (from)
-          .Call(R_flint_arf_narf, from, "N"))
-
 setMethod("format",
           c(x = "arf"),
           function (x, base = 10L, digits = NULL, sep = NULL,

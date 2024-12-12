@@ -1,6 +1,5 @@
 \name{mag-class}
 \alias{mag-class}
-\alias{nmag-class}
 \alias{+,mag,missing-method}
 \alias{-,mag,missing-method}
 \alias{Complex,mag-method}
@@ -19,8 +18,6 @@
 \alias{Summary,mag-method}
 \alias{as.vector,mag-method}
 \alias{coerce,ANY,mag-method}
-\alias{coerce,nmag,mag-method}
-\alias{coerce,mag,nmag-method}
 \alias{initialize,mag-method}
 \alias{log,mag-method}
 \title{Class of Vectors of Magnitude (Error) Bounds}
@@ -31,23 +28,11 @@
   significand and an arbitary precision exponent.  In typical usage,
   \code{mag} objects store magnitude (or error) bounds on real numbers.
   The value can be positive infinity but never not-a-number.
-
-  Class \code{nmag} extends virtual class \code{\linkS4class{nflint}}
-  and basic vector class \code{\linkS4class{double}}.  It is the
-  \dQuote{native} analogue of \code{mag}.
 }
 \section{Slots}{
-  \code{mag}:
   \describe{
     \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
-  }
-  \code{nmag}:
-  \describe{
-    \item{\code{.Data}}{
-      a pseudo-slot whose \emph{apparent} value is the
-      \dQuote{data part} of the object: a copy of the object with S4 bit
-      unset and attributes removed.}
   }
 }
 \section{Methods}{
@@ -111,12 +96,7 @@
       \code{Inf}, not always to nearest.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
-      \code{signature(from = "nmag", to = "mag")}:\cr
       returns \code{new("mag", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "mag", to = "nmag")}:\cr
-      returns an object of class \code{nmag} whose data part is
-      \code{as.vector(from, "double")}.}
     \item{\code{format}}{
       \code{signature(x = "mag")}:\cr
       returns a character vector suitable for printing, using scientific
@@ -142,8 +122,7 @@
   }
 }
 \seealso{
-  Virtual classes \code{\linkS4class{flint}} and
-  \code{\linkS4class{nflint}}.
+  Virtual class \code{\linkS4class{flint}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -152,6 +131,4 @@
 \examples{
 showClass("mag")
 showMethods(classes = "mag")
-showClass("nmag")
-showMethods(classes = "nmag")
 }

@@ -10,21 +10,9 @@ setMethod("as.vector",
           function (x, mode = "any")
               as.vector(.Call(R_flint_fmpq_vector, x), mode))
 
-setMethod("length",
-          c(x = "nfmpq"),
-          function (x) length(x@num))
-
 setAs("ANY", "fmpq",
       function (from)
           new("fmpq", x = from))
-
-setAs("nfmpq", "fmpq",
-      function (from)
-          new("fmpq", num = from@num, den = from@den))
-
-setAs("fmpq", "nfmpq",
-      function (from)
-          .Call(R_flint_fmpq_nfmpq, from))
 
 Num <- function (q) .Call(R_flint_part, q, 0L)
 Den <- function (q) .Call(R_flint_part, q, 1L)

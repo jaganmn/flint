@@ -190,46 +190,6 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_fmpq_nfmpq(SEXP from)
-{
-	unsigned long long int j, n = R_flint_get_length(from);
-	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(newObject("nfmpq")),
-		num = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n)),
-		den = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
-	R_do_slot_assign(to, R_flint_symbol_num, num);
-	R_do_slot_assign(to, R_flint_symbol_den, den);
-	const fmpq *x = (fmpq *) R_flint_get_pointer(from);
-	int *yp = INTEGER(num), *yq = INTEGER(den);
-	fmpz_t lb, ub;
-	const fmpz *p, *q;
-	fmpz_init(lb);
-	fmpz_init(ub);
-	fmpz_set_ui(ub, (unsigned int) INT_MAX + 1U);
-	fmpz_neg(lb, ub);
-	int w = 1;
-	for (j = 0; j < n; ++j) {
-		p = fmpq_numref(x + j);
-		if (fmpz_cmp(p, lb) > 0 && fmpz_cmp(p, ub) < 0)
-			yp[j] = (int) fmpz_get_si(p);
-		else {
-			yp[j] = NA_INTEGER;
-			WARNING_OOB_INTEGER(w);
-		}
-		q = fmpq_denref(x + j);
-		if (fmpz_cmp(q, lb) > 0 && fmpz_cmp(q, ub) < 0)
-			yq[j] = (int) fmpz_get_si(q);
-		else {
-			yq[j] = NA_INTEGER;
-			WARNING_OOB_INTEGER(w);
-		}
-	}
-	fmpz_clear(lb);
-	fmpz_clear(ub);
-	UNPROTECT(3);
-	return to;
-}
-
 SEXP R_flint_fmpq_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

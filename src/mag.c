@@ -134,11 +134,11 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_mag_nmag(SEXP from)
+SEXP R_flint_mag_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
 	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
+	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	mag_srcptr x = (mag_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
 	mag_t ub;
@@ -155,13 +155,6 @@ SEXP R_flint_mag_nmag(SEXP from)
 	}
 	mag_clear(ub);
 	UNPROTECT(1);
-	return to;
-}
-
-SEXP R_flint_mag_vector(SEXP from)
-{
-	SEXP to = R_flint_mag_nmag(from);
-	CLEAR_ATTRIB(to);
 	return to;
 }
 

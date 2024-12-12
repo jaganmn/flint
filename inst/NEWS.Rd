@@ -60,15 +60,6 @@
       as vectors of length at most \code{2^64-1} of the so-named
       \proglang{C} types.  The implementation is based on external
       pointers.
-
-      \item Virtual class \code{nflint} with nonvirtual subclasses
-      \code{nslong}, \code{nulong}, \code{nfmpz}, \code{nfmpq},
-      \code{narf}, \code{nmag}, \code{narb}, and \code{nacb}.  These are
-      \dQuote{native} analogues of the unprefixed classes based on
-      integer and double vectors instead of external pointers.  They are
-      mainly didactic as they poorly approximate the (often arbitrary)
-      range of the corresponding \proglang{C} types.  That methods are
-      provided only for \code{coerce} and \code{length} is intended.
     }
   }
   \subsection{Methods}{

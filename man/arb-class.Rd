@@ -1,6 +1,5 @@
 \name{arb-class}
 \alias{arb-class}
-\alias{narb-class}
 \alias{+,arb,missing-method}
 \alias{-,arb,missing-method}
 \alias{Complex,arb-method}
@@ -19,10 +18,7 @@
 \alias{Summary,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}
-\alias{coerce,narb,arb-method}
-\alias{coerce,arb,narb-method}
 \alias{initialize,arb-method}
-\alias{length,narb-method}
 \alias{log,arb-method}
 \title{Class of Real Numbers with Error Bounds}
 \docType{class}
@@ -32,24 +28,12 @@
   a pair of mixed format floating-point numbers: an
   \code{\linkS4class{arf}} midpoint and a \code{\linkS4class{mag}}
   radius.
-
-  Class \code{narb} extends virtual class \code{\linkS4class{nflint}}.
-  It is the \dQuote{native} analogue of \code{arb}.
 }
 \section{Slots}{
-  \code{arb}:
   \describe{
     \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
-  \code{narb}:
-  \describe{
-    \item{\code{mid}}{
-      an \code{\linkS4class{narf}} vector listing midpoints.}
-    \item{\code{rad}}{
-      an \code{\linkS4class{nmag}} vector listing radii.}
-  }
-  The lengths of \code{mid} and \code{rad} must be equal.
 }
 \section{Methods}{
   Due to constraints imposed by generic functions, methods typically
@@ -106,12 +90,6 @@
       returns \code{new("arb", x = from)}.  An error is signaled if the
       class or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "narb", to = "arb")}:\cr
-      returns \code{new("arb", mid = from@mid, rad = from@rad)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "arb", to = "narb")}:\cr
-      returns the analogous object of class \code{narb}.}
     \item{\code{format}}{
       \code{signature(x = "arb")}:\cr
       returns a character vector suitable for printing, using string
@@ -136,9 +114,6 @@
       \code{mid} and \code{rad}, which are coerced to classes
       \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
       as necessary.}
-    \item{\code{length}}{
-      \code{signature(x = "narb")}:\cr
-      returns \code{length(x@mid)}.}
     \item{\code{log}}{
       \code{signature(x = "arb")}:\cr
       returns the logarithm of the argument.  The natural logarithm is
@@ -147,8 +122,7 @@
   }
 }
 \seealso{
-  Virtual classes \code{\linkS4class{flint}} and
-  \code{\linkS4class{nflint}}.
+  Virtual class \code{\linkS4class{flint}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -157,6 +131,4 @@
 \examples{
 showClass("arb")
 showMethods(classes = "arb")
-showClass("narb")
-showMethods(classes = "narb")
 }

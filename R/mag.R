@@ -12,14 +12,6 @@ setAs("ANY", "mag",
       function (from)
           new("mag", x = from))
 
-setAs("nmag", "mag",
-      function (from)
-          new("mag", x = from))
-
-setAs("mag", "nmag",
-      function (from)
-          .Call(R_flint_mag_nmag, from))
-
 setMethod("format",
           c(x = "mag"),
           function (x, base = 10L, digits = NULL, sep = NULL,

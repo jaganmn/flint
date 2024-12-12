@@ -163,26 +163,6 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_ulong_nulong(SEXP from)
-{
-	unsigned long long int j, n = R_flint_get_length(from);
-	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(newBasic("nulong", INTSXP, (R_xlen_t) n));
-	const ulong *x = (ulong *) R_flint_get_pointer(from);
-	int *y = INTEGER(to);
-	int w = 1;
-	for (j = 0; j < n; ++j) {
-		if (x[j] <= INT_MAX)
-			y[j] = (int) x[j];
-		else {
-			y[j] = NA_INTEGER;
-			WARNING_OOB_INTEGER(w);
-		}
-	}
-	UNPROTECT(1);
-	return to;
-}
-
 SEXP R_flint_ulong_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

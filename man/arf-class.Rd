@@ -1,6 +1,5 @@
 \name{arf-class}
 \alias{arf-class}
-\alias{narf-class}
 \alias{+,arf,missing-method}
 \alias{-,arf,missing-method}
 \alias{Complex,arf-method}
@@ -19,8 +18,6 @@
 \alias{Summary,arf-method}
 \alias{as.vector,arf-method}
 \alias{coerce,ANY,arf-method}
-\alias{coerce,narf,arf-method}
-\alias{coerce,arf,narf-method}
 \alias{initialize,arf-method}
 \title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}
 \docType{class}
@@ -28,23 +25,11 @@
   Class \code{arf} extends virtual class \code{flint}.  It represents
   vectors of signed floating-point numbers with an arbitrary precision
   significand and an arbitrary precision exponent.
-
-  Class \code{narf} extends virtual class \code{\linkS4class{nflint}}
-  and basic vector class \code{\linkS4class{double}}.  It is the
-  \dQuote{native} analogue of \code{arf}.
 }
 \section{Slots}{
-  \code{arf}:
   \describe{
     \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
-  }
-  \code{narf}:
-  \describe{
-    \item{\code{.Data}}{
-      a pseudo-slot whose \emph{apparent} value is the
-      \dQuote{data part} of the object: a copy of the object with S4 bit
-      unset and attributes removed.}
   }
 }
 \section{Methods}{
@@ -103,12 +88,7 @@
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
-      \code{signature(from = "narf", to = "arf")}:\cr
       returns \code{new("arf", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "arf", to = "narf")}:\cr
-      returns an object of class \code{narf} whose data part is
-      \code{as.vector(from, "double")}.}
     \item{\code{format}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific
@@ -128,8 +108,7 @@
   }
 }
 \seealso{
-  Virtual classes \code{\linkS4class{flint}} and
-  \code{\linkS4class{nflint}}.
+  Virtual class \code{\linkS4class{flint}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -138,6 +117,4 @@
 \examples{
 showClass("arf")
 showMethods(classes = "arf")
-showClass("narf")
-showMethods(classes = "narf")
 }

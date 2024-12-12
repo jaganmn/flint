@@ -12,14 +12,6 @@ setAs("ANY", "fmpz",
       function (from)
           new("fmpz", x = from))
 
-setAs("nfmpz", "fmpz",
-      function (from)
-          new("fmpz", x = from))
-
-setAs("fmpz", "nfmpz",
-      function (from)
-          .Call(R_flint_fmpz_nfmpz, from))
-
 setMethod("format",
           c(x = "fmpz"),
           function (x, base = 10L, ...)

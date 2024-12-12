@@ -12,14 +12,6 @@ setAs("ANY", "slong",
       function (from)
           new("slong", x = from))
 
-setAs("nslong", "slong",
-      function (from)
-          new("slong", x = from))
-
-setAs("slong", "nslong",
-      function (from)
-          .Call(R_flint_slong_nslong, from))
-
 setMethod("format",
           c(x = "slong"),
           function (x, base = 10L, ...)

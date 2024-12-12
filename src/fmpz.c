@@ -129,33 +129,6 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_fmpz_nfmpz(SEXP from)
-{
-	unsigned long long int j, n = R_flint_get_length(from);
-	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(newBasic("nfmpz", INTSXP, (R_xlen_t) n));
-	const fmpz *x = (fmpz *) R_flint_get_pointer(from);
-	int *y = INTEGER(to);
-	fmpz_t lb, ub;
-	fmpz_init(lb);
-	fmpz_init(ub);
-	fmpz_set_ui(ub, (unsigned int) INT_MAX + 1U);
-	fmpz_neg(lb, ub);
-	int w = 1;
-	for (j = 0; j < n; ++j) {
-		if (fmpz_cmp(x + j, lb) > 0 && fmpz_cmp(x + j, ub) < 0)
-			y[j] = (int) fmpz_get_si(x + j);
-		else {
-			y[j] = NA_INTEGER;
-			WARNING_OOB_INTEGER(w);
-		}
-	}
-	fmpz_clear(lb);
-	fmpz_clear(ub);
-	UNPROTECT(1);
-	return to;
-}
-
 SEXP R_flint_fmpz_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

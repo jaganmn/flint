@@ -163,54 +163,6 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_arb_narb(SEXP from, SEXP s_rnd)
-{
-	unsigned long long int j, n = R_flint_get_length(from);
-	ERROR_TOO_LONG(n);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
-	SEXP to = PROTECT(newObject("narb")),
-		mid = PROTECT(newBasic("narf", REALSXP, (R_xlen_t) n)),
-		rad = PROTECT(newBasic("nmag", REALSXP, (R_xlen_t) n));
-	R_do_slot_assign(to, R_flint_symbol_mid, mid);
-	R_do_slot_assign(to, R_flint_symbol_rad, rad);
-	arb_srcptr x = (arb_ptr) R_flint_get_pointer(from);
-	double *ym = REAL(mid), *yr = REAL(rad);
-	arf_t lbm, ubm;
-	arf_srcptr m;
-	arf_init(lbm);
-	arf_init(ubm);
-	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);
-	arf_neg(lbm, ubm);
-	mag_t ubr;
-	mag_srcptr r;
-	mag_init(ubr);
-	mag_set_ui_2exp_si(ubr, 1U, DBL_MAX_EXP);
-	int w = 1;
-	for (j = 0; j < n; ++j) {
-		m = arb_midref(x + j);
-		if (arf_is_nan(m))
-			ym[j] = R_NaN;
-		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			ym[j] = arf_get_d(m, rnd);
-		else {
-			ym[j] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
-			WARNING_OOB_DOUBLE(w);
-		}
-		r = arb_radref(x + j);
-		if (mag_cmp(r, ubr) < 0)
-			yr[j] = mag_get_d(r);
-		else {
-			yr[j] = R_PosInf;
-			WARNING_OOB_DOUBLE(w);
-		}
-	}
-	arf_clear(lbm);
-	arf_clear(ubm);
-	mag_clear(ubr);
-	UNPROTECT(3);
-	return to;
-}
-
 SEXP R_flint_arb_vector(SEXP from, SEXP s_rnd)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

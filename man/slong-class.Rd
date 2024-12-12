@@ -1,8 +1,6 @@
 \name{slong-class}
 \alias{slong-class}
 \alias{ulong-class}
-\alias{nslong-class}
-\alias{nulong-class}
 \alias{+,slong,missing-method}
 \alias{+,ulong,missing-method}
 \alias{-,slong,missing-method}
@@ -39,10 +37,6 @@
 \alias{as.vector,ulong-method}
 \alias{coerce,ANY,slong-method}
 \alias{coerce,ANY,ulong-method}
-\alias{coerce,nslong,slong-method}
-\alias{coerce,nulong,ulong-method}
-\alias{coerce,slong,nslong-method}
-\alias{coerce,ulong,nulong-method}
 \alias{initialize,slong-method}
 \alias{initialize,ulong-method}
 \title{Classes of Vectors of Signed or Unsigned Integers}
@@ -53,25 +47,11 @@
   unsigned integers, respectively.  The integer size is 32 or 64 bits,
   depending on the configuration of the linked \acronym{FLINT} library.
   The number of bits is given by \code{\link{flintBits}()}.
-
-  Classes \code{nslong} and \code{nulong} extend virtual class
-  \code{\linkS4class{nflint}} and basic vector class
-  \code{\linkS4class{integer}}.  They are the \dQuote{native} analogues
-  of \code{slong} and \code{ulong}.
 }
 \section{Slots}{
-  \code{slong}, \code{ulong}:
   \describe{
     \item{\code{.xData}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
-  }
-  \code{nslong}, \code{nulong}:
-  \describe{
-    \item{\code{.Data}}{
-      a pseudo-slot whose \emph{apparent} value is the
-      \dQuote{data part} of the object: a copy of the object with S4 bit
-      unset and attributes removed.  \code{NA} represents integers not
-      in \eqn{(-2^{31}, 2^{31})}, the range of \R{}'s integer type.}
   }
 }
 \section{Methods}{
@@ -120,15 +100,8 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "slong")}:\cr
       \code{signature(from = "ANY", to = "ulong")}:\cr
-      \code{signature(from = "nslong", to = "slong")}:\cr
-      \code{signature(from = "nulong", to = "ulong")}:\cr
       return \code{new("slong", x = from)} or
       \code{new("ulong", x = from)}.}
-    \item{\code{coerce}}{
-      \code{signature(from = "slong", to = "nslong")}:\cr
-      \code{signature(from = "ulong", to = "nulong")}:\cr
-      return an object of class \code{nslong} or \code{nulong} whose
-      data part is \code{as.vector(from, "integer")}.}
     \item{\code{format}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
@@ -155,8 +128,7 @@
   }
 }
 \seealso{
-  Virtual classes \code{\linkS4class{flint}} and
-  \code{\linkS4class{nflint}}.
+  Virtual class \code{\linkS4class{flint}}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -166,7 +138,4 @@
 showClass("slong")
 showClass("ulong")
 showMethods(classes = c("slong", "ulong"))
-showClass("nslong")
-showClass("nulong")
-showMethods(classes = c("nslong", "nulong"))
 }
