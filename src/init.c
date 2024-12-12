@@ -62,15 +62,16 @@ const char *R_flint_ops1[] =
 };
 
 SEXP R_flint_bits(void);
-SEXP R_flint_version(void);
 SEXP R_flint_class(SEXP);
-SEXP R_flint_new(SEXP);
-SEXP R_flint_valid(SEXP);
+SEXP R_flint_identical(SEXP, SEXP);
 SEXP R_flint_length(SEXP);
-SEXP R_flint_triple(SEXP);
+SEXP R_flint_new(SEXP);
 SEXP R_flint_part(SEXP, SEXP);
-SEXP R_flint_subscript(SEXP, SEXP);
 SEXP R_flint_subassign(SEXP, SEXP, SEXP);
+SEXP R_flint_subscript(SEXP, SEXP);
+SEXP R_flint_triple(SEXP);
+SEXP R_flint_valid(SEXP);
+SEXP R_flint_version(void);
 
 SEXP R_flint_slong_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_slong_nslong(SEXP);
@@ -150,15 +151,16 @@ static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
 	CALL_ENTRY(R_flint_bits, 0),
-	CALL_ENTRY(R_flint_version, 0),
 	CALL_ENTRY(R_flint_class, 1),
-	CALL_ENTRY(R_flint_new, 1),
-	CALL_ENTRY(R_flint_valid, 1),
+	CALL_ENTRY(R_flint_identical, 2),
 	CALL_ENTRY(R_flint_length, 1),
-	CALL_ENTRY(R_flint_triple, 1),
+	CALL_ENTRY(R_flint_new, 1),
 	CALL_ENTRY(R_flint_part, 2),
-	CALL_ENTRY(R_flint_subscript, 2),
 	CALL_ENTRY(R_flint_subassign, 3),
+	CALL_ENTRY(R_flint_subscript, 2),
+	CALL_ENTRY(R_flint_triple, 1),
+	CALL_ENTRY(R_flint_valid, 1),
+	CALL_ENTRY(R_flint_version, 0),
 	CALL_ENTRY(R_flint_slong_initialize, 3),
 	CALL_ENTRY(R_flint_slong_nslong, 1),
 	CALL_ENTRY(R_flint_slong_vector, 1),

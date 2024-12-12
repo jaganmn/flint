@@ -321,3 +321,59 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 	UNPROTECT(1);
 	return to;
 }
+
+SEXP R_flint_identical(SEXP object, SEXP reference)
+{
+	R_flint_class_t class = R_flint_get_class(reference);
+	if (R_flint_get_class(object) != class)
+		return Rf_ScalarLogical(0);
+	unsigned long long int j, n = R_flint_get_length(reference);
+	if (R_flint_get_length(object) != n)
+		return Rf_ScalarLogical(0);
+	const void
+		*x = R_flint_get_pointer(object),
+		*y = R_flint_get_pointer(reference);
+
+#define IDENTICAL_CASE(name, ptr_t) \
+	do { \
+		ptr_t x__ = (ptr_t) x; \
+		ptr_t y__ = (ptr_t) y; \
+		for (j = 0; j < n; ++j) \
+			if (!name##_equal(x__ + j, y__ + j)) \
+				return Rf_ScalarLogical(0); \
+	} while (0)
+
+	if (x != y)
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		IDENTICAL_CASE(slong, const slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		IDENTICAL_CASE(ulong, const ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		IDENTICAL_CASE(fmpz, const fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		IDENTICAL_CASE(fmpq, const fmpq *);
+		break;
+	case R_FLINT_CLASS_ARF:
+		IDENTICAL_CASE(arf, arf_srcptr);
+		break;
+	case R_FLINT_CLASS_MAG:
+		IDENTICAL_CASE(mag, mag_srcptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		IDENTICAL_CASE(arb, arb_srcptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		IDENTICAL_CASE(acb, acb_srcptr);
+		break;
+	default:
+		break;
+	}
+
+#undef IDENTICAL_CASE
+
+	return Rf_ScalarLogical(1);
+}

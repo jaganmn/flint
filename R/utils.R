@@ -62,3 +62,7 @@ function (rnd = NULL) {
         default
     else oop
 }
+
+flintIdentical <-
+function (object, reference)
+    .Call(R_flint_identical, object, reference)

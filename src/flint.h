@@ -34,6 +34,8 @@
 
 #define slong_set(rop, op) *(rop) = *(op)
 #define ulong_set(rop, op) *(rop) = *(op)
+#define slong_equal(rop, op) (*(rop) == *(op))
+#define ulong_equal(rop, op) (*(rop) == *(op))
 
 #define MAX2(a, b) \
 (((a) < (b)) ? (b)                 : (a))
