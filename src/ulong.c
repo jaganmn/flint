@@ -106,8 +106,10 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				fmpz_tdiv_q(q, fmpq_numref(x + j), fmpq_denref(x + j));
-				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q))
+				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
+				fmpz_clear(q);
 				Rf_error(_("rational not in range of '%s'"), "ulong");
+				}
 				else
 				y[j] = fmpz_get_ui(q);
 			}
@@ -121,8 +123,10 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				arf_get_fmpz(q, x + j, ARF_RND_DOWN);
-				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q))
+				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
+				fmpz_clear(q);
 				Rf_error(_("floating point number not in range of '%s'"), "ulong");
+				}
 				else
 				y[j] = fmpz_get_ui(q);
 			}
@@ -136,8 +140,10 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				mag_get_fmpz_lower(q, x + j);
-				if (!fmpz_abs_fits_ui(q))
+				if (!fmpz_abs_fits_ui(q)) {
+				fmpz_clear(q);
 				Rf_error(_("floating point number not in range of '%s'"), "ulong");
+				}
 				else
 				y[j] = fmpz_get_ui(q);
 			}

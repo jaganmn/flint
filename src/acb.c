@@ -308,6 +308,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans = newObject("acb");
 		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {
 		case 1: /*   "+" */
 			for (j = 0; j < n; ++j)
@@ -330,7 +331,6 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				acb_pow(z + j, x + j % nx, y + j % ny, prec);
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -436,6 +436,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("acb");
 		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {
 		case  1: /*        "+" */
 			for (j = 0; j < n; ++j)
@@ -752,7 +753,6 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				acb_conj(z + j, x + j);
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		return ans;
 	}
 	case 43: /*     "sum" */
@@ -761,6 +761,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = newObject("acb");
 		size_t s = (op == 42) ? 2 : 1;
 		acb_ptr z = (acb_ptr) flint_calloc(s, sizeof(acb_t));
+		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
 		int narm = LOGICAL_RO(s_dots)[0];
 		switch (op) {
 		case 43: /*     "sum" */
@@ -776,7 +777,6 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				acb_mul(z, z, x + j, prec);
 			break;
 		}
-		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
 		return ans;
 	}
 	case 45: /*     "any" */
@@ -819,6 +819,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("arb");
 		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
 		case 48: /*       "Re" */
 			for (j = 0; j < n; ++j)
@@ -838,7 +839,6 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				acb_arg(z + j, x + j, prec);
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		return ans;
 	}
 	default:

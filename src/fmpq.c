@@ -278,6 +278,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans = newObject("fmpq");
 		fmpq *z = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 1: /*   "+" */
 			for (j = 0; j < n; ++j)
@@ -311,15 +312,24 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				b = x + j % nx;
 				e = y + j % ny;
 				if ((fmpq_sgn(b) == 0 && fmpq_sgn(e) < 0) ||
-				    (fmpq_sgn(b) <  0 && fmpz_is_even(fmpq_denref(e))))
+				    (fmpq_sgn(b) <  0 && fmpz_is_even(fmpq_denref(e)))) {
+				fmpz_clear(a);
+				fmpz_clear(p);
 				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
 				         "fmpq", "^", "fmpq", "fmpq");
-				if (!fmpz_abs_fits_ui(fmpq_numref(e)))
+				}
+				if (!fmpz_abs_fits_ui(fmpq_numref(e))) {
+				fmpz_clear(a);
+				fmpz_clear(p);
 				Rf_error(_("<%s> %s <%s>: exponent numerator exceeds maximum %llu in absolute value"),
 				         "fmpq", "^", "fmpq", (unsigned long long int) (ulong) -1);
-				if (!fmpz_fits_si(fmpq_denref(e)))
+				}
+				if (!fmpz_fits_si(fmpq_denref(e))) {
+				fmpz_clear(a);
+				fmpz_clear(p);
 				Rf_error(_("<%s> %s <%s>: exponent denominator exceeds maximum %llu"),
 				         "fmpq", "^", "fmpq", (unsigned long long int) ((ulong) -1 >> 1));
+				}
 				s = fmpz_get_si(fmpq_denref(e));
 				if (fmpz_sgn(fmpq_numref(e)) >= 0) {
 				u = fmpz_get_ui(fmpq_numref(e));
@@ -341,16 +351,18 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				fmpq_canonicalise(z + j);
 				}
 				}
-				if (!exact)
+				if (!exact) {
+				fmpz_clear(a);
+				fmpz_clear(p);
 				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
 				         "fmpq", "^", "fmpq", "fmpq");
+				}
 			}
 			fmpz_clear(a);
 			fmpz_clear(p);
 			break;
 		}
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -464,6 +476,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("fmpq");
 		fmpq *z = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case  1: /*       "+" */
 		case 47: /*    "Conj" */
@@ -496,9 +509,11 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_is_zero(r))
 				fmpz_sqrtrem(fmpq_denref(z + j), r, fmpq_denref(x + j));
 				}
-				if (!(fmpq_sgn(x + j) >= 0 && fmpz_is_zero(r)))
+				if (!(fmpq_sgn(x + j) >= 0 && fmpz_is_zero(r))) {
+				fmpz_clear(r);
 				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
 				         "sqrt", "fmpq", "fmpq");
+				}
 			}
 			fmpz_clear(r);
 			break;
@@ -645,7 +660,6 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_one(fmpq_denref(z + j));
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		return ans;
 	}
 	case 40: /*     "min" */
@@ -660,6 +674,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = newObject("fmpq");
 		size_t s = (op == 42) ? 2 : 1;
 		fmpq *z = (fmpq *) flint_calloc(s, sizeof(fmpq));
+		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 40: /*     "min" */
 			fmpq_set(z, x);
@@ -693,7 +708,6 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpq_mul(z, z, x + j);
 			break;
 		}
-		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		return ans;
 	}
 	case 45: /*     "any" */

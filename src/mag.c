@@ -314,6 +314,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans = newObject("mag");
 		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 1: /*   "+" */
 			for (j = 0; j < n; ++j)
@@ -345,9 +346,12 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			for (j = 0; j < n; ++j) {
 				b = x   + j % nx;
 				e = y__ + j % ny;
-				if (arf_is_nan(e))
+				if (arf_is_nan(e)) {
 					/* b^NaN = NaN */
+					mag_clear(a0);
+					mag_clear(a1);
 					Rf_error(_("NaN not representable by '%s'"), "mag");
+				}
 				else if (arf_is_zero(e) || mag_cmp_2exp_si(b, 0) == 0)
 					/* b^0, 1^e = 1 */
 					mag_one(z + j);
@@ -400,7 +404,6 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -492,6 +495,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("mag");
 		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case  1: /*       "+" */
 		case  2: /*       "-" */
@@ -599,8 +603,10 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				mag_set_ui(tmp, (op == 14) ? 10 : 2);
 			else {
 				arf_srcptr base = (arf_ptr) R_flint_get_pointer(s_dots);
-				if (arf_is_nan(base) || arf_sgn(base) < 0)
+				if (arf_is_nan(base) || arf_sgn(base) < 0) {
+					mag_clear(tmp);
 					Rf_error(_("NaN not representable by '%s'"), "mag");
+				}
 				arf_get_mag_lower(tmp, base);
 			}
 			if (mag_cmp_2exp_si(tmp, 0) >= 0)
@@ -609,15 +615,19 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				mag_neg_log_lower(tmp, tmp);
 			if (mag_is_special(tmp)) {
 				for (j = 0; j < n; ++j)
-					if (mag_is_inf(z + j))
+					if (mag_is_inf(z + j)) {
+					mag_clear(tmp);
 					Rf_error(_("NaN not representable by '%s'"), "mag");
+					}
 					else
 					mag_zero(z + j);
 			}
 			else if (mag_cmp_2exp_si(tmp, 0) == 0) {
 				for (j = 0; j < n; ++j)
-					if (mag_is_zero(z + j))
+					if (mag_is_zero(z + j)) {
+					mag_clear(tmp);
 					Rf_error(_("NaN not representable by '%s'"), "mag");
+					}
 					else
 					mag_inf(z + j);
 			}
@@ -748,7 +758,6 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					mag_const_pi(z + j);
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		return ans;
 	}
 	case 40: /*     "min" */
@@ -760,6 +769,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = newObject("mag");
 		size_t s = (op == 42) ? 2 : 1;
 		mag_ptr z = (mag_ptr) flint_calloc(s, sizeof(mag_t));
+		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 40: /*     "min" */
 			mag_inf(z);
@@ -793,7 +803,6 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				mag_mul(z, z, x + j);
 			break;
 		}
-		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		return ans;
 	}
 	case 45: /*     "any" */

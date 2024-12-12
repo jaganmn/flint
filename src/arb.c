@@ -265,6 +265,7 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans = newObject("arb");
 		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
 		case 1: /*   "+" */
 			for (j = 0; j < n; ++j)
@@ -287,7 +288,6 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				arb_pow(z + j, x + j % nx, y + j % ny, prec);
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -439,6 +439,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("arb");
 		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
 		case  1: /*        "+" */
 		case 47: /*     "Conj" */
@@ -806,7 +807,6 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		return ans;
 	}
 	case 40: /*     "min" */
@@ -818,6 +818,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = newObject("arb");
 		size_t s = (op == 42) ? 2 : 1;
 		arb_ptr z = (arb_ptr) flint_calloc(s, sizeof(arb_t));
+		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arb_finalize);
 		int narm = LOGICAL_RO(s_dots)[0];
 		switch (op) {
 		case 40: /*     "min" */
@@ -866,7 +867,6 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arb_mul(z, z, x + j, prec);
 			break;
 		}
-		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arb_finalize);
 		return ans;
 	}
 	case 45: /*     "any" */

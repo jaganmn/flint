@@ -103,8 +103,10 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				fmpz_tdiv_q(q, fmpq_numref(x + j), fmpq_denref(x + j));
-				if (!fmpz_fits_si(q))
+				if (!fmpz_fits_si(q)) {
+				fmpz_clear(q);
 				Rf_error(_("rational not in range of '%s'"), "slong");
+				}
 				else
 				y[j] = fmpz_get_si(q);
 			}
@@ -118,8 +120,10 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				arf_get_fmpz(q, x + j, ARF_RND_DOWN);
-				if (!fmpz_fits_si(q))
+				if (!fmpz_fits_si(q)) {
+				fmpz_clear(q);
 				Rf_error(_("floating point number not in range of '%s'"), "slong");
+				}
 				else
 				y[j] = fmpz_get_si(q);
 			}
@@ -133,8 +137,10 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				mag_get_fmpz_lower(q, x + j);
-				if (!fmpz_fits_si(q))
+				if (!fmpz_fits_si(q)) {
+				fmpz_clear(q);
 				Rf_error(_("floating point number not in range of '%s'"), "slong");
+				}
 				else
 				y[j] = fmpz_get_si(q);
 			}

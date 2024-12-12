@@ -264,6 +264,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans = newObject("fmpz");
 		fmpz *z = (fmpz *) ((n) ? flint_calloc((size_t) n, sizeof(fmpz)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
 		case 1: /*   "+" */
 			for (j = 0; j < n; ++j)
@@ -292,7 +293,6 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				fmpz_fdiv_q(z + j, x + j % nx, y + j % ny);
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		return ans;
 	}
 	case  6: /*   "/" */
@@ -300,6 +300,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans = newObject("fmpq");
 		fmpq *z = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 6: /*   "/" */
 			for (j = 0; j < n; ++j)
@@ -320,12 +321,16 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			for (j = 0; j < n; ++j) {
 				b = x + j % nx;
 				e = y + j % ny;
-				if (fmpz_is_zero(b) && fmpz_sgn(e) < 0)
+				if (fmpz_is_zero(b) && fmpz_sgn(e) < 0) {
+				fmpz_clear(a);
 				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
 				         "fmpz", "^", "fmpz", "fmpz");
-				if (!fmpz_abs_fits_ui(e))
+				}
+				if (!fmpz_abs_fits_ui(e)) {
+				fmpz_clear(a);
 				Rf_error(_("<%s> %s <%s>: exponent exceeds maximum %llu in absolute value"),
 				         "fmpz", "^", "fmpz", (unsigned long long int) (ulong) -1);
+				}
 				if (fmpz_sgn(e) >= 0) {
 				u = fmpz_get_ui(e);
 				fmpz_pow_ui(fmpq_numref(z + j), b, u);
@@ -342,7 +347,6 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -427,6 +431,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("fmpz");
 		fmpz *z = (fmpz *) ((n) ? flint_calloc((size_t) n, sizeof(fmpz)) : 0);
+		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
 		case  1: /*       "+" */
 		case  6: /*   "floor" */
@@ -457,9 +462,11 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j) {
 				if (fmpz_sgn(x + j) >= 0)
 				fmpz_sqrtrem(z + j, r, x + j);
-				if (!(fmpz_sgn(x + j) >= 0 && fmpz_is_zero(r)))
+				if (!(fmpz_sgn(x + j) >= 0 && fmpz_is_zero(r))) {
+				fmpz_clear(r);
 				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
 				         "sqrt", "fmpz", "fmpz");
+				}
 			}
 			fmpz_clear(r);
 			break;
@@ -555,7 +562,6 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 49: /*      "Im" */
 			break;
 		}
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		return ans;
 	}
 	case 40: /*     "min" */
@@ -570,6 +576,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = newObject("fmpz");
 		size_t s = (op == 42) ? 2 : 1;
 		fmpz *z = (fmpz *) flint_calloc(s, sizeof(fmpz));
+		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
 		case 40: /*     "min" */
 			fmpz_set(z, x);
@@ -603,7 +610,6 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_mul(z, z, x + j);
 			break;
 		}
-		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		return ans;
 	}
 	case 45: /*     "any" */
