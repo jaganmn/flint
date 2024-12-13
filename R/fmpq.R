@@ -1,3 +1,6 @@
+Num <- function (q) .Call(R_flint_part, q, 0L)
+Den <- function (q) .Call(R_flint_part, q, 1L)
+
 setMethod("initialize",
           c(.Object = "fmpq"),
           function (.Object, length = 0L, x = NULL, num, den, ...)
@@ -13,9 +16,6 @@ setMethod("as.vector",
 setAs("ANY", "fmpq",
       function (from)
           new("fmpq", x = from))
-
-Num <- function (q) .Call(R_flint_part, q, 0L)
-Den <- function (q) .Call(R_flint_part, q, 1L)
 
 setMethod("format",
           c(x = "fmpq"),
@@ -156,3 +156,12 @@ setMethod("!",
           c(x = "fmpq"),
           function (x)
               .Call(R_flint_fmpq_ops1, "!", x, NULL))
+
+setMethod("all.equal",
+          c(target = "fmpq", current = "fmpq"),
+          function (target, current, ...)
+              all.equal(list(num = Num(target),
+                             den = Den(target)),
+                        list(num = Num(current),
+                             den = Den(current)),
+                        ...))

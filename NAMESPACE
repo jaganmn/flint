@@ -3,10 +3,11 @@ importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
            initialize, new, setAs, setClass, setMethod, show)
 exportClasses(flint, slong, ulong, fmpz, fmpq, arf, mag, arb, acb)
 exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
-              Math2, Ops, Summary, as.raw, as.logical, as.integer,
-              as.numeric, as.complex, as.list, as.expression, as.vector,
-              coerce, format, initialize, is.finite, is.infinite, is.na,
-              is.nan, length, log, print, show)
+              Math2, Ops, Summary, all.equal, as.raw, as.logical,
+              as.integer, as.numeric, as.complex, as.list,
+              as.expression, as.vector, coerce, format, initialize,
+              is.finite, is.infinite, is.na, is.nan, length, log,
+              print, show)
 export(flintBits,
        flintIdentical,
        flintPrec,

@@ -1,3 +1,6 @@
+Mid <- function (x) .Call(R_flint_part, x, 0L)
+Rad <- function (x) .Call(R_flint_part, x, 1L)
+
 setMethod("initialize",
           c(.Object = "arb"),
           function (.Object, length = 0L, x = NULL, mid, rad, ...)
@@ -13,9 +16,6 @@ setMethod("as.vector",
 setAs("ANY", "arb",
       function (from)
           new("arb", x = from))
-
-Mid <- function (x) .Call(R_flint_part, x, 0L)
-Rad <- function (x) .Call(R_flint_part, x, 1L)
 
 setMethod("format",
           c(x = "arb"),
@@ -168,3 +168,12 @@ setMethod("!",
           c(x = "arb"),
           function (x)
               .Call(R_flint_arb_ops1, "!", x, NULL))
+
+setMethod("all.equal",
+          c(target = "arb", current = "arb"),
+          function (target, current, ...)
+              all.equal(list(mid = Mid(target),
+                             rad = Rad(target)),
+                        list(mid = Mid(current),
+                             rad = Rad(current)),
+                        ...))

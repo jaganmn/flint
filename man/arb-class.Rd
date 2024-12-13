@@ -17,6 +17,7 @@
 \alias{Ops,arb,arb-method}
 \alias{Ops,arb,acb-method}
 \alias{Summary,arb-method}
+\alias{all.equal,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}
 \alias{initialize,arb-method}

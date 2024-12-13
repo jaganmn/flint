@@ -1,3 +1,6 @@
+Real <- function (z) .Call(R_flint_part, z, 0L)
+Imag <- function (z) .Call(R_flint_part, z, 1L)
+
 setMethod("initialize",
           c(.Object = "acb"),
           function (.Object, length = 0L, x = NULL, real, imag, ...)
@@ -13,9 +16,6 @@ setMethod("as.vector",
 setAs("ANY", "acb",
       function (from)
           new("acb", x = from))
-
-Real <- function (z) .Call(R_flint_part, z, 0L)
-Imag <- function (z) .Call(R_flint_part, z, 1L)
 
 setMethod("format",
           c(x = "acb"),
@@ -167,3 +167,12 @@ setMethod("!",
           c(x = "acb"),
           function (x)
               .Call(R_flint_acb_ops1, "!", x, NULL))
+
+setMethod("all.equal",
+          c(target = "acb", current = "acb"),
+          function (target, current, ...)
+              all.equal(list(real = Real(target),
+                             imag = Imag(target)),
+                        list(real = Real(current),
+                             imag = Imag(current)),
+                        ...))

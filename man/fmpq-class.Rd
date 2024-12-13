@@ -17,6 +17,7 @@
 \alias{Ops,fmpq,arb-method}
 \alias{Ops,fmpq,acb-method}
 \alias{Summary,fmpq-method}
+\alias{all.equal,fmpq-method}
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}
 \alias{initialize,fmpq-method}
