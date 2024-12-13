@@ -122,7 +122,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				arf_get_fmpz(q, x + j, ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating point number not in range of '%s'"), "slong");
+				Rf_error(_("floating-point number not in range of '%s'"), "slong");
 				}
 				else
 				y[j] = fmpz_get_si(q);
@@ -139,7 +139,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				mag_get_fmpz_lower(q, x + j);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating point number not in range of '%s'"), "slong");
+				Rf_error(_("floating-point number not in range of '%s'"), "slong");
 				}
 				else
 				y[j] = fmpz_get_si(q);

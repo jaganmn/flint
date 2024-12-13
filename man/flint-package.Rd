@@ -26,11 +26,11 @@ flintVersion()
   \item{object, reference}{
     objects inheriting from virtual class \code{\linkS4class{flint}}.}
   \item{prec}{
-    a new default value for the precision of inexact floating point
+    a new default value for the precision of inexact floating-point
     operations, if non-\code{NULL}.  The value should be a positive
     integer indicating a number of bits.}
   \item{rnd}{
-    a new default value for the rounding mode of inexact floating point
+    a new default value for the rounding mode of inexact floating-point
     operations, if non-\code{NULL}.  The value should be a character
     vector of length 2 with names \code{c("signed", "unsigned")}
     indicating rounding modes for signed and unsigned floating types.

@@ -125,7 +125,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				arf_get_fmpz(q, x + j, ARF_RND_DOWN);
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating point number not in range of '%s'"), "ulong");
+				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 				}
 				else
 				y[j] = fmpz_get_ui(q);
@@ -142,7 +142,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				mag_get_fmpz_lower(q, x + j);
 				if (!fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating point number not in range of '%s'"), "ulong");
+				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 				}
 				else
 				y[j] = fmpz_get_ui(q);
