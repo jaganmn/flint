@@ -710,6 +710,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case 55: /*     "any" */
 	case 56: /*     "all" */
+	case 57: /*   "anyNA" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
@@ -736,6 +737,13 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 						 arf_cmpabs_mag(arb_midref(acb_imagref(x + j)), arb_radref(acb_imagref(x + j))) <= 0)
 					break;
 			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
+			break;
+		case 57: /*   "anyNA" */
+			for (j = 0; j < n; ++j)
+				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
+				    arf_is_nan(arb_midref(acb_imagref(x + j))))
+					break;
+			z[0] = j < n;
 			break;
 		}
 		return ans;

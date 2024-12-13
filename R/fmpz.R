@@ -123,6 +123,11 @@ setMethod("Complex",
           function (z)
               .Call(R_flint_fmpz_ops1, .Generic, z, NULL))
 
+setMethod("anyNA",
+          c(x = "fmpz"),
+          function (x, recursive = FALSE)
+              FALSE)
+
 setMethod("is.na",
           c(x = "fmpz"),
           function (x)

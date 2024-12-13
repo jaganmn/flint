@@ -143,6 +143,11 @@ setMethod("Complex",
           function (z)
               .Call(R_flint_acb_ops1, .Generic, z, NULL))
 
+setMethod("anyNA",
+          c(x = "acb"),
+          function (x, recursive = FALSE)
+              .Call(R_flint_acb_ops1, "anyNA", x, NULL))
+
 setMethod("is.na",
           c(x = "acb"),
           function (x)

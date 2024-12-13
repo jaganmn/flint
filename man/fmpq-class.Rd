@@ -18,6 +18,7 @@
 \alias{Ops,fmpq,acb-method}
 \alias{Summary,fmpq-method}
 \alias{all.equal,fmpq-method}
+\alias{anyNA,fmpq-method}
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}
 \alias{initialize,fmpq-method}
@@ -94,6 +95,10 @@ Den(q)
       logical vector of length 1 (\code{any}, \code{all}) or an
       \code{fmpq} vector of length 1 or 2 (\code{sum}, \code{prod},
       \code{min}, \code{max}, \code{range}).}
+    \item{\code{anyNA}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns \code{FALSE}, as \code{fmpq} has no representation for
+      \code{NaN}.}
     \item{\code{as.vector}}{
       \code{signature(x = "fmpq")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double

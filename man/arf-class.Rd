@@ -17,6 +17,7 @@
 \alias{Ops,arf,arb-method}
 \alias{Ops,arf,acb-method}
 \alias{Summary,arf-method}
+\alias{anyNA,arf-method}
 \alias{as.vector,arf-method}
 \alias{coerce,ANY,arf-method}
 \alias{initialize,arf-method}
@@ -84,6 +85,10 @@
       logical vector of length 1 (\code{any}, \code{all}) or an
       \code{arf} vector of length 1 or 2 (\code{sum}, \code{prod},
       \code{min}, \code{max}, \code{range}).}
+    \item{\code{anyNA}}{
+      \code{signature(x = "arf")}:\cr
+      returns \code{TRUE} if any element of \code{x} is \code{NaN},
+      \code{FALSE} otherwise.}
     \item{\code{as.vector}}{
       \code{signature(x = "arf")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double

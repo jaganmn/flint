@@ -138,6 +138,11 @@ setMethod("Complex",
           function (z)
               .Call(R_flint_mag_ops1, .Generic, z, NULL))
 
+setMethod("anyNA",
+          c(x = "mag"),
+          function (x, recursive = FALSE)
+              FALSE)
+
 setMethod("is.na",
           c(x = "mag"),
           function (x)

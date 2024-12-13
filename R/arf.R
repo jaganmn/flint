@@ -133,6 +133,11 @@ setMethod("Complex",
           function (z)
               .Call(R_flint_arf_ops1, .Generic, z, NULL))
 
+setMethod("anyNA",
+          c(x = "arf"),
+          function (x, recursive = FALSE)
+              .Call(R_flint_arf_ops1, "anyNA", x, NULL))
+
 setMethod("is.na",
           c(x = "arf"),
           function (x)

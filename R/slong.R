@@ -118,6 +118,11 @@ setMethod("Complex",
           function (z)
               get(.Generic, mode = "function")(as(z, "fmpz")))
 
+setMethod("anyNA",
+          c(x = "slong"),
+          function (x, recursive = FALSE)
+              FALSE)
+
 setMethod("is.na",
           c(x = "slong"),
           function (x)

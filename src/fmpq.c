@@ -672,6 +672,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case 55: /*     "any" */
 	case 56: /*     "all" */
+	case 57: /*   "anyNA" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
@@ -683,6 +684,9 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 56: /*     "all" */
 			for (j = 0; j < n && !fmpq_is_zero(x + j); ++j) ;
 			z[0] = j >= n;
+			break;
+		case 57: /*   "anyNA" */
+			z[0] = 0;
 			break;
 		}
 		return ans;

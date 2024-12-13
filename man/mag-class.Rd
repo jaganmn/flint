@@ -17,6 +17,7 @@
 \alias{Ops,mag,arb-method}
 \alias{Ops,mag,acb-method}
 \alias{Summary,mag-method}
+\alias{anyNA,mag-method}
 \alias{as.vector,mag-method}
 \alias{coerce,ANY,mag-method}
 \alias{initialize,mag-method}
@@ -96,6 +97,10 @@
       \code{min}, \code{max}, \code{range}).  For \code{sum} and
       \code{prod}, the return value is an upper bound for the absolute
       value of the exact answer.}
+    \item{\code{anyNA}}{
+      \code{signature(x = "mag")}:\cr
+      returns \code{FALSE}, as \code{mag} has no representation for
+      \code{NaN}.}
     \item{\code{as.vector}}{
       \code{signature(x = "mag")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double

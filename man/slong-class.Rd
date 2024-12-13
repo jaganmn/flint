@@ -35,6 +35,8 @@
 \alias{Ops,ulong,acb-method}
 \alias{Summary,slong-method}
 \alias{Summary,ulong-method}
+\alias{anyNA,slong-method}
+\alias{anyNA,ulong-method}
 \alias{as.vector,slong-method}
 \alias{as.vector,ulong-method}
 \alias{coerce,ANY,slong-method}
@@ -91,6 +93,11 @@
       subclass of \code{\linkS4class{flint}} (never \code{slong} or
       \code{ulong}, but always a class that can represent their range)
       and dispatches.}
+    \item{\code{anyNA}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      returns \code{FALSE}, as \code{slong} and \code{ulong} have no
+      representation for \code{NaN}.}
     \item{\code{as.vector}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr

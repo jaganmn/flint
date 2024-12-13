@@ -18,6 +18,7 @@
 \alias{Ops,arb,acb-method}
 \alias{Summary,arb-method}
 \alias{all.equal,arb-method}
+\alias{anyNA,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}
 \alias{initialize,arb-method}
@@ -98,6 +99,10 @@ Rad(x)
       logical vector of length 1 (\code{any}, \code{all}) or an
       \code{arb} vector of length 1 or 2 (\code{sum}, \code{prod},
       \code{min}, \code{max}, \code{range}).}
+    \item{\code{anyNA}}{
+      \code{signature(x = "arb")}:\cr
+      returns \code{TRUE} if any element of \code{x} has midpoint
+      \code{NaN}, \code{FALSE} otherwise.}
     \item{\code{as.vector}}{
       \code{signature(x = "arb")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double

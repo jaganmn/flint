@@ -17,6 +17,7 @@
 \alias{Ops,fmpz,arb-method}
 \alias{Ops,fmpz,acb-method}
 \alias{Summary,fmpz-method}
+\alias{anyNA,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{as.vector,fmpz-method}
@@ -79,6 +80,10 @@
       logical vector of length 1 (\code{any}, \code{all}) or an
       \code{fmpz} vector of length 1 or 2 (\code{sum}, \code{prod},
       \code{min}, \code{max}, \code{range}).}
+    \item{\code{anyNA}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns \code{FALSE}, as \code{fmpz} has no representation for
+      \code{NaN}.}
     \item{\code{as.vector}}{
       \code{signature(x = "fmpz")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double

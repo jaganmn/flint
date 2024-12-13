@@ -18,6 +18,7 @@
 \alias{Ops,acb,acb-method}
 \alias{Summary,acb-method}
 \alias{all.equal,acb-method}
+\alias{anyNA,acb-method}
 \alias{as.vector,acb-method}
 \alias{coerce,ANY,acb-method}
 \alias{initialize,acb-method}
@@ -102,6 +103,10 @@ Imag(z)
       \code{acb} vector of length 1 or 2 (\code{sum}, \code{prod}).
       Member functions \code{min}, \code{max}, \code{range} are not
       implemented.}
+    \item{\code{anyNA}}{
+      \code{signature(x = "acb")}:\cr
+      returns \code{TRUE} if any element of \code{x} has real or
+      imaginary part with midpoint \code{NaN}, \code{FALSE} otherwise.}
     \item{\code{as.vector}}{
       \code{signature(x = "acb")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a complex
