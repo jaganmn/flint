@@ -20,12 +20,12 @@ setMethod("format",
 setMethod("+",
           c(e1 = "slong", e2 = "missing"),
           function (e1, e2)
-              +as(e1, "fmpz"))
+              +new("fmpz", x = e1))
 
 setMethod("-",
           c(e1 = "slong", e2 = "missing"),
           function (e1, e2)
-              -as(e1, "fmpz"))
+              -new("fmpz", x = e1))
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "slong"),
@@ -98,25 +98,26 @@ setMethod("Ops",
 setMethod("Math",
           c(x = "slong"),
           function (x)
-              get(.Generic, mode = "function")(as(x, "fmpz")))
+              get(.Generic, mode = "function")(new("fmpz", x = x)))
 
 setMethod("Math2",
           c(x = "slong"),
           function (x, digits) {
+              g <- get(.Generic, mode = "function")
               if (missing(digits))
-                  get(.Generic, mode = "function")(as(x, "fmpz"))
-              else get(.Generic, mode = "function")(as(x, "fmpz"), digits = digits)
+                  g(new("fmpz", x = x))
+              else g(new("fmpz", x = x), digits = digits)
           })
 
 setMethod("Summary",
           c(x = "slong"),
           function (x, ..., na.rm = FALSE)
-              get(.Generic, mode = "function")(as(x, "fmpz"), ..., na.rm = na.rm))
+              get(.Generic, mode = "function")(new("fmpz", x = x), ..., na.rm = na.rm))
 
 setMethod("Complex",
           c(z = "slong"),
           function (z)
-              get(.Generic, mode = "function")(as(z, "fmpz")))
+              get(.Generic, mode = "function")(new("fmpz", x = z)))
 
 setMethod("anyNA",
           c(x = "slong"),
@@ -146,9 +147,9 @@ setMethod("is.finite",
 setMethod("!",
           c(x = "slong"),
           function (x)
-              !as(x, "fmpz"))
+              !new("fmpz", x = x))
 
 setMethod("mean",
           c(x = "slong"),
           function (x, ...)
-              mean(as(x, "fmpz"), ...))
+              mean(new("fmpz", x = x), ...))
