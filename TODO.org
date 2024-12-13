@@ -7,9 +7,12 @@
 ** DONE export, document Num, Den, Mid, Rad, Real, Imag
 ** TODO methods for all.equal
 ** TODO methods for c
-** TODO methods for mean
+** TODO methods for length<-
+** DONE methods for mean
 ** TODO methods for rep
 ** TODO methods for sort
+** TODO methods for Summary, mean not ignoring '...'
 ** TODO x[i] <- value should conditionally promote 'x' to class(value)
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
+** TODO random generation of 'flint' objects, partly for testing
