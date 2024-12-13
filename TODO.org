@@ -2,10 +2,14 @@
 
 ** DONE flintIdentical testing for identical-modulo-address
 ** DONE export, document flintIdentical
-** TODO methods for all.equal
-** TODO examples and tests using flintIdentical, methods for all.equal
 ** DONE abandon 'nflint' and subclasses
 ** DONE methods for !, is.na, is.nan, is.finite, is.infinite
 ** DONE export, document Num, Den, Mid, Rad, Real, Imag
-** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk, ...
+** TODO methods for all.equal
+** TODO methods for c
+** TODO methods for mean
+** TODO methods for rep
+** TODO methods for sort
+** TODO x[i] <- value should conditionally promote 'x' to class(value)
 ** TODO document details of operations on real, complex balls
+** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
