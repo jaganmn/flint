@@ -27,6 +27,7 @@
 \alias{is.infinite,fmpz-method}
 \alias{is.na,fmpz-method}
 \alias{is.nan,fmpz-method}
+\alias{mean,fmpz-method}
 \title{Class of Vectors of Arbitrary Precision Integers}
 \docType{class}
 \description{
@@ -123,6 +124,11 @@
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
       \code{Inf}.}
+    \item{\code{mean}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns the arithmetic mean.  An error is signaled if the argument
+      length is 0, because the return type is \code{\linkS4class{fmpq}}
+      which cannot represent the result of division by 0.}
   }
 }
 \seealso{

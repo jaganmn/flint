@@ -6,7 +6,7 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
               Math2, Ops, Summary, all.equal, anyNA, as.raw, as.logical,
               as.integer, as.numeric, as.complex, as.list,
               as.expression, as.vector, coerce, format, initialize,
-              is.finite, is.infinite, is.na, is.nan, length, log,
+              is.finite, is.infinite, is.na, is.nan, length, log, mean,
               print, show)
 export(flintBits,
        flintIdentical,

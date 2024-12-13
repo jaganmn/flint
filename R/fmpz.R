@@ -152,3 +152,8 @@ setMethod("!",
           c(x = "fmpz"),
           function (x)
               .Call(R_flint_fmpz_ops1, "!", x, NULL))
+
+setMethod("mean",
+          c(x = "fmpz"),
+          function (x, ...)
+              .Call(R_flint_fmpz_ops1, "mean", x, NULL))

@@ -162,3 +162,16 @@ setMethod("!",
           c(x = "arf"),
           function (x)
               .Call(R_flint_arf_ops1, "!", x, NULL))
+
+setMethod("mean",
+          c(x = "arf"),
+          function (x, na.rm = FALSE, ...) {
+              if (missing(na.rm))
+                  NULL
+              else if (length(na.rm) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "na.rm", "mean"),
+                       domain = NA)
+              else na.rm <- as.logical(na.rm)
+              .Call(R_flint_arf_ops1, "mean", x, na.rm)
+          })

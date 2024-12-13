@@ -26,6 +26,7 @@
 \alias{is.infinite,fmpq-method}
 \alias{is.na,fmpq-method}
 \alias{is.nan,fmpq-method}
+\alias{mean,fmpq-method}
 \alias{Num}
 \alias{Den}
 \title{Class of Vectors of Rational Numbers}
@@ -149,6 +150,11 @@ Den(q)
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and
       \code{Inf}.}
+    \item{\code{mean}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns the arithmetic mean.  An error is signaled if the argument
+      length is 0, because the return type is \code{fmpq} which cannot
+      represent the result of division by 0.}
   }
 }
 \seealso{

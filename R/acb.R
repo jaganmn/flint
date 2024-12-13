@@ -135,8 +135,16 @@ setMethod("Math2",
 
 setMethod("Summary",
           c(x = "acb"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_acb_ops1, .Generic, x, NULL))
+          function (x, ..., na.rm = FALSE) {
+              if (missing(na.rm))
+                  NULL
+              else if (length(na.rm) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "na.rm", .Generic),
+                       domain = NA)
+              else na.rm <- as.logical(na.rm)
+              .Call(R_flint_acb_ops1, .Generic, x, na.rm)
+          })
 
 setMethod("Complex",
           c(z = "acb"),
@@ -172,6 +180,19 @@ setMethod("!",
           c(x = "acb"),
           function (x)
               .Call(R_flint_acb_ops1, "!", x, NULL))
+
+setMethod("mean",
+          c(x = "acb"),
+          function (x, na.rm = FALSE, ...) {
+              if (missing(na.rm))
+                  NULL
+              else if (length(na.rm) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "na.rm", "mean"),
+                       domain = NA)
+              else na.rm <- as.logical(na.rm)
+              .Call(R_flint_acb_ops1, "mean", x, na.rm)
+          })
 
 setMethod("all.equal",
           c(target = "acb", current = "acb"),

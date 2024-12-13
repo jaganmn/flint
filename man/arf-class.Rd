@@ -25,6 +25,7 @@
 \alias{is.infinite,arf-method}
 \alias{is.na,arf-method}
 \alias{is.nan,arf-method}
+\alias{mean,arf-method}
 \title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}
 \docType{class}
 \description{
@@ -130,6 +131,9 @@
       \code{signature(x = "arf")}:\cr
       returns a logical vector indicating which elements of \code{x}
       are not \code{NaN}, \code{-Inf}, or \code{Inf}.}
+    \item{\code{mean}}{
+      \code{signature(x = "arf")}:\cr
+      returns the arithmetic mean.}
   }
 }
 \seealso{

@@ -51,6 +51,8 @@
 \alias{is.na,ulong-method}
 \alias{is.nan,slong-method}
 \alias{is.nan,ulong-method}
+\alias{mean,slong-method}
+\alias{mean,ulong-method}
 \title{Classes of Vectors of Signed or Unsigned Integers}
 \docType{class}
 \description{
@@ -146,6 +148,10 @@
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{slong} and \code{ulong} have no representation for
       \code{NaN}, \code{-Inf}, and \code{Inf}.}
+    \item{\code{mean}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
   }
 }
 \seealso{

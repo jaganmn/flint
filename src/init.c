@@ -60,8 +60,10 @@ const char *R_flint_ops1[] =
 	"gamma", "lgamma", "digamma", "trigamma",
 	/* Math2 (2) : */
 	"round", "signif",
-	/* Summary (8) : */
-	"min", "max", "range", "sum", "prod", "any", "all", "anyNA",
+	/* Summary (9) : */
+	"min", "max", "range",
+	"sum", "prod", "mean",
+	"any", "all", "anyNA",
 	NULL
 };
 

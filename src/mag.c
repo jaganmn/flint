@@ -722,6 +722,10 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
+	case 55: /*    "mean" */
+		if (n == 0)
+			Rf_error(_("argument of length zero in '%s'"),
+			         CHAR(STRING_ELT(s_op, 0)));
 	case 50: /*     "min" */
 	case 51: /*     "max" */
 	case 52: /*   "range" */
@@ -729,7 +733,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("mag");
-		size_t s = (op == 42) ? 2 : 1;
+		size_t s = (op == 52) ? 2 : 1;
 		mag_ptr z = (mag_ptr) flint_calloc(s, sizeof(mag_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
@@ -764,25 +768,41 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				mag_mul(z, z, x + j);
 			break;
+		case 55: /*    "mean" */
+		{
+			mag_zero(z);
+			for (j = 0; j < n; ++j)
+				mag_add(z, z, x + j);
+			fmpz_t p;
+			fmpz_init(p);
+#if FLINT64
+			fmpz_set_ui(p, (ulong) n);
+#else
+			fmpz_set_uiui(p, (ulong) (n >> FLINT_BITS), (ulong) n);
+#endif
+			mag_div_fmpz(z, z, p);
+			fmpz_clear(p);
+			break;
+		}
 		}
 		return ans;
 	}
-	case 55: /*     "any" */
-	case 56: /*     "all" */
-	case 57: /*   "anyNA" */
+	case 56: /*     "any" */
+	case 57: /*     "all" */
+	case 58: /*   "anyNA" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 55: /*     "any" */
+		case 56: /*     "any" */
 			for (j = 0; j < n &&  mag_is_zero(x + j); ++j) ;
 			z[0] = j <  n;
 			break;
-		case 56: /*     "all" */
+		case 57: /*     "all" */
 			for (j = 0; j < n && !mag_is_zero(x + j); ++j) ;
 			z[0] = j >= n;
 			break;
-		case 57: /*   "anyNA" */
+		case 58: /*   "anyNA" */
 			z[0] = 0;
 			break;
 		}

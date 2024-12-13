@@ -147,3 +147,8 @@ setMethod("!",
           c(x = "slong"),
           function (x)
               !as(x, "fmpz"))
+
+setMethod("mean",
+          c(x = "slong"),
+          function (x, ...)
+              mean(as(x, "fmpz"), ...))

@@ -162,6 +162,11 @@ setMethod("!",
           function (x)
               .Call(R_flint_fmpq_ops1, "!", x, NULL))
 
+setMethod("mean",
+          c(x = "fmpq"),
+          function (x, ...)
+              .Call(R_flint_fmpq_ops1, "mean", x, NULL))
+
 setMethod("all.equal",
           c(target = "fmpq", current = "fmpq"),
           function (target, current, ...)

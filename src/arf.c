@@ -680,9 +680,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 52: /*   "range" */
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
+	case 55: /*    "mean" */
 	{
 		SEXP ans = newObject("arf");
-		size_t s = (op == 42) ? 2 : 1;
+		size_t s = (op == 52) ? 2 : 1;
 		arf_ptr z = (arf_ptr) flint_calloc(s, sizeof(arf_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arf_finalize);
 		int narm = LOGICAL_RO(s_dots)[0];
@@ -739,18 +740,42 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (!(narm && arf_is_nan(x + j)))
 				arf_mul(z, z, x + j, prec, rnd);
 			break;
+		case 55: /*    "mean" */
+		{
+			unsigned long long int c = n;
+			arf_zero(z);
+			for (j = 0; j < n; ++j)
+				if (!(narm && arf_is_nan(x + j)))
+				arf_add(z, z, x + j, prec, rnd);
+				else
+				--c;
+			if (c == 0)
+			arf_nan(z);
+			else {
+			fmpz_t p;
+			fmpz_init(p);
+#if FLINT64
+			fmpz_set_ui(p, (ulong) c);
+#else
+			fmpz_set_uiui(p, (ulong) (c >> FLINT_BITS), (ulong) c);
+#endif
+			arf_div_fmpz(z, z, p, prec, rnd);
+			fmpz_clear(p);
+			}
+			break;
+		}
 		}
 		return ans;
 	}
-	case 55: /*     "any" */
-	case 56: /*     "all" */
-	case 57: /*   "anyNA" */
+	case 56: /*     "any" */
+	case 57: /*     "all" */
+	case 58: /*   "anyNA" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
 		switch (op) {
-		case 55: /*     "any" */
+		case 56: /*     "any" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					anyna = 1;
@@ -758,7 +783,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
-		case 56: /*     "all" */
+		case 57: /*     "all" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					anyna = 1;
@@ -766,7 +791,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
 			break;
-		case 57: /*   "anyNA" */
+		case 58: /*   "anyNA" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					break;

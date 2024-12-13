@@ -26,6 +26,7 @@
 \alias{is.na,mag-method}
 \alias{is.nan,mag-method}
 \alias{log,mag-method}
+\alias{mean,mag-method}
 \title{Class of Vectors of Magnitude (Error) Bounds}
 \docType{class}
 \description{
@@ -73,8 +74,7 @@
       decimal rounding according to a second argument \code{digits}; see
       \code{\link[methods]{S4groupGeneric}}.  There are just two member
       functions: \code{\link{round}}, \code{\link{signif}}.  The return
-      value is an upper bound for the absolute value of the exact
-      answer.}
+      value is an upper bound for the exact answer.}
     \item{\code{Ops}}{
       \code{signature(e1 = "ANY", e2 = "mag")}:\cr
       \code{signature(e1 = "mag", e2 = "ANY")}:\cr
@@ -95,8 +95,8 @@
       logical vector of length 1 (\code{any}, \code{all}) or an
       \code{mag} vector of length 1 or 2 (\code{sum}, \code{prod},
       \code{min}, \code{max}, \code{range}).  For \code{sum} and
-      \code{prod}, the return value is an upper bound for the absolute
-      value of the exact answer.}
+      \code{prod}, the return value is an upper bound for the exact
+      answer.}
     \item{\code{anyNA}}{
       \code{signature(x = "mag")}:\cr
       returns \code{FALSE}, as \code{mag} has no representation for
@@ -144,6 +144,9 @@
       returns an upper bound for the absolute value of the logarithm of
       the argument.  The natural logarithm is computed by default (when
       optional argument \code{base} is unset).}
+    \item{\code{mean}}{
+      \code{signature(x = "mag")}:\cr
+      returns an upper bound for the arithmetic mean.}
   }
 }
 \seealso{

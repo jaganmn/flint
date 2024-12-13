@@ -686,37 +686,62 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
+	case 55: /*    "mean" */
 	{
 		SEXP ans = newObject("acb");
-		size_t s = (op == 42) ? 2 : 1;
+		size_t s = (op == 52) ? 2 : 1;
 		acb_ptr z = (acb_ptr) flint_calloc(s, sizeof(acb_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
 		int narm = LOGICAL_RO(s_dots)[0];
 		switch (op) {
-		case 43: /*     "sum" */
+		case 53: /*     "sum" */
 			acb_zero(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && ACB_CONTAINS_NAN(x + j)))
 				acb_add(z, z, x + j, prec);
 			break;
-		case 44: /*    "prod" */
+		case 54: /*    "prod" */
 			acb_one(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && ACB_CONTAINS_NAN(x + j)))
 				acb_mul(z, z, x + j, prec);
 			break;
+		case 55: /*    "mean" */
+		{
+			unsigned long long int c = n;
+			acb_zero(z);
+			for (j = 0; j < n; ++j)
+				if (!(narm && ACB_CONTAINS_NAN(x + j)))
+				acb_add(z, z, x + j, prec);
+				else
+				--c;
+			if (c == 0)
+			acb_indeterminate(z);
+			else {
+			fmpz_t p;
+			fmpz_init(p);
+#if FLINT64
+			fmpz_set_ui(p, (ulong) c);
+#else
+			fmpz_set_uiui(p, (ulong) (c >> FLINT_BITS), (ulong) c);
+#endif
+			acb_div_fmpz(z, z, p, prec);
+			fmpz_clear(p);
+			}
+			break;
+		}
 		}
 		return ans;
 	}
-	case 55: /*     "any" */
-	case 56: /*     "all" */
-	case 57: /*   "anyNA" */
+	case 56: /*     "any" */
+	case 57: /*     "all" */
+	case 58: /*   "anyNA" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
 		switch (op) {
-		case 45: /*     "any" */
+		case 56: /*     "any" */
 			/* Return 1 if and only if any does not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
@@ -727,7 +752,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
-		case 46: /*     "all" */
+		case 57: /*     "all" */
 			/* Return 1 if and only if all do   not contain zero */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
@@ -738,7 +763,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
 			break;
-		case 57: /*   "anyNA" */
+		case 58: /*   "anyNA" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(arb_midref(acb_realref(x + j))) ||
 				    arf_is_nan(arb_midref(acb_imagref(x + j))))

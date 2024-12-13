@@ -27,6 +27,7 @@
 \alias{is.na,acb-method}
 \alias{is.nan,acb-method}
 \alias{log,acb-method}
+\alias{mean,acb-method}
 \alias{Real}
 \alias{Imag}
 \title{Class of Complex Numbers with Error Bounds}
@@ -166,6 +167,9 @@ Imag(z)
       returns the logarithm of the argument.  The natural logarithm is
       computed by default (when optional argument \code{base} is
       unset).}
+    \item{\code{mean}}{
+      \code{signature(x = "acb")}:\cr
+      returns the arithmetic mean.}
   }
 }
 \seealso{

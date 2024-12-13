@@ -27,6 +27,7 @@
 \alias{is.na,arb-method}
 \alias{is.nan,arb-method}
 \alias{log,arb-method}
+\alias{mean,arb-method}
 \alias{Mid}
 \alias{Rad}
 \title{Class of Real Numbers with Error Bounds}
@@ -160,6 +161,9 @@ Rad(x)
       returns the logarithm of the argument.  The natural logarithm is
       computed by default (when optional argument \code{base} is
       unset).}
+    \item{\code{mean}}{
+      \code{signature(x = "arb")}:\cr
+      returns the arithmetic mean.}
   }
 }
 \seealso{

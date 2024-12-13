@@ -167,3 +167,8 @@ setMethod("!",
           c(x = "mag"),
           function (x)
               .Call(R_flint_mag_ops1, "!", x, NULL))
+
+setMethod("mean",
+          c(x = "mag"),
+          function (x, ...)
+              .Call(R_flint_mag_ops1, "mean", x, NULL))

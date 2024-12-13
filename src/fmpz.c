@@ -547,7 +547,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("fmpz");
-		size_t s = (op == 42) ? 2 : 1;
+		size_t s = (op == 52) ? 2 : 1;
 		fmpz *z = (fmpz *) flint_calloc(s, sizeof(fmpz));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
@@ -585,22 +585,51 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 55: /*     "any" */
-	case 56: /*     "all" */
-	case 57: /*   "anyNA" */
+	case 55: /*    "mean" */
+	{
+		if (n == 0)
+			Rf_error(_("argument of length zero in '%s'"),
+			         CHAR(STRING_ELT(s_op, 0)));
+		SEXP ans = newObject("fmpq");
+		fmpq *z = (fmpq *) flint_calloc(1, sizeof(fmpq));
+		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		switch (op) {
+		case 55: /*    "mean" */
+		{
+			fmpq_zero(z);
+			for (j = 0; j < n; ++j)
+				fmpz_add(fmpq_numref(z), fmpq_numref(z), x + j);
+			fmpz_t p;
+			fmpz_init(p);
+#if FLINT64
+			fmpz_set_ui(p, (ulong) n);
+#else
+			fmpz_set_uiui(p, (ulong) (n >> FLINT_BITS), (ulong) n);
+#endif
+			fmpz_set(fmpq_denref(z), p);
+			fmpq_canonicalise(z);
+			fmpz_clear(p);
+			break;
+		}
+		}
+		return ans;
+	}
+	case 56: /*     "any" */
+	case 57: /*     "all" */
+	case 58: /*   "anyNA" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 55: /*     "any" */
+		case 56: /*     "any" */
 			for (j = 0; j < n &&  fmpz_is_zero(x + j); ++j) ;
 			z[0] = j <  n;
 			break;
-		case 56: /*     "all" */
+		case 57: /*     "all" */
 			for (j = 0; j < n && !fmpz_is_zero(x + j); ++j) ;
 			z[0] = j >= n;
 			break;
-		case 57: /*   "anyNA" */
+		case 58: /*   "anyNA" */
 			z[0] = 0;
 			break;
 		}
