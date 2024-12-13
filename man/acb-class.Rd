@@ -1,5 +1,6 @@
 \name{acb-class}
 \alias{acb-class}
+\alias{!,acb-method}
 \alias{+,acb,missing-method}
 \alias{-,acb,missing-method}
 \alias{Complex,acb-method}
@@ -19,6 +20,10 @@
 \alias{as.vector,acb-method}
 \alias{coerce,ANY,acb-method}
 \alias{initialize,acb-method}
+\alias{is.finite,acb-method}
+\alias{is.infinite,acb-method}
+\alias{is.na,acb-method}
+\alias{is.nan,acb-method}
 \alias{log,acb-method}
 \alias{Real}
 \alias{Imag}
@@ -56,6 +61,9 @@ Imag(z)
   precision to be indicated in the function call.  Such methods use
   the current default precision set by \code{\link{flintPrec}}.
   \describe{
+    \item{\code{!}}{
+      \code{signature(x = "acb")}:\cr
+      equivalent to (but faster than) \code{x == 0}.}
     \item{\code{+}}{
       \code{signature(e1 = "acb", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -133,6 +141,20 @@ Imag(z)
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class
       \code{\linkS4class{arb}} and recycled as necessary.}
+    \item{\code{is.na, is.nan}}{
+      \code{signature(x = "acb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have real or imaginary part with midpoint \code{NaN}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "acb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have real or imaginary part with midpoint \code{-Inf} or
+      \code{Inf} or radius \code{Inf}.}
+    \item{\code{is.finite}}{
+      \code{signature(x = "acb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      do not have real or imaginary part with midpoint \code{NaN},
+      \code{-Inf}, or \code{Inf} or radius \code{Inf}.}
     \item{\code{log}}{
       \code{signature(x = "acb")}:\cr
       returns the logarithm of the argument.  The natural logarithm is

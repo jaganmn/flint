@@ -1,5 +1,6 @@
 \name{fmpz-class}
 \alias{fmpz-class}
+\alias{!,fmpz-method}
 \alias{+,fmpz,missing-method}
 \alias{-,fmpz,missing-method}
 \alias{Complex,fmpz-method}
@@ -21,6 +22,10 @@
 \alias{as.vector,fmpz-method}
 \alias{coerce,ANY,fmpz-method}
 \alias{initialize,fmpz-method}
+\alias{is.finite,fmpz-method}
+\alias{is.infinite,fmpz-method}
+\alias{is.na,fmpz-method}
+\alias{is.nan,fmpz-method}
 \title{Class of Vectors of Arbitrary Precision Integers}
 \docType{class}
 \description{
@@ -35,7 +40,10 @@
 }
 \section{Methods}{
   \describe{
-    \item{\code{+}}{
+    \item{\code{!}}{
+      \code{signature(x = "fmpz")}:\cr
+      equivalent to (but faster than) \code{x == 0}.}
+    \item{\code{+, -}}{
       \code{signature(e1 = "fmpz", e2 = "missing")}:\cr
       returns a copy of the argument.}
     \item{\code{-}}{
@@ -101,6 +109,15 @@
       initialized with values from \code{x} truncated towards zero.  An
       error is signaled if any \code{x[i]} is \code{NaN}, \code{-Inf},
       \code{Inf}, or subnormal.}
+    \item{\code{is.na, is.nan, is.infinite}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
+      \code{Inf}.}
+    \item{\code{is.finite}}{
+      returns a logical vector whose elements are all \code{TRUE}, as
+      \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
+      \code{Inf}.}
   }
 }
 \seealso{

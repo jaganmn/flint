@@ -1,5 +1,6 @@
 \name{arf-class}
 \alias{arf-class}
+\alias{!,arf-method}
 \alias{+,arf,missing-method}
 \alias{-,arf,missing-method}
 \alias{Complex,arf-method}
@@ -19,6 +20,10 @@
 \alias{as.vector,arf-method}
 \alias{coerce,ANY,arf-method}
 \alias{initialize,arf-method}
+\alias{is.finite,arf-method}
+\alias{is.infinite,arf-method}
+\alias{is.na,arf-method}
+\alias{is.nan,arf-method}
 \title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}
 \docType{class}
 \description{
@@ -38,6 +43,9 @@
   precision to be indicated in the function call.  Such methods use
   the current default precision set by \code{\link{flintPrec}}.
   \describe{
+    \item{\code{!}}{
+      \code{signature(x = "arf")}:\cr
+      equivalent to (but faster than) \code{x == 0}.}
     \item{\code{+}}{
       \code{signature(e1 = "arf", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -105,6 +113,18 @@
       \code{signature(.Object = "arf", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
+    \item{\code{is.na, is.nan}}{
+      \code{signature(x = "arf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are \code{NaN}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "arf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are \code{-Inf} or \code{Inf}.}
+    \item{\code{is.finite}}{
+      \code{signature(x = "arf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are not \code{NaN}, \code{-Inf}, or \code{Inf}.}
   }
 }
 \seealso{

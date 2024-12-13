@@ -132,3 +132,28 @@ setMethod("Complex",
           c(z = "arf"),
           function (z)
               .Call(R_flint_arf_ops1, .Generic, z, NULL))
+
+setMethod("is.na",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "is.na", x, NULL))
+
+setMethod("is.nan",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "is.nan", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "is.infinite", x, NULL))
+
+setMethod("is.finite",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "is.finite", x, NULL))
+
+setMethod("!",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "!", x, NULL))

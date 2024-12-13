@@ -122,3 +122,28 @@ setMethod("Complex",
           c(z = "fmpz"),
           function (z)
               .Call(R_flint_fmpz_ops1, .Generic, z, NULL))
+
+setMethod("is.na",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "is.na", x, NULL))
+
+setMethod("is.nan",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "is.nan", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "is.infinite", x, NULL))
+
+setMethod("is.finite",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "is.finite", x, NULL))
+
+setMethod("!",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "!", x, NULL))

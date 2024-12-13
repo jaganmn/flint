@@ -1,6 +1,8 @@
 \name{slong-class}
 \alias{slong-class}
 \alias{ulong-class}
+\alias{!,slong-method}
+\alias{!,ulong-method}
 \alias{+,slong,missing-method}
 \alias{+,ulong,missing-method}
 \alias{-,slong,missing-method}
@@ -39,6 +41,14 @@
 \alias{coerce,ANY,ulong-method}
 \alias{initialize,slong-method}
 \alias{initialize,ulong-method}
+\alias{is.finite,slong-method}
+\alias{is.finite,ulong-method}
+\alias{is.infinite,slong-method}
+\alias{is.infinite,ulong-method}
+\alias{is.na,slong-method}
+\alias{is.na,ulong-method}
+\alias{is.nan,slong-method}
+\alias{is.nan,ulong-method}
 \title{Classes of Vectors of Signed or Unsigned Integers}
 \docType{class}
 \description{
@@ -56,11 +66,11 @@
 }
 \section{Methods}{
   \describe{
-    \item{\code{+}}{
-      \code{signature(e1 = "slong", e2 = "missing")}:\cr
-      \code{signature(e1 = "ulong", e2 = "missing")}:\cr
+    \item{\code{!}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{-}}{
+    \item{\code{+, -}}{
       \code{signature(e1 = "slong", e2 = "missing")}:\cr
       \code{signature(e1 = "ulong", e2 = "missing")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
@@ -68,11 +78,7 @@
       \code{signature(z = "slong")}:\cr
       \code{signature(z = "ulong")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{Math}}{
-      \code{signature(x = "slong")}:\cr
-      \code{signature(x = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{Math2}}{
+    \item{\code{Math, Math2, Summary}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
@@ -85,14 +91,10 @@
       subclass of \code{\linkS4class{flint}} (never \code{slong} or
       \code{ulong}, but always a class that can represent their range)
       and dispatches.}
-    \item{\code{Summary}}{
-      \code{signature(x = "slong")}:\cr
-      \code{signature(x = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
     \item{\code{as.vector}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
-      return \code{as.vector(y, mode)}, where \code{y} is a double
+      returns \code{as.vector(y, mode)}, where \code{y} is a double
       vector containing the result of converting each element of
       \code{x} to the range of double, rounding if the value is not
       exactly representable in double precision.  The rounding mode is
@@ -100,17 +102,17 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "slong")}:\cr
       \code{signature(from = "ANY", to = "ulong")}:\cr
-      return \code{new("slong", x = from)} or
+      returns \code{new("slong", x = from)} or
       \code{new("ulong", x = from)}.}
     \item{\code{format}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
-      return a character vector suitable for printing.  Optional
+      returns a character vector suitable for printing.  Optional
       arguments control the output; see \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "slong", length = "\var{numeric}")}:\cr
       \code{signature(.Object = "ulong", length = "\var{numeric}")}:\cr
-      return \code{.Object} after setting its \code{.xData} slot.  The
+      returns \code{.Object} after setting its \code{.xData} slot.  The
       new slot value is an external pointer to an array of the
       corresponding \proglang{C} type, which is newly allocated and
       initialized entirely with zeros.  \code{.Object} is not copied, so
@@ -125,6 +127,18 @@
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{\link{flintBits}()}.}
+    \item{\code{is.na, is.nan, is.infinite}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{slong} and \code{ulong} have no representation for
+      \code{NaN}, \code{-Inf}, and \code{Inf}.}
+    \item{\code{is.finite}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      returns a logical vector whose elements are all \code{TRUE}, as
+      \code{slong} and \code{ulong} have no representation for
+      \code{NaN}, \code{-Inf}, and \code{Inf}.}
   }
 }
 \seealso{

@@ -740,6 +740,54 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
+	case  3: /*       "is.na" */
+	case  4: /*      "is.nan" */
+	case  5: /* "is.infinite" */
+	case  6: /*   "is.finite" */
+	case  7: /*           "!" */
+	{
+		ERROR_TOO_LONG(n);
+		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		int *z = LOGICAL(ans);
+		switch (op) {
+		case  3: /*       "is.na" */
+		case  4: /*      "is.nan" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+					arf_is_nan(arb_midref(acb_realref(x + j))) != 0 ||
+					arf_is_nan(arb_midref(acb_imagref(x + j))) != 0;
+			break;
+		case  5: /* "is.infinite" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+					arf_is_inf(arb_midref(acb_realref(x + j))) != 0 ||
+					mag_is_inf(arb_radref(acb_realref(x + j))) != 0 ||
+					arf_is_inf(arb_midref(acb_imagref(x + j))) != 0 ||
+					mag_is_inf(arb_radref(acb_imagref(x + j))) != 0;
+			break;
+		case  6: /*   "is.finite" */
+			for (j = 0; j < n; ++j)
+				z[j] =
+					arf_is_finite(arb_midref(acb_realref(x + j))) != 0 &&
+					mag_is_finite(arb_radref(acb_realref(x + j))) != 0 &&
+					arf_is_finite(arb_midref(acb_imagref(x + j))) != 0 &&
+					mag_is_finite(arb_radref(acb_imagref(x + j))) != 0;
+			break;
+		case  7: /*           "!" */
+			for (j = 0; j < n; ++j)
+				if (arf_is_nan(arb_midref(acb_imagref(x + j))) ||
+				    arf_is_nan(arb_midref(acb_imagref(x + j))))
+				z[j] = NA_LOGICAL;
+				else
+				z[j] =
+					arf_is_zero(arb_midref(acb_realref(x + j))) != 0 &&
+					mag_is_zero(arb_radref(acb_realref(x + j))) != 0 &&
+					arf_is_zero(arb_midref(acb_imagref(x + j))) != 0 &&
+					mag_is_zero(arb_radref(acb_imagref(x + j))) != 0;
+			break;
+		}
+		return ans;
+	}
 	case  9: /*       "Re" */
 	case 10: /*       "Im" */
 	case 11: /*      "Mod" */

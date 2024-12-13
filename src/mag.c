@@ -784,6 +784,36 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
+	case  3: /*       "is.na" */
+	case  4: /*      "is.nan" */
+	case  5: /* "is.infinite" */
+	case  6: /*   "is.finite" */
+	case  7: /*           "!" */
+	{
+		ERROR_TOO_LONG(n);
+		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		int *z = LOGICAL(ans);
+		switch (op) {
+		case  3: /*       "is.na" */
+		case  4: /*      "is.nan" */
+			for (j = 0; j < n; ++j)
+				z[j] = 0;
+			break;
+		case  5: /* "is.infinite" */
+			for (j = 0; j < n; ++j)
+				z[j] = mag_is_inf(x + j) != 0;
+			break;
+		case  6: /*   "is.finite" */
+			for (j = 0; j < n; ++j)
+				z[j] = mag_is_finite(x + j) != 0;
+			break;
+		case  7: /*           "!" */
+			for (j = 0; j < n; ++j)
+				z[j] = mag_is_zero(x + j) != 0;
+			break;
+		}
+		return ans;
+	}
 	default:
 		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
 		         CHAR(STRING_ELT(s_op, 0)), "mag");

@@ -1,5 +1,6 @@
 \name{mag-class}
 \alias{mag-class}
+\alias{!,mag-method}
 \alias{+,mag,missing-method}
 \alias{-,mag,missing-method}
 \alias{Complex,mag-method}
@@ -19,6 +20,10 @@
 \alias{as.vector,mag-method}
 \alias{coerce,ANY,mag-method}
 \alias{initialize,mag-method}
+\alias{is.finite,mag-method}
+\alias{is.infinite,mag-method}
+\alias{is.na,mag-method}
+\alias{is.nan,mag-method}
 \alias{log,mag-method}
 \title{Class of Vectors of Magnitude (Error) Bounds}
 \docType{class}
@@ -37,6 +42,9 @@
 }
 \section{Methods}{
   \describe{
+    \item{\code{!}}{
+      \code{signature(x = "mag")}:\cr
+      equivalent to (but faster than) \code{x == 0}.}
     \item{\code{+}}{
       \code{signature(e1 = "mag", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -114,6 +122,18 @@
       as above, except that the new slot value points to an array
       initialized with upper bounds for \code{abs(x)}.  An error is
       signaled if any \code{x[i]} is \code{NaN}.}
+    \item{\code{is.na, is.nan}}{
+      \code{signature(x = "mag")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{mag} has no representation for \code{NaN}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "mag")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are \code{Inf}.}
+    \item{\code{is.finite}}{
+      \code{signature(x = "mag")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are not \code{Inf}.}
     \item{\code{log}}{
       \code{signature(x = "mag")}:\cr
       returns an upper bound for the absolute value of the logarithm of

@@ -1,9 +1,8 @@
 \name{fmpq-class}
 \alias{fmpq-class}
+\alias{!,fmpq-method}
 \alias{+,fmpq,missing-method}
 \alias{-,fmpq,missing-method}
-\alias{^,fmpq,fmpq-method}
-\alias{^,fmpq,fmpz-method}
 \alias{Complex,fmpq-method}
 \alias{Math,fmpq-method}
 \alias{Math2,fmpq-method}
@@ -21,6 +20,10 @@
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}
 \alias{initialize,fmpq-method}
+\alias{is.finite,fmpq-method}
+\alias{is.infinite,fmpq-method}
+\alias{is.na,fmpq-method}
+\alias{is.nan,fmpq-method}
 \alias{Num}
 \alias{Den}
 \title{Class of Vectors of Rational Numbers}
@@ -51,6 +54,9 @@ Den(q)
 }
 \section{Methods}{
   \describe{
+    \item{\code{!}}{
+      \code{signature(x = "fmpq")}:\cr
+      equivalent to (but faster than) \code{x == 0}.}
     \item{\code{+}}{
       \code{signature(e1 = "fmpq", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -127,6 +133,16 @@ Den(q)
       signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
       \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
       zero.}
+    \item{\code{is.na, is.nan, is.infinite}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and
+      \code{Inf}.}
+    \item{\code{is.finite}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a logical vector whose elements are all \code{TRUE}, as
+      \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and
+      \code{Inf}.}
   }
 }
 \seealso{

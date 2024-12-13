@@ -137,3 +137,28 @@ setMethod("Complex",
           c(z = "mag"),
           function (z)
               .Call(R_flint_mag_ops1, .Generic, z, NULL))
+
+setMethod("is.na",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.na", x, NULL))
+
+setMethod("is.nan",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.nan", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.infinite", x, NULL))
+
+setMethod("is.finite",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.finite", x, NULL))
+
+setMethod("!",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "!", x, NULL))

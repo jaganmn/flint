@@ -1,5 +1,6 @@
 \name{arb-class}
 \alias{arb-class}
+\alias{!,arb-method}
 \alias{+,arb,missing-method}
 \alias{-,arb,missing-method}
 \alias{Complex,arb-method}
@@ -19,6 +20,10 @@
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}
 \alias{initialize,arb-method}
+\alias{is.finite,arb-method}
+\alias{is.infinite,arb-method}
+\alias{is.na,arb-method}
+\alias{is.nan,arb-method}
 \alias{log,arb-method}
 \alias{Mid}
 \alias{Rad}
@@ -55,6 +60,9 @@ Rad(x)
   precision to be indicated in the function call.  Such methods use
   the current default precision set by \code{\link{flintPrec}}.
   \describe{
+    \item{\code{!}}{
+      \code{signature(x = "arb")}:\cr
+      equivalent to (but faster than) \code{x == 0}.}
     \item{\code{+}}{
       \code{signature(e1 = "arb", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -128,6 +136,19 @@ Rad(x)
       \code{mid} and \code{rad}, which are coerced to classes
       \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
       as necessary.}
+    \item{\code{is.na, is.nan}}{
+      \code{signature(x = "arb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have midpoint \code{NaN}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "arb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have midpoint \code{-Inf} or \code{Inf} or radius \code{Inf}.}
+    \item{\code{is.finite}}{
+      \code{signature(x = "arb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      do not have midpoint \code{NaN}, \code{-Inf}, or \code{Inf} or
+      radius \code{Inf}.}
     \item{\code{log}}{
       \code{signature(x = "arb")}:\cr
       returns the logarithm of the argument.  The natural logarithm is

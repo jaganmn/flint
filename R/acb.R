@@ -142,3 +142,28 @@ setMethod("Complex",
           c(z = "acb"),
           function (z)
               .Call(R_flint_acb_ops1, .Generic, z, NULL))
+
+setMethod("is.na",
+          c(x = "acb"),
+          function (x)
+              .Call(R_flint_acb_ops1, "is.na", x, NULL))
+
+setMethod("is.nan",
+          c(x = "acb"),
+          function (x)
+              .Call(R_flint_acb_ops1, "is.nan", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "acb"),
+          function (x)
+              .Call(R_flint_acb_ops1, "is.infinite", x, NULL))
+
+setMethod("is.finite",
+          c(x = "acb"),
+          function (x)
+              .Call(R_flint_acb_ops1, "is.finite", x, NULL))
+
+setMethod("!",
+          c(x = "acb"),
+          function (x)
+              .Call(R_flint_acb_ops1, "!", x, NULL))

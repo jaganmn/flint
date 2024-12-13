@@ -117,3 +117,28 @@ setMethod("Complex",
           c(z = "slong"),
           function (z)
               get(.Generic, mode = "function")(as(z, "fmpz")))
+
+setMethod("is.na",
+          c(x = "slong"),
+          function (x)
+              logical(length(x)))
+
+setMethod("is.nan",
+          c(x = "slong"),
+          function (x)
+              logical(length(x)))
+
+setMethod("is.infinite",
+          c(x = "slong"),
+          function (x)
+              logical(length(x)))
+
+setMethod("is.finite",
+          c(x = "slong"),
+          function (x)
+              rep.int(TRUE, length(x)))
+
+setMethod("!",
+          c(x = "slong"),
+          function (x)
+              !as(x, "fmpz"))

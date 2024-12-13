@@ -5,6 +5,7 @@
 ** TODO methods for all.equal
 ** TODO examples and tests using flintIdentical, methods for all.equal
 ** DONE abandon 'nflint' and subclasses
-** TODO methods for !, is.na, is.nan, is.finite, is.infinite
+** DONE methods for !, is.na, is.nan, is.finite, is.infinite
 ** DONE export, document Num, Den, Mid, Rad, Real, Imag
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk, ...
+** TODO document details of operations on real, complex balls
