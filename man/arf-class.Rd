@@ -42,10 +42,10 @@
   }
 }
 \section{Methods}{
-  Due to constraints imposed by generic functions, methods typically
-  do \emph{not} provide a formal argument \code{prec} allowing for a
-  precision to be indicated in the function call.  Such methods use
-  the current default precision set by \code{\link{flintPrec}}.
+  Due to constraints imposed by generic functions, methods typically do
+  \emph{not} provide a formal argument \code{prec} allowing for a
+  precision to be indicated in the function call.  Such methods use the
+  current default precision set by \code{\link{flintPrec}}.
   \describe{
     \item{\code{!}}{
       \code{signature(x = "arf")}:\cr
