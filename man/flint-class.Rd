@@ -104,4 +104,5 @@
 }
 \examples{
 showClass("flint")
+showMethods(classes = "flint")
 }
