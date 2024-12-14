@@ -30,7 +30,7 @@ function (prec = NULL) {
 
 flintRnd <-
 function (rnd = NULL) {
-    default <- c(signed = "N", unsigned = "U")
+    default <- "N"
     if (is.null(rnd))
         getOption("flint.rnd", default)
     else if (is.null(oop <- options(flint.rnd = rnd)[["flint.rnd"]]))
