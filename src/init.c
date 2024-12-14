@@ -181,7 +181,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arf_ops1, 3),
 	CALL_ENTRY(R_flint_mag_initialize, 3),
 	CALL_ENTRY(R_flint_mag_vector, 1),
-	CALL_ENTRY(R_flint_mag_format, 5),
+	CALL_ENTRY(R_flint_mag_format, 4),
 	CALL_ENTRY(R_flint_mag_ops2, 3),
 	CALL_ENTRY(R_flint_mag_ops1, 3),
 	CALL_ENTRY(R_flint_arb_initialize, 5),
