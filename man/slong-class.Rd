@@ -53,14 +53,16 @@
 \alias{is.nan,ulong-method}
 \alias{mean,slong-method}
 \alias{mean,ulong-method}
-\title{Classes of Vectors of Signed or Unsigned Integers}
+\title{Fixed Precision Signed and Unsigned Integers}
 \docType{class}
 \description{
   Classes \code{slong} and \code{ulong} extend virtual class
-  \code{\linkS4class{flint}}.  They represent vectors of signed and
-  unsigned integers, respectively.  The integer size is 32 or 64 bits,
-  depending on the configuration of the linked \acronym{FLINT} library.
-  The number of bits is given by \code{\link{flintBits}()}.
+  \code{\linkS4class{flint}}.  They represent vectors of fixed precision
+  signed and unsigned integers, respectively.  The integer size is 32 or
+  64 bits, depending on the configuration of the linked \acronym{FLINT}
+  library.  The number of bits is given by \code{\link{flintBits}()}.
+  There is no representation for \R{}'s missing value
+  \code{\link{NA_integer_}}.
 }
 \section{Slots}{
   \describe{

@@ -30,14 +30,14 @@
 \alias{mean,arb-method}
 \alias{Mid}
 \alias{Rad}
-\title{Class of Real Numbers with Error Bounds}
+\title{Arbitrary Precision Floating-Point Real Numbers with Error Bounds}
 \docType{class}
 \description{
   Class \code{arb} extends virtual class \code{flint}.  It represents
-  vectors of real numbers with error bounds.  Elements are specified by
-  a pair of mixed format floating-point numbers: an
-  \code{\linkS4class{arf}} midpoint and a \code{\linkS4class{mag}}
-  radius.
+  vectors of arbitrary precision floating-point real numbers with error
+  bounds.  Elements are specified by a pair of mixed format
+  floating-point numbers: an \code{\linkS4class{arf}} midpoint and a
+  \code{\linkS4class{mag}} radius.
 }
 \usage{
 Mid(x)

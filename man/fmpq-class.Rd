@@ -29,14 +29,14 @@
 \alias{mean,fmpq-method}
 \alias{Num}
 \alias{Den}
-\title{Class of Vectors of Rational Numbers}
+\title{Arbitrary Precision Rational Numbers}
 \docType{class}
 \description{
   Class \code{fmpq} extends virtual class \code{\linkS4class{flint}}.
-  It represents vectors of rational numbers.  Elements are specified by
-  a pair of arbitrary precision integers: an \code{\linkS4class{fmpz}}
-  numerator and a positive, coprime \code{\linkS4class{fmpz}}
-  denominator.
+  It represents vectors of arbitrary precision rational numbers.
+  Elements are specified by a pair of arbitrary precision signed
+  integers: a numerator and a positive, coprime denominator.  There is
+  no representation for \R{}'s missing value \code{\link{NA_integer_}}.
 }
 \usage{
 Num(q)

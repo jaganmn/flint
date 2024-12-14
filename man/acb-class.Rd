@@ -30,7 +30,7 @@
 \alias{mean,acb-method}
 \alias{Real}
 \alias{Imag}
-\title{Class of Complex Numbers with Error Bounds}
+\title{Arbitrary Precision Floating-Point Complex Numbers with Error Bounds}
 \docType{class}
 \description{
   Class \code{acb} extends virtual class \code{flint}.  It represents

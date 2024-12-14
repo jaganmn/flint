@@ -27,14 +27,14 @@
 \alias{is.nan,mag-method}
 \alias{log,mag-method}
 \alias{mean,mag-method}
-\title{Class of Vectors of Magnitude (Error) Bounds}
+\title{Fixed Precision Magnitude (Error) Bounds}
 \docType{class}
 \description{
-  Class \code{mag} extends virtual class \code{flint}.  It represents
-  vectors of unsigned floating-point numbers with a fixed precision
-  significand and an arbitary precision exponent.  In typical usage,
-  \code{mag} objects store magnitude (or error) bounds on real numbers.
-  The value can be positive infinity but never not-a-number.
+  Class \code{mag} extends virtual class \code{\linkS4class{flint}}.  It
+  represents vectors of fixed precision error bounds.  Elements are
+  unsigned floating-point numbers with a 30-bit significand and an
+  arbitary precision exponent.  The underlying \proglang{C} type can
+  represent \code{Inf} but not \code{NaN}.
 }
 \section{Slots}{
   \describe{

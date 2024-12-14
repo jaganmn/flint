@@ -28,11 +28,13 @@
 \alias{is.na,fmpz-method}
 \alias{is.nan,fmpz-method}
 \alias{mean,fmpz-method}
-\title{Class of Vectors of Arbitrary Precision Integers}
+\title{Arbitrary Precision Signed Integers}
 \docType{class}
 \description{
-  Class \code{fmpz} extends virtual class \code{flint}.  It represents
-  vectors of arbitrary precision integers.
+  Class \code{fmpz} extends virtual class \code{\linkS4class{flint}}.
+  It represents vectors of arbitrary precision signed integers.  There
+  is no representation for \R{}'s missing value
+  \code{\link{NA_integer_}}.
 }
 \section{Slots}{
   \describe{

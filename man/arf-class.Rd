@@ -26,12 +26,14 @@
 \alias{is.na,arf-method}
 \alias{is.nan,arf-method}
 \alias{mean,arf-method}
-\title{Class of Vectors of Arbitrary Precision Floating-Point Numbers}
+\title{Arbitrary Precision Floating-Point Real Numbers}
 \docType{class}
 \description{
-  Class \code{arf} extends virtual class \code{flint}.  It represents
-  vectors of signed floating-point numbers with an arbitrary precision
-  significand and an arbitrary precision exponent.
+  Class \code{arf} extends virtual class \code{\linkS4class{flint}}.  It
+  represents vectors of arbitrary precision floating-point real numbers.
+  Elements have arbitrary precision significand and exponent.  The
+  underlying \proglang{C} type can represent \code{NaN}, \code{-Inf},
+  and \code{Inf}.
 }
 \section{Slots}{
   \describe{
