@@ -5,6 +5,7 @@
 #include <flint/arf.h>
 #include <flint/mag.h>
 #include "flint.h"
+#include "acf.h"
 
 void R_flint_fmpz_finalize(SEXP x)
 {
@@ -102,6 +103,17 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
 				else
 				arf_get_fmpz(y + j, x + j, ARF_RND_DOWN);
+			}
+			break;
+		}
+		case R_FLINT_CLASS_ACF:
+		{
+			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j) {
+				if (!arf_is_finite(acf_realref(x + j)))
+				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				else
+				arf_get_fmpz(y + j, acf_realref(x + j), ARF_RND_DOWN);
 			}
 			break;
 		}

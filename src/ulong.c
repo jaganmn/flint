@@ -5,6 +5,7 @@
 #include <flint/arf.h>
 #include <flint/mag.h>
 #include "flint.h"
+#include "acf.h"
 
 void R_flint_ulong_finalize(SEXP x)
 {
@@ -123,6 +124,23 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				arf_get_fmpz(q, x + j, ARF_RND_DOWN);
+				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
+				fmpz_clear(q);
+				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+				}
+				else
+				y[j] = fmpz_get_ui(q);
+			}
+			fmpz_clear(q);
+			break;
+		}
+		case R_FLINT_CLASS_ACF:
+		{
+			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			for (j = 0; j < n; ++j) {
+				arf_get_fmpz(q, acf_realref(x + j), ARF_RND_DOWN);
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "ulong");

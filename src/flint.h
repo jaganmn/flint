@@ -153,6 +153,7 @@ typedef enum {
 	R_FLINT_CLASS_FMPZ,
 	R_FLINT_CLASS_FMPQ,
 	R_FLINT_CLASS_ARF,
+	R_FLINT_CLASS_ACF,
 	R_FLINT_CLASS_MAG,
 	R_FLINT_CLASS_ARB,
 	R_FLINT_CLASS_ACB,
@@ -163,7 +164,7 @@ extern
 SEXPTYPE R_flint_sexptypes[7];
 
 extern
-const char *R_flint_classes[9];
+const char *R_flint_classes[10];
 
 extern
 const char *R_flint_ops2[16];
@@ -205,6 +206,7 @@ void R_flint_ulong_finalize(SEXP);
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);
 void R_flint_arf_finalize(SEXP);
+void R_flint_acf_finalize(SEXP);
 void R_flint_mag_finalize(SEXP);
 void R_flint_arb_finalize(SEXP);
 void R_flint_acb_finalize(SEXP);

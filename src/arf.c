@@ -6,6 +6,7 @@
 #include <flint/arf.h>
 #include <flint/arb.h>
 #include "flint.h"
+#include "acf.h"
 
 int asRnd(SEXP rnd, int gnu, const char *where)
 {
@@ -128,6 +129,13 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
 				arf_set(y + j, x + j);
+			break;
+		}
+		case R_FLINT_CLASS_ACF:
+		{
+			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+			for (j = 0; j < n; ++j)
+				arf_set(y + j, acf_realref(x + j));
 			break;
 		}
 		case R_FLINT_CLASS_MAG:

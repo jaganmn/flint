@@ -26,7 +26,10 @@ SEXPTYPE R_flint_sexptypes[] =
 { OBJSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
 
 const char *R_flint_classes[] =
-{ "slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb", "" };
+{
+	"slong", "ulong", "fmpz", "fmpq",
+	"arf", "acf", "mag", "arb", "acb", ""
+};
 
 const char *R_flint_ops2[] =
 {
@@ -104,6 +107,11 @@ SEXP R_flint_arf_format(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_arf_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_arf_ops1(SEXP, SEXP, SEXP);
 
+SEXP R_flint_acf_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acf_vector(SEXP);
+SEXP R_flint_acf_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_acf_ops1(SEXP, SEXP, SEXP);
+
 SEXP R_flint_mag_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_mag_vector(SEXP);
 SEXP R_flint_mag_format(SEXP, SEXP, SEXP, SEXP);
@@ -179,6 +187,10 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arf_format, 5),
 	CALL_ENTRY(R_flint_arf_ops2, 3),
 	CALL_ENTRY(R_flint_arf_ops1, 3),
+	CALL_ENTRY(R_flint_acf_initialize, 5),
+	CALL_ENTRY(R_flint_acf_vector, 1),
+	CALL_ENTRY(R_flint_acf_ops2, 3),
+	CALL_ENTRY(R_flint_acf_ops1, 3),
 	CALL_ENTRY(R_flint_mag_initialize, 3),
 	CALL_ENTRY(R_flint_mag_vector, 1),
 	CALL_ENTRY(R_flint_mag_format, 4),

@@ -6,6 +6,7 @@
 #include <flint/arb.h>
 #include <flint/acb.h>
 #include "flint.h"
+#include "acf.h"
 
 void R_flint_arb_finalize(SEXP x)
 {
@@ -129,6 +130,15 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
 					arf_set(arb_midref(y + j), x + j);
+					mag_zero(arb_radref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_ACF:
+			{
+				acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					arf_set(arb_midref(y + j), acf_realref(x + j));
 					mag_zero(arb_radref(y + j));
 				}
 				break;

@@ -6,6 +6,7 @@
 #include <flint/arb.h>
 #include <flint/acb.h>
 #include "flint.h"
+#include "acf.h"
 
 void R_flint_abort(void)
 {
@@ -152,6 +153,12 @@ SEXP R_flint_part(SEXP object, SEXP s_mode)
 		else
 		PART_CASE(fmpq, fmpz, fmpq, fmpz, const fmpq *, fmpz *, den);
 		break;
+	case R_FLINT_CLASS_ACF:
+		if (mode == 0)
+		PART_CASE(acf, arf, acf_t, arf_t, acf_srcptr, arf_ptr, real);
+		else
+		PART_CASE(acf, arf, acf_t, arf_t, acf_srcptr, arf_ptr, imag);
+		break;
 	case R_FLINT_CLASS_ARB:
 		if (mode == 0)
 		PART_CASE(arb, arf, arb_t, arf_t, arb_srcptr, arf_ptr, mid);
@@ -222,6 +229,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript)
 		break;
 	case R_FLINT_CLASS_ARF:
 		SUBSCRIPT_CASE(arf, arf_t, arf_srcptr, arf_ptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		SUBSCRIPT_CASE(acf, acf_t, acf_srcptr, acf_ptr);
 		break;
 	case R_FLINT_CLASS_MAG:
 		SUBSCRIPT_CASE(mag, mag_t, mag_srcptr, mag_ptr);
@@ -301,6 +311,9 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 	case R_FLINT_CLASS_ARF:
 		SUBASSIGN_CASE(arf, arf_t, arf_srcptr, arf_ptr);
 		break;
+	case R_FLINT_CLASS_ACF:
+		SUBASSIGN_CASE(acf, acf_t, acf_srcptr, acf_ptr);
+		break;
 	case R_FLINT_CLASS_MAG:
 		SUBASSIGN_CASE(mag, mag_t, mag_srcptr, mag_ptr);
 		break;
@@ -359,6 +372,9 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 		break;
 	case R_FLINT_CLASS_ARF:
 		IDENTICAL_CASE(arf, arf_srcptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		IDENTICAL_CASE(acf, acf_srcptr);
 		break;
 	case R_FLINT_CLASS_MAG:
 		IDENTICAL_CASE(mag, mag_srcptr);
