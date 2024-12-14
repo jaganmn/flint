@@ -833,11 +833,9 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			else {
 			fmpz_t p;
 			fmpz_init(p);
-#if FLINT64
-			fmpz_set_ui(p, (ulong) c);
-#else
-			fmpz_set_uiui(p, (ulong) (c >> FLINT_BITS), (ulong) c);
-#endif
+			unsigned int uu[2];
+			ucopy(uu, &c);
+			fmpz_set_uiui(p, uu[1], uu[0]);
 			arb_div_fmpz(z, z, p, prec);
 			fmpz_clear(p);
 			}

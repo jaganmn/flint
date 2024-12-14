@@ -775,11 +775,9 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				mag_add(z, z, x + j);
 			fmpz_t p;
 			fmpz_init(p);
-#if FLINT64
-			fmpz_set_ui(p, (ulong) n);
-#else
-			fmpz_set_uiui(p, (ulong) (n >> FLINT_BITS), (ulong) n);
-#endif
+			unsigned int uu[2];
+			ucopy(uu, &n);
+			fmpz_set_uiui(p, uu[1], uu[0]);
 			mag_div_fmpz(z, z, p);
 			fmpz_clear(p);
 			break;
