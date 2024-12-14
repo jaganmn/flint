@@ -174,11 +174,11 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
-SEXP R_flint_acb_vector(SEXP from, SEXP s_rnd)
+SEXP R_flint_acb_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
 	ERROR_TOO_LONG(n);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(s_rnd, 0, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 	SEXP to = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acb_srcptr x = (acb_ptr) R_flint_get_pointer(from);
 	Rcomplex *y = COMPLEX(to);

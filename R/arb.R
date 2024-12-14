@@ -11,7 +11,7 @@ setMethod("initialize",
 setMethod("as.vector",
           c(x = "arb"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_arb_vector, x, "N"), mode))
+              as.vector(.Call(R_flint_arb_vector, x), mode))
 
 setAs("ANY", "arb",
       function (from)
