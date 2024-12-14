@@ -13,6 +13,7 @@
 \alias{Ops,mag,fmpz-method}
 \alias{Ops,mag,fmpq-method}
 \alias{Ops,mag,arf-method}
+\alias{Ops,mag,acf-method}
 \alias{Ops,mag,mag-method}
 \alias{Ops,mag,arb-method}
 \alias{Ops,mag,acb-method}

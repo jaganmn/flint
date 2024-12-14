@@ -27,6 +27,8 @@
 \alias{Ops,ulong,fmpq-method}
 \alias{Ops,slong,arf-method}
 \alias{Ops,ulong,arf-method}
+\alias{Ops,slong,acf-method}
+\alias{Ops,ulong,acf-method}
 \alias{Ops,slong,mag-method}
 \alias{Ops,ulong,mag-method}
 \alias{Ops,slong,arb-method}
