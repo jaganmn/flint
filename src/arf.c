@@ -166,7 +166,7 @@ SEXP R_flint_arf_vector(SEXP from)
 	for (j = 0; j < n; ++j) {
 		if (arf_is_nan(x + j))
 			y[j] = R_NaN;
-		else if (arf_cmp(x + j, lb) > 0 && arf_cmp(x + j, ub) < 0)
+		else if (arf_cmp(x + j, lb) >= 0 && arf_cmp(x + j, ub) <= 0)
 			y[j] = arf_get_d(x + j, rnd);
 		else {
 			y[j] = (arf_sgn(x + j) < 0) ? R_NegInf : R_PosInf;

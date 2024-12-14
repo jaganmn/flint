@@ -143,7 +143,7 @@ SEXP R_flint_fmpz_vector(SEXP from)
 	fmpz_set_d(ub, DBL_MAX);
 	fmpz_neg(lb, ub);
 	for (j = 0; j < n; ++j) {
-		if (fmpz_cmp(x + j, lb) > 0 && fmpz_cmp(x + j, ub) < 0)
+		if (fmpz_cmp(x + j, lb) >= 0 && fmpz_cmp(x + j, ub) <= 0)
 			y[j] = fmpz_get_d(x + j);
 		else {
 			y[j] = (fmpz_sgn(x + j) < 0) ? R_NegInf : R_PosInf;

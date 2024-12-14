@@ -196,7 +196,7 @@ SEXP R_flint_acb_vector(SEXP from)
 		p = arb_midref(acb_realref(x + j));
 		if (arf_is_nan(p))
 			y[j].r = R_NaN;
-		else if (arf_cmp(p, lb) > 0 && arf_cmp(p, ub) < 0)
+		else if (arf_cmp(p, lb) >= 0 && arf_cmp(p, ub) <= 0)
 			y[j].r = arf_get_d(p, rnd);
 		else {
 			y[j].r = (arf_sgn(p) < 0) ? R_NegInf : R_PosInf;
@@ -205,7 +205,7 @@ SEXP R_flint_acb_vector(SEXP from)
 		p = arb_midref(acb_imagref(x + j));
 		if (arf_is_nan(p))
 			y[j].i = R_NaN;
-		else if (arf_cmp(p, lb) > 0 && arf_cmp(p, ub) < 0)
+		else if (arf_cmp(p, lb) >= 0 && arf_cmp(p, ub) <= 0)
 			y[j].i = arf_get_d(p, rnd);
 		else {
 			y[j].i = (arf_sgn(p) < 0) ? R_NegInf : R_PosInf;

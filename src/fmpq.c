@@ -204,7 +204,7 @@ SEXP R_flint_fmpq_vector(SEXP from)
 	fmpz_neg(lb, ub);
 	int w = 1;
 	for (j = 0; j < n; ++j) {
-		if (fmpq_cmp_fmpz(x + j, lb) > 0 && fmpq_cmp_fmpz(x + j, ub) < 0)
+		if (fmpq_cmp_fmpz(x + j, lb) >= 0 && fmpq_cmp_fmpz(x + j, ub) <= 0)
 			y[j] = fmpq_get_d(x + j);
 		else {
 			y[j] = (fmpq_sgn(x + j) < 0) ? R_NegInf : R_PosInf;
