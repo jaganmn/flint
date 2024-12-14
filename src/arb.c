@@ -174,26 +174,26 @@ SEXP R_flint_arb_vector(SEXP from)
 	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arb_srcptr x = (arb_ptr) R_flint_get_pointer(from);
 	double *y = REAL(to);
-	arf_t lbm, ubm;
-	arf_srcptr m;
-	arf_init(lbm);
-	arf_init(ubm);
-	arf_set_ui_2exp_si(ubm, 1U, DBL_MAX_EXP);
-	arf_neg(lbm, ubm);
+	arf_t lb, ub;
+	arf_srcptr p;
+	arf_init(lb);
+	arf_init(ub);
+	arf_set_d(ub, DBL_MAX);
+	arf_neg(lb, ub);
 	int w = 1;
 	for (j = 0; j < n; ++j) {
-		m = arb_midref(x + j);
-		if (arf_is_nan(m))
+		p = arb_midref(x + j);
+		if (arf_is_nan(p))
 			y[j] = R_NaN;
-		else if (arf_cmp(m, lbm) > 0 && arf_cmp(m, ubm) < 0)
-			y[j] = arf_get_d(m, rnd);
+		else if (arf_cmp(p, lb) > 0 && arf_cmp(p, ub) < 0)
+			y[j] = arf_get_d(p, rnd);
 		else {
-			y[j] = (arf_sgn(m) < 0) ? R_NegInf : R_PosInf;
+			y[j] = (arf_sgn(p) < 0) ? R_NegInf : R_PosInf;
 			WARNING_OOB_DOUBLE(w);
 		}
 	}
-	arf_clear(lbm);
-	arf_clear(ubm);
+	arf_clear(lb);
+	arf_clear(ub);
 	UNPROTECT(1);
 	return to;
 }
