@@ -15,7 +15,7 @@ int asRnd(SEXP rnd, int gnu, const char *where)
 			tag = Rf_install("flint.rnd");
 		rnd = Rf_GetOption1(tag);
 		if (rnd == R_NilValue)
-			return ARF_RND_NEAR;
+			return (gnu) ? MPFR_RNDN : ARF_RND_NEAR;
 	}
 	if (TYPEOF(rnd) == STRSXP && XLENGTH(rnd) > 0 &&
 	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING) {
@@ -118,8 +118,9 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		{
 			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
 			int prec = asPrec(R_NilValue, __func__);
+			arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 			for (j = 0; j < n; ++j)
-				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j), fmpq_denref(x + j), prec, ARF_RND_NEAR);
+				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j), fmpq_denref(x + j), prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
@@ -510,7 +511,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		{
 			arb_t pi;
 			arb_init(pi);
-			arb_const_pi(pi, asPrec(R_NilValue, __func__));
+			arb_const_pi(pi, prec);
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j) || arf_is_zero(x + j))
 					arf_set(z + j, x + j);
@@ -580,8 +581,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 48: /*   "round" */
 		{
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
-				prec = asPrec(R_NilValue, __func__);
+			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
 			fmpz_t p, q;
 			arf_t s;
 			fmpz_init(p);
@@ -595,9 +595,9 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (!arf_is_finite(x + j))
 				arf_set(z + j, x + j);
 				else {
-				arf_mul_fmpz(s, x + j, p, ARF_PREC_EXACT, ARF_RND_NEAR);
+				arf_mul_fmpz(s, x + j, p, ARF_PREC_EXACT, rnd);
 				arf_get_fmpz(q, s, ARF_RND_NEAR);
-				arf_fmpz_div_fmpz(z + j, q, p, prec, ARF_RND_NEAR);
+				arf_fmpz_div_fmpz(z + j, q, p, prec, rnd);
 				}
 			}
 			} else {
@@ -607,7 +607,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (!arf_is_finite(x + j))
 				arf_set(z + j, x + j);
 				else {
-				arf_div_fmpz(s, x + j, p, prec, ARF_RND_NEAR);
+				arf_div_fmpz(s, x + j, p, prec, rnd);
 				arf_get_fmpz(q, s, ARF_RND_NEAR);
 				fmpz_mul(q, q, p);
 				arf_set_fmpz(z + j, q);
@@ -623,7 +623,6 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
-				prec = asPrec(R_NilValue, __func__),
 				clog;
 			if (digits <= 0)
 				digits = 1;
@@ -653,7 +652,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
 				    fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
-				arf_fmpz_div_fmpz(z + j, q, p, prec, ARF_RND_NEAR);
+				arf_fmpz_div_fmpz(z + j, q, p, prec, rnd);
 				} else {
 				fmpz_pow_ui(p, p, (ulong) (clog - digits));
 				fmpz_mul(fmpq_denref(a), fmpq_denref(a), p);

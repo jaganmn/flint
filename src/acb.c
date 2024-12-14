@@ -238,7 +238,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  2: /*   "-" */
 	case  3: /*   "*" */
 	case  6: /*   "/" */
-	case  7: /*   "/" */
+	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("acb");
 		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
@@ -332,6 +332,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	unsigned long long int j, n = R_flint_get_length(s_x);
 	acb_srcptr x = (acb_ptr) R_flint_get_pointer(s_x);
 	slong prec = (slong) asPrec(R_NilValue, __func__);
+	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 	switch (op) {
 	case  1: /*        "+" */
 	case  2: /*        "-" */
@@ -553,9 +554,9 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_set(zm, xm); \
 				mag_inf(zr); /* FIXME: Is there another option? */ \
 				} else { \
-				arf_mul_fmpz(s, xm, p, ARF_PREC_EXACT, ARF_RND_NEAR); \
+				arf_mul_fmpz(s, xm, p, ARF_PREC_EXACT, rnd); \
 				arf_get_fmpz(q, s, ARF_RND_NEAR); \
-				arf_fmpz_div_fmpz(zm, q, p, prec, ARF_RND_NEAR); \
+				arf_fmpz_div_fmpz(zm, q, p, prec, rnd); \
 				if (arf_equal(xm, zm) != 0) \
 				mag_set(zr, xr); \
 				else \
@@ -582,7 +583,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_set(zm, xm); \
 				mag_inf(zr); /* FIXME: Is there another option? */ \
 				} else { \
-				arf_div_fmpz(s, xm, p, prec, ARF_RND_NEAR); \
+				arf_div_fmpz(s, xm, p, prec, rnd); \
 				arf_get_fmpz(q, s, ARF_RND_NEAR); \
 				fmpz_mul(q, q, p); \
 				arf_set_fmpz(zm, q); \
@@ -607,7 +608,6 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
-				prec = asPrec(R_NilValue, __func__),
 				clog;
 			if (digits <= 0)
 				digits = 1;
@@ -656,7 +656,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 && \
 				    fmpz_is_odd(q)) \
 					fmpz_add_si(q, q, fmpz_sgn(r)); \
-				arf_fmpz_div_fmpz(zm, q, p, prec, ARF_RND_NEAR); \
+				arf_fmpz_div_fmpz(zm, q, p, prec, rnd); \
 				} else { \
 				fmpz_pow_ui(p, p, (ulong) (clog - digits)); \
 				fmpz_divexact_si(q, p, 2); \
