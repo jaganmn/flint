@@ -136,8 +136,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
 					arf_set(arb_midref(acb_realref(y + j)), x + j);
+					arf_zero(arb_midref(acb_imagref(y + j)));
 					mag_zero(arb_radref(acb_realref(y + j)));
-					arb_zero(acb_imagref(y + j));
+					mag_zero(arb_radref(acb_imagref(y + j)));
 				}
 				break;
 			}
@@ -146,8 +147,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
 					arf_set_mag(arb_midref(acb_realref(y + j)), x + j);
+					arf_zero(arb_midref(acb_imagref(y + j)));
 					mag_zero(arb_radref(acb_realref(y + j)));
-					arb_zero(acb_imagref(y + j));
+					mag_zero(arb_radref(acb_imagref(y + j)));
 				}
 				break;
 			}
