@@ -78,6 +78,9 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		{
 			const int *x = INTEGER_RO(s_x);
 			for (j = 0; j < n; ++j)
+				if (x[j] == NA_INTEGER)
+				arb_set_d(y + j, R_NaN);
+				else
 				arb_set_si(y + j, x[j]);
 			break;
 		}
