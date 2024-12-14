@@ -59,6 +59,8 @@ setMethod("Ops",
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
                          g(new("arb", x = e1), e2),
+                     "complex" =
+                         g(new("acb", x = e1), new("acb", x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "arb"),
                           domain = NA))
@@ -71,6 +73,8 @@ setMethod("Ops",
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
                          g(e1, new("arb", x = e2)),
+                     "complex" =
+                         g(new("acb", x = e1), new("acb", x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "arb", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -100,6 +104,11 @@ setMethod("Ops",
           c(e1 = "arb", e2 = "arf"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, new("arb", x = e2)))
+
+setMethod("Ops",
+          c(e1 = "arb", e2 = "acf"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(new("acb", x = e1), new("acb", x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "mag"),
