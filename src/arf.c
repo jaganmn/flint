@@ -430,18 +430,18 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				(arf_is_zero(x + j % nx) || arf_is_zero(y + j % ny))
 				? 0
 				:
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+				(arf_is_nan (x + j % nx) || arf_is_nan (y + j % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
 			for (j = 0; j < n; ++j)
 				z[j] =
-				((!arf_is_nan(x + j % nx) && !arf_is_zero(x + j % nx)) ||
-				 (!arf_is_nan(y + j % ny) && !arf_is_zero(y + j % ny)))
+				(!(arf_is_nan(x + j % nx) || arf_is_zero(x + j % nx)) ||
+				 !(arf_is_nan(y + j % ny) || arf_is_zero(y + j % ny)))
 				? 1
 				:
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+				(arf_is_nan (x + j % nx) || arf_is_nan (y + j % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
