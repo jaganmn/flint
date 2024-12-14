@@ -26,7 +26,7 @@ setMethod("format",
                             rnd = rnd, ...),
                      " +/- ",
                      format(Rad(x), base = base, digits = digits, sep = sep,
-                                     , ...),
+                                       ...),
                      ")"))
 
 setMethod("+",
@@ -57,7 +57,7 @@ setMethod("Ops",
           function (e1, e2) {
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
-                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
                          g(new("arb", x = e1), e2),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "arb"),
@@ -69,7 +69,7 @@ setMethod("Ops",
           function (e1, e2) {
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
-                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
                          g(e1, new("arb", x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "arb", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
