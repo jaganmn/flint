@@ -23,10 +23,10 @@ setMethod("format",
                     rnd = flintRnd(), ...)
               paste0("(",
                      format(Mid(x), base = base, digits = digits, sep = sep,
-                            rnd = rnd[[1L]], ...),
+                            rnd = rnd, ...),
                      " +/- ",
                      format(Rad(x), base = base, digits = digits, sep = sep,
-                            rnd = rnd[[2L]], ...),
+                                     , ...),
                      ")"))
 
 setMethod("+",

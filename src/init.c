@@ -106,7 +106,7 @@ SEXP R_flint_arf_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_mag_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_mag_vector(SEXP);
-SEXP R_flint_mag_format(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_mag_format(SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_mag_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_mag_ops1(SEXP, SEXP, SEXP);
 

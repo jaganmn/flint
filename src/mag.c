@@ -159,14 +159,14 @@ SEXP R_flint_mag_vector(SEXP from)
 }
 
 SEXP R_flint_mag_format(SEXP from, SEXP s_base,
-                        SEXP s_digits, SEXP s_sep, SEXP s_rnd)
+                        SEXP s_digits, SEXP s_sep)
 {
 	unsigned long long int j, n = R_flint_get_length(from);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
-	mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(s_rnd, 1, __func__);
+	mpfr_rnd_t rnd = (mpfr_rnd_t) MPFR_RNDA;
 	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	mag_srcptr x = (mag_ptr) R_flint_get_pointer(from);
 	mpfr_exp_t e__;
