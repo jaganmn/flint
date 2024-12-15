@@ -488,6 +488,9 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 48: /*   "round" */
 		{
+			if (R_flint_get_length(s_dots) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "digits", CHAR(STRING_ELT(s_op, 0)));
 			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
 			if (digits >= 0)
 			for (j = 0; j < n; ++j)
