@@ -1,26 +1,7 @@
-setMethod("initialize",
-          c(.Object = "mag"),
-          function (.Object, length = 0L, x = NULL, ...)
-              .Call(R_flint_mag_initialize, .Object, length, x))
-
-setMethod("as.vector",
+setMethod("!",
           c(x = "mag"),
-          function (x, mode = "any")
-              as.vector(.Call(R_flint_mag_vector, x), mode))
-
-setAs("ANY", "mag",
-      function (from)
-          new("mag", x = from))
-
-setMethod("format",
-          c(x = "mag"),
-          function (x, base = 10L, digits = NULL, sep = NULL, ...) {
-              if (is.null(digits))
-                  digits <- getOption("digits")
-              if (is.null(sep))
-                  sep <- if (identical(base, 10L)) "e" else "|"
-              .Call(R_flint_mag_format, x, base, digits, sep)
-          })
+          function (x)
+              .Call(R_flint_mag_ops1, "!", x, NULL))
 
 setMethod("+",
           c(e1 = "mag", e2 = "missing"),
@@ -31,6 +12,29 @@ setMethod("-",
           c(e1 = "mag", e2 = "missing"),
           function (e1, e2)
               .Call(R_flint_mag_ops1, "-", e1, NULL))
+
+setMethod("Complex",
+          c(z = "mag"),
+          function (z)
+              .Call(R_flint_mag_ops1, .Generic, z, NULL))
+
+setMethod("Math",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, .Generic, x, NULL))
+
+setMethod("Math2",
+          c(x = "mag"),
+          function (x, digits) {
+              if (missing(digits))
+                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
+              else if (length(digits) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "digits", .Generic),
+                       domain = NA)
+              else digits <- as(digits, "slong")
+              .Call(R_flint_mag_ops1, .Generic, x, digits)
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "mag"),
@@ -105,6 +109,60 @@ setMethod("Ops",
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), e2))
 
+setMethod("Summary",
+          c(x = "mag"),
+          function (x, ..., na.rm = FALSE)
+              .Call(R_flint_mag_ops1, .Generic, x, NULL))
+
+setMethod("anyNA",
+          c(x = "mag"),
+          function (x, recursive = FALSE)
+              FALSE)
+
+setMethod("as.vector",
+          c(x = "mag"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_mag_vector, x), mode))
+
+setAs("ANY", "mag",
+      function (from)
+          new("mag", x = from))
+
+setMethod("format",
+          c(x = "mag"),
+          function (x, base = 10L, digits = NULL, sep = NULL, ...) {
+              if (is.null(digits))
+                  digits <- getOption("digits")
+              if (is.null(sep))
+                  sep <- if (identical(base, 10L)) "e" else "|"
+              .Call(R_flint_mag_format, x, base, digits, sep)
+          })
+
+setMethod("initialize",
+          c(.Object = "mag"),
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_mag_initialize, .Object, length, x))
+
+setMethod("is.finite",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.finite", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.infinite", x, NULL))
+
+setMethod("is.na",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.na", x, NULL))
+
+setMethod("is.nan",
+          c(x = "mag"),
+          function (x)
+              .Call(R_flint_mag_ops1, "is.nan", x, NULL))
+
 setMethod("log",
           c(x = "mag"),
           function (x, base, ...) {
@@ -117,64 +175,6 @@ setMethod("log",
               else base <- as(base, "arf")
               .Call(R_flint_mag_ops1, "log", x, base)
           })
-
-setMethod("Math",
-          c(x = "mag"),
-          function (x)
-              .Call(R_flint_mag_ops1, .Generic, x, NULL))
-
-setMethod("Math2",
-          c(x = "mag"),
-          function (x, digits) {
-              if (missing(digits))
-                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
-              else if (length(digits) == 0L)
-                  stop(gettextf("'%s' of length zero in '%s'",
-                                "digits", .Generic),
-                       domain = NA)
-              else digits <- as(digits, "slong")
-              .Call(R_flint_mag_ops1, .Generic, x, digits)
-          })
-
-setMethod("Summary",
-          c(x = "mag"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_mag_ops1, .Generic, x, NULL))
-
-setMethod("Complex",
-          c(z = "mag"),
-          function (z)
-              .Call(R_flint_mag_ops1, .Generic, z, NULL))
-
-setMethod("anyNA",
-          c(x = "mag"),
-          function (x, recursive = FALSE)
-              FALSE)
-
-setMethod("is.na",
-          c(x = "mag"),
-          function (x)
-              .Call(R_flint_mag_ops1, "is.na", x, NULL))
-
-setMethod("is.nan",
-          c(x = "mag"),
-          function (x)
-              .Call(R_flint_mag_ops1, "is.nan", x, NULL))
-
-setMethod("is.infinite",
-          c(x = "mag"),
-          function (x)
-              .Call(R_flint_mag_ops1, "is.infinite", x, NULL))
-
-setMethod("is.finite",
-          c(x = "mag"),
-          function (x)
-              .Call(R_flint_mag_ops1, "is.finite", x, NULL))
-
-setMethod("!",
-          c(x = "mag"),
-          function (x)
-              .Call(R_flint_mag_ops1, "!", x, NULL))
 
 setMethod("mean",
           c(x = "mag"),

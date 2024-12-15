@@ -1,21 +1,7 @@
-setMethod("initialize",
-          c(.Object = "ulong"),
-          function (.Object, length = 0L, x = NULL, ...)
-              .Call(R_flint_ulong_initialize, .Object, length, x))
-
-setMethod("as.vector",
+setMethod("!",
           c(x = "ulong"),
-          function (x, mode = "any")
-              as.vector(.Call(R_flint_ulong_vector, x), mode))
-
-setAs("ANY", "ulong",
-      function (from)
-          new("ulong", x = from))
-
-setMethod("format",
-          c(x = "ulong"),
-          function (x, base = 10L, ...)
-              .Call(R_flint_ulong_format, x, base))
+          function (x)
+              !new("fmpz", x = x))
 
 setMethod("+",
           c(e1 = "ulong", e2 = "missing"),
@@ -26,6 +12,25 @@ setMethod("-",
           c(e1 = "ulong", e2 = "missing"),
           function (e1, e2)
               -new("fmpz", x = e1))
+
+setMethod("Complex",
+          c(z = "ulong"),
+          function (z)
+              get(.Generic, mode = "function")(new("fmpz", x = z)))
+
+setMethod("Math",
+          c(x = "ulong"),
+          function (x)
+              get(.Generic, mode = "function")(new("fmpz", x = x)))
+
+setMethod("Math2",
+          c(x = "ulong"),
+          function (x, digits) {
+              g <- get(.Generic, mode = "function")
+              if (missing(digits))
+                  g(new("fmpz", x = x))
+              else g(new("fmpz", x = x), digits = digits)
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "ulong"),
@@ -104,34 +109,44 @@ setMethod("Ops",
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), e2))
 
-setMethod("Math",
-          c(x = "ulong"),
-          function (x)
-              get(.Generic, mode = "function")(new("fmpz", x = x)))
-
-setMethod("Math2",
-          c(x = "ulong"),
-          function (x, digits) {
-              g <- get(.Generic, mode = "function")
-              if (missing(digits))
-                  g(new("fmpz", x = x))
-              else g(new("fmpz", x = x), digits = digits)
-          })
-
 setMethod("Summary",
           c(x = "ulong"),
           function (x, ..., na.rm = FALSE)
               get(.Generic, mode = "function")(new("fmpz", x = x), ..., na.rm = na.rm))
 
-setMethod("Complex",
-          c(z = "ulong"),
-          function (z)
-              get(.Generic, mode = "function")(new("fmpz", x = z)))
-
 setMethod("anyNA",
           c(x = "ulong"),
           function (x, recursive = FALSE)
               FALSE)
+
+setMethod("as.vector",
+          c(x = "ulong"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_ulong_vector, x), mode))
+
+setAs("ANY", "ulong",
+      function (from)
+          new("ulong", x = from))
+
+setMethod("format",
+          c(x = "ulong"),
+          function (x, base = 10L, ...)
+              .Call(R_flint_ulong_format, x, base))
+
+setMethod("initialize",
+          c(.Object = "ulong"),
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_ulong_initialize, .Object, length, x))
+
+setMethod("is.finite",
+          c(x = "ulong"),
+          function (x)
+              rep.int(TRUE, length(x)))
+
+setMethod("is.infinite",
+          c(x = "ulong"),
+          function (x)
+              logical(length(x)))
 
 setMethod("is.na",
           c(x = "ulong"),
@@ -142,21 +157,6 @@ setMethod("is.nan",
           c(x = "ulong"),
           function (x)
               logical(length(x)))
-
-setMethod("is.infinite",
-          c(x = "ulong"),
-          function (x)
-              logical(length(x)))
-
-setMethod("is.finite",
-          c(x = "ulong"),
-          function (x)
-              rep.int(TRUE, length(x)))
-
-setMethod("!",
-          c(x = "ulong"),
-          function (x)
-              !new("fmpz", x = x))
 
 setMethod("mean",
           c(x = "ulong"),

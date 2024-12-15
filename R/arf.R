@@ -1,27 +1,7 @@
-setMethod("initialize",
-          c(.Object = "arf"),
-          function (.Object, length = 0L, x = NULL, ...)
-              .Call(R_flint_arf_initialize, .Object, length, x))
-
-setMethod("as.vector",
+setMethod("!",
           c(x = "arf"),
-          function (x, mode = "any")
-              as.vector(.Call(R_flint_arf_vector, x), mode))
-
-setAs("ANY", "arf",
-      function (from)
-          new("arf", x = from))
-
-setMethod("format",
-          c(x = "arf"),
-          function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...) {
-              if (is.null(digits))
-                  digits <- getOption("digits")
-              if (is.null(sep))
-                  sep <- if (identical(base, 10L)) "e" else "|"
-              .Call(R_flint_arf_format, x, base, digits, sep, rnd)
-          })
+          function (x)
+              .Call(R_flint_arf_ops1, "!", x, NULL))
 
 setMethod("+",
           c(e1 = "arf", e2 = "missing"),
@@ -32,6 +12,29 @@ setMethod("-",
           c(e1 = "arf", e2 = "missing"),
           function (e1, e2)
               .Call(R_flint_arf_ops1, "-", e1, NULL))
+
+setMethod("Complex",
+          c(z = "arf"),
+          function (z)
+              .Call(R_flint_arf_ops1, .Generic, z, NULL))
+
+setMethod("Math",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, .Generic, x, NULL))
+
+setMethod("Math2",
+          c(x = "arf"),
+          function (x, digits) {
+              if (missing(digits))
+                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
+              else if (length(digits) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "digits", .Generic),
+                       domain = NA)
+              else digits <- as(digits, "slong")
+              .Call(R_flint_arf_ops1, .Generic, x, digits)
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "arf"),
@@ -106,24 +109,6 @@ setMethod("Ops",
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), e2))
 
-setMethod("Math",
-          c(x = "arf"),
-          function (x)
-              .Call(R_flint_arf_ops1, .Generic, x, NULL))
-
-setMethod("Math2",
-          c(x = "arf"),
-          function (x, digits) {
-              if (missing(digits))
-                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
-              else if (length(digits) == 0L)
-                  stop(gettextf("'%s' of length zero in '%s'",
-                                "digits", .Generic),
-                       domain = NA)
-              else digits <- as(digits, "slong")
-              .Call(R_flint_arf_ops1, .Generic, x, digits)
-          })
-
 setMethod("Summary",
           c(x = "arf"),
           function (x, ..., na.rm = FALSE) {
@@ -137,15 +122,45 @@ setMethod("Summary",
               .Call(R_flint_arf_ops1, .Generic, x, na.rm)
           })
 
-setMethod("Complex",
-          c(z = "arf"),
-          function (z)
-              .Call(R_flint_arf_ops1, .Generic, z, NULL))
-
 setMethod("anyNA",
           c(x = "arf"),
           function (x, recursive = FALSE)
               .Call(R_flint_arf_ops1, "anyNA", x, NULL))
+
+setMethod("as.vector",
+          c(x = "arf"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_arf_vector, x), mode))
+
+setAs("ANY", "arf",
+      function (from)
+          new("arf", x = from))
+
+setMethod("format",
+          c(x = "arf"),
+          function (x, base = 10L, digits = NULL, sep = NULL,
+                    rnd = flintRnd(), ...) {
+              if (is.null(digits))
+                  digits <- getOption("digits")
+              if (is.null(sep))
+                  sep <- if (identical(base, 10L)) "e" else "|"
+              .Call(R_flint_arf_format, x, base, digits, sep, rnd)
+          })
+
+setMethod("initialize",
+          c(.Object = "arf"),
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_arf_initialize, .Object, length, x))
+
+setMethod("is.finite",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "is.finite", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "arf"),
+          function (x)
+              .Call(R_flint_arf_ops1, "is.infinite", x, NULL))
 
 setMethod("is.na",
           c(x = "arf"),
@@ -156,21 +171,6 @@ setMethod("is.nan",
           c(x = "arf"),
           function (x)
               .Call(R_flint_arf_ops1, "is.nan", x, NULL))
-
-setMethod("is.infinite",
-          c(x = "arf"),
-          function (x)
-              .Call(R_flint_arf_ops1, "is.infinite", x, NULL))
-
-setMethod("is.finite",
-          c(x = "arf"),
-          function (x)
-              .Call(R_flint_arf_ops1, "is.finite", x, NULL))
-
-setMethod("!",
-          c(x = "arf"),
-          function (x)
-              .Call(R_flint_arf_ops1, "!", x, NULL))
 
 setMethod("mean",
           c(x = "arf"),

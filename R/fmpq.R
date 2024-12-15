@@ -1,30 +1,10 @@
 Num <- function (q) .Call(R_flint_part, q, 0L)
 Den <- function (q) .Call(R_flint_part, q, 1L)
 
-setMethod("initialize",
-          c(.Object = "fmpq"),
-          function (.Object, length = 0L, x = NULL, num, den, ...)
-              .Call(R_flint_fmpq_initialize, .Object, length, x,
-                    if (!missing(num)) as(num, "fmpz"),
-                    if (!missing(den)) as(den, "fmpz")))
-
-setMethod("as.vector",
+setMethod("!",
           c(x = "fmpq"),
-          function (x, mode = "any")
-              as.vector(.Call(R_flint_fmpq_vector, x), mode))
-
-setAs("ANY", "fmpq",
-      function (from)
-          new("fmpq", x = from))
-
-setMethod("format",
-          c(x = "fmpq"),
-          function (x, base = 10L, ...)
-              paste0("(",
-                     format(Num(x), base = base, ...),
-                     "/",
-                     format(Den(x), base = base, ...),
-                     ")"))
+          function (x)
+              .Call(R_flint_fmpq_ops1, "!", x, NULL))
 
 setMethod("+",
           c(e1 = "fmpq", e2 = "missing"),
@@ -35,6 +15,29 @@ setMethod("-",
           c(e1 = "fmpq", e2 = "missing"),
           function (e1, e2)
               .Call(R_flint_fmpq_ops1, "-", e1, NULL))
+
+setMethod("Complex",
+          c(z = "fmpq"),
+          function (z)
+              .Call(R_flint_fmpq_ops1, .Generic, z, NULL))
+
+setMethod("Math",
+          c(x = "fmpq"),
+          function (x)
+              .Call(R_flint_fmpq_ops1, .Generic, x, NULL))
+
+setMethod("Math2",
+          c(x = "fmpq"),
+          function (x, digits) {
+              if (missing(digits))
+                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
+              else if (length(digits) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "digits", .Generic),
+                       domain = NA)
+              else digits <- as(digits, "slong")
+              .Call(R_flint_fmpq_ops1, .Generic, x, digits)
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "fmpq"),
@@ -113,38 +116,59 @@ setMethod("Ops",
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), e2))
 
-setMethod("Math",
-          c(x = "fmpq"),
-          function (x)
-              .Call(R_flint_fmpq_ops1, .Generic, x, NULL))
-
-setMethod("Math2",
-          c(x = "fmpq"),
-          function (x, digits) {
-              if (missing(digits))
-                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
-              else if (length(digits) == 0L)
-                  stop(gettextf("'%s' of length zero in '%s'",
-                                "digits", .Generic),
-                       domain = NA)
-              else digits <- as(digits, "slong")
-              .Call(R_flint_fmpq_ops1, .Generic, x, digits)
-          })
-
 setMethod("Summary",
           c(x = "fmpq"),
           function (x, ..., na.rm = FALSE)
               .Call(R_flint_fmpq_ops1, .Generic, x, NULL))
 
-setMethod("Complex",
-          c(z = "fmpq"),
-          function (z)
-              .Call(R_flint_fmpq_ops1, .Generic, z, NULL))
+setMethod("all.equal",
+          c(target = "fmpq", current = "fmpq"),
+          function (target, current, ...)
+              all.equal(list(num = Num(target),
+                             den = Den(target)),
+                        list(num = Num(current),
+                             den = Den(current)),
+                        ...))
 
 setMethod("anyNA",
           c(x = "fmpq"),
           function (x, recursive = FALSE)
               FALSE)
+
+setMethod("as.vector",
+          c(x = "fmpq"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_fmpq_vector, x), mode))
+
+setAs("ANY", "fmpq",
+      function (from)
+          new("fmpq", x = from))
+
+setMethod("format",
+          c(x = "fmpq"),
+          function (x, base = 10L, ...)
+              paste0("(",
+                     format(Num(x), base = base, ...),
+                     "/",
+                     format(Den(x), base = base, ...),
+                     ")"))
+
+setMethod("initialize",
+          c(.Object = "fmpq"),
+          function (.Object, length = 0L, x = NULL, num, den, ...)
+              .Call(R_flint_fmpq_initialize, .Object, length, x,
+                    if (!missing(num)) as(num, "fmpz"),
+                    if (!missing(den)) as(den, "fmpz")))
+
+setMethod("is.finite",
+          c(x = "fmpq"),
+          function (x)
+              .Call(R_flint_fmpq_ops1, "is.finite", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "fmpq"),
+          function (x)
+              .Call(R_flint_fmpq_ops1, "is.infinite", x, NULL))
 
 setMethod("is.na",
           c(x = "fmpq"),
@@ -156,31 +180,7 @@ setMethod("is.nan",
           function (x)
               .Call(R_flint_fmpq_ops1, "is.nan", x, NULL))
 
-setMethod("is.infinite",
-          c(x = "fmpq"),
-          function (x)
-              .Call(R_flint_fmpq_ops1, "is.infinite", x, NULL))
-
-setMethod("is.finite",
-          c(x = "fmpq"),
-          function (x)
-              .Call(R_flint_fmpq_ops1, "is.finite", x, NULL))
-
-setMethod("!",
-          c(x = "fmpq"),
-          function (x)
-              .Call(R_flint_fmpq_ops1, "!", x, NULL))
-
 setMethod("mean",
           c(x = "fmpq"),
           function (x, ...)
               .Call(R_flint_fmpq_ops1, "mean", x, NULL))
-
-setMethod("all.equal",
-          c(target = "fmpq", current = "fmpq"),
-          function (target, current, ...)
-              all.equal(list(num = Num(target),
-                             den = Den(target)),
-                        list(num = Num(current),
-                             den = Den(current)),
-                        ...))

@@ -1,21 +1,7 @@
-setMethod("initialize",
-          c(.Object = "fmpz"),
-          function (.Object, length = 0L, x = NULL, ...)
-              .Call(R_flint_fmpz_initialize, .Object, length, x))
-
-setMethod("as.vector",
+setMethod("!",
           c(x = "fmpz"),
-          function (x, mode = "any")
-              as.vector(.Call(R_flint_fmpz_vector, x), mode))
-
-setAs("ANY", "fmpz",
-      function (from)
-          new("fmpz", x = from))
-
-setMethod("format",
-          c(x = "fmpz"),
-          function (x, base = 10L, ...)
-              .Call(R_flint_fmpz_format, x, base))
+          function (x)
+              .Call(R_flint_fmpz_ops1, "!", x, NULL))
 
 setMethod("+",
           c(e1 = "fmpz", e2 = "missing"),
@@ -26,6 +12,29 @@ setMethod("-",
           c(e1 = "fmpz", e2 = "missing"),
           function (e1, e2)
               .Call(R_flint_fmpz_ops1, "-", e1, NULL))
+
+setMethod("Complex",
+          c(z = "fmpz"),
+          function (z)
+              .Call(R_flint_fmpz_ops1, .Generic, z, NULL))
+
+setMethod("Math",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, .Generic, x, NULL))
+
+setMethod("Math2",
+          c(x = "fmpz"),
+          function (x, digits) {
+              if (missing(digits))
+                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
+              else if (length(digits) == 0L)
+                  stop(gettextf("'%s' of length zero in '%s'",
+                                "digits", .Generic),
+                       domain = NA)
+              else digits <- as(digits, "slong")
+              .Call(R_flint_fmpz_ops1, .Generic, x, digits)
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "fmpz"),
@@ -104,38 +113,44 @@ setMethod("Ops",
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), e2))
 
-setMethod("Math",
-          c(x = "fmpz"),
-          function (x)
-              .Call(R_flint_fmpz_ops1, .Generic, x, NULL))
-
-setMethod("Math2",
-          c(x = "fmpz"),
-          function (x, digits) {
-              if (missing(digits))
-                  digits <- as(switch(.Generic, "round" = 0L, "signif" = 6L), "slong")
-              else if (length(digits) == 0L)
-                  stop(gettextf("'%s' of length zero in '%s'",
-                                "digits", .Generic),
-                       domain = NA)
-              else digits <- as(digits, "slong")
-              .Call(R_flint_fmpz_ops1, .Generic, x, digits)
-          })
-
 setMethod("Summary",
           c(x = "fmpz"),
           function (x, ..., na.rm = FALSE)
               .Call(R_flint_fmpz_ops1, .Generic, x, NULL))
 
-setMethod("Complex",
-          c(z = "fmpz"),
-          function (z)
-              .Call(R_flint_fmpz_ops1, .Generic, z, NULL))
-
 setMethod("anyNA",
           c(x = "fmpz"),
           function (x, recursive = FALSE)
               FALSE)
+
+setMethod("as.vector",
+          c(x = "fmpz"),
+          function (x, mode = "any")
+              as.vector(.Call(R_flint_fmpz_vector, x), mode))
+
+setAs("ANY", "fmpz",
+      function (from)
+          new("fmpz", x = from))
+
+setMethod("format",
+          c(x = "fmpz"),
+          function (x, base = 10L, ...)
+              .Call(R_flint_fmpz_format, x, base))
+
+setMethod("initialize",
+          c(.Object = "fmpz"),
+          function (.Object, length = 0L, x = NULL, ...)
+              .Call(R_flint_fmpz_initialize, .Object, length, x))
+
+setMethod("is.finite",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "is.finite", x, NULL))
+
+setMethod("is.infinite",
+          c(x = "fmpz"),
+          function (x)
+              .Call(R_flint_fmpz_ops1, "is.infinite", x, NULL))
 
 setMethod("is.na",
           c(x = "fmpz"),
@@ -146,21 +161,6 @@ setMethod("is.nan",
           c(x = "fmpz"),
           function (x)
               .Call(R_flint_fmpz_ops1, "is.nan", x, NULL))
-
-setMethod("is.infinite",
-          c(x = "fmpz"),
-          function (x)
-              .Call(R_flint_fmpz_ops1, "is.infinite", x, NULL))
-
-setMethod("is.finite",
-          c(x = "fmpz"),
-          function (x)
-              .Call(R_flint_fmpz_ops1, "is.finite", x, NULL))
-
-setMethod("!",
-          c(x = "fmpz"),
-          function (x)
-              .Call(R_flint_fmpz_ops1, "!", x, NULL))
 
 setMethod("mean",
           c(x = "fmpz"),
