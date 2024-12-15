@@ -1,6 +1,3 @@
-Num <- function (q) .Call(R_flint_part, q, 0L)
-Den <- function (q) .Call(R_flint_part, q, 1L)
-
 setMethod("!",
           c(x = "fmpq"),
           function (x)
@@ -21,6 +18,16 @@ setMethod("Complex",
           function (z)
               .Call(R_flint_fmpq_ops1, .Generic, z, NULL))
 
+setMethod("Den",
+          c(q = "fmpq"),
+          function (q)
+              .Call(R_flint_fmpq_part, q, 1L))
+
+setMethod("Den<-",
+          c(q = "fmpq"),
+          function (q, value)
+              new("fmpq", num = Num(q), den = value))
+
 setMethod("Math",
           c(x = "fmpq"),
           function (x)
@@ -38,6 +45,16 @@ setMethod("Math2",
               else digits <- as(digits, "slong")
               .Call(R_flint_fmpq_ops1, .Generic, x, digits)
           })
+
+setMethod("Num",
+          c(q = "fmpq"),
+          function (q)
+              .Call(R_flint_fmpq_part, q, 0L))
+
+setMethod("Num<-",
+          c(q = "fmpq"),
+          function (q, value)
+              new("fmpq", num = value, den = Den(q)))
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "fmpq"),

@@ -191,6 +191,24 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
+SEXP R_flint_acb_part(SEXP object, SEXP s_op)
+{
+	unsigned long long int j, n = R_flint_get_length(object);
+	acb_srcptr x = (acb_ptr) R_flint_get_pointer(object);
+	int op = INTEGER_RO(s_op)[0];
+	SEXP ans = PROTECT(newObject("arb"));
+	arb_ptr y = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_arb_finalize);
+	if (op == 0)
+	for (j = 0; j < n; ++j)
+		arb_set(y + j, acb_realref(x + j));
+	else
+	for (j = 0; j < n; ++j)
+		arb_set(y + j, acb_imagref(x + j));
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXP R_flint_acb_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

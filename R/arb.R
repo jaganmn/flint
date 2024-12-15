@@ -1,6 +1,3 @@
-Mid <- function (x) .Call(R_flint_part, x, 0L)
-Rad <- function (x) .Call(R_flint_part, x, 1L)
-
 setMethod("!",
           c(x = "arb"),
           function (x)
@@ -38,6 +35,16 @@ setMethod("Math2",
               else digits <- as(digits, "slong")
               .Call(R_flint_arb_ops1, .Generic, x, digits)
           })
+
+setMethod("Mid",
+          c(x = "arb"),
+          function (x)
+              .Call(R_flint_arb_part, x, 0L))
+
+setMethod("Mid<-",
+          c(x = "arb"),
+          function (x, value)
+              new("arb", mid = value, rad = Rad(x)))
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "arb"),
@@ -124,6 +131,16 @@ setMethod("Summary",
               else na.rm <- as.logical(na.rm)
               .Call(R_flint_arb_ops1, .Generic, x, na.rm)
           })
+
+setMethod("Rad",
+          c(x = "arb"),
+          function (x)
+              .Call(R_flint_arb_part, x, 1L))
+
+setMethod("Rad<-",
+          c(x = "arb"),
+          function (x, value)
+              new("arb", mid = Mid(x), rad = value))
 
 setMethod("all.equal",
           c(target = "arb", current = "arb"),

@@ -28,8 +28,6 @@
 \alias{is.na,fmpq-method}
 \alias{is.nan,fmpq-method}
 \alias{mean,fmpq-method}
-\alias{Num}
-\alias{Den}
 \title{Arbitrary Precision Rational Numbers}
 \docType{class}
 \description{
@@ -38,17 +36,6 @@
   Elements are specified by a pair of arbitrary precision signed
   integers: a numerator and a positive, coprime denominator.  There is
   no representation for \R{}'s missing value \code{\link{NA_integer_}}.
-}
-\usage{
-Num(q)
-Den(q)
-}
-\arguments{
-  \item{q}{an object of class \code{fmpq}.}
-}
-\value{
-  \code{Num(q)} and \code{Den(q)} are \code{\linkS4class{fmpz}} vectors
-  whose elements are the numerators and denominators of \code{q}.
 }
 \section{Slots}{
   \describe{
@@ -159,7 +146,9 @@ Den(q)
   }
 }
 \seealso{
-  Virtual class \code{\linkS4class{flint}}.
+  Virtual class \code{\linkS4class{flint}}.  Generic functions
+  \code{\link{Num}} and \code{\link{Den}} and their replacement forms
+  for getting and setting numerators and denominators.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}

@@ -29,8 +29,6 @@
 \alias{is.nan,acb-method}
 \alias{log,acb-method}
 \alias{mean,acb-method}
-\alias{Real}
-\alias{Imag}
 \title{Arbitrary Precision Floating-Point Complex Numbers with Error Bounds}
 \docType{class}
 \description{
@@ -41,17 +39,6 @@
   \code{\linkS4class{arb}} imaginary part, each specified by an
   \code{\linkS4class{arf}} midpoint and a \code{\linkS4class{mag}}
   radius.
-}
-\usage{
-Real(z)
-Imag(z)
-}
-\arguments{
-  \item{z}{an object of class \code{acb}.}
-}
-\value{
-  \code{Real(z)} and \code{Imag(z)} are \code{\linkS4class{arb}}
-  vectors whose elements are the real and imaginary parts of \code{z}.
 }
 \section{Slots}{
   \describe{
@@ -174,7 +161,9 @@ Imag(z)
   }
 }
 \seealso{
-  Virtual class \code{\linkS4class{flint}}.
+  Virtual class \code{\linkS4class{flint}}.  Generic functions
+  \code{\link{Real}} and \code{\link{Imag}} and their replacement forms
+  for getting and setting real and imaginary parts.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}

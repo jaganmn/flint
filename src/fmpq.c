@@ -202,6 +202,24 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
+SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
+{
+	unsigned long long int j, n = R_flint_get_length(object);
+	const fmpq *x = (fmpq *) R_flint_get_pointer(object);
+	int op = INTEGER_RO(s_op)[0];
+	SEXP ans = PROTECT(newObject("fmpz"));
+	fmpz *y = (fmpz *) ((n) ? flint_calloc((size_t) n, sizeof(fmpz)) : 0);
+	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
+	if (op == 0)
+	for (j = 0; j < n; ++j)
+		fmpz_set(y + j, fmpq_numref(x + j));
+	else
+	for (j = 0; j < n; ++j)
+		fmpz_set(y + j, fmpq_denref(x + j));
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXP R_flint_fmpq_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

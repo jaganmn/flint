@@ -29,8 +29,6 @@
 \alias{is.nan,arb-method}
 \alias{log,arb-method}
 \alias{mean,arb-method}
-\alias{Mid}
-\alias{Rad}
 \title{Arbitrary Precision Floating-Point Real Numbers with Error Bounds}
 \docType{class}
 \description{
@@ -39,18 +37,6 @@
   bounds.  Elements are specified by a pair of mixed format
   floating-point numbers: an \code{\linkS4class{arf}} midpoint and a
   \code{\linkS4class{mag}} radius.
-}
-\usage{
-Mid(x)
-Rad(x)
-}
-\arguments{
-  \item{x}{an object of class \code{arb}.}
-}
-\value{
-  \code{Mid(x)} and \code{Rad(x)} are \code{\linkS4class{arf}} and
-  \code{\linkS4class{mag}} vectors whose elements are the midpoints and
-  and radii of \code{x}.
 }
 \section{Slots}{
   \describe{
@@ -168,7 +154,9 @@ Rad(x)
   }
 }
 \seealso{
-  Virtual class \code{\linkS4class{flint}}.
+  Virtual class \code{\linkS4class{flint}}.  Generic functions
+  \code{\link{Mid}} and \code{\link{Rad}} and their replacement forms
+  for getting and setting midpoints and radii.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}

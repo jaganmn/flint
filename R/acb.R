@@ -1,6 +1,3 @@
-Real <- function (z) .Call(R_flint_part, z, 0L)
-Imag <- function (z) .Call(R_flint_part, z, 1L)
-
 setMethod("!",
           c(x = "acb"),
           function (x)
@@ -20,6 +17,16 @@ setMethod("Complex",
           c(z = "acb"),
           function (z)
               .Call(R_flint_acb_ops1, .Generic, z, NULL))
+
+setMethod("Imag",
+          c(z = "acb"),
+          function (z)
+              .Call(R_flint_acb_part, z, 1L))
+
+setMethod("Imag<-",
+          c(z = "acb"),
+          function (z, value)
+              new("acb", real = Real(z), imag = value))
 
 setMethod("Math",
           c(x = "acb"),
@@ -107,6 +114,16 @@ setMethod("Ops",
           c(e1 = "acb", e2 = "acb"),
           function (e1, e2)
               .Call(R_flint_acb_ops2, .Generic, e1, e2))
+
+setMethod("Real",
+          c(z = "acb"),
+          function (z)
+              .Call(R_flint_acb_part, z, 0L))
+
+setMethod("Real<-",
+          c(z = "acb"),
+          function (z, value)
+              new("acb", real = value, imag = Imag(z)))
 
 setMethod("Summary",
           c(x = "acb"),

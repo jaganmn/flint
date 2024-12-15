@@ -154,7 +154,9 @@
   }
 }
 \seealso{
-  Virtual class \code{\linkS4class{flint}}.
+  Virtual class \code{\linkS4class{flint}}.  Generic functions
+  \code{\link{Real}} and \code{\link{Imag}} and their replacement forms
+  for getting and setting real and imaginary parts.
 }
 \examples{
 showClass("acf")

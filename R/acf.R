@@ -18,6 +18,16 @@ setMethod("Complex",
           function (z)
               .Call(R_flint_acf_ops1, .Generic, z, NULL))
 
+setMethod("Imag",
+          c(z = "acf"),
+          function (z)
+              .Call(R_flint_acf_part, z, 1L))
+
+setMethod("Imag<-",
+          c(z = "acf"),
+          function (z, value)
+              new("acf", real = Real(z), imag = value))
+
 setMethod("Math",
           c(x = "acf"),
           function (x)
@@ -104,6 +114,16 @@ setMethod("Ops",
           c(e1 = "acf", e2 = "acb"),
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), e2))
+
+setMethod("Real",
+          c(z = "acf"),
+          function (z)
+              .Call(R_flint_acf_part, z, 0L))
+
+setMethod("Real<-",
+          c(z = "acf"),
+          function (z, value)
+              new("acf", real = value, imag = Imag(z)))
 
 setMethod("Summary",
           c(x = "acf"),

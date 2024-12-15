@@ -338,6 +338,24 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	return object;
 }
 
+SEXP R_flint_acf_part(SEXP object, SEXP s_op)
+{
+	unsigned long long int j, n = R_flint_get_length(object);
+	acf_srcptr x = (acf_ptr) R_flint_get_pointer(object);
+	int op = INTEGER_RO(s_op)[0];
+	SEXP ans = PROTECT(newObject("arf"));
+	arf_ptr y = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
+	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_arf_finalize);
+	if (op == 0)
+	for (j = 0; j < n; ++j)
+		arf_set(y + j, acf_realref(x + j));
+	else
+	for (j = 0; j < n; ++j)
+		arf_set(y + j, acf_imagref(x + j));
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXP R_flint_acf_vector(SEXP from)
 {
 	unsigned long long int j, n = R_flint_get_length(from);

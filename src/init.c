@@ -75,7 +75,6 @@ SEXP R_flint_class(SEXP);
 SEXP R_flint_identical(SEXP, SEXP);
 SEXP R_flint_length(SEXP);
 SEXP R_flint_new(SEXP);
-SEXP R_flint_part(SEXP, SEXP);
 SEXP R_flint_subassign(SEXP, SEXP, SEXP);
 SEXP R_flint_subscript(SEXP, SEXP);
 SEXP R_flint_triple(SEXP);
@@ -97,6 +96,7 @@ SEXP R_flint_fmpz_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpz_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_fmpq_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_fmpq_part(SEXP, SEXP);
 SEXP R_flint_fmpq_vector(SEXP);
 SEXP R_flint_fmpq_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpq_ops1(SEXP, SEXP, SEXP);
@@ -114,16 +114,19 @@ SEXP R_flint_arf_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_arf_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_acf_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acf_part(SEXP, SEXP);
 SEXP R_flint_acf_vector(SEXP);
 SEXP R_flint_acf_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_acf_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_arb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_arb_part(SEXP, SEXP);
 SEXP R_flint_arb_vector(SEXP);
 SEXP R_flint_arb_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_arb_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_acb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_part(SEXP, SEXP);
 SEXP R_flint_acb_vector(SEXP);
 SEXP R_flint_acb_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_acb_ops1(SEXP, SEXP, SEXP);
@@ -161,7 +164,6 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_identical, 2),
 	CALL_ENTRY(R_flint_length, 1),
 	CALL_ENTRY(R_flint_new, 1),
-	CALL_ENTRY(R_flint_part, 2),
 	CALL_ENTRY(R_flint_subassign, 3),
 	CALL_ENTRY(R_flint_subscript, 2),
 	CALL_ENTRY(R_flint_triple, 1),
@@ -179,6 +181,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_fmpz_ops2, 3),
 	CALL_ENTRY(R_flint_fmpz_ops1, 3),
 	CALL_ENTRY(R_flint_fmpq_initialize, 5),
+	CALL_ENTRY(R_flint_fmpq_part, 2),
 	CALL_ENTRY(R_flint_fmpq_vector, 1),
 	CALL_ENTRY(R_flint_fmpq_ops2, 3),
 	CALL_ENTRY(R_flint_fmpq_ops1, 3),
@@ -193,14 +196,17 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arf_ops2, 3),
 	CALL_ENTRY(R_flint_arf_ops1, 3),
 	CALL_ENTRY(R_flint_acf_initialize, 5),
+	CALL_ENTRY(R_flint_acf_part, 2),
 	CALL_ENTRY(R_flint_acf_vector, 1),
 	CALL_ENTRY(R_flint_acf_ops2, 3),
 	CALL_ENTRY(R_flint_acf_ops1, 3),
 	CALL_ENTRY(R_flint_arb_initialize, 5),
+	CALL_ENTRY(R_flint_arb_part, 2),
 	CALL_ENTRY(R_flint_arb_vector, 1),
 	CALL_ENTRY(R_flint_arb_ops2, 3),
 	CALL_ENTRY(R_flint_arb_ops1, 3),
 	CALL_ENTRY(R_flint_acb_initialize, 5),
+	CALL_ENTRY(R_flint_acb_part, 2),
 	CALL_ENTRY(R_flint_acb_vector, 1),
 	CALL_ENTRY(R_flint_acb_ops2, 3),
 	CALL_ENTRY(R_flint_acb_ops1, 3),
