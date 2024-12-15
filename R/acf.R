@@ -80,6 +80,11 @@ setMethod("Ops",
               get(.Generic, mode = "function")(e1, new("acf", x = e2)))
 
 setMethod("Ops",
+          c(e1 = "acf", e2 = "mag"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("acf", x = e2)))
+
+setMethod("Ops",
           c(e1 = "acf", e2 = "arf"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, new("acf", x = e2)))
@@ -88,11 +93,6 @@ setMethod("Ops",
           c(e1 = "acf", e2 = "acf"),
           function (e1, e2)
               .Call(R_flint_acf_ops2, .Generic, e1, e2))
-
-setMethod("Ops",
-          c(e1 = "acf", e2 = "mag"),
-          function (e1, e2)
-              get(.Generic, mode = "function")(e1, new("acf", x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "arb"),

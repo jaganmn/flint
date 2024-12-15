@@ -81,6 +81,11 @@ setMethod("Ops",
               get(.Generic, mode = "function")(new("arf", x = e1), new("arf", x = e2)))
 
 setMethod("Ops",
+          c(e1 = "mag", e2 = "mag"),
+          function (e1, e2)
+              .Call(R_flint_mag_ops2, .Generic, e1, e2))
+
+setMethod("Ops",
           c(e1 = "mag", e2 = "arf"),
           function (e1, e2)
               get(.Generic, mode = "function")(new("arf", x = e1), e2))
@@ -89,11 +94,6 @@ setMethod("Ops",
           c(e1 = "mag", e2 = "acf"),
           function (e1, e2)
               get(.Generic, mode = "function")(new("acf", x = e1), e2))
-
-setMethod("Ops",
-          c(e1 = "mag", e2 = "mag"),
-          function (e1, e2)
-              .Call(R_flint_mag_ops2, .Generic, e1, e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "arb"),

@@ -4,9 +4,9 @@
 \alias{format,ulong-method}
 \alias{format,fmpz-method}
 \alias{format,fmpq-method}
+\alias{format,mag-method}
 \alias{format,arf-method}
 \alias{format,acf-method}
-\alias{format,mag-method}
 \alias{format,arb-method}
 \alias{format,acb-method}
 \title{Format FLINT-type Numbers as Strings}
@@ -19,11 +19,11 @@
 \S4method{format}{ulong}(x, base = 10L, \dots)
 \S4method{format}{fmpz}(x, base = 10L, \dots)
 \S4method{format}{fmpq}(x, base = 10L, \dots)
+\S4method{format}{mag}(x, base = 10L, digits = NULL, sep = NULL, \dots)
 \S4method{format}{arf}(x, base = 10L, digits = NULL, sep = NULL,
        rnd = flintRnd(), \dots)
 \S4method{format}{acf}(x, base = 10L, digits = NULL, sep = NULL,
        rnd = flintRnd(), \dots)
-\S4method{format}{mag}(x, base = 10L, digits = NULL, sep = NULL, \dots)
 \S4method{format}{arb}(x, base = 10L, digits = NULL, sep = NULL,
        rnd = flintRnd(), \dots)
 \S4method{format}{acb}(x, base = 10L, digits = NULL, sep = NULL,

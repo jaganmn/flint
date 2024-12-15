@@ -1,8 +1,8 @@
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
-#include <flint/arf.h>
 #include <flint/mag.h>
+#include <flint/arf.h>
 #include <flint/arb.h>
 #include <flint/acb.h>
 #include "flint.h"
@@ -132,6 +132,17 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				}
 				break;
 			}
+			case R_FLINT_CLASS_MAG:
+			{
+				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					arf_set_mag(arb_midref(acb_realref(y + j)), x + j);
+					arf_zero(arb_midref(acb_imagref(y + j)));
+					mag_zero(arb_radref(acb_realref(y + j)));
+					mag_zero(arb_radref(acb_imagref(y + j)));
+				}
+				break;
+			}
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
@@ -149,17 +160,6 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				for (j = 0; j < n; ++j) {
 					arf_set(arb_midref(acb_realref(y + j)), acf_realref(x + j));
 					arf_set(arb_midref(acb_imagref(y + j)), acf_imagref(x + j));
-					mag_zero(arb_radref(acb_realref(y + j)));
-					mag_zero(arb_radref(acb_imagref(y + j)));
-				}
-				break;
-			}
-			case R_FLINT_CLASS_MAG:
-			{
-				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j) {
-					arf_set_mag(arb_midref(acb_realref(y + j)), x + j);
-					arf_zero(arb_midref(acb_imagref(y + j)));
 					mag_zero(arb_radref(acb_realref(y + j)));
 					mag_zero(arb_radref(acb_imagref(y + j)));
 				}

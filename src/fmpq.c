@@ -2,8 +2,8 @@
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
-#include <flint/arf.h>
 #include <flint/mag.h>
+#include <flint/arf.h>
 #include "flint.h"
 #include "acf.h"
 
@@ -155,6 +155,17 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 					fmpq_set(y + j, x + j);
 				break;
 			}
+			case R_FLINT_CLASS_MAG:
+			{
+				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+				for (j = 0; j < n; ++j) {
+					if (mag_is_inf(x + j))
+					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+					else
+					mag_get_fmpq(y + j, x + j);
+				}
+				break;
+			}
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
@@ -174,17 +185,6 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
 					arf_get_fmpq(y + j, acf_realref(x + j));
-				}
-				break;
-			}
-			case R_FLINT_CLASS_MAG:
-			{
-				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j) {
-					if (mag_is_inf(x + j))
-					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
-					else
-					mag_get_fmpq(y + j, x + j);
 				}
 				break;
 			}

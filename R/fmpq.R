@@ -89,6 +89,11 @@ setMethod("Ops",
               .Call(R_flint_fmpq_ops2, .Generic, e1, e2))
 
 setMethod("Ops",
+          c(e1 = "fmpq", e2 = "mag"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(new("arf", x = e1), new("arf", x = e2)))
+
+setMethod("Ops",
           c(e1 = "fmpq", e2 = "arf"),
           function (e1, e2)
               get(.Generic, mode = "function")(new("arf", x = e1), e2))
@@ -97,11 +102,6 @@ setMethod("Ops",
           c(e1 = "fmpq", e2 = "acf"),
           function (e1, e2)
               get(.Generic, mode = "function")(new("acf", x = e1), e2))
-
-setMethod("Ops",
-          c(e1 = "fmpq", e2 = "mag"),
-          function (e1, e2)
-              get(.Generic, mode = "function")(new("arf", x = e1), new("arf", x = e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "arb"),

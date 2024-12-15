@@ -101,6 +101,11 @@ setMethod("Ops",
               get(.Generic, mode = "function")(e1, new("arb", x = e2)))
 
 setMethod("Ops",
+          c(e1 = "arb", e2 = "mag"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(e1, new("arb", x = e2)))
+
+setMethod("Ops",
           c(e1 = "arb", e2 = "arf"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, new("arb", x = e2)))
@@ -109,11 +114,6 @@ setMethod("Ops",
           c(e1 = "arb", e2 = "acf"),
           function (e1, e2)
               get(.Generic, mode = "function")(new("acb", x = e1), new("acb", x = e2)))
-
-setMethod("Ops",
-          c(e1 = "arb", e2 = "mag"),
-          function (e1, e2)
-              get(.Generic, mode = "function")(e1, new("arb", x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "arb"),

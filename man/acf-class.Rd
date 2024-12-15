@@ -12,9 +12,9 @@
 \alias{Ops,acf,ulong-method}
 \alias{Ops,acf,fmpz-method}
 \alias{Ops,acf,fmpq-method}
+\alias{Ops,acf,mag-method}
 \alias{Ops,acf,arf-method}
 \alias{Ops,acf,acf-method}
-\alias{Ops,acf,mag-method}
 \alias{Ops,acf,arb-method}
 \alias{Ops,acf,acb-method}
 \alias{Summary,acf-method}

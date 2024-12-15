@@ -2,8 +2,8 @@
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
-#include <flint/arf.h>
 #include <flint/mag.h>
+#include <flint/arf.h>
 #include "flint.h"
 #include "acf.h"
 
@@ -114,6 +114,23 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_clear(q);
 			break;
 		}
+		case R_FLINT_CLASS_MAG:
+		{
+			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			for (j = 0; j < n; ++j) {
+				mag_get_fmpz_lower(q, x + j);
+				if (!fmpz_fits_si(q)) {
+				fmpz_clear(q);
+				Rf_error(_("floating-point number not in range of '%s'"), "slong");
+				}
+				else
+				y[j] = fmpz_get_si(q);
+			}
+			fmpz_clear(q);
+			break;
+		}
 		case R_FLINT_CLASS_ARF:
 		{
 			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
@@ -138,23 +155,6 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			fmpz_init(q);
 			for (j = 0; j < n; ++j) {
 				arf_get_fmpz(q, acf_realref(x + j), ARF_RND_DOWN);
-				if (!fmpz_fits_si(q)) {
-				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "slong");
-				}
-				else
-				y[j] = fmpz_get_si(q);
-			}
-			fmpz_clear(q);
-			break;
-		}
-		case R_FLINT_CLASS_MAG:
-		{
-			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
-			fmpz_t q;
-			fmpz_init(q);
-			for (j = 0; j < n; ++j) {
-				mag_get_fmpz_lower(q, x + j);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "slong");

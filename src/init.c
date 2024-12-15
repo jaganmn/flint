@@ -28,7 +28,7 @@ SEXPTYPE R_flint_sexptypes[] =
 const char *R_flint_classes[] =
 {
 	"slong", "ulong", "fmpz", "fmpq",
-	"arf", "acf", "mag", "arb", "acb", ""
+	"mag", "arf", "acf", "arb", "acb", ""
 };
 
 const char *R_flint_ops2[] =
@@ -101,6 +101,12 @@ SEXP R_flint_fmpq_vector(SEXP);
 SEXP R_flint_fmpq_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpq_ops1(SEXP, SEXP, SEXP);
 
+SEXP R_flint_mag_initialize(SEXP, SEXP, SEXP);
+SEXP R_flint_mag_vector(SEXP);
+SEXP R_flint_mag_format(SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_mag_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_mag_ops1(SEXP, SEXP, SEXP);
+
 SEXP R_flint_arf_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_arf_vector(SEXP);
 SEXP R_flint_arf_format(SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -111,12 +117,6 @@ SEXP R_flint_acf_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acf_vector(SEXP);
 SEXP R_flint_acf_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_acf_ops1(SEXP, SEXP, SEXP);
-
-SEXP R_flint_mag_initialize(SEXP, SEXP, SEXP);
-SEXP R_flint_mag_vector(SEXP);
-SEXP R_flint_mag_format(SEXP, SEXP, SEXP, SEXP);
-SEXP R_flint_mag_ops2(SEXP, SEXP, SEXP);
-SEXP R_flint_mag_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_arb_initialize(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_arb_vector(SEXP);
@@ -182,6 +182,11 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_fmpq_vector, 1),
 	CALL_ENTRY(R_flint_fmpq_ops2, 3),
 	CALL_ENTRY(R_flint_fmpq_ops1, 3),
+	CALL_ENTRY(R_flint_mag_initialize, 3),
+	CALL_ENTRY(R_flint_mag_vector, 1),
+	CALL_ENTRY(R_flint_mag_format, 4),
+	CALL_ENTRY(R_flint_mag_ops2, 3),
+	CALL_ENTRY(R_flint_mag_ops1, 3),
 	CALL_ENTRY(R_flint_arf_initialize, 3),
 	CALL_ENTRY(R_flint_arf_vector, 1),
 	CALL_ENTRY(R_flint_arf_format, 5),
@@ -191,11 +196,6 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_acf_vector, 1),
 	CALL_ENTRY(R_flint_acf_ops2, 3),
 	CALL_ENTRY(R_flint_acf_ops1, 3),
-	CALL_ENTRY(R_flint_mag_initialize, 3),
-	CALL_ENTRY(R_flint_mag_vector, 1),
-	CALL_ENTRY(R_flint_mag_format, 4),
-	CALL_ENTRY(R_flint_mag_ops2, 3),
-	CALL_ENTRY(R_flint_mag_ops1, 3),
 	CALL_ENTRY(R_flint_arb_initialize, 5),
 	CALL_ENTRY(R_flint_arb_vector, 1),
 	CALL_ENTRY(R_flint_arb_ops2, 3),

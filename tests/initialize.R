@@ -4,7 +4,7 @@ library(flint)
 ## Test that length(new(., length = value)) ==        value
 ##           length(new(.,      x = value)) == length(value).
 
-cl <- c("slong", "ulong", "fmpz", "fmpq", "arf", "mag", "arb", "acb")
+cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "arb", "acb")
 n <- length(cl):1L
 a <- .mapply(new, list(cl, length = n), NULL)
 b <- .mapply(new, list(cl, x = lapply(n, raw)), NULL)
@@ -114,10 +114,10 @@ allError(new( "fmpq", num = .),
          list(NA_integer_, NaN, -Inf, Inf, o))
 allError(new( "fmpq", den = .),
          list(NA_integer_, 0L, NaN, -Inf, Inf, o))
-allError(new(  "arf", x = .),
-         list(o))
 allError(new(  "mag", x = .),
          list(NaN, o))
+allError(new(  "arf", x = .),
+         list(o))
 allError(new(  "arb", x = .),
          list(o))
 allError(new(  "arb", mid = .),

@@ -152,9 +152,9 @@ typedef enum {
 	R_FLINT_CLASS_ULONG,
 	R_FLINT_CLASS_FMPZ,
 	R_FLINT_CLASS_FMPQ,
+	R_FLINT_CLASS_MAG,
 	R_FLINT_CLASS_ARF,
 	R_FLINT_CLASS_ACF,
-	R_FLINT_CLASS_MAG,
 	R_FLINT_CLASS_ARB,
 	R_FLINT_CLASS_ACB,
 	R_FLINT_CLASS_INVALID = -1
@@ -205,9 +205,9 @@ void R_flint_slong_finalize(SEXP);
 void R_flint_ulong_finalize(SEXP);
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);
+void R_flint_mag_finalize(SEXP);
 void R_flint_arf_finalize(SEXP);
 void R_flint_acf_finalize(SEXP);
-void R_flint_mag_finalize(SEXP);
 void R_flint_arb_finalize(SEXP);
 void R_flint_acb_finalize(SEXP);
 

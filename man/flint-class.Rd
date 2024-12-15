@@ -99,8 +99,8 @@
   The nonvirtual subclasses:
   \code{\linkS4class{slong}}, \code{\linkS4class{ulong}},
   \code{\linkS4class{fmpz}}, \code{\linkS4class{fmpq}},
-  \code{\linkS4class{arf}}, \code{\linkS4class{acf}},
   \code{\linkS4class{mag}},
+  \code{\linkS4class{arf}}, \code{\linkS4class{acf}},
   \code{\linkS4class{arb}}, and \code{\linkS4class{acb}}.
 }
 \examples{
