@@ -4,7 +4,7 @@ library(flint)
 ## Test that length(new(., length = value)) ==        value
 ##           length(new(.,      x = value)) == length(value).
 
-cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "arb", "acb")
+cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "arb", "acf", "acb")
 n <- length(cl):1L
 a <- .mapply(new, list(cl, length = n), NULL)
 b <- .mapply(new, list(cl, x = lapply(n, raw)), NULL)
@@ -20,6 +20,7 @@ function (Class, num = 0L, den = 1L, ...)
 new.arb <-
 function (Class, mid = 0, rad = 0, ...)
     new(Class, mid = mid, rad = rad)
+new.acf <-
 new.acb <-
 function (Class, real = 0, imag = 0, ...)
     new(Class, real = real, imag = imag)
@@ -27,6 +28,7 @@ function (Class, real = 0, imag = 0, ...)
 e <- expression(new(, 1), )
 for (s in list(c("fmpq",  "num",  "den"),
                c( "arb",  "mid",  "rad"),
+               c( "acf", "real", "imag"),
                c( "acb", "real", "imag"))) {
     e[[c(1L, 2L)]] <- s[1L]
     e[[2L]] <- e[[1L]]
@@ -50,6 +52,7 @@ e <- expression(new(,  a, bb),
                 new(,  .,  .))
 for (s in list(c("fmpq",  "num",  "den"),
                c( "arb",  "mid",  "rad"),
+               c( "acf", "real", "imag"),
                c( "acb", "real", "imag"))) {
     for (p in list(1:2, 2:1)) {
         for (i in 1:4) {
@@ -105,7 +108,7 @@ o <- list()
 allError(new("slong", x = .),
          list(NA_integer_, o))
 allError(new("ulong", x = .),
-         list(NA_integer_, -1L, o))
+         list(NA_integer_, o, -1L))
 allError(new( "fmpz", x = .),
          list(NA_integer_, NaN, -Inf, Inf, o))
 allError(new( "fmpq", x = .),
@@ -113,9 +116,9 @@ allError(new( "fmpq", x = .),
 allError(new( "fmpq", num = .),
          list(NA_integer_, NaN, -Inf, Inf, o))
 allError(new( "fmpq", den = .),
-         list(NA_integer_, 0L, NaN, -Inf, Inf, o))
+         list(NA_integer_, NaN, -Inf, Inf, o, 0L))
 allError(new(  "mag", x = .),
-         list(NaN, o))
+         list(NA_integer_, NaN, o))
 allError(new(  "arf", x = .),
          list(o))
 allError(new(  "arb", x = .),
@@ -123,7 +126,13 @@ allError(new(  "arb", x = .),
 allError(new(  "arb", mid = .),
          list(o))
 allError(new(  "arb", rad = .),
-         list(NaN, o))
+         list(NA_integer_, NaN, o))
+allError(new(  "acf", x = .),
+         list(o))
+allError(new(  "acf", real = .),
+         list(o))
+allError(new(  "acf", imag = .),
+         list(o))
 allError(new(  "acb", x = .),
          list(o))
 allError(new(  "acb", real = .),
