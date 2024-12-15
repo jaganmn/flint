@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2024-12-12)}{
+\section{Changes in version 0.0.1 (2024-12-15)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -55,22 +55,24 @@
   \subsection{Classes}{
     \itemize{
       \item Virtual class \code{flint} with nonvirtual subclasses
-      \code{slong}, \code{ulong}, \code{fmpz}, \code{fmpq}, \code{arf},
-      \code{mag}, \code{arb}, and \code{acb}.  Objects can be understood
-      as vectors of length at most \code{2^64-1} of the so-named
-      \proglang{C} types.  The implementation is based on external
-      pointers.
+      \code{slong}, \code{ulong}, \code{fmpz}, \code{fmpq}, \code{mag},
+      \code{arf}, \code{acf}, \code{arb}, and \code{acb}.  Objects can
+      be understood as vectors of length at most \code{2^64-1} of the
+      so-named \proglang{C} types.  The implementation is based on
+      external pointers.
     }
   }
   \subsection{Methods}{
     \itemize{
       \item Methods are defined for generic functions \code{[},
       \code{[<-}, \code{[[}, \code{[[<-}, \code{Complex}, \code{Math},
-      \code{Math2}, \code{Ops}, \code{Summary}, \code{as.raw},
-      \code{as.logical}, \code{as.integer}, \code{as.numeric},
-      \code{as.complex}, \code{as.list}, \code{as.expression},
-      \code{as.vector}, \code{coerce}, \code{format}, \code{initialize},
-      \code{length}, \code{print}, and \code{show}.
+      \code{Math2}, \code{Ops}, \code{Summary}, \code{all.equal},
+      \code{anyNA}, \code{as.raw}, \code{as.logical}, \code{as.integer},
+      \code{as.numeric}, \code{as.complex}, \code{as.list},
+      \code{as.expression}, \code{as.vector}, \code{coerce},
+      \code{format}, \code{initialize}, \code{is.finite},
+      \code{is.infinite}, \code{is.na}, \code{is.nan}, \code{length},
+      \code{mean}, \code{print}, and \code{show}.
     }
   }
   \subsection{New Features}{
