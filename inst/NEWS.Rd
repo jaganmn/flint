@@ -60,19 +60,58 @@
       be understood as vectors of length at most \code{2^64-1} of the
       so-named \proglang{C} types.  The implementation is based on
       external pointers.
+
+      \item \code{slong} and \code{ulong} represent vectors of fixed
+      precision signed and unsigned integers.  The integer size is 32 or
+      64 bits, depending on the configuration of the linked
+      \acronym{FLINT} library.
+
+      \item \code{fmpz} represents vectors of arbitrary precision signed
+      integers.
+
+      \item \code{fmpq} represents vectors of arbitrary precision
+      rational numbers, always in \dQuote{canonical} form with numerator
+      and positive, coprime denominator
+
+      \item \code{mag} represents vectors of fixed precision error
+      bounds.
+
+      \item \code{arf} and \code{acf} represent vectors of arbitrary
+      precision floating-point real and complex numbers.
+
+      \item \code{arb} and \code{acb} represent vectors of arbitrary
+      precision floating-point real and complex numbers \emph{with error
+        bounds}.  They support \dQuote{ball arithmetic}.
+    }
+  }
+  \subsection{Generic Functions}{
+    \itemize{
+      \item Generic functions \code{Num}, \code{Num<-}, \code{Den}, and
+      \code{Den<-} for getting and setting numerators and denominators
+      of quotients.
+
+      \item Generic functions \code{Mid}, \code{Mid<-}, \code{Rad}, and
+      \code{Rad<-} for getting and setting midpoints and radii of balls
+      in a metric space.
+
+      \item Generic functions \code{Real}, \code{Real<-}, \code{Imag},
+      and \code{Imag<-} for getting and setting real and imaginary parts
+      of complex numbers.
     }
   }
   \subsection{Methods}{
     \itemize{
       \item Methods are defined for generic functions \code{[},
-      \code{[<-}, \code{[[}, \code{[[<-}, \code{Complex}, \code{Math},
-      \code{Math2}, \code{Ops}, \code{Summary}, \code{all.equal},
-      \code{anyNA}, \code{as.raw}, \code{as.logical}, \code{as.integer},
-      \code{as.numeric}, \code{as.complex}, \code{as.list},
-      \code{as.expression}, \code{as.vector}, \code{coerce},
-      \code{format}, \code{initialize}, \code{is.finite},
-      \code{is.infinite}, \code{is.na}, \code{is.nan}, \code{length},
-      \code{mean}, \code{print}, and \code{show}.
+      \code{[<-}, \code{[[}, \code{[[<-}, \code{Complex}, \code{Den},
+      \code{Den<-}, \code{Imag}, \code{Imag<-}, \code{Math},
+      \code{Math2}, \code{Mid}, \code{Mid<-}, \code{Num}, \code{Num<-},
+      \code{Ops}, \code{Rad}, \code{Rad<-}, \code{Real}, \code{Real<-},
+      \code{Summary}, \code{all.equal}, \code{anyNA}, \code{as.raw},
+      \code{as.logical}, \code{as.integer}, \code{as.numeric},
+      \code{as.complex}, \code{as.list}, \code{as.expression},
+      \code{as.vector}, \code{coerce}, \code{format}, \code{initialize},
+      \code{is.finite}, \code{is.infinite}, \code{is.na}, \code{is.nan},
+      \code{length}, \code{mean}, \code{print}, and \code{show}.
     }
   }
   \subsection{New Features}{
@@ -87,8 +126,18 @@
       the correct class and recycled internally.
 
       \item \R{} function \code{flintBits} returning the limb width as a
-      number of bits, either 32 or 64.  Currently, the result is
-      determined at compile time.
+      number of bits, either 32 or 64.  The result is determined at
+      compile time.
+
+      \item \R{} function \code{flintIdentical} for testing whether
+      two \code{flint} vectors have identical class, length, and
+      \dQuote{content}.  This test is less strict than the test for
+      pointer equality done by \code{identical(x, y)} when \code{x}
+      and \code{y} are external pointers.
+
+      \item \R{} functions \code{flintPrec} and \code{flintRnd} for
+      getting and setting the global default precision and rounding
+      modes.
 
       \item \R{} function \code{flintVersion} returning a list
       containing header and library versions for \acronym{GNU}
