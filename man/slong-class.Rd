@@ -102,7 +102,7 @@ ulong(\dots)
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{+, -}}{
+    \item{\code{+}, \code{-}}{
       \code{signature(e1 = "slong", e2 = "missing")}:\cr
       \code{signature(e1 = "ulong", e2 = "missing")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
@@ -110,7 +110,7 @@ ulong(\dots)
       \code{signature(z = "slong")}:\cr
       \code{signature(z = "ulong")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{Math, Math2, Summary}}{
+    \item{\code{Math}, \code{Math2}, \code{Summary}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
       coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
@@ -165,7 +165,7 @@ ulong(\dots)
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{\link{flintBits}()}.}
-    \item{\code{is.na, is.nan, is.infinite}}{
+    \item{\code{is.na}, \code{is.nan}, \code{is.infinite}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as

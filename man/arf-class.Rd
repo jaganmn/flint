@@ -142,7 +142,7 @@ arf(\dots)
       \code{signature(.Object = "arf", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
-    \item{\code{is.na, is.nan}}{
+    \item{\code{is.na}, \code{is.nan}}{
       \code{signature(x = "arf")}:\cr
       returns a logical vector indicating which elements of \code{x}
       are \code{NaN}.}

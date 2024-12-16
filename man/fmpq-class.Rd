@@ -152,7 +152,7 @@ fmpq(\dots)
       \code{\linkS4class{fmpz}} and recycled as necessary.  An error is
       signaled if elements of \code{num} or \code{den} are \code{NaN},
       \code{-Inf}, or \code{Inf} or elements of \code{den} are zero.}
-    \item{\code{is.na, is.nan, is.infinite}}{
+    \item{\code{is.na}, \code{is.nan}, \code{is.infinite}}{
       \code{signature(x = "fmpq")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as
       \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and

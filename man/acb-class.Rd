@@ -159,7 +159,7 @@ acb(\dots)
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class
       \code{\linkS4class{arb}} and recycled as necessary.}
-    \item{\code{is.na, is.nan}}{
+    \item{\code{is.na}, \code{is.nan}}{
       \code{signature(x = "acb")}:\cr
       returns a logical vector indicating which elements of \code{x}
       have real or imaginary part with midpoint \code{NaN}.}

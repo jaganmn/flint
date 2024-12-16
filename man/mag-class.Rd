@@ -148,7 +148,7 @@ mag(\dots)
       as above, except that the new slot value points to an array
       initialized with upper bounds for \code{abs(x)}.  An error is
       signaled if any \code{x[i]} is \code{NaN}.}
-    \item{\code{is.na, is.nan}}{
+    \item{\code{is.na}, \code{is.nan}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as
       \code{mag} has no representation for \code{NaN}.}

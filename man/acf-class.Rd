@@ -158,7 +158,7 @@ acf(\dots)
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class
       \code{\linkS4class{arf}} and recycled as necessary.}
-    \item{\code{is.na, is.nan}}{
+    \item{\code{is.na}, \code{is.nan}}{
       \code{signature(x = "acf")}:\cr
       returns a logical vector indicating which elements of \code{x}
       have real or imaginary part \code{NaN}.}

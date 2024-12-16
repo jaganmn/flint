@@ -153,7 +153,7 @@ arb(\dots)
       \code{mid} and \code{rad}, which are coerced to classes
       \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
       as necessary.}
-    \item{\code{is.na, is.nan}}{
+    \item{\code{is.na}, \code{is.nan}}{
       \code{signature(x = "arb")}:\cr
       returns a logical vector indicating which elements of \code{x}
       have midpoint \code{NaN}.}

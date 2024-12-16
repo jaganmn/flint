@@ -66,7 +66,7 @@ fmpz(\dots)
     \item{\code{!}}{
       \code{signature(x = "fmpz")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
-    \item{\code{+, -}}{
+    \item{\code{+}}{
       \code{signature(e1 = "fmpz", e2 = "missing")}:\cr
       returns a copy of the argument.}
     \item{\code{-}}{
@@ -138,7 +138,7 @@ fmpz(\dots)
       initialized with values from \code{x} truncated towards zero.  An
       error is signaled if elements of \code{x} are \code{NaN},
       \code{-Inf}, or \code{Inf}.}
-    \item{\code{is.na, is.nan, is.infinite}}{
+    \item{\code{is.na}, \code{is.nan}, \code{is.infinite}}{
       \code{signature(x = "fmpz")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as
       \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
