@@ -58,7 +58,7 @@
     \code{\link{flintRnd}} for information about valid character
     strings.}
   \item{\dots}{
-     further optional arguments, though these are currently unused.}
+    further optional arguments, though these are currently unused.}
 }
 \value{
   A character vector containing \acronym{ASCII} strings of equal length.

@@ -1,11 +1,9 @@
 \name{flint-class}
 \alias{flint-class}
 \alias{[,flint,ANY,missing,missing-method}
-\alias{[<-,flint,ANY,missing-method} % R CMD check; help("matchSignature")
-\alias{[<-,flint,ANY,missing,ANY-method}
+\alias{[<-,flint,ANY,missing-method}
 \alias{[[,flint,ANY,missing-method}
-\alias{[[<-,flint,ANY,missing-method} % R CMD check; help("matchSignature")
-\alias{[[<-,flint,ANY,missing,ANY-method}
+\alias{[[<-,flint,ANY,missing-method}
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
@@ -48,7 +46,7 @@
   \describe{
     \item{\code{[}}{
       \code{signature(x = "flint", i = "ANY", j = "missing", drop = "missing")}:\cr
-      return a \code{flint} vector containing the elements of \code{x}
+      returns a \code{flint} vector containing the elements of \code{x}
       indexed by \code{i} (the \dQuote{subscript}).  The subscript can
       be logical, integer, or double or missing or \code{NULL}.  It is
       an error to supply \code{NA} or out of bounds subscripts: the
@@ -56,7 +54,7 @@
       values.}
     \item{\code{[<-}}{
       \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
-      return a \code{flint} vector identical to \code{x} but with
+      returns a \code{flint} vector identical to \code{x} but with
       elements indexed by \code{i} (the \dQuote{subscript}) set to
       values from \code{value} (which is coerced to the class of
       \code{x}).  The subscript can be logical, integer, or double or
@@ -73,7 +71,7 @@
       must index exactly one element.}
     \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}, \code{as.list}, \code{as.expression}}{
       \code{signature(x = "flint")}:\cr
-      return the value of \code{as.vector(x, mode = *)}.  Methods for
+      returns the value of \code{as.vector(x, mode = *)}.  Methods for
       \code{as.vector} must be defined for subclasses of \code{flint}.
       Note that \code{as.double} dispatches internally the method for
       \code{as.numeric}, so there is no method for \code{as.double};
@@ -84,8 +82,8 @@
       If the length exceeds \code{.Machine[["integer.max"]]}, then the
       method returns a double vector of length 1 instead.  If the length
       exceeds \code{2^.Machine[["double.digits"]]-1} and is not exactly
-      representable, then return value is the next representable number
-      in the direction of zero and has an attribute \code{off}
+      representable, then the return value is the next representable
+      number in the direction of zero and has an attribute \code{off}
       preserving the rounding error.}
     \item{\code{length<-}}{
       \code{signature(x = "flint")}:\cr
