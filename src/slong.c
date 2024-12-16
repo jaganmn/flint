@@ -41,7 +41,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		n = asLength(s_length, __func__);
 	else
 		n = 0;
-	slong *y = (slong *) ((n) ? flint_calloc((size_t) n, sizeof(slong)) : 0);
+	slong *y = (slong *) ((n) ? flint_malloc(n * sizeof(slong)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
