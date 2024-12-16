@@ -97,8 +97,22 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				arb_zero(y + j);
 			break;
 		case RAWSXP:
+		{
+			const Rbyte *x = RAW_RO(s_x);
+			for (j = 0; j < n; ++j)
+				arb_set_ui(y + j, x[j % nx]);
+			break;
+		}
 		case LGLSXP:
-			s_x = Rf_coerceVector(s_x, INTSXP);
+		{
+			const int *x = LOGICAL_RO(s_x);
+			for (j = 0; j < n; ++j)
+				if (x[j % nx] == NA_LOGICAL)
+				arb_set_d(y + j, R_NaN);
+				else
+				arb_set_si(y + j, x[j % nx]);
+			break;
+		}
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);

@@ -54,8 +54,23 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			mag_zero(y + j);
 		break;
 	case RAWSXP:
+	{
+		const Rbyte *x = RAW_RO(s_x);
+		for (j = 0; j < n; ++j)
+			mag_set_ui(y + j, x[j % nx]);
+		break;
+	}
 	case LGLSXP:
-		s_x = Rf_coerceVector(s_x, INTSXP);
+	{
+		const int *x = LOGICAL_RO(s_x);
+		for (j = 0; j < n; ++j) {
+			if (x[j % nx] == NA_LOGICAL)
+			Rf_error(_("NaN is not representable by '%s'"), "mag");
+			else
+			mag_set_ui(y + j, (ulong) x[j % nx]);
+		}
+		break;
+	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);

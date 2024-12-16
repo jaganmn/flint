@@ -51,8 +51,23 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case NILSXP:
 		break;
 	case RAWSXP:
+	{
+		const Rbyte *x = RAW_RO(s_x);
+		for (j = 0; j < n; ++j)
+			fmpz_set_ui(y + j, x[j % nx]);
+		break;
+	}
 	case LGLSXP:
-		s_x = Rf_coerceVector(s_x, INTSXP);
+	{
+		const int *x = LOGICAL_RO(s_x);
+		for (j = 0; j < n; ++j) {
+			if (x[j % nx] == NA_LOGICAL)
+			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+			else
+			fmpz_set_si(y + j, x[j % nx]);
+		}
+		break;
+	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);

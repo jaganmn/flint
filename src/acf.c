@@ -243,8 +243,26 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			break;
 		case RAWSXP:
+		{
+			const Rbyte *x = RAW_RO(s_x);
+			for (j = 0; j < n; ++j) {
+				arf_set_ui(acf_realref(y + j), x[j % nx]);
+				arf_zero(acf_imagref(y + j));
+			}
+			break;
+		}
 		case LGLSXP:
-			s_x = Rf_coerceVector(s_x, INTSXP);
+		{
+			const int *x = LOGICAL_RO(s_x);
+			for (j = 0; j < n; ++j) {
+				if (x[j] == NA_LOGICAL)
+				arf_nan(acf_realref(y + j));
+				else
+				arf_set_si(acf_realref(y + j), x[j % nx]);
+				arf_zero(acf_imagref(y + j));
+			}
+			break;
+		}
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);
