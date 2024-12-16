@@ -123,7 +123,7 @@ setMethod("Real<-",
 setMethod("Summary",
           c(x = "acb"),
           function (x, ..., na.rm = FALSE)
-              .Call(R_flint_acb_ops1, .Generic, x, as.logical(na.rm))
+              .Call(R_flint_acb_ops1, .Generic, x, as.logical(na.rm)))
 
 setMethod("all.equal",
           c(target = "acb", current = "acb"),

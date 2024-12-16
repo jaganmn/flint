@@ -162,4 +162,4 @@ setMethod("is.nan",
 setMethod("mean",
           c(x = "arf"),
           function (x, na.rm = FALSE, ...)
-              .Call(R_flint_arf_ops1, "mean", x, as.logical(na.rm))
+              .Call(R_flint_arf_ops1, "mean", x, as.logical(na.rm)))

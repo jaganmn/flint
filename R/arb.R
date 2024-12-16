@@ -117,7 +117,7 @@ setMethod("Ops",
 setMethod("Summary",
           c(x = "arb"),
           function (x, ..., na.rm = FALSE)
-              .Call(R_flint_arb_ops1, .Generic, x, as.logical(na.rm))
+              .Call(R_flint_arb_ops1, .Generic, x, as.logical(na.rm)))
 
 setMethod("Rad",
           c(x = "arb"),
