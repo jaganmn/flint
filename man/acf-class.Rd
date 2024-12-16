@@ -38,9 +38,6 @@
   precision significand and exponent.  The underlying \proglang{C} type
   can represent \code{NaN}, \code{-Inf}, and \code{Inf} real and
   imaginary parts.
-
-  Exceptionally, there is no type \code{acf} in the \acronym{FLINT}
-  \proglang{C} library; the type is local to \R{} package \pkg{flint}.
 }
 \usage{
 ## The class generator function:

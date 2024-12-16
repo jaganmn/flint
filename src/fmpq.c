@@ -4,8 +4,37 @@
 #include <flint/fmpq.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
+#include <flint/acf.h>
 #include "flint.h"
-#include "acf.h"
+
+#ifndef HAVE_FMPQ_CLOG_UI
+/* TODO: use configure to conditionally define HAVE_FMPQ_CLOG_UI */
+slong fmpq_clog_ui(const fmpq_t x, ulong b)
+{
+	slong clog = fmpz_clog_ui(fmpq_numref(x), b) -
+		fmpz_flog_ui(fmpq_denref(x), b);
+	/* 'clog' can be off by 1: test if b^(clog-1) < x  */
+	clog -= 1;
+	fmpz_t p;
+	fmpz_init(p);
+	fmpz_set_si(p, 10);
+	if (clog >= 0) {
+		fmpz_pow_ui(p, p, (ulong) clog);
+		if (fmpq_cmp_fmpz(x, p) > 0)
+			clog += 1;
+	} else {
+		fmpq_t y;
+		fmpq_init(y);
+		fmpq_inv(y, x);
+		fmpz_pow_ui(p, p, (ulong) -1 - (ulong) clog + 1);
+		if (fmpq_cmp_fmpz(y, p) < 0)
+			clog += 1;
+		fmpq_clear(y);
+	}
+	fmpz_clear(p);
+	return clog;
+}
+#endif
 
 void R_flint_fmpq_finalize(SEXP x)
 {
@@ -452,35 +481,6 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		return R_NilValue;
 	}
 }
-
-#ifndef HAVE_FMPQ_CLOG_UI
-/* TODO: use configure to conditionally define HAVE_FMPQ_CLOG_UI */
-slong fmpq_clog_ui(const fmpq_t x, ulong b)
-{
-	slong clog = fmpz_clog_ui(fmpq_numref(x), b) -
-		fmpz_flog_ui(fmpq_denref(x), b);
-	/* 'clog' can be off by 1: test if b^(clog-1) < x  */
-	clog -= 1;
-	fmpz_t p;
-	fmpz_init(p);
-	fmpz_set_si(p, 10);
-	if (clog >= 0) {
-		fmpz_pow_ui(p, p, (ulong) clog);
-		if (fmpq_cmp_fmpz(x, p) > 0)
-			clog += 1;
-	} else {
-		fmpq_t y;
-		fmpq_init(y);
-		fmpq_inv(y, x);
-		fmpz_pow_ui(p, p, (ulong) -1 - (ulong) clog + 1);
-		if (fmpq_cmp_fmpz(y, p) < 0)
-			clog += 1;
-		fmpq_clear(y);
-	}
-	fmpz_clear(p);
-	return clog;
-}
-#endif
 
 SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {

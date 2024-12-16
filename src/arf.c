@@ -5,9 +5,9 @@
 #include <flint/fmpq.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
+#include <flint/acf.h>
 #include <flint/arb.h>
 #include "flint.h"
-#include "acf.h"
 
 int asRnd(SEXP rnd, int gnu, const char *where)
 {

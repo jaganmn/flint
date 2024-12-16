@@ -5,18 +5,89 @@
 #include <flint/fmpq.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
+#include <flint/acf.h>
 #include <flint/arb.h>
 #include "flint.h"
-#include "acf.h"
 
+#ifndef HAVE_ACF_IS_ZERO
+/* TODO: use configure to conditionally define HAVE_ACF_IS_ZERO */
 static R_INLINE
-void acf_neg(acf_t y, const acf_t x)
+int acf_is_zero(const acf_t x)
 {
-	arf_neg(acf_realref(y), acf_realref(x));
-	arf_neg(acf_imagref(y), acf_imagref(x));
+	return
+		arf_is_zero(acf_realref(x)) &&
+		arf_is_zero(acf_imagref(x));
+}
+#endif
+
+#ifndef HAVE_ACF_IS_NAN
+/* TODO: use configure to conditionally define HAVE_ACF_IS_NAN */
+static R_INLINE
+int acf_is_nan(const acf_t x)
+{
+	return
+		arf_is_nan(acf_realref(x)) ||
+		arf_is_nan(acf_imagref(x));
+}
+#endif
+
+#ifndef HAVE_ACF_IS_INF
+/* TODO: use configure to conditionally define HAVE_ACF_IS_INF */
+static R_INLINE
+int acf_is_inf(const acf_t x)
+{
+	return
+		arf_is_inf(acf_realref(x)) ||
+		arf_is_inf(acf_imagref(x));
+}
+#endif
+
+#ifndef HAVE_ACF_IS_FINITE
+/* TODO: use configure to conditionally define HAVE_ACF_IS_FINITE */
+static R_INLINE
+int acf_is_finite(const acf_t x)
+{
+	return
+		arf_is_finite(acf_realref(x)) &&
+		arf_is_finite(acf_imagref(x));
+}
+#endif
+
+#ifndef HAVE_ACF_ZERO
+/* TODO: use configure to conditionally define HAVE_ACF_ZERO */
+static R_INLINE
+void acf_zero(acf_t res)
+{
+	arf_zero(acf_realref(res));
+	arf_zero(acf_imagref(res));
 	return;
 }
+#endif
 
+#ifndef HAVE_ACF_ONE
+/* TODO: use configure to conditionally define HAVE_ACF_ONE */
+static R_INLINE
+void acf_one(acf_t res)
+{
+	arf_one (acf_realref(res));
+	arf_zero(acf_imagref(res));
+	return;
+}
+#endif
+
+#ifndef HAVE_ACF_NAN
+/* TODO: use configure to conditionally define HAVE_ACF_NAN */
+static R_INLINE
+void acf_nan(acf_t res)
+{
+	arf_nan(acf_realref(res));
+	arf_nan(acf_imagref(res));
+	return;
+}
+#endif
+
+#ifndef HAVE_ACF_CONJ
+/* TODO: use configure to conditionally define HAVE_ACF_CONJ */
 static R_INLINE
 void acf_conj(acf_t y, const acf_t x)
 {
@@ -24,27 +95,22 @@ void acf_conj(acf_t y, const acf_t x)
 	arf_neg(acf_imagref(y), acf_imagref(x));
 	return;
 }
+#endif
 
+#ifndef HAVE_ACF_DIV_FMPZ
+/* TODO: use configure to conditionally define HAVE_ACF_DIV_FMPZ */
 static R_INLINE
-int acf_add(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int acf_div_fmpz(acf_t res, const acf_t x, const fmpz_t y, slong prec, arf_rnd_t rnd)
 {
 	int a, b;
-	a = arf_add(acf_realref(res), acf_realref(x), acf_realref(y), prec, rnd);
-	b = arf_add(acf_imagref(res), acf_imagref(x), acf_imagref(y), prec, rnd);
+	a = arf_div_fmpz(acf_realref(res), acf_realref(x), y, prec, rnd);
+	b = arf_div_fmpz(acf_imagref(res), acf_imagref(x), y, prec, rnd);
 	return a | (b << 1);
 }
+#endif
 
 static R_INLINE
-int acf_sub(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
-{
-	int a, b;
-	a = arf_sub(acf_realref(res), acf_realref(x), acf_realref(y), prec, rnd);
-	b = arf_sub(acf_imagref(res), acf_imagref(x), acf_imagref(y), prec, rnd);
-	return a | (b << 1);
-}
-
-static R_INLINE
-int acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int R_flint_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
 	int a, b;
 	arf_t t, u, v, w;
@@ -67,7 +133,7 @@ int acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 
 #if 0
 static R_INLINE
-int acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int R_flint_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
 	/* FIXME: the result is not correctly rounded here ... */
 	int a, b;
@@ -94,63 +160,6 @@ int acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 	return a | (b << 1);
 }
 #endif
-
-static R_INLINE
-int acf_div_fmpz(acf_t res, const acf_t x, const fmpz_t y, slong prec, arf_rnd_t rnd)
-{
-	int a, b;
-	a = arf_div_fmpz(acf_realref(res), acf_realref(x), y, prec, rnd);
-	b = arf_div_fmpz(acf_imagref(res), acf_imagref(x), y, prec, rnd);
-	return a | (b << 1);
-}
-
-static R_INLINE
-int acf_is_zero(const acf_t x)
-{
-	return
-		arf_is_zero(acf_realref(x)) &&
-		arf_is_zero(acf_imagref(x));
-}
-
-static R_INLINE
-int acf_is_nan(const acf_t x)
-{
-	return
-		arf_is_nan(acf_realref(x)) ||
-		arf_is_nan(acf_imagref(x));
-}
-
-static R_INLINE
-int acf_is_inf(const acf_t x)
-{
-	return
-		arf_is_inf(acf_realref(x)) ||
-		arf_is_inf(acf_imagref(x));
-}
-
-static R_INLINE
-int acf_is_finite(const acf_t x)
-{
-	return
-		arf_is_finite(acf_realref(x)) &&
-		arf_is_finite(acf_imagref(x));
-}
-
-static R_INLINE
-void acf_one(acf_t res)
-{
-	arf_one (acf_realref(res));
-	arf_zero(acf_imagref(res));
-	return;
-}
-
-static R_INLINE
-void acf_nan(acf_t res)
-{
-	arf_nan(acf_realref(res));
-	arf_nan(acf_imagref(res));
-	return;
-}
 
 void R_flint_acf_finalize(SEXP x)
 {
@@ -467,12 +476,12 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 3: /*   "*" */
 			for (j = 0; j < n; ++j)
-				acf_mul(z + j, x + j % nx, y + j % ny, prec, rnd);
+				R_flint_acf_mul(z + j, x + j % nx, y + j % ny, prec, rnd);
 			break;
 #if 0
 		case 6: /*   "/" */
 			for (j = 0; j < n; ++j)
-				acf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
+				R_flint_acf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
 			break;
 #endif
 		}
@@ -543,8 +552,10 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  1: /*       "+" */
 	case  2: /*       "-" */
 	case  8: /*    "Conj" */
-#if 0
+#ifdef HAVE_ACF_SGN
 	case 14: /*    "sign" */
+#endif
+#ifdef HAVE_ACF_SQRT
 	case 15: /*    "sqrt" */
 #endif
 	case 21: /*  "cumsum" */
@@ -568,11 +579,13 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				acf_conj(z + j, x + j);
 			break;
-#if 0
+#ifdef HAVE_ACF_SGN
 		case 14: /*    "sign" */
 			for (j = 0; j < n; ++j)
 				acf_sgn(z + j, x + j, prec, rnd);
 			break;
+#endif
+#ifdef HAVE_ACF_SQRT
 		case 15: /*    "sqrt" */
 			for (j = 0; j < n; ++j)
 				acf_sqrt(z + j, x + j, prec, rnd);
@@ -589,7 +602,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (n)
 			acf_set(z, x);
 			for (j = 1; j < n; ++j)
-				acf_mul(z + j, z + j - 1, x + j, prec, rnd);
+				R_flint_acf_mul(z + j, z + j - 1, x + j, prec, rnd);
 			break;
 		case 48: /*   "round" */
 		{
@@ -838,9 +851,13 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case  9: /*       "Re" */
 	case 10: /*       "Im" */
-#if 0
+#ifdef HAVE_ACF_ABS
 	case 11: /*      "Mod" */
+#endif
+#ifdef HAVE_ACF_ARG
 	case 12: /*      "Arg" */
+#endif
+#ifdef HAVE_ACF_ABS
 	case 13: /*      "abs" */
 #endif
 	{
@@ -856,12 +873,14 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				arf_set(z + j, acf_imagref(x + j));
 			break;
-#if 0
+#ifdef HAVE_ACF_ABS
 		case 11: /*      "Mod" */
 		case 13: /*      "abs" */
 			for (j = 0; j < n; ++j)
 				acf_abs(z + j, x + j, prec, rnd);
 			break;
+#endif
+#ifdef HAVE_ACF_ARG
 		case 12: /*      "Arg" */
 			for (j = 0; j < n; ++j)
 				acf_arg(z + j, x + j, prec, rnd);

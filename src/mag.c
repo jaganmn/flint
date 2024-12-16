@@ -5,8 +5,8 @@
 #include <flint/fmpq.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
+#include <flint/acf.h>
 #include "flint.h"
-#include "acf.h"
 
 void R_flint_mag_finalize(SEXP x)
 {

@@ -3,10 +3,10 @@
 #include <flint/fmpq.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
+#include <flint/acf.h>
 #include <flint/arb.h>
 #include <flint/acb.h>
 #include "flint.h"
-#include "acf.h"
 
 void R_flint_acb_finalize(SEXP x)
 {

@@ -3,10 +3,28 @@
 #include <flint/fmpq.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
+#include <flint/acf.h>
 #include <flint/arb.h>
 #include <flint/acb.h>
 #include "flint.h"
-#include "acf.h"
+
+#define slong_zero(rop) *(rop) = 0
+#define ulong_zero(rop) *(rop) = 0U
+#define slong_set(rop, op) *(rop) = *(op)
+#define ulong_set(rop, op) *(rop) = *(op)
+#define slong_equal(rop, op) (*(rop) == *(op))
+#define ulong_equal(rop, op) (*(rop) == *(op))
+
+#ifndef HAVE_ACF_ZERO
+/* TODO: use configure to conditionally define HAVE_ACF_ZERO */
+static R_INLINE
+void acf_zero(acf_t res)
+{
+	arf_zero(acf_realref(res));
+	arf_zero(acf_imagref(res));
+	return;
+}
+#endif
 
 void R_flint_abort(void)
 {

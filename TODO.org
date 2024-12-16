@@ -19,3 +19,4 @@
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 ** DONE export, document class generator functions
+** TODO configure tests for many missing acf_*
