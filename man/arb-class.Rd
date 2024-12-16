@@ -1,4 +1,5 @@
 \name{arb-class}
+\alias{arb}
 \alias{arb-class}
 \alias{!,arb-method}
 \alias{+,arb,missing-method}
@@ -37,6 +38,28 @@
   bounds.  Elements are specified by a pair of mixed format
   floating-point numbers: an \code{\linkS4class{arf}} midpoint and a
   \code{\linkS4class{mag}} radius.
+}
+\usage{
+## The class generator function:
+arb(\dots)
+
+## Mode 1: initialize with zeros
+## arb(length = 0L)
+##
+## Mode 2: initialize with vector
+## arb(length = length(x), x)
+##
+## Mode 3: initialize by parts
+## arb(length = max0(length(mid), length(rad)), mid, rad)
+##
+## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("arb", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -103,8 +126,8 @@
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arb")}:\cr
-      returns \code{new("arb", x = from)}.  An error is signaled if the
-      class or type of \code{from} is not supported by the method for
+      returns \code{arb(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "arb")}:\cr
@@ -120,11 +143,11 @@
       initialized entirely with zeros (zero midpoint, zero radius).
       \code{.Object} is not copied, so all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arb", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "arb", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized by the elements of \code{x}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arb", mid = "\var{atomic|flint}", rad = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "arb", length = "\var{numeric}", mid = "\var{atomic|flint}", rad = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array whose
       midpoints and radii are initialized separately with values from
       \code{mid} and \code{rad}, which are coerced to classes

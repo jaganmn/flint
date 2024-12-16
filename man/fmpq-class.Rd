@@ -1,4 +1,5 @@
 \name{fmpq-class}
+\alias{fmpq}
 \alias{fmpq-class}
 \alias{!,fmpq-method}
 \alias{+,fmpq,missing-method}
@@ -36,6 +37,28 @@
   Elements are specified by a pair of arbitrary precision signed
   integers: a numerator and a positive, coprime denominator.  There is
   no representation for \R{}'s missing value \code{\link{NA_integer_}}.
+}
+\usage{
+## The class generator function:
+fmpq(\dots)
+
+## Mode 1: initialize with zeros
+## fmpq(length = 0L)
+##
+## Mode 2: initialize with vector
+## fmpq(length = length(x), x)
+##
+## Mode 3: initialize by parts
+## fmpq(length = max0(length(num), length(den)), num, den)
+##
+## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("fmpq", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -100,7 +123,9 @@
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpq")}:\cr
-      returns \code{new("fmpq", x = from)}.}
+      returns \code{fmpq(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "fmpq")}:\cr
       returns a character vector suitable for printing, using string
@@ -115,19 +140,18 @@
       denominator).  \code{.Object} is not copied, so all references are
       affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "fmpq", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.  An error is signaled if
-      any \code{x[i]} is \code{NaN}, \code{-Inf}, or \code{Inf}.}
+      elements of \code{x} are \code{NaN}, \code{-Inf}, or \code{Inf}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq", num = "\var{atomic|flint}", den = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "fmpq", length = "\var{numeric}", num = "\var{atomic|flint}", den = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array whose
-      numerators and denominators are initialized independently with
-      values from \code{num} and \code{den}, which are coerced to class
+      numerators and denominators are initialized separately with values
+      from \code{num} and \code{den}, which are coerced to class
       \code{\linkS4class{fmpz}} and recycled as necessary.  An error is
-      signaled if any \code{num[i]} or \code{den[i]} is \code{NaN},
-      \code{-Inf}, \code{Inf}, or subnormal or if any \code{den[i]} is
-      zero.}
+      signaled if elements of \code{num} or \code{den} are \code{NaN},
+      \code{-Inf}, or \code{Inf} or elements of \code{den} are zero.}
     \item{\code{is.na, is.nan, is.infinite}}{
       \code{signature(x = "fmpq")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as

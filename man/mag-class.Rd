@@ -1,4 +1,5 @@
 \name{mag-class}
+\alias{mag}
 \alias{mag-class}
 \alias{!,mag-method}
 \alias{+,mag,missing-method}
@@ -36,6 +37,23 @@
   unsigned floating-point numbers with a 30-bit significand and an
   arbitary precision exponent.  The underlying \proglang{C} type can
   represent \code{Inf} but not \code{NaN}.
+}
+\usage{
+## The class generator function:
+mag(\dots)
+
+## Mode 1: initialize with zeros
+## mag(length = 0L)
+##
+## Mode 2: initialize with vector
+## mag(length = length(x), x)
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("mag", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -110,7 +128,9 @@
       \code{Inf}, not always to nearest.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
-      returns \code{new("mag", x = from)}.}
+      returns \code{mag(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "mag")}:\cr
       returns a character vector suitable for printing, using scientific
@@ -124,7 +144,7 @@
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "mag", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "mag", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with upper bounds for \code{abs(x)}.  An error is
       signaled if any \code{x[i]} is \code{NaN}.}

@@ -1,4 +1,5 @@
 \name{fmpz-class}
+\alias{fmpz}
 \alias{fmpz-class}
 \alias{!,fmpz-method}
 \alias{+,fmpz,missing-method}
@@ -36,6 +37,23 @@
   It represents vectors of arbitrary precision signed integers.  There
   is no representation for \R{}'s missing value
   \code{\link{NA_integer_}}.
+}
+\usage{
+## The class generator function:
+fmpz(\dots)
+
+## Mode 1: initialize with zeros
+## fmpz(length = 0L)
+##
+## Mode 2: initialize with vector
+## fmpz(length = length(x), x)
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("fmpz", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -100,7 +118,9 @@
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
-      returns \code{new("fmpz", x = from)}.}
+      returns \code{fmpz(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "fmpz")}:\cr
       returns a character vector suitable for printing.  Optional
@@ -113,11 +133,11 @@
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "fmpz", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "fmpz", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x} truncated towards zero.  An
-      error is signaled if any \code{x[i]} is \code{NaN}, \code{-Inf},
-      \code{Inf}, or subnormal.}
+      error is signaled if elements of \code{x} are \code{NaN},
+      \code{-Inf}, or \code{Inf}.}
     \item{\code{is.na, is.nan, is.infinite}}{
       \code{signature(x = "fmpz")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as

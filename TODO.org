@@ -19,3 +19,4 @@
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 ** TODO random generation of 'flint' objects, partly for testing
+** DONE constructor functions to replace direct 'new'

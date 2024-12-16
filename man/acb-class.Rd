@@ -1,4 +1,5 @@
 \name{acb-class}
+\alias{acb}
 \alias{acb-class}
 \alias{!,acb-method}
 \alias{+,acb,missing-method}
@@ -39,6 +40,28 @@
   \code{\linkS4class{arb}} imaginary part, each specified by an
   \code{\linkS4class{arf}} midpoint and a \code{\linkS4class{mag}}
   radius.
+}
+\usage{
+## The class generator function:
+acb(\dots)
+
+## Mode 1: initialize with zeros
+## acb(length = 0L)
+##
+## Mode 2: initialize with vector
+## acb(length = length(x), x)
+##
+## Mode 3: initialize by parts
+## acb(length = max0(length(real), length(imag)), real, imag)
+##
+## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("acb", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -109,8 +132,8 @@
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acb")}:\cr
-      returns \code{new("acb", x = from)}.  An error is signaled if the
-      class or type of \code{from} is not supported by the method for
+      returns \code{acb(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "acb")}:\cr
@@ -127,11 +150,11 @@
       real and imaginary parts).  \code{.Object} is not copied, so all
       references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acb", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "acb", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acb", real = "\var{atomic|flint}", imag = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "acb", length = "\var{numeric}", real = "\var{atomic|flint}", imag = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array whose
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class

@@ -1,35 +1,35 @@
 setMethod("!",
           c(x = "ulong"),
           function (x)
-              !new("fmpz", x = x))
+              !fmpz(x = x))
 
 setMethod("+",
           c(e1 = "ulong", e2 = "missing"),
           function (e1, e2)
-              +new("fmpz", x = e1))
+              +fmpz(x = e1))
 
 setMethod("-",
           c(e1 = "ulong", e2 = "missing"),
           function (e1, e2)
-              -new("fmpz", x = e1))
+              -fmpz(x = e1))
 
 setMethod("Complex",
           c(z = "ulong"),
           function (z)
-              get(.Generic, mode = "function")(new("fmpz", x = z)))
+              get(.Generic, mode = "function")(fmpz(x = z)))
 
 setMethod("Math",
           c(x = "ulong"),
           function (x)
-              get(.Generic, mode = "function")(new("fmpz", x = x)))
+              get(.Generic, mode = "function")(fmpz(x = x)))
 
 setMethod("Math2",
           c(x = "ulong"),
           function (x, digits) {
               g <- get(.Generic, mode = "function")
               if (missing(digits))
-                  g(new("fmpz", x = x))
-              else g(new("fmpz", x = x), digits = digits)
+                  g(fmpz(x = x))
+              else g(fmpz(x = x), digits = digits)
           })
 
 setMethod("Ops",
@@ -38,11 +38,11 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(new("fmpz", x = e1), new("fmpz", x = e2)),
+                         g(fmpz(x = e1), fmpz(x = e2)),
                      "double" =
-                         g(new("arf", x = e1), new("arf", x = e2)),
+                         g(arf(x = e1), arf(x = e2)),
                      "complex" =
-                         g(new("acf", x = e1), new("acf", x = e2)),
+                         g(acf(x = e1), acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "ulong"),
                           domain = NA))
@@ -54,11 +54,11 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(new("fmpz", x = e1), new("fmpz", x = e2)),
+                         g(fmpz(x = e1), fmpz(x = e2)),
                      "double" =
-                         g(new("arf", x = e1), new("arf", x = e2)),
+                         g(arf(x = e1), arf(x = e2)),
                      "complex" =
-                         g(new("acf", x = e1), new("acf", x = e2)),
+                         g(acf(x = e1), acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "ulong", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -67,52 +67,52 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "ulong", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("fmpz", x = e1), new("fmpz", x = e2)))
+              get(.Generic, mode = "function")(fmpz(x = e1), fmpz(x = e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("fmpz", x = e1), new("fmpz", x = e2)))
+              get(.Generic, mode = "function")(fmpz(x = e1), fmpz(x = e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("fmpz", x = e1), e2))
+              get(.Generic, mode = "function")(fmpz(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("fmpq", x = e1), e2))
+              get(.Generic, mode = "function")(fmpq(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("arf", x = e1), new("arf", x = e2)))
+              get(.Generic, mode = "function")(arf(x = e1), arf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("arf", x = e1), e2))
+              get(.Generic, mode = "function")(arf(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("acf", x = e1), e2))
+              get(.Generic, mode = "function")(acf(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("arb", x = e1), e2))
+              get(.Generic, mode = "function")(arb(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(new("acb", x = e1), e2))
+              get(.Generic, mode = "function")(acb(x = e1), e2))
 
 setMethod("Summary",
           c(x = "ulong"),
           function (x, ..., na.rm = FALSE)
-              get(.Generic, mode = "function")(new("fmpz", x = x), ..., na.rm = na.rm))
+              get(.Generic, mode = "function")(fmpz(x = x), ..., na.rm = na.rm))
 
 setMethod("anyNA",
           c(x = "ulong"),
@@ -126,7 +126,7 @@ setMethod("as.vector",
 
 setAs("ANY", "ulong",
       function (from)
-          new("ulong", x = from))
+          ulong(x = from))
 
 setMethod("format",
           c(x = "ulong"),
@@ -135,7 +135,7 @@ setMethod("format",
 
 setMethod("initialize",
           c(.Object = "ulong"),
-          function (.Object, length = 0L, x = NULL, ...)
+          function (.Object, length = NULL, x = NULL, ...)
               .Call(R_flint_ulong_initialize, .Object, length, x))
 
 setMethod("is.finite",
@@ -161,4 +161,4 @@ setMethod("is.nan",
 setMethod("mean",
           c(x = "ulong"),
           function (x, ...)
-              mean(new("fmpz", x = x), ...))
+              mean(fmpz(x = x), ...))

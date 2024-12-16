@@ -21,24 +21,48 @@ void R_flint_fmpq_finalize(SEXP x)
 SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
                              SEXP s_num, SEXP s_den)
 {
-	unsigned long long int j, n, np = 1, nq = 1;
+	unsigned long long int j, n, nx = 0, np = 1, nq = 1;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_num != R_NilValue || s_den != R_NilValue) {
+		if (s_x != R_NilValue)
+			Rf_error(_("'%s' usage and '%s', '%s' usage are mutually exclusive"),
+			         "x", "num", "den");
 		if (s_num != R_NilValue)
 			np = R_flint_get_length(s_num);
 		if (s_den != R_NilValue)
 			nq = R_flint_get_length(s_den);
-		n = RECYCLE2(np, nq);
-	} else if (s_x != R_NilValue) {
+		if (s_length == R_NilValue)
+			n = RECYCLE2(np, nq);
+		else {
+			n = asLength(s_length, __func__);
+			if (n > 0 && (np == 0 || nq == 0))
+				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
+				         (np == 0) ? "num" : "den");
+		}
+	}
+	else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-		n = (unsigned long long int) XLENGTH(s_x);
-		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
-		n = R_flint_get_length(s_x);
-		else
-		n = 0;
-	} else
+			nx = (unsigned long long int) XLENGTH(s_x);
+		else {
+			class = R_flint_get_class(s_x);
+			if (class == R_FLINT_CLASS_INVALID)
+				Rf_error(_("foreign external pointer"));
+			nx = R_flint_get_length(s_x);
+		}
+		if (s_length == R_NilValue)
+			n = nx;
+		else {
+			n = asLength(s_length, __func__);
+			if (n > 0 && nx == 0)
+				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
+				         "x");
+		}
+	}
+	else if (s_length != R_NilValue)
 		n = asLength(s_length, __func__);
+	else
+		n = 0;
 	fmpq *y = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
@@ -57,7 +81,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 				}
 			} else {
 				for (j = 0; j < n; ++j) {
-					fmpz_set(fmpq_numref(y + j), xp + j);
+					fmpz_set(fmpq_numref(y + j), xp + j % np);
 					fmpz_one(fmpq_denref(y + j));
 				}
 			}
@@ -65,7 +89,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			if (s_den != R_NilValue) {
 				const fmpz *xq = (fmpz *) R_flint_get_pointer(s_den);
 				for (j = 0; j < n; ++j) {
-					if (fmpz_is_zero(xq + j))
+					if (fmpz_is_zero(xq + j % nq))
 					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
 					else
 					fmpz_one(fmpq_denref(y + j));
@@ -85,10 +109,10 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		{
 			const int *x = INTEGER_RO(s_x);
 			for (j = 0; j < n; ++j) {
-				if (x[j] == NA_INTEGER)
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				if (x[j % nx] == NA_INTEGER)
+				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 				else {
-				fmpz_set_si(fmpq_numref(y + j), x[j]);
+				fmpz_set_si(fmpq_numref(y + j), x[j % nx]);
 				fmpz_one(fmpq_denref(y + j));
 				}
 			}
@@ -101,10 +125,10 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			const double *x = REAL_RO(s_x);
 			int e;
 			for (j = 0; j < n; ++j) {
-				if (!R_FINITE(x[j]))
+				if (!R_FINITE(x[j % nx]))
 				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 				else {
-				fmpz_set_d(fmpq_numref(y + j), ldexp(frexp(x[j], &e), DBL_MANT_DIG));
+				fmpz_set_d(fmpq_numref(y + j), ldexp(frexp(x[j % nx], &e), DBL_MANT_DIG));
 				e -= DBL_MANT_DIG;
 				if (e < 0) {
 				fmpz_one_2exp(fmpq_denref(y + j),
@@ -125,7 +149,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				const slong *x = (slong *) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
-					fmpz_set_si(fmpq_numref(y + j), x[j]);
+					fmpz_set_si(fmpq_numref(y + j), x[j % nx]);
 					fmpz_one(fmpq_denref(y + j));
 				}
 				break;
@@ -134,7 +158,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				const ulong *x = (ulong *) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
-					fmpz_set_ui(fmpq_numref(y + j), x[j]);
+					fmpz_set_ui(fmpq_numref(y + j), x[j % nx]);
 					fmpz_one(fmpq_denref(y + j));
 				}
 				break;
@@ -143,7 +167,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
-					fmpz_set(fmpq_numref(y + j), x + j);
+					fmpz_set(fmpq_numref(y + j), x + j % nx);
 					fmpz_one(fmpq_denref(y + j));
 				}
 				break;
@@ -152,17 +176,17 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j)
-					fmpq_set(y + j, x + j);
+					fmpq_set(y + j, x + j % nx);
 				break;
 			}
 			case R_FLINT_CLASS_MAG:
 			{
 				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
-					if (mag_is_inf(x + j))
+					if (mag_is_inf(x + j % nx))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
-					mag_get_fmpq(y + j, x + j);
+					mag_get_fmpq(y + j, x + j % nx);
 				}
 				break;
 			}
@@ -170,10 +194,10 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
-					if (!arf_is_finite(x + j))
+					if (!arf_is_finite(x + j % nx))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
-					arf_get_fmpq(y + j, x + j);
+					arf_get_fmpq(y + j, x + j % nx);
 				}
 				break;
 			}
@@ -181,10 +205,10 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
 				for (j = 0; j < n; ++j) {
-					if (!arf_is_finite(acf_realref(x + j)))
+					if (!arf_is_finite(acf_realref(x + j % nx)))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
-					arf_get_fmpq(y + j, acf_realref(x + j));
+					arf_get_fmpq(y + j, acf_realref(x + j % nx));
 				}
 				break;
 			}

@@ -1,4 +1,5 @@
 \name{arf-class}
+\alias{arf}
 \alias{arf-class}
 \alias{!,arf-method}
 \alias{+,arf,missing-method}
@@ -35,6 +36,23 @@
   Elements have arbitrary precision significand and exponent.  The
   underlying \proglang{C} type can represent \code{NaN}, \code{-Inf},
   and \code{Inf}.
+}
+\usage{
+## The class generator function:
+arf(\dots)
+
+## Mode 1: initialize with zeros
+## arf(length = 0L)
+##
+## Mode 2: initialize with vector
+## arf(length = length(x), x)
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("arf", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -105,7 +123,9 @@
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
-      returns \code{new("arf", x = from)}.}
+      returns \code{arf(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
+      \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific
@@ -119,7 +139,7 @@
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arf", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "arf", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
     \item{\code{is.na, is.nan}}{

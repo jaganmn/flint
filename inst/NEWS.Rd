@@ -117,6 +117,9 @@
   }
   \subsection{New Features}{
     \itemize{
+      \item Generator functions for each of the nonvirtual subclasses of
+      virtual class \code{flint}.
+
       \item \proglang{C} library functions \code{acb_lambertw},
       \code{acb_polygamma}, \code{acb_dirichlet_zeta},
       \code{acb_dirichlet_hurwitz}, \code{acb_dirichlet_lerch_phi},

@@ -1,4 +1,6 @@
 \name{slong-class}
+\alias{slong}
+\alias{ulong}
 \alias{slong-class}
 \alias{ulong-class}
 \alias{!,slong-method}
@@ -66,6 +68,28 @@
   There is no representation for \R{}'s missing value
   \code{\link{NA_integer_}}.
 }
+\usage{
+## The class generator functions:
+slong(\dots)
+ulong(\dots)
+
+## Mode 1: initialize with zeros
+## slong(length = 0L)
+## ulong(length = 0L)
+##
+## Mode 2: initialize with vector
+## slong(length = length(x), x)
+## ulong(length = length(x), x)
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator functions return
+  \code{\link{new}("slong", \dots)} and
+  \code{\link{new}("ulong", \dots)}.
+}
 \section{Slots}{
   \describe{
     \item{\code{.xData}}{
@@ -115,8 +139,9 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "slong")}:\cr
       \code{signature(from = "ANY", to = "ulong")}:\cr
-      returns \code{new("slong", x = from)} or
-      \code{new("ulong", x = from)}.}
+      returns \code{slong(x = from)} or \code{ulong(x = from)}.  An
+      error is signaled if the class or type of \code{from} is not
+      supported by the methods for \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
@@ -131,12 +156,12 @@
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "slong", x = "\var{atomic|flint}")}:\cr
-      \code{signature(.Object = "ulong", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "slong", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "ulong", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x} truncated towards zero.  An
-      error is signaled if any \code{x[i]} is not in the range of the
-      \proglang{C} type, in particular if any \code{x[i]} is \code{NaN}.
+      error is signaled if elements of \code{x} are not in the range of
+      the \proglang{C} type, in particular if elements are \code{NaN}.
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{\link{flintBits}()}.}

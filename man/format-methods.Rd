@@ -64,13 +64,13 @@
   A character vector containing \acronym{ASCII} strings of equal length.
 }
 \examples{
-q <- new("fmpq", num = c(-1L, 1L) * 0:5, den = 1:6)
+q <- fmpq(num = c(-1L, 1L) * 0:5, den = 1:6)
 for (b in 2:8) {
     cat("base = ", b, ":\n", sep = "")
     print(format(q, base = b), quote = FALSE, width = 12L)
 }
 
-z <- new("acb", real.mid = pi, real.rad = 0.5 * pi)
+z <- acb(real = arb(mid = pi, rad = 0.5 * pi))
 format(z)
 format(z, base = 62L, sep = "*[62]^")
 strsplit(format(Re(z), digits = 80L), "[( )]")[[1L]][c(FALSE, TRUE)]

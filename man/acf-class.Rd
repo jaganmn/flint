@@ -1,4 +1,5 @@
 \name{acf-class}
+\alias{acf}
 \alias{acf-class}
 \alias{!,acf-method}
 \alias{+,acf,missing-method}
@@ -40,6 +41,28 @@
 
   Exceptionally, there is no type \code{acf} in the \acronym{FLINT}
   \proglang{C} library; the type is local to \R{} package \pkg{flint}.
+}
+\usage{
+## The class generator function:
+acf(\dots)
+
+## Mode 1: initialize with zeros
+## acf(length = 0L)
+##
+## Mode 2: initialize with vector
+## acf(length = length(x), x)
+##
+## Mode 3: initialize by parts
+## acf(length = max0(length(real), length(imag)), real, imag)
+##
+## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
+}
+\arguments{
+  \item{\dots}{
+    arguments passed to methods for \code{\link{initialize}}.}
+}
+\value{
+  The class generator function returns \code{\link{new}("acf", \dots)}.
 }
 \section{Slots}{
   \describe{
@@ -109,8 +132,8 @@
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acf")}:\cr
-      returns \code{new("acf", x = from)}.  An error is signaled if the
-      class or type of \code{from} is not supported by the method for
+      returns \code{acf(x = from)}.  An error is signaled if the class
+      or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "acf")}:\cr
@@ -126,11 +149,11 @@
       initialized entirely with zeros.  \code{.Object} is not copied, so
       all references are affected.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acf", x = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "acf", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acf", real = "\var{atomic|flint}", imag = "\var{atomic|flint}")}:\cr
+      \code{signature(.Object = "acf", length = "\var{numeric}", real = "\var{atomic|flint}", imag = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array whose
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class

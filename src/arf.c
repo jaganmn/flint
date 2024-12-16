@@ -51,18 +51,31 @@ void R_flint_arf_finalize(SEXP x)
 
 SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int j, n;
+	unsigned long long int j, n, nx = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-		n = (unsigned long long int) XLENGTH(s_x);
-		else if ((class = R_flint_get_class(s_x)) != R_FLINT_CLASS_INVALID)
-		n = R_flint_get_length(s_x);
-		else
-		n = 0;
-	} else
+			nx = (unsigned long long int) XLENGTH(s_x);
+		else {
+			class = R_flint_get_class(s_x);
+			if (class == R_FLINT_CLASS_INVALID)
+				Rf_error(_("foreign external pointer"));
+			nx = R_flint_get_length(s_x);
+		}
+		if (s_length == R_NilValue)
+			n = nx;
+		else {
+			n = asLength(s_length, __func__);
+			if (n > 0 && nx == 0)
+				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
+				         "x");
+		}
+	}
+	else if (s_length != R_NilValue)
 		n = asLength(s_length, __func__);
+	else
+		n = 0;
 	arf_ptr y = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
@@ -77,10 +90,10 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	{
 		const int *x = INTEGER_RO(s_x);
 		for (j = 0; j < n; ++j) {
-			if (x[j] == NA_INTEGER)
+			if (x[j % nx] == NA_INTEGER)
 			arf_nan(y + j);
 			else
-			arf_set_si(y + j, x[j]);
+			arf_set_si(y + j, x[j % nx]);
 		}
 		break;
 	}
@@ -90,7 +103,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	{
 		const double *x = REAL_RO(s_x);
 		for (j = 0; j < n; ++j)
-			arf_set_d(y + j, x[j]);
+			arf_set_d(y + j, x[j % nx]);
 		break;
 	}
 	case OBJSXP:
@@ -99,21 +112,21 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		{
 			const slong *x = (slong *) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
-				arf_set_si(y + j, x[j]);
+				arf_set_si(y + j, x[j % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
-				arf_set_ui(y + j, x[j]);
+				arf_set_ui(y + j, x[j % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
-				arf_set_fmpz(y + j, x + j);
+				arf_set_fmpz(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
@@ -122,28 +135,28 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			int prec = asPrec(R_NilValue, __func__);
 			arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 			for (j = 0; j < n; ++j)
-				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j), fmpq_denref(x + j), prec, rnd);
+				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_MAG:
 		{
 			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
-				arf_set_mag(y + j, x + j);
+				arf_set_mag(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
 		{
 			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
-				arf_set(y + j, x + j);
+				arf_set(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
 			for (j = 0; j < n; ++j)
-				arf_set(y + j, acf_realref(x + j));
+				arf_set(y + j, acf_realref(x + j % nx));
 			break;
 		}
 		case R_FLINT_CLASS_ARB:
