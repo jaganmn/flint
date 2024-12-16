@@ -10,7 +10,7 @@
 ** TODO initialization with character vectors
 ** TODO methods for all.equal
 ** TODO methods for c
-** TODO methods for length<-
+** DONE methods for length<-
 ** DONE methods for rep
 ** DONE methods for mean
 ** TODO methods for sort

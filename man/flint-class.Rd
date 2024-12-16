@@ -15,6 +15,7 @@
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
 \alias{length,flint-method}
+\alias{length<-,flint-method}
 \alias{print,flint-method}
 \alias{rep,flint-method}
 \alias{show,flint-method}
@@ -83,8 +84,20 @@
       If the length exceeds \code{.Machine[["integer.max"]]}, then the
       method returns a double vector of length 1 instead.  If the length
       exceeds \code{2^.Machine[["double.digits"]]-1} and is not exactly
-      representable, then the method signals a warning and returns the
-      the next representable number in the direction of zero.}
+      representable, then return value is the next representable number
+      in the direction of zero and has an attribute \code{off}
+      preserving the rounding error.}
+    \item{\code{length<-}}{
+      \code{signature(x = "flint")}:\cr
+      returns a \code{flint} vector of length given by the second
+      argument \code{value}.  The first \code{min(length(x), value)}
+      elements are copied from \code{x} and the remaining elements are
+      initialized to zero.  Note that \code{value} is coerced to
+      \code{\linkS4class{ulong}} and so is constrained to its range.
+      (Ideally, \code{value} would have 64-bit range even for 32-bit
+      \code{ulong}.  If this \dQuote{ideal} matters to you, then please
+      submit a feature request using
+      \code{\link{bug.report}(package = "flint")}.)}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
       prints \code{\link{format}(x)} and returns \code{x} invisibly.
@@ -100,10 +113,8 @@
       error, because the underlying \proglang{C} types have no
       representation for missing values.  Note that the optional
       arguments are coerced to \code{\linkS4class{ulong}} and so are
-      constrained to its range.  (Ideally, the optional arguments would
-      have 64-bit range even for 32-bit \code{ulong}.  If this
-      \dQuote{ideal} matters to you, then please submit a feature
-      request using \code{\link{bug.report}(package = "flint")}.)}
+      constrained to its range; see the parenthetical comment under
+      \code{length<-} above.}
     \item{\code{show}}{
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}

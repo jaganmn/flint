@@ -258,7 +258,13 @@ setMethod("as.expression",
 
 setMethod("length",
           c(x = "flint"),
-          function (x) flintLength(x))
+          function (x)
+              flintLength(x))
+
+setMethod("length<-",
+          c(x = "flint"),
+          function (x, value)
+              .Call(R_flint_realloc, x, as(value, "ulong")))
 
 setMethod("print",
           c(x = "flint"),

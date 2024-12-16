@@ -111,8 +111,8 @@
       \code{as.complex}, \code{as.list}, \code{as.expression},
       \code{as.vector}, \code{coerce}, \code{format}, \code{initialize},
       \code{is.finite}, \code{is.infinite}, \code{is.na}, \code{is.nan},
-      \code{length}, \code{mean}, \code{print}, and \code{rep},
-      \code{show}.
+      \code{length}, \code{length<-}, \code{mean}, \code{print},
+      \code{rep}, and \code{show}.
     }
   }
   \subsection{New Features}{

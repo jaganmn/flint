@@ -137,14 +137,6 @@ int acf_is_finite(const acf_t x)
 }
 
 static R_INLINE
-void acf_zero(acf_t res)
-{
-	arf_zero(acf_realref(res));
-	arf_zero(acf_imagref(res));
-	return;
-}
-
-static R_INLINE
 void acf_one(acf_t res)
 {
 	arf_one (acf_realref(res));

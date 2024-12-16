@@ -41,6 +41,14 @@ void acf_set(acf_t y, const acf_t x)
 }
 
 static R_INLINE
+void acf_zero(acf_t res)
+{
+	arf_zero(acf_realref(res));
+	arf_zero(acf_imagref(res));
+	return;
+}
+
+static R_INLINE
 int acf_equal(const acf_t x, const acf_t y)
 {
 	return

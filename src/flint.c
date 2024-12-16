@@ -335,6 +335,81 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
+SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y;
+	unsigned long long int i, j, q, r,
+		nx = R_flint_get_length(object),
+		ny = 0;
+	R_CFinalizer_t f;
+	const char *what;
+
+	if (R_flint_get_length(s_lengthout) != 1)
+		Rf_error(_("length(%s) not equal to 1 in '%s'"),
+		         "value", "length<-");
+	ny = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
+
+#define REALLOC_CASE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+		if (ny <= nx) \
+			for (j = 0; j < ny; ++j) \
+				name##_set(y__ + j, x__ + j); \
+		else { \
+			for (j = 0; j < nx; ++j) \
+				name##_set(y__ + j, x__ + j); \
+			for (j = nx; j < ny; ++j) \
+				name##_zero(y__ + j); \
+		} \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		REALLOC_CASE(slong, slong, const slong *, slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		REALLOC_CASE(ulong, ulong, const ulong *, ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		REALLOC_CASE(fmpz, fmpz, const fmpz *, fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		REALLOC_CASE(fmpq, fmpq, const fmpq *, fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		REALLOC_CASE(mag, mag_t, mag_srcptr, mag_ptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		REALLOC_CASE(arf, arf_t, arf_srcptr, arf_ptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		REALLOC_CASE(acf, acf_t, acf_srcptr, acf_ptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		REALLOC_CASE(arb, arb_t, arb_srcptr, arb_ptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		REALLOC_CASE(acb, acb_t, acb_srcptr, acb_ptr);
+		break;
+	default:
+		return R_NilValue;
+	}
+
+#undef REALLOC_CASE
+
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
+	UNPROTECT(1);
+	return ans;
+}
+
+/* FIXME: clearly suboptimal for 32-bit 'ulong' */
 SEXP R_flint_rep_each(SEXP object, SEXP s_each)
 {
 	R_flint_class_t class = R_flint_get_class(object);
@@ -353,7 +428,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each)
 	if (each > 0 && nx > (unsigned long long int) -1 / each)
 		Rf_error(_("value length would exceed maximum %llu"),
 		         (unsigned long long int) -1);
-	ny = nx * each;
+	ny = nx * each;;
 
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -425,7 +500,7 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout)
 
 	if (R_flint_get_length(s_lengthout) != 1)
 		Rf_error(_("length(%s) not equal to 1 in '%s'"),
-		         "lengthout", "rep");
+		         "length.out", "rep");
 	ny = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
 	if (ny == 0)
 		q = r = 0;

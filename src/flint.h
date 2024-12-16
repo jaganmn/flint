@@ -32,6 +32,8 @@
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
 
+#define slong_zero(rop) *(rop) = 0
+#define ulong_zero(rop) *(rop) = 0U
 #define slong_set(rop, op) *(rop) = *(op)
 #define ulong_set(rop, op) *(rop) = *(op)
 #define slong_equal(rop, op) (*(rop) == *(op))
