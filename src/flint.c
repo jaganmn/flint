@@ -139,7 +139,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript)
 #define SUBSCRIPT_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_malloc(ny * sizeof(elt_t)) : 0); \
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
@@ -213,7 +213,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 	do { \
 		xptr_t v__ = (xptr_t) v; \
 		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_malloc(ny * sizeof(elt_t)) : 0); \
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
@@ -354,7 +354,7 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 #define REALLOC_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_malloc(ny * sizeof(elt_t)) : 0); \
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
@@ -433,7 +433,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each)
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_malloc(ny * sizeof(elt_t)) : 0); \
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
@@ -514,7 +514,7 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout)
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_malloc(ny * sizeof(elt_t)) : 0); \
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
@@ -605,7 +605,7 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times)
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_malloc(ny * sizeof(elt_t)) : 0); \
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
