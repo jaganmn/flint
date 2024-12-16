@@ -4,7 +4,7 @@ importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
 exportClasses(flint, slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)
 exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
               Math2, Ops, Summary, all.equal, anyNA, as.raw, as.logical,
-              as.integer, as.numeric, as.complex, as.list,
+              as.integer, as.numeric, as.complex, as.character, as.list,
               as.expression, as.vector, coerce, format, initialize,
               is.finite, is.infinite, is.na, is.nan, length, "length<-",
               log, mean, print, rep, show)

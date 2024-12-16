@@ -6,7 +6,7 @@
 ** DONE abandon 'nflint' and subclasses
 ** DONE methods for !, is.na, is.nan, is.finite, is.infinite
 ** DONE export, document Num, Den, Mid, Rad, Real, Imag
-** TODO methods for as.character using format
+** DONE methods for as.character using format
 ** TODO initialization with character vectors
 ** TODO methods for all.equal
 ** TODO methods for c

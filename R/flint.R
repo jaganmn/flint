@@ -248,6 +248,10 @@ setMethod("as.complex",
           c(x = "flint"),
           function (x, ...) as.vector(x, "complex"))
 
+setMethod("as.character",
+          c(x = "flint"),
+          function (x, ...) format(x, digits = 15L, rnd = "N"))
+
 setMethod("as.list",
           c(x = "flint"),
           function (x, ...) as.vector(x, "list"))

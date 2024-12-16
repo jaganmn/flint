@@ -10,6 +10,7 @@
 \alias{as.double,flint-method} % stub
 \alias{as.numeric,flint-method}
 \alias{as.complex,flint-method}
+\alias{as.character,flint-method}
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
 \alias{length,flint-method}
@@ -76,6 +77,12 @@
       Note that \code{as.double} dispatches internally the method for
       \code{as.numeric}, so there is no method for \code{as.double};
       see also \code{\link{as.numeric}}, section \sQuote{S4 Methods}.}
+    \item{\code{as.character}}{
+      \code{signature(x = "flint")}:\cr
+      returns the value of
+      \code{\link[=format-methods]{format}(x, digits = 15L, rnd = "N")}.
+      where 15 is chosen to match the internal default method; see
+      \code{\link{as.character}}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
       returns an integer vector of length 1 giving the object length.

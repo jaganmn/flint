@@ -108,11 +108,12 @@
       \code{Ops}, \code{Rad}, \code{Rad<-}, \code{Real}, \code{Real<-},
       \code{Summary}, \code{all.equal}, \code{anyNA}, \code{as.raw},
       \code{as.logical}, \code{as.integer}, \code{as.numeric},
-      \code{as.complex}, \code{as.list}, \code{as.expression},
-      \code{as.vector}, \code{coerce}, \code{format}, \code{initialize},
-      \code{is.finite}, \code{is.infinite}, \code{is.na}, \code{is.nan},
-      \code{length}, \code{length<-}, \code{mean}, \code{print},
-      \code{rep}, and \code{show}.
+      \code{as.complex}, \code{as.character}, \code{as.list},
+      \code{as.expression}, \code{as.vector}, \code{coerce},
+      \code{format}, \code{initialize}, \code{is.finite},
+      \code{is.infinite}, \code{is.na}, \code{is.nan}, \code{length},
+      \code{length<-}, \code{mean}, \code{print}, \code{rep}, and
+      \code{show}.
     }
   }
   \subsection{New Features}{
