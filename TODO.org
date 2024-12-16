@@ -11,12 +11,11 @@
 ** TODO methods for all.equal
 ** TODO methods for c
 ** TODO methods for length<-
-** DONE methods for mean
 ** DONE methods for rep
+** DONE methods for mean
 ** TODO methods for sort
 ** TODO methods for Summary, mean not ignoring '...'
 ** TODO x[i] <- value should conditionally promote 'x' to class(value)
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
-** TODO random generation of 'flint' objects, partly for testing
-** DONE constructor functions to replace direct 'new'
+** DONE export, document class generator functions
