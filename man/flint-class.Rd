@@ -90,6 +90,20 @@
       prints \code{\link{format}(x)} and returns \code{x} invisibly.
       For more options, consider \code{print(format(x, \dots), \dots)}
       instead of \code{print(x, \dots)}.}
+    \item{\code{rep}}{
+      \code{signature(x = "flint")}:\cr
+      repeats \code{x} (or elements of \code{x}) according to optional
+      arguments \code{times}, \code{length.out}, and \code{each}.  The
+      behaviour is parallel to that of the internal default method,
+      hence see \code{\link{rep}}.  One difference is that
+      \code{rep(\var{0-length}, length.out=\var{nonzero})} signals an
+      error, because the underlying \proglang{C} types have no
+      representation for missing values.  Note that the optional
+      arguments are coerced to \code{\linkS4class{ulong}} and so are
+      constrained to its range.  (Ideally, the optional arguments would
+      have 64-bit range even for 32-bit \code{ulong}.  If this
+      \dQuote{ideal} matters to you, then please submit a feature
+      request using \code{\link{bug.report}(package = "flint")}.)}
     \item{\code{show}}{
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}
