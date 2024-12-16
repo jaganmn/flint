@@ -16,6 +16,7 @@
 \alias{as.expression,flint-method}
 \alias{length,flint-method}
 \alias{print,flint-method}
+\alias{rep,flint-method}
 \alias{show,flint-method}
 \title{Class of FLINT-Type Vectors}
 \docType{class}

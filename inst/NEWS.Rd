@@ -7,7 +7,7 @@
       \item The package is titled \dQuote{Fast Library for Number
         Theory}, matching \acronym{FLINT}.
 
-      \item Mikael Jagan is the maintainer.
+      \item Mikael Jagan is the maintainer and sole author.
 
       \item \code{Depends: R (>= 4.3)} mainly for KaTeX support when
       rendering Rd to HTML and \samp{amsmath} support when rendering Rd
@@ -111,7 +111,8 @@
       \code{as.complex}, \code{as.list}, \code{as.expression},
       \code{as.vector}, \code{coerce}, \code{format}, \code{initialize},
       \code{is.finite}, \code{is.infinite}, \code{is.na}, \code{is.nan},
-      \code{length}, \code{mean}, \code{print}, and \code{show}.
+      \code{length}, \code{mean}, \code{print}, and \code{rep},
+      \code{show}.
     }
   }
   \subsection{New Features}{

@@ -283,6 +283,19 @@ setMethod("print",
               invisible(x)
           })
 
+## FIXME: clearly suboptimal for 32-bit 'ulong'
+setMethod("rep",
+          c(x = "flint"),
+          function(x, times, length.out, each, ...) {
+              if (!missing(each))
+                  x <- .Call(R_flint_rep_each, x, as(each, "ulong"))
+              if (!missing(length.out))
+                  x <- .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"))
+              else if (!missing(times))
+                  x <- .Call(R_flint_rep_times, x, as(times, "ulong"))
+              x
+          })
+
 setMethod("show",
           c(object = "flint"),
           function (object) {

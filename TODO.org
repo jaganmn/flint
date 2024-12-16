@@ -10,7 +10,7 @@
 ** TODO methods for c
 ** TODO methods for length<-
 ** DONE methods for mean
-** TODO methods for rep
+** DONE methods for rep
 ** TODO methods for sort
 ** TODO methods for Summary, mean not ignoring '...'
 ** TODO x[i] <- value should conditionally promote 'x' to class(value)

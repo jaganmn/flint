@@ -140,6 +140,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript)
 	do { \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
 		if (TYPEOF(subscript) == INTSXP) { \
 			const int *s__ = INTEGER_RO(subscript); \
 			for (j = 0; j < ny; ++j) \
@@ -149,9 +152,6 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript)
 			for (j = 0; j < ny; ++j) \
 				name##_set(y__ + j, x__ + (unsigned long long int) s__[j] - 1); \
 		} \
-		y = (void *) y__; \
-		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
-		what = #name; \
 	} while (0)
 
 	switch (class) {
@@ -214,6 +214,9 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 		xptr_t v__ = (xptr_t) v; \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
 		if (subscript == R_NilValue) { \
 			for (j = 0; j < ny; ++j) \
 				name##_set(y__ + j, v__ + j % nv); \
@@ -230,9 +233,6 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 					name##_set(y__ + (unsigned long long int) s__[j] - 1, v__ + j % nv); \
 			} \
 		} \
-		y = (void *) y__; \
-		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
-		what = #name; \
 	} while (0)
 
 	switch (class) {
@@ -332,4 +332,264 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 #undef IDENTICAL_CASE
 
 	return Rf_ScalarLogical(1);
+}
+
+/* FIXME: clearly suboptimal for 32-bit 'ulong' */
+SEXP R_flint_rep_each(SEXP object, SEXP s_each)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y;
+	unsigned long long int j,
+		nx = R_flint_get_length(object),
+		ny = 0;
+	R_CFinalizer_t f;
+	const char *what;
+
+	if (R_flint_get_length(s_each) != 1)
+		Rf_error(_("length(%s) not equal to 1 in '%s'"),
+		         "each", "rep");
+	ulong i, each = ((ulong *) R_flint_get_pointer(s_each))[0];
+	if (each > 0 && nx > (unsigned long long int) -1 / each)
+		Rf_error(_("value length would exceed maximum %llu"),
+		         (unsigned long long int) -1);
+	ny = nx * each;
+
+#define REP_CASE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+		for (j = 0; j < nx; ++j) { \
+			for (i = 0; i < each; ++i) { \
+				name##_set(y__, x__); \
+				y__++; \
+			} \
+			x__++; \
+		} \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		REP_CASE(slong, slong, const slong *, slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		REP_CASE(ulong, ulong, const ulong *, ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		REP_CASE(fmpz, fmpz, const fmpz *, fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		REP_CASE(fmpq, fmpq, const fmpq *, fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		REP_CASE(mag, mag_t, mag_srcptr, mag_ptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		REP_CASE(arf, arf_t, arf_srcptr, arf_ptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		REP_CASE(acf, acf_t, acf_srcptr, acf_ptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		REP_CASE(arb, arb_t, arb_srcptr, arb_ptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		REP_CASE(acb, acb_t, acb_srcptr, acb_ptr);
+		break;
+	default:
+		return R_NilValue;
+	}
+
+#undef REP_CASE
+
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
+	UNPROTECT(1);
+	return ans;
+}
+
+/* FIXME: clearly suboptimal for 32-bit 'ulong' */
+SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y;
+	unsigned long long int i, j, q, r,
+		nx = R_flint_get_length(object),
+		ny = 0;
+	R_CFinalizer_t f;
+	const char *what;
+
+	if (R_flint_get_length(s_lengthout) != 1)
+		Rf_error(_("length(%s) not equal to 1 in '%s'"),
+		         "lengthout", "rep");
+	ny = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
+	if (ny == 0)
+		q = r = 0;
+	else {
+		if (nx == 0)
+			Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
+			         "x");
+		q = ny / nx, r = ny % nx;
+	}
+
+#define REP_CASE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+		for (i = 0; i < q; ++i) { \
+			for (j = 0; j < nx; ++j) { \
+				name##_set(y__, x__ + j); \
+				y__++; \
+			} \
+		} \
+		for (j = 0; j < r; ++j) { \
+			name##_set(y__, x__ + j); \
+			y__++; \
+		} \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		REP_CASE(slong, slong, const slong *, slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		REP_CASE(ulong, ulong, const ulong *, ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		REP_CASE(fmpz, fmpz, const fmpz *, fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		REP_CASE(fmpq, fmpq, const fmpq *, fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		REP_CASE(mag, mag_t, mag_srcptr, mag_ptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		REP_CASE(arf, arf_t, arf_srcptr, arf_ptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		REP_CASE(acf, acf_t, acf_srcptr, acf_ptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		REP_CASE(arb, arb_t, arb_srcptr, arb_ptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		REP_CASE(acb, acb_t, acb_srcptr, acb_ptr);
+		break;
+	default:
+		return R_NilValue;
+	}
+
+#undef REP_CASE
+
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
+	UNPROTECT(1);
+	return ans;
+}
+
+/* FIXME: clearly suboptimal for 32-bit 'ulong' */
+SEXP R_flint_rep_times(SEXP object, SEXP s_times)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y;
+	unsigned long long int j,
+		nx = R_flint_get_length(object),
+		ny = 0;
+	R_CFinalizer_t f;
+	const char *what;
+
+	unsigned long long int ntimes = R_flint_get_length(s_times);
+	if (ntimes != 1 && ntimes != nx)
+		Rf_error(_("length(%s) not equal to 1 or length(%s) in '%s'"),
+		         "times", "x", "rep");
+	ulong i, t;
+	const ulong *times = (ulong *) R_flint_get_pointer(s_times);
+	if (ntimes == 1) {
+		if (times[0] > 0 && nx > (unsigned long long int) -1 / times[0])
+			Rf_error(_("value length would exceed maximum %llu"),
+			         (unsigned long long int) -1);
+		ny = nx * times[0];
+	} else {
+		for (j = 0; j < ntimes; ++j) {
+			if (times[j] > (unsigned long long int) -1 - ny)
+			Rf_error(_("value length would exceed maximum %llu"),
+			         (unsigned long long int) -1);
+			ny += times[j];
+		}
+	}
+
+#define REP_CASE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__ = (xptr_t) x; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+		if (ntimes == 1) { \
+			t = times[0]; \
+			for (i = 0; i < t; ++i) { \
+				for (j = 0; j < nx; ++j) { \
+					name##_set(y__, x__ + j); \
+					y__++; \
+				} \
+			} \
+		} else { \
+			for (j = 0; j < nx; ++j) { \
+				t = times[j]; \
+				for (i = 0; i < t; ++i) { \
+					name##_set(y__, x__); \
+					y__++; \
+				} \
+				x__++; \
+			} \
+		} \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		REP_CASE(slong, slong, const slong *, slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		REP_CASE(ulong, ulong, const ulong *, ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		REP_CASE(fmpz, fmpz, const fmpz *, fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		REP_CASE(fmpq, fmpq, const fmpq *, fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		REP_CASE(mag, mag_t, mag_srcptr, mag_ptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		REP_CASE(arf, arf_t, arf_srcptr, arf_ptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		REP_CASE(acf, acf_t, acf_srcptr, acf_ptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		REP_CASE(arb, arb_t, arb_srcptr, arb_ptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		REP_CASE(acb, acb_t, acb_srcptr, acb_ptr);
+		break;
+	default:
+		return R_NilValue;
+	}
+
+#undef REP_CASE
+
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
+	UNPROTECT(1);
+	return ans;
 }

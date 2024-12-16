@@ -7,7 +7,7 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
               as.integer, as.numeric, as.complex, as.list,
               as.expression, as.vector, coerce, format, initialize,
               is.finite, is.infinite, is.na, is.nan, length, log, mean,
-              print, show)
+              print, rep, show)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
 export(flintBits,
