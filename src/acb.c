@@ -64,7 +64,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		n = asLength(s_length, __func__);
 	else
 		n = 0;
-	acb_ptr y = (acb_ptr) ((n) ? flint_malloc(n * sizeof(acb_t)) : 0);
+	acb_ptr y = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 	if (s_real != R_NilValue || s_imag != R_NilValue) {
 		if (s_real != R_NilValue) {
@@ -235,7 +235,7 @@ SEXP R_flint_acb_part(SEXP object, SEXP s_op)
 	acb_srcptr x = (acb_ptr) R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("arb"));
-	arb_ptr y = (arb_ptr) ((n) ? flint_malloc(n * sizeof(arb_t)) : 0);
+	arb_ptr y = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
 	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 	if (op == 0)
 	for (j = 0; j < n; ++j)
@@ -309,7 +309,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("acb");
-		acb_ptr z = (acb_ptr) ((n) ? flint_malloc(n * sizeof(acb_t)) : 0);
+		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -438,7 +438,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*   "signif" */
 	{
 		SEXP ans = newObject("acb");
-		acb_ptr z = (acb_ptr) ((n) ? flint_malloc(n * sizeof(acb_t)) : 0);
+		acb_ptr z = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {
 		case  1: /*        "+" */
@@ -770,7 +770,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int narm = LOGICAL_RO(s_dots)[0];
 		SEXP ans = newObject("acb");
 		size_t s = (op == 52) ? 2 : 1;
-		acb_ptr z = (acb_ptr) flint_malloc(s * sizeof(acb_t));
+		acb_ptr z = (acb_ptr) flint_calloc(s, sizeof(acb_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {
 		case 53: /*     "sum" */
@@ -908,7 +908,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 13: /*      "abs" */
 	{
 		SEXP ans = newObject("arb");
-		arb_ptr z = (arb_ptr) ((n) ? flint_malloc(n * sizeof(arb_t)) : 0);
+		arb_ptr z = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
 		case  9: /*       "Re" */

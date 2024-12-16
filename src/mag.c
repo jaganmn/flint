@@ -46,7 +46,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		n = asLength(s_length, __func__);
 	else
 		n = 0;
-	mag_ptr y = (mag_ptr) ((n) ? flint_malloc(n * sizeof(mag_t)) : 0);
+	mag_ptr y = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
 	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -342,7 +342,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("mag");
-		mag_ptr z = (mag_ptr) ((n) ? flint_malloc(n * sizeof(mag_t)) : 0);
+		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -492,7 +492,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("mag");
-		mag_ptr z = (mag_ptr) ((n) ? flint_malloc(n * sizeof(mag_t)) : 0);
+		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case  1: /*       "+" */
@@ -773,7 +773,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("mag");
 		size_t s = (op == 52) ? 2 : 1;
-		mag_ptr z = (mag_ptr) flint_malloc(s * sizeof(mag_t));
+		mag_ptr z = (mag_ptr) flint_calloc(s, sizeof(mag_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 50: /*     "min" */
