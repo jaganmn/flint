@@ -174,6 +174,14 @@ arb(\dots)
     \item{\code{mean}}{
       \code{signature(x = "arb")}:\cr
       returns the arithmetic mean.}
+    \item{\code{xtfrm}}{
+      \code{signature(x = "arb")}:\cr
+      signals an error indicating that \code{<=} is not a total order
+      on the range of \code{arb}: \code{a <= b || b <= a} is is not
+      \code{TRUE} for all finite \code{a} and \code{b} of class
+      \code{arb}.  Thus, direct sorting of \code{arb} is not supported.
+      Users wanting to order the \emph{midpoints} should operate on
+      \code{\link{Mid}(x)}.}
   }
 }
 \seealso{

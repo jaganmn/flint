@@ -30,6 +30,7 @@
 \alias{is.nan,acb-method}
 \alias{log,acb-method}
 \alias{mean,acb-method}
+\alias{xtfrm,acb-method}
 \title{Arbitrary Precision Floating-Point Complex Numbers with Error Bounds}
 \docType{class}
 \description{
@@ -181,6 +182,16 @@ acb(\dots)
     \item{\code{mean}}{
       \code{signature(x = "acb")}:\cr
       returns the arithmetic mean.}
+    \item{\code{xtfrm}}{
+      \code{signature(x = "acb")}:\cr
+      signals an error indicating that \code{<=} is not a total order
+      on the range of \code{arb}: \code{a <= b || b <= a} is is not
+      \code{TRUE} for all finite \code{a} and \code{b} of class
+      \code{arb}.  Thus, direct sorting of \code{acb}, which is based
+      on \code{arb}, is not supported.  Users wanting to order the
+      \emph{midpoints} of the real and imaginary parts should operate on
+      \code{\link{Mid}(\link{Real}(x))} and
+      \code{\link{Mid}(\link{Imag}(x))}.}
   }
 }
 \seealso{

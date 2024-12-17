@@ -7,7 +7,7 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
               as.integer, as.numeric, as.complex, as.character, as.list,
               as.expression, as.vector, c, coerce, format, initialize,
               is.finite, is.infinite, is.na, is.nan, length, "length<-",
-              log, mean, print, rep, show)
+              log, mean, print, rep, show, xtfrm)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
 export(slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)

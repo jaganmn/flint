@@ -14,7 +14,9 @@
 ** DONE methods for length<-
 ** DONE methods for rep
 ** DONE methods for mean
-** TODO methods for sort
+** DONE methods for xtfrm
+** TODO methods for mtfrm
+** TODO methods for unique, duplicated, anyDuplicated using mtfrm
 ** TODO methods for Summary, mean not ignoring '...'
 ** TODO x[i] <- value should conditionally promote 'x' to class(value)
 ** TODO document details of operations on real, complex balls

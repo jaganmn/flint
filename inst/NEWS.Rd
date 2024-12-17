@@ -112,8 +112,8 @@
       \code{as.expression}, \code{as.vector}, \code{coerce},
       \code{format}, \code{initialize}, \code{is.finite},
       \code{is.infinite}, \code{is.na}, \code{is.nan}, \code{length},
-      \code{length<-}, \code{mean}, \code{print}, \code{rep}, and
-      \code{show}.
+      \code{length<-}, \code{mean}, \code{print}, \code{rep},
+      \code{show}, and \code{xtfrm}.
     }
   }
   \subsection{New Features}{

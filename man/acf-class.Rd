@@ -29,6 +29,7 @@
 \alias{is.na,acf-method}
 \alias{is.nan,acf-method}
 \alias{mean,acf-method}
+\alias{xtfrm,acf-method}
 \title{Arbitrary Precision Floating-Point Complex Numbers}
 \docType{class}
 \description{
@@ -171,6 +172,11 @@ acf(\dots)
     \item{\code{mean}}{
       \code{signature(x = "acf")}:\cr
       returns the arithmetic mean.}
+    \item{\code{xtfrm}}{
+      \code{signature(x = "acf")}:\cr
+      returns a numeric vector that sorts in the same order as \code{x}.
+      The permutation \code{order(xtfrm(x), \dots)} orders \code{x}
+      first by its real part then by its imaginary part.}
   }
 }
 \seealso{

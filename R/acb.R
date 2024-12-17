@@ -203,3 +203,10 @@ setMethod("mean",
           c(x = "acb"),
           function (x, na.rm = FALSE, ...)
               .Call(R_flint_acb_ops1, "mean", x, as.logical(na.rm)))
+
+setMethod("xtfrm",
+          c(x = "acb"),
+          function (x)
+              stop(gettextf("'%s' is not a total order on the range of '%s'",
+                            "<=", "arb"),
+                   domain = NA))

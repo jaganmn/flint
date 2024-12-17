@@ -190,3 +190,13 @@ setMethod("mean",
           c(x = "acf"),
           function (x, na.rm = FALSE, ...)
               .Call(R_flint_acf_ops1, "mean", x, as.logical(na.rm)))
+
+setMethod("xtfrm",
+          c(x = "acf"),
+          function (x) {
+              r <- xtfrm(Real(x))
+              i <- xtfrm(Imag(x))
+              o <- order(r, i)
+              o[o] <- seq_along(o)
+              o
+          })
