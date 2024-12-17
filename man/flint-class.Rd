@@ -4,6 +4,7 @@
 \alias{[<-,flint,ANY,missing-method}
 \alias{[[,flint,ANY,missing-method}
 \alias{[[<-,flint,ANY,missing-method}
+\alias{anyDuplicated,flint-method}
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
@@ -15,11 +16,14 @@
 \alias{as.expression,flint-method}
 \alias{c,flint-method}
 \alias{coerce,ANY,flint-method}
+\alias{duplicated,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
+\alias{mtfrm,flint-method}
 \alias{print,flint-method}
 \alias{rep,flint-method}
 \alias{show,flint-method}
+\alias{unique,flint-method}
 \title{Class of FLINT-Type Vectors}
 \docType{class}
 \description{
@@ -72,6 +76,9 @@
       \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
       equivalent to code \code{[<-} with the restriction that \code{i}
       must index exactly one element.}
+    \item{\code{anyDuplicated}}{
+      \code{signature(x = "flint")}:\cr
+      returns \code{anyDuplicated(mtfrm(x), \dots)}.}
     \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}, \code{as.list}, \code{as.expression}}{
       \code{signature(x = "flint")}:\cr
       returns the value of \code{as.vector(x, mode = *)}.  Methods for
@@ -95,6 +102,9 @@
       coerces atomic (except character) vectors \code{from} to the most
       specific subclass of \code{flint} containing the range of
       \code{typeof(from)}.}
+    \item{\code{duplicated}}{
+      \code{signature(x = "flint")}:\cr
+      returns \code{duplicated(mtfrm(x), \dots)}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
       returns an integer vector of length 1 giving the object length.
@@ -115,6 +125,12 @@
       \code{ulong}.  If this \dQuote{ideal} matters to you, then please
       submit a feature request using
       \code{\link{bug.report}(package = "flint")}.)}
+    \item{\code{mtfrm}}{
+      \code{signature(x = "flint")}:\cr
+      returns \code{format(x, base = 62L, digits = 0L)}, a character
+      vector representing the elements of \code{x} exactly in base 62
+      (chosen over smaller bases to reduce the number of characters in
+      the output); see also \code{\link{format-methods}}.}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
       prints \code{\link{format}(x)} and returns \code{x} invisibly.
@@ -136,6 +152,9 @@
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}
       invisibly.}
+    \item{\code{unique}}{
+      \code{signature(x = "flint")}:\cr
+      returns \code{x[!duplicated(x, \dots)]}.}
   }
 }
 \seealso{

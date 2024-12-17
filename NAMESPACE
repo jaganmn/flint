@@ -2,12 +2,14 @@ useDynLib(flint, .registration = TRUE)
 importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
            initialize, new, setAs, setClass, setMethod, show)
 exportClasses(flint, slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)
-exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
-              Math2, Ops, Summary, all.equal, anyNA, as.raw, as.logical,
-              as.integer, as.numeric, as.complex, as.character, as.list,
-              as.expression, as.vector, c, coerce, format, initialize,
-              is.finite, is.infinite, is.na, is.nan, length, "length<-",
-              log, mean, print, rep, show, xtfrm)
+exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
+              anyDuplicated, anyNA, as.raw, as.logical, as.integer,
+              as.numeric, as.complex, as.character, as.list,
+              as.expression, as.vector, c, duplicated, format,
+              initialize, is.finite, is.infinite, is.na, is.nan, length,
+              "length<-", log, mean, mtfrm, print, rep, show, unique,
+              xtfrm)
+exportMethods(Complex, Math, Math2, Ops, Summary, coerce)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
 export(slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)

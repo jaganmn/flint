@@ -223,6 +223,11 @@ setMethod("[[<-",
               .Call(R_flint_subassign, x, i, value)
           })
 
+setMethod("anyDuplicated",
+          c(x = "flint"),
+          function (x, incomparables = FALSE, ...)
+              anyDuplicated(mtfrm(x), incomparables = incomparables, ...))
+
 setMethod("as.raw",
           c(x = "flint"),
           function (x     ) as.vector(x, "raw"))
@@ -328,6 +333,11 @@ setAs("ANY", "flint",
                                type., "flint"),
                       domain = NA)))
 
+setMethod("duplicated",
+          c(x = "flint"),
+          function (x, incomparables = FALSE, ...)
+              duplicated(mtfrm(x), incomparables = incomparables, ...))
+
 setMethod("length",
           c(x = "flint"),
           function (x)
@@ -337,6 +347,11 @@ setMethod("length<-",
           c(x = "flint"),
           function (x, value)
               .Call(R_flint_realloc, x, as(value, "ulong")))
+
+setMethod("mtfrm",
+          c(x = "flint"),
+          function (x)
+              format(x, base = 62L, digits = 0L))
 
 setMethod("print",
           c(x = "flint"),
@@ -380,3 +395,8 @@ setMethod("show",
               print(object, quote = FALSE)
               invisible(NULL)
           })
+
+setMethod("unique",
+          c(x = "flint"),
+          function (x, incomparables = FALSE, ...)
+              x[!duplicated(x, incomparables = incomparables, ...)])

@@ -30,6 +30,7 @@
 \alias{is.nan,arb-method}
 \alias{log,arb-method}
 \alias{mean,arb-method}
+\alias{xtfrm,arb-method}
 \title{Arbitrary Precision Floating-Point Real Numbers with Error Bounds}
 \docType{class}
 \description{
