@@ -9,7 +9,8 @@
 ** DONE methods for as.character using format
 ** TODO initialization with character vectors
 ** TODO methods for all.equal
-** TODO methods for c
+** DONE coercion to the virtual class
+** DONE methods for c
 ** DONE methods for length<-
 ** DONE methods for rep
 ** DONE methods for mean
@@ -20,3 +21,4 @@
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 ** DONE export, document class generator functions
 ** TODO configure tests for many missing acf_*
+** TODO internal function 'uu' to replace as(., "ulong")

@@ -13,6 +13,8 @@
 \alias{as.character,flint-method}
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
+\alias{c,flint-method}
+\alias{coerce,ANY,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
 \alias{print,flint-method}
@@ -83,6 +85,16 @@
       \code{\link[=format-methods]{format}(x, digits = 15L, rnd = "N")}.
       where 15 is chosen to match the internal default method; see
       \code{\link{as.character}}.}
+    \item{\code{c}}{
+      \code{signature(x = "flint")}:\cr
+      returns \code{\link{c.flint}(x, \dots)}, the concatenation of the
+      arguments.  Function \code{c.flint} is exported to work around the
+      fact that \code{\link{c}(x, \dots)} dispatches only on \code{x}.}
+    \item{\code{coerce}}{
+      \code{signature(from = "ANY", to = "flint")}:\cr
+      coerces atomic (except character) vectors \code{from} to the most
+      specific subclass of \code{flint} containing the range of
+      \code{typeof(from)}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
       returns an integer vector of length 1 giving the object length.

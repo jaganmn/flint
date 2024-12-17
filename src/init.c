@@ -70,6 +70,7 @@ const char *R_flint_ops1[] =
 	NULL
 };
 
+SEXP R_flint_bind(SEXP);
 SEXP R_flint_bits(void);
 SEXP R_flint_class(SEXP);
 SEXP R_flint_identical(SEXP, SEXP);
@@ -163,6 +164,7 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
+	CALL_ENTRY(R_flint_bind, 1),
 	CALL_ENTRY(R_flint_bits, 0),
 	CALL_ENTRY(R_flint_class, 1),
 	CALL_ENTRY(R_flint_identical, 2),

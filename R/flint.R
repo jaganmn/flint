@@ -260,6 +260,74 @@ setMethod("as.expression",
           c(x = "flint"),
           function (x, ...) as.vector(x, "expression"))
 
+## MJ: we export this function and curse the author of DispatchAnyOrEval
+c.flint <-
+function (...) {
+    c.flint.class <-
+    function (x)
+        switch(type. <- typeof(x),
+               "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                                                                                           type.,
+               "S4" =
+                   if (is.na(class. <- flintClass(x)))
+                       stop(gettextf("argument of unsupported class %s in '%s'",
+                                     class(x), "c.flint"),
+                            domain = NA)
+                   else class.,
+               stop(gettextf("argument of unsupported type '%s' in '%s'",
+                             type., "c.flint"),
+                    domain = NA))
+    n <- nargs()
+    if (n == 0L)
+        return(NULL)
+    nms <- c("NULL", "raw", "logical", "integer", "double", "complex",
+             "slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+             "arb", "acb")
+    s <- `names<-`(seq_len(15L), nms)
+    args <- list(...)
+    labs <- s[vapply(args, c.flint.class, "")]
+    if (max(labs) <= 6L)
+        return(c(...))
+    t <- `names<-`(tabulate(labs, 15L), nms)
+    toClass <-
+        if (t[["arb"]] || t[["acb"]]) {
+            if (t[["complex"]] || t[["acf"]] || t[["acb"]])
+                "acb"
+            else "arb"
+        }
+        else if (t[["complex"]] || t[["acf"]])
+            "acf"
+        else if (t[["double"]] || t[["mag"]] || t[["arf"]]) {
+            if (t[["double"]] || t[["arf"]])
+                "arf"
+            else "mag"
+        }
+        else if (t[["fmpq"]])
+            "fmpq"
+        else if (t[["fmpz"]] || (t[["ulong"]] && t[["slong"]]))
+            "fmpz"
+        else if (!(t[["slong"]] || t[["integer"]] || t[["logical"]]))
+            "ulong"
+        else "slong"
+    .Call(R_flint_bind, lapply(args, as, toClass))
+}
+
+setMethod("c",
+          c(x = "flint"),
+          function (x, ...)
+              c.flint(x, ...))
+
+setAs("ANY", "flint",
+      function (from)
+          switch(type. <- typeof(from),
+                 "raw" = ulong(x = from),
+                 "logical" =, "integer" = slong(x = from),
+                 "double" = arf(x = from),
+                 "complex" = acf(x = from),
+                 stop(gettextf("coercion from '%s' to '%s' is not yet implemented",
+                               type., "flint"),
+                      domain = NA)))
+
 setMethod("length",
           c(x = "flint"),
           function (x)

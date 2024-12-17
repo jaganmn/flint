@@ -5,13 +5,14 @@ exportClasses(flint, slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)
 exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", Complex, Math,
               Math2, Ops, Summary, all.equal, anyNA, as.raw, as.logical,
               as.integer, as.numeric, as.complex, as.character, as.list,
-              as.expression, as.vector, coerce, format, initialize,
+              as.expression, as.vector, c, coerce, format, initialize,
               is.finite, is.infinite, is.na, is.nan, length, "length<-",
               log, mean, print, rep, show)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
 export(slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)
-export(flintBits,
+export(c.flint,
+       flintBits,
        flintIdentical,
        flintPrec,
        flintRnd,
@@ -32,3 +33,4 @@ export(flintBits,
        acb_hypgeom_polygamma,
        arb_hypgeom_2f1,
        acb_hypgeom_2f1)
+S3method(c, flint)

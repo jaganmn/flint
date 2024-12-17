@@ -352,6 +352,85 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 	return Rf_ScalarLogical(1);
 }
 
+SEXP R_flint_bind(SEXP dots)
+{
+	R_xlen_t a, ndots = XLENGTH(dots);
+	if (ndots == 0)
+		return R_NilValue;
+	R_flint_class_t class = R_flint_get_class(VECTOR_ELT(dots, 0));
+	void *y;
+	unsigned long long int j, nx, ny = 0;
+	R_CFinalizer_t f;
+	const char *what;
+
+	SEXP elt;
+	for (a = 0; a < ndots; ++a) {
+		elt = VECTOR_ELT(dots, a);
+		nx = R_flint_get_length(elt);
+		if (nx > (unsigned long long int) -1 - ny)
+			Rf_error(_("value length would exceed maximum %llu"),
+			         (unsigned long long int) -1);
+		ny += nx;
+	}
+
+#define BIND_CASE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__; \
+		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
+		y = (void *) y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+		for (a = 0; a < ndots; ++a) { \
+			elt = VECTOR_ELT(dots, a); \
+			nx = R_flint_get_length(elt); \
+			x__ = (xptr_t) R_flint_get_pointer(elt); \
+			for (j = 0; j < nx; ++j) { \
+				name##_set(y__, x__ + j); \
+				y__++; \
+			} \
+		} \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		BIND_CASE(slong, slong, const slong *, slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		BIND_CASE(ulong, ulong, const ulong *, ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		BIND_CASE(fmpz, fmpz, const fmpz *, fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		BIND_CASE(fmpq, fmpq, const fmpq *, fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		BIND_CASE(mag, mag_t, mag_srcptr, mag_ptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		BIND_CASE(arf, arf_t, arf_srcptr, arf_ptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		BIND_CASE(acf, acf_t, acf_srcptr, acf_ptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		BIND_CASE(arb, arb_t, arb_srcptr, arb_ptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		BIND_CASE(acb, acb_t, acb_srcptr, acb_ptr);
+		break;
+	default:
+		return R_NilValue;
+	}
+
+#undef BIND_CASE
+
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
+	UNPROTECT(1);
+	return ans;
+}
+
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
 SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 {
