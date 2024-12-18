@@ -65,6 +65,10 @@ function (rnd = NULL) {
     else oop
 }
 
+flintSize <-
+function (object)
+    `class<-`(.Call(R_flint_size, object), "object_size")
+
 flintTriple <-
 function (object)
     .Call(R_flint_triple, object)

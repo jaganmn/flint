@@ -81,6 +81,7 @@ SEXP R_flint_realloc(SEXP, SEXP);
 SEXP R_flint_rep_each(SEXP, SEXP);
 SEXP R_flint_rep_lengthout(SEXP, SEXP);
 SEXP R_flint_rep_times(SEXP, SEXP);
+SEXP R_flint_size(SEXP);
 SEXP R_flint_subassign(SEXP, SEXP, SEXP);
 SEXP R_flint_subscript(SEXP, SEXP);
 SEXP R_flint_triple(SEXP);
@@ -175,6 +176,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_rep_each, 2),
 	CALL_ENTRY(R_flint_rep_lengthout, 2),
 	CALL_ENTRY(R_flint_rep_times, 2),
+	CALL_ENTRY(R_flint_size, 1),
 	CALL_ENTRY(R_flint_subassign, 3),
 	CALL_ENTRY(R_flint_subscript, 2),
 	CALL_ENTRY(R_flint_triple, 1),

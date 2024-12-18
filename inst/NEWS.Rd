@@ -145,6 +145,9 @@
       getting and setting the global default precision and rounding
       modes.
 
+      \item \R{} function \code{flintSize} for calculating the number of
+      bytes used by a \code{flint} vector.
+
       \item \R{} function \code{flintVersion} returning a list
       containing header and library versions for \acronym{GNU}
       \acronym{MP}, \acronym{GNU} \acronym{MPFR}, and \acronym{FLINT}.

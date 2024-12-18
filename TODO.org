@@ -1,6 +1,6 @@
 * TODO flint 0.0.1
 
-** TODO flintSize for getting the size of an allocated array
+** DONE flintSize for getting the size of an allocated array
 ** DONE flintIdentical testing for identical-modulo-address
 ** DONE export, document flintIdentical
 ** DONE abandon 'nflint' and subclasses

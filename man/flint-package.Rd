@@ -5,6 +5,7 @@
 \alias{flintIdentical}
 \alias{flintPrec}
 \alias{flintRnd}
+\alias{flintSize}
 \alias{flintVersion}
 \title{\R{} Package \pkg{flint}}
 \docType{package}
@@ -20,6 +21,7 @@ flintBits()
 flintIdentical(object, reference)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
+flintSize(object)
 flintVersion()
 }
 \arguments{
@@ -58,6 +60,16 @@ flintVersion()
   \code{flintPrec} returns the previous default precision.
 
   \code{flintRnd} returns the previous default rounding mode.
+
+  \code{flintSize} returns an upper bound for the number of bytes used
+  by \code{object}, as an object of class \code{object_size} (following
+  function \code{object.size} in package \pkg{utils}).  If no members of
+  the recursive structure share memory, then the upper bound is exact.
+  Recursion starts at the address stored by the \R{} object, not at the
+  address of the object itself.  A corollary is that
+  \code{flintSize(object)} is zero for \code{object} of zero length.
+  Another corollary is that the bytes counted by \code{flintSize} and
+  the bytes counted by \code{\link{object.size}} are disjoint.
 
   \code{flintVersion} returns a named list of numeric versions with
   elements:

@@ -1,3 +1,4 @@
+#include <gmp.h>
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
@@ -764,4 +765,100 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times)
 	R_flint_set(ans, y, ny, f);
 	UNPROTECT(1);
 	return ans;
+}
+
+SEXP R_flint_size(SEXP object)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	unsigned long long int j, n = R_flint_get_length(object);
+	size_t count = 0;
+
+#define fmpz_size(p) \
+	do { \
+		if (COEFF_IS_MPZ(*(p))) { \
+			count += sizeof(mpz_t); \
+			count += mpz_size(COEFF_TO_PTR(*(p))) * sizeof(mp_limb_t); \
+		} \
+	} while (0)
+
+#define fmpq_size(p) \
+	do { \
+		fmpz_size(fmpq_numref(p)); \
+		fmpz_size(fmpq_denref(p)); \
+	} while (0)
+
+#define mag_size(p) \
+	do { \
+		fmpz_size(MAG_EXPREF(p)); \
+	} while (0)
+
+#define arf_size(p) \
+	do { \
+		fmpz_size(ARF_EXPREF(p)); \
+		if (ARF_HAS_PTR(p)) \
+			count += ARF_PTR_ALLOC(p) * sizeof(mp_limb_t); \
+	} while (0)
+
+#define acf_size(p) \
+	do { \
+		arf_size(acf_realref(p)); \
+		arf_size(acf_imagref(p)); \
+	} while (0)
+
+#define arb_size(p) \
+	do { \
+		arf_size(arb_midref(p)); \
+		mag_size(arb_radref(p)); \
+	} while (0)
+
+#define acb_size(p) \
+	do { \
+		arb_size(acb_realref(p)); \
+		arb_size(acb_imagref(p)); \
+	} while (0)
+
+#define SIZE_CASE(name, elt_t, ptr_t) \
+	do { \
+		ptr_t x__ = (ptr_t) x; \
+		count += n * sizeof(elt_t); \
+		for (j = 0; j < n; ++j) \
+			name##_size(x__ + j); \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		count += n * sizeof(slong);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		count += n * sizeof(ulong);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		SIZE_CASE(fmpz, fmpz, const fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		SIZE_CASE(fmpq, fmpq, const fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		SIZE_CASE(mag, mag_t, mag_srcptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		SIZE_CASE(arf, arf_t, arf_srcptr);
+		break;
+	case R_FLINT_CLASS_ACF:
+		SIZE_CASE(acf, acf_t, acf_srcptr);
+		break;
+	case R_FLINT_CLASS_ARB:
+		SIZE_CASE(arb, arb_t, arb_srcptr);
+		break;
+	case R_FLINT_CLASS_ACB:
+		SIZE_CASE(acb, acb_t, acb_srcptr);
+		break;
+	default:
+		return R_NilValue;
+	}
+
+#undef SIZE_CASE
+
+	return Rf_ScalarReal((double) count);
 }
