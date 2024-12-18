@@ -33,7 +33,7 @@ function (value)
                          type.),
                 domain = NA))
 
-.c.flint.class <-
+.c.class <-
 function (x)
     switch(type. <- typeof(x),
            "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
@@ -318,7 +318,7 @@ function (...) {
     if (n == 0L)
         return(NULL)
     args <- list(...)
-    m <- match(flintLike, vapply(args, .c.flint.class, ""), 0L)
+    m <- match(flintLike, vapply(args, .c.class, ""), 0L)
     if (!any(m[7L:length(m)]))
         return(c(...))
     names(m) <- flintLike
