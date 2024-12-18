@@ -1,47 +1,47 @@
 setGeneric("Num",
-           function(q)
+           function (q)
                standardGeneric("Num"))
 
 setGeneric("Num<-",
-           function(q, value)
+           function (q, value)
                standardGeneric("Num<-"))
 
 setGeneric("Den",
-           function(q)
+           function (q)
                standardGeneric("Den"))
 
 setGeneric("Den<-",
-           function(q, value)
+           function (q, value)
                standardGeneric("Den<-"))
 
 setGeneric("Mid",
-           function(x)
+           function (x)
                standardGeneric("Mid"))
 
 setGeneric("Mid<-",
-           function(x, value)
+           function (x, value)
                standardGeneric("Mid<-"))
 
 setGeneric("Rad",
-           function(x)
+           function (x)
                standardGeneric("Rad"))
 
 setGeneric("Rad<-",
-           function(x, value)
+           function (x, value)
                standardGeneric("Rad<-"))
 
 setGeneric("Real",
-           function(z)
+           function (z)
                standardGeneric("Real"))
 
 setGeneric("Real<-",
-           function(z, value)
+           function (z, value)
                standardGeneric("Real<-"))
 
 setGeneric("Imag",
-           function(z)
+           function (z)
                standardGeneric("Imag"))
 
 setGeneric("Imag<-",
-           function(z, value)
+           function (z, value)
                standardGeneric("Imag<-"))

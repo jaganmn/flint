@@ -383,7 +383,7 @@ setMethod("print",
 ## FIXME: clearly suboptimal for 32-bit 'ulong'
 setMethod("rep",
           c(x = "flint"),
-          function(x, times, length.out, each, ...) {
+          function (x, times, length.out, each, ...) {
               if (!missing(each))
                   x <- .Call(R_flint_rep_each, x, as(each, "ulong"))
               if (!missing(length.out))
