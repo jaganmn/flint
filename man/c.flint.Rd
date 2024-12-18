@@ -23,7 +23,8 @@
   If at least one argument is a \code{flint} vector, then the return
   value is a \code{flint} vector.  The length is the sum of the lengths
   of the arguments.  The class is the most specific subclass of
-  \code{flint} containing the ranges of the classes of the arguments.
+  \code{flint} whose range contains the ranges of the classes of the
+  arguments.
 
   If none of the arguments is a \code{flint} vector, then the return
   value is \code{c(\dots)}.

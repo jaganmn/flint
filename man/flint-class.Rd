@@ -58,16 +58,19 @@
       be logical, integer, or double or missing or \code{NULL}.  It is
       an error to supply \code{NA} or out of bounds subscripts: the
       underlying \proglang{C} types have no representation for missing
-      values.}
+      values.  The class of the return value is a superclass of (if not
+      exactly) the class of \code{x}.}
     \item{\code{[<-}}{
       \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
-      returns a \code{flint} vector identical to \code{x} but with
-      elements indexed by \code{i} (the \dQuote{subscript}) set to
-      values from \code{value} (which is coerced to the class of
-      \code{x}).  The subscript can be logical, integer, or double or
-      missing or \code{NULL}.  It is an error to supply \code{NA} or out
-      of bounds subscripts: the underlying \proglang{C} types have no
-      representation for missing values.}
+      returns the \code{flint} vector obtained by replacing the elements
+      of \code{x} indexed by \code{i} (the \dQuote{subscript}) with
+      elements of \code{value}, which are recycled as necessary.  The
+      subscript can be logical, integer, or double or missing or
+      \code{NULL}.  It is an error to supply \code{NA} or out of bounds
+      subscripts: the underlying \proglang{C} types have no
+      representation for missing values.  The class of the return value
+      is the most specific subclass of \code{flint} whose range contains
+      the ranges of the classes of \code{x} and \code{value}.}
     \item{\code{[[}}{
       \code{signature(x = "flint", i = "ANY", j = "missing")}:\cr
       equivalent to code \code{[} with the restriction that \code{i}
@@ -100,8 +103,8 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "flint")}:\cr
       coerces atomic (except character) vectors \code{from} to the most
-      specific subclass of \code{flint} containing the range of
-      \code{typeof(from)}.}
+      specific subclass of \code{flint} whose range contains the range
+      of \code{typeof(from)}.}
     \item{\code{duplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{duplicated(mtfrm(x), \dots)}.}
