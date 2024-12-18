@@ -309,13 +309,13 @@ SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 	return ans;
 }
 
-SEXP R_flint_fmpq_vector(SEXP from)
+SEXP R_flint_fmpq_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	const fmpq *x = (fmpq *) R_flint_get_pointer(from);
-	double *y = REAL(to);
+	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	const fmpq *x = (fmpq *) R_flint_get_pointer(object);
+	double *y = REAL(ans);
 	fmpz_t lb, ub;
 	fmpz_init(lb);
 	fmpz_init(ub);
@@ -333,7 +333,7 @@ SEXP R_flint_fmpq_vector(SEXP from)
 	fmpz_clear(lb);
 	fmpz_clear(ub);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)

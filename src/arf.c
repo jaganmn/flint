@@ -212,14 +212,14 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_arf_vector(SEXP from)
+SEXP R_flint_arf_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	arf_srcptr x = (arf_ptr) R_flint_get_pointer(from);
-	double *y = REAL(to);
+	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	arf_srcptr x = (arf_ptr) R_flint_get_pointer(object);
+	double *y = REAL(ans);
 	arf_t lb, ub;
 	arf_init(lb);
 	arf_init(ub);
@@ -239,20 +239,20 @@ SEXP R_flint_arf_vector(SEXP from)
 	arf_clear(lb);
 	arf_clear(ub);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
-SEXP R_flint_arf_format(SEXP from, SEXP s_base,
+SEXP R_flint_arf_format(SEXP object, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
 	mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(s_rnd, 1, __func__);
-	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	arf_srcptr x = (arf_ptr) R_flint_get_pointer(from);
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	arf_srcptr x = (arf_ptr) R_flint_get_pointer(object);
 	mpfr_exp_t e__;
 	slong p__;
 	mpfr_uexp_t e, emax = 0;
@@ -329,7 +329,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 	for (j = 0; j < n; ++j) {
 		arf_get_mpfr(f, x + j, rnd);
 		if (!mpfr_regular_p(f))
-			SET_STRING_ELT(to, (R_xlen_t) j,
+			SET_STRING_ELT(ans, (R_xlen_t) j,
 			               (mpfr_zero_p(f)) ? s_zero :
 			               (mpfr_nan_p(f)) ? s_nan :
 			               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
@@ -363,7 +363,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 				memmove(bufexp + ns + 1, bufexp + ns, nc);
 				bufexp[ns] = '0';
 			}
-			SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
+			SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 		}
 	}
 
@@ -375,7 +375,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 		s_nan     = Rf_mkChar((flags & 4) ? " NaN" : "NaN");
 	for (j = 0; j < n; ++j) {
 		arf_get_mpfr(f, x + j, rnd);
-		SET_STRING_ELT(to, (R_xlen_t) j,
+		SET_STRING_ELT(ans, (R_xlen_t) j,
 		               (mpfr_nan_p(f)) ? s_nan :
 		               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
 	}
@@ -386,7 +386,7 @@ SEXP R_flint_arf_format(SEXP from, SEXP s_base,
 	mpfr_clear(f);
 	MPFR_ERANGE_RESET;
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)

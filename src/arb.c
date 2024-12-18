@@ -292,14 +292,14 @@ SEXP R_flint_arb_part(SEXP object, SEXP s_op)
 	}
 }
 
-SEXP R_flint_arb_vector(SEXP from)
+SEXP R_flint_arb_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	arb_srcptr x = (arb_ptr) R_flint_get_pointer(from);
-	double *y = REAL(to);
+	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	arb_srcptr x = (arb_ptr) R_flint_get_pointer(object);
+	double *y = REAL(ans);
 	arf_t lb, ub;
 	arf_srcptr p;
 	arf_init(lb);
@@ -321,7 +321,7 @@ SEXP R_flint_arb_vector(SEXP from)
 	arf_clear(lb);
 	arf_clear(ub);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)

@@ -197,13 +197,13 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_mag_vector(SEXP from)
+SEXP R_flint_mag_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	mag_srcptr x = (mag_ptr) R_flint_get_pointer(from);
-	double *y = REAL(to);
+	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	mag_srcptr x = (mag_ptr) R_flint_get_pointer(object);
+	double *y = REAL(ans);
 	mag_t ub;
 	mag_init(ub);
 	mag_set_ui_2exp_si(ub, 1U, DBL_MAX_EXP);
@@ -218,20 +218,20 @@ SEXP R_flint_mag_vector(SEXP from)
 	}
 	mag_clear(ub);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
-SEXP R_flint_mag_format(SEXP from, SEXP s_base,
+SEXP R_flint_mag_format(SEXP object, SEXP s_base,
                         SEXP s_digits, SEXP s_sep)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
 	mpfr_rnd_t rnd = (mpfr_rnd_t) MPFR_RNDA;
-	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	mag_srcptr x = (mag_ptr) R_flint_get_pointer(from);
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	mag_srcptr x = (mag_ptr) R_flint_get_pointer(object);
 	mpfr_exp_t e__;
 	slong p__;
 	mpfr_uexp_t e, emax = 0;
@@ -301,7 +301,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 		arf_set_mag(tmp, x + j);
 		arf_get_mpfr(f, tmp, rnd);
 		if (!mpfr_regular_p(f))
-			SET_STRING_ELT(to, (R_xlen_t) j,
+			SET_STRING_ELT(ans, (R_xlen_t) j,
 			               (mpfr_zero_p(f)) ? s_zero : s_pos_inf);
 		else {
 			/* Mantissa */
@@ -329,7 +329,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 				memmove(bufexp + ns + 1, bufexp + ns, nc);
 				bufexp[ns] = '0';
 			}
-			SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
+			SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 		}
 	}
 
@@ -337,7 +337,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 
 	SEXP s_pos_inf = Rf_mkChar("Inf");
 	for (j = 0; j < n; ++j)
-		SET_STRING_ELT(to, (R_xlen_t) j, s_pos_inf);
+		SET_STRING_ELT(ans, (R_xlen_t) j, s_pos_inf);
 
 	}
 
@@ -346,7 +346,7 @@ SEXP R_flint_mag_format(SEXP from, SEXP s_base,
 	arf_clear(tmp);
 	MPFR_ERANGE_RESET;
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)

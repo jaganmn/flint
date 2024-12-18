@@ -184,13 +184,13 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_fmpz_vector(SEXP from)
+SEXP R_flint_fmpz_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	const fmpz *x = (fmpz *) R_flint_get_pointer(from);
-	double *y = REAL(to);
+	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	const fmpz *x = (fmpz *) R_flint_get_pointer(object);
+	double *y = REAL(ans);
 	int w = 1;
 	fmpz_t lb, ub;
 	fmpz_init(lb);
@@ -208,7 +208,7 @@ SEXP R_flint_fmpz_vector(SEXP from)
 	fmpz_clear(lb);
 	fmpz_clear(ub);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
@@ -224,13 +224,13 @@ static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
 #define AMIN2(a, b) ((fmpz_cmpabs(a, b) <= 0) ? a : b)
 #define AMAX2(a, b) ((fmpz_cmpabs(a, b) >= 0) ? a : b)
 
-SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
+SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
-	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	const fmpz *x = (fmpz *) R_flint_get_pointer(from);
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	const fmpz *x = (fmpz *) R_flint_get_pointer(object);
 	fmpz xmin = 0, xmax = 0;
 	for (j = 0; j < n; ++j) {
 		if (fmpz_cmp(x + j, &xmax) > 0)
@@ -264,11 +264,11 @@ SEXP R_flint_fmpz_format(SEXP from, SEXP s_base)
 			memmove(buffer + ns + 1, buffer + ns, nc);
 			buffer[ns] = ' ';
 		}
-		SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
+		SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
 	mpz_clear(work);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)

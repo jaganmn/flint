@@ -228,13 +228,13 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_slong_vector(SEXP from)
+SEXP R_flint_slong_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
-	SEXP to = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	const slong *x = (slong *) R_flint_get_pointer(from);
-	double *y = REAL(to);
+	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
+	const slong *x = (slong *) R_flint_get_pointer(object);
+	double *y = REAL(ans);
 #if FLINT64
 	fmpz_t tmp;
 	fmpz_init(tmp);
@@ -248,16 +248,16 @@ SEXP R_flint_slong_vector(SEXP from)
 		y[j] = (double) x[j];
 #endif
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
-SEXP R_flint_slong_format(SEXP from, SEXP s_base)
+SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 {
-	unsigned long long int j, n = R_flint_get_length(from);
+	unsigned long long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
-	SEXP to = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	const slong *x = (slong *) R_flint_get_pointer(from);
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	const slong *x = (slong *) R_flint_get_pointer(object);
 	slong xmin = 0, xmax = 0;
 	for (j = 0; j < n; ++j) {
 		if (x[j] > xmax)
@@ -290,9 +290,9 @@ SEXP R_flint_slong_format(SEXP from, SEXP s_base)
 			memmove(buffer + ns + 1, buffer + ns, nc);
 			buffer[ns] = ' ';
 		}
-		SET_STRING_ELT(to, (R_xlen_t) j, Rf_mkChar(buffer));
+		SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
 	mpz_clear(z);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
