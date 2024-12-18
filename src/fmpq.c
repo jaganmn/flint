@@ -191,6 +191,23 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			break;
 		}
+		case STRSXP:
+		{
+			mpq_t r;
+			mpq_init(r);
+			const char *s;
+			for (j = 0; j < n; ++j) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+				if (mpq_set_str(r, s, 0) != 0) {
+					mpq_clear(r);
+					Rf_error(_("invalid input in string conversion"));
+				}
+				fmpq_set_mpq(y + j, r);
+				fmpq_canonicalise(y + j);
+			}
+			mpq_clear(r);
+			break;
+		}
 		case OBJSXP:
 			switch (class) {
 			case R_FLINT_CLASS_SLONG:

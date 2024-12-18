@@ -97,6 +97,33 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
+	case STRSXP:
+	{
+		mpfr_t r;
+		arf_t tmp;
+		mpfr_init2(r, MAG_BITS << 1);
+		arf_init(tmp);
+		const char *s;
+		char *t;
+		for (j = 0; j < n; ++j) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+			mpfr_strtofr(r, s, &t, 0, MPFR_RNDA);
+			if (t <= s)
+				break;
+			s = t;
+			while (isspace(*s))
+				s++;
+			if (*s != '\0')
+				break;
+			arf_set_mpfr(tmp, r);
+			arf_get_mag(y + j, tmp);
+		}
+		mpfr_clear(r);
+		arf_clear(tmp);
+		if (j < n)
+			Rf_error(_("invalid input in string conversion"));
+		break;
+	}
 	case OBJSXP:
 		switch (class) {
 		case R_FLINT_CLASS_SLONG:

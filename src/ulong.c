@@ -96,6 +96,26 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
+	case STRSXP:
+	{
+		mpz_t r;
+		mpz_init(r);
+		const char *s;
+		for (j = 0; j < n; ++j) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+			if (mpz_set_str(r, s, 0) != 0) {
+				mpz_clear(r);
+				Rf_error(_("invalid input in string conversion"));
+			}
+			if (!mpz_fits_ulong_p(r)) {
+				mpz_clear(r);
+				Rf_error(_("converted string not in range of '%s'"), "ulong");
+			}
+			y[j] = mpz_get_ui(r);
+		}
+		mpz_clear(r);
+		break;
+	}
 	case OBJSXP:
 		switch (class) {
 		case R_FLINT_CLASS_SLONG:

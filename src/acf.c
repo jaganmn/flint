@@ -302,6 +302,54 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			break;
 		}
+		case STRSXP:
+		{
+			mpfr_prec_t prec = asPrec(R_NilValue, __func__);
+			mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(R_NilValue, 1, __func__);
+			mpfr_t m;
+			mpfr_init2(m, prec);
+			const char *s;
+			char *t;
+			for (j = 0; j < n; ++j) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+#define COMMON \
+				do { \
+				mpfr_strtofr(m, s, &t, 0, rnd); \
+				if (t <= s) \
+					break; \
+				s = t; \
+				while (isspace(*s)) \
+					s++; \
+				} while (0)
+				COMMON;
+				if (*s == '\0') {
+					arf_set_mpfr(acf_realref(y + j), m);
+					arf_zero(acf_imagref(y + j));
+				} else if (*(s++) == 'i') {
+					while (isspace(*s))
+						s++;
+					if (*s != '\0')
+						break;
+					arf_zero(acf_realref(y + j));
+					arf_set_mpfr(acf_imagref(y + j), m);
+				} else {
+					s--;
+					arf_set_mpfr(acf_realref(y + j), m);
+					COMMON;
+					if (*(s++) != 'i')
+						break;
+					while (isspace(*s))
+						s++;
+					if (*s != '\0')
+						break;
+					arf_set_mpfr(acf_imagref(y + j), m);
+				}
+			}
+			mpfr_clear(m);
+			if (j < n)
+				Rf_error(_("invalid input in string conversion"));
+			break;
+		}
 		case OBJSXP:
 			switch (class) {
 			case R_FLINT_CLASS_SLONG:

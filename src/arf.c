@@ -121,6 +121,31 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			arf_set_d(y + j, x[j % nx]);
 		break;
 	}
+	case STRSXP:
+	{
+		mpfr_prec_t prec = asPrec(R_NilValue, __func__);
+		mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(R_NilValue, 1, __func__);
+		mpfr_t m;
+		mpfr_init2(m, prec);
+		const char *s;
+		char *t;
+		for (j = 0; j < n; ++j) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+			mpfr_strtofr(m, s, &t, 0, rnd);
+			if (t <= s)
+				break;
+			s = t;
+			while (isspace(*s))
+				s++;
+			if (*s != '\0')
+				break;
+			arf_set_mpfr(y + j, m);
+		}
+		mpfr_clear(m);
+		if (j < n)
+			Rf_error(_("invalid input in string conversion"));
+		break;
+	}
 	case OBJSXP:
 		switch (class) {
 		case R_FLINT_CLASS_SLONG:

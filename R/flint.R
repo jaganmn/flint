@@ -329,6 +329,10 @@ setAs("ANY", "flint",
                  "logical" =, "integer" = slong(x = from),
                  "double" = arf(x = from),
                  "complex" = acf(x = from),
+                 "character" =
+                 stop(gettextf("coercion from '%s' to '%s' is not yet implemented; consider coercing to a nonvirtual subclass of '%s'",
+                               type., "flint", "flint"),
+                      domain = NA),
                  stop(gettextf("coercion from '%s' to '%s' is not yet implemented",
                                type., "flint"),
                       domain = NA)))

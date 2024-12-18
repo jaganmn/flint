@@ -7,7 +7,7 @@
 ** DONE methods for !, is.na, is.nan, is.finite, is.infinite
 ** DONE export, document Num, Den, Mid, Rad, Real, Imag
 ** DONE methods for as.character using format
-** TODO initialization with character vectors
+** DONE initialization with character vectors
 ** TODO methods for all.equal
 ** DONE coercion to the virtual class
 ** DONE methods for c

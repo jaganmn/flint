@@ -1,6 +1,7 @@
 #ifndef R_FLINT_FLINT_H
 #define R_FLINT_FLINT_H
 
+#include <ctype.h> /* isspace */
 #include <float.h> /* DBL_MIN, ... */
 #include <limits.h> /* CHAR_BIT, ... */
 #include <math.h> /* fabs, ldexp, frexp, ... */
@@ -160,10 +161,10 @@ typedef enum {
 } R_flint_class_t;
 
 extern
-SEXPTYPE R_flint_sexptypes[7];
+SEXPTYPE R_flint_sexptypes[8];
 
 extern
-const char *R_flint_classes[10];
+const char *R_flint_classes[11];
 
 extern
 const char *R_flint_ops2[16];

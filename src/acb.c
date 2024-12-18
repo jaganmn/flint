@@ -1,3 +1,5 @@
+#include <gmp.h>
+#include <mpfr.h>
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
@@ -135,6 +137,85 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			const Rcomplex *x = COMPLEX_RO(s_x);
 			for (j = 0; j < n; ++j)
 				acb_set_d_d(y + j, x[j % nx].r, x[j % nx].i);
+			break;
+		}
+		case STRSXP:
+		{
+			mpfr_prec_t prec = asPrec(R_NilValue, __func__);
+			mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(R_NilValue, 1, __func__);
+			mpfr_t m, r;
+			arf_t tmp;
+			mpfr_init2(m, prec);
+			mpfr_init2(r, MAG_BITS << 1);
+			arf_init(tmp);
+			const char *s;
+			char *t;
+			for (j = 0; j < n; ++j) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+#define COMMON \
+				do { \
+				while (isspace(*s)) \
+					s++; \
+				if (*(s++) != '(') \
+					break; \
+				mpfr_strtofr(m, s, &t, 0, rnd); \
+				if (t <= s) \
+					break; \
+				s = t; \
+				while (isspace(*s)) \
+					s++; \
+				if (*(s++) != '+' || *(s++) != '/' || *(s++) != '-') \
+					break; \
+				mpfr_strtofr(r, s, &t, 0, MPFR_RNDA); \
+				if (t <= s) \
+					break; \
+				s = t; \
+				while (isspace(*s)) \
+					s++; \
+				if (*(s++) != ')') \
+					break; \
+				while (isspace(*s)) \
+					s++; \
+				} while (0)
+				COMMON;
+				if (*s == '\0') {
+					arf_set_mpfr(arb_midref(acb_realref(y + j)), m);
+					arf_set_mpfr(tmp, r);
+					arf_get_mag(arb_radref(acb_realref(y + j)), tmp);
+					arb_zero(acb_imagref(y + j));
+				} else if (*(s++) == 'i') {
+					while (isspace(*s))
+						s++;
+					if (*s != '\0')
+						break;
+					arb_zero(acb_realref(y + j));
+					arf_set_mpfr(arb_midref(acb_imagref(y + j)), m);
+					arf_set_mpfr(tmp, r);
+					arf_get_mag(arb_radref(acb_imagref(y + j)), tmp);
+				} else {
+					s--;
+					if (*(s++) != '+')
+						break;
+					arf_set_mpfr(arb_midref(acb_realref(y + j)), m);
+					arf_set_mpfr(tmp, r);
+					arf_get_mag(arb_radref(acb_realref(y + j)), tmp);
+					COMMON;
+					if (*(s++) != 'i')
+						break;
+					while (isspace(*s))
+						s++;
+					if (*s != '\0')
+						break;
+					arf_set_mpfr(arb_midref(acb_imagref(y + j)), m);
+					arf_set_mpfr(tmp, r);
+					arf_get_mag(arb_radref(acb_imagref(y + j)), tmp);
+				}
+			}
+			mpfr_clear(m);
+			mpfr_clear(r);
+			arf_clear(tmp);
+			if (j < n)
+				Rf_error(_("invalid input in string conversion"));
 			break;
 		}
 		case OBJSXP:

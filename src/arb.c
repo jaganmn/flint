@@ -1,3 +1,5 @@
+#include <gmp.h>
+#include <mpfr.h>
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>
@@ -130,6 +132,58 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			const double *x = REAL_RO(s_x);
 			for (j = 0; j < n; ++j)
 				arb_set_d(y + j, x[j % nx]);
+			break;
+		}
+		case STRSXP:
+		{
+			mpfr_prec_t prec = asPrec(R_NilValue, __func__);
+			mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(R_NilValue, 1, __func__);
+			mpfr_t m, r;
+			arf_t tmp;
+			mpfr_init2(m, prec);
+			mpfr_init2(r, MAG_BITS << 1);
+			arf_init(tmp);
+			const char *s;
+			char *t;
+			for (j = 0; j < n; ++j) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+				while (isspace(*s))
+					s++;
+				if (*(s++) != '(')
+					break;
+				while (isspace(*s))
+					s++;
+				mpfr_strtofr(m, s, &t, 0, rnd);
+				if (t <= s)
+					break;
+				s = t;
+				arf_set_mpfr(arb_midref(y + j), m);
+				while (isspace(*s))
+					s++;
+				if (*(s++) != '+' || *(s++) != '/' || *(s++) != '-')
+					break;
+				while (isspace(*s))
+					s++;
+				mpfr_strtofr(r, s, &t, 0, MPFR_RNDA);
+				if (t <= s)
+					break;
+				s = t;
+				arf_set_mpfr(tmp, r);
+				arf_get_mag(arb_radref(y + j), tmp);
+				while (isspace(*s))
+					s++;
+				if (*(s++) != ')')
+					break;
+				while (isspace(*s))
+					s++;
+				if (*s != '\0')
+					break;
+			}
+			mpfr_clear(m);
+			mpfr_clear(r);
+			arf_clear(tmp);
+			if (j < n)
+				Rf_error(_("invalid input in string conversion"));
 			break;
 		}
 		case OBJSXP:

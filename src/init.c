@@ -23,12 +23,13 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_d;
 
 SEXPTYPE R_flint_sexptypes[] =
-{ OBJSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
+{ OBJSXP, STRSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
 
 const char *R_flint_classes[] =
 {
 	"slong", "ulong", "fmpz", "fmpq",
-	"mag", "arf", "acf", "arb", "acb", ""
+	"mag", "arf", "acf", "arb", "acb", "",
+	NULL
 };
 
 const char *R_flint_ops2[] =
