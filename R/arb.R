@@ -39,7 +39,7 @@ setMethod("Mid",
 setMethod("Mid<-",
           c(x = "arb"),
           function (x, value)
-              arb(mid = value, rad = Rad(x)))
+              .arb(mid = value, rad = Rad(x)))
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "arb"),
@@ -47,9 +47,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(arb(x = e1), e2),
+                         g(.arb(x = e1), e2),
                      "complex" =
-                         g(acb(x = e1), acb(x = e2)),
+                         g(.acb(x = e1), .acb(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "arb"),
                           domain = NA))
@@ -61,9 +61,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(e1, arb(x = e2)),
+                         g(e1, .arb(x = e2)),
                      "complex" =
-                         g(acb(x = e1), acb(x = e2)),
+                         g(.acb(x = e1), .acb(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "arb", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -72,37 +72,37 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arb", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acb(x = e1), acb(x = e2)))
+              get(.Generic, mode = "function")(.acb(x = e1), .acb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "arb"),
@@ -112,7 +112,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arb", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(x = e1), e2))
 
 setMethod("Summary",
           c(x = "arb"),
@@ -127,7 +127,7 @@ setMethod("Rad",
 setMethod("Rad<-",
           c(x = "arb"),
           function (x, value)
-              arb(mid = Mid(x), rad = value))
+              .arb(mid = Mid(x), rad = value))
 
 setMethod("all.equal",
           c(target = "arb", current = "arb"),
@@ -150,7 +150,7 @@ setMethod("as.vector",
 
 setAs("ANY", "arb",
       function (from)
-          arb(x = from))
+          .arb(x = from))
 
 setMethod("format",
           c(x = "arb"),

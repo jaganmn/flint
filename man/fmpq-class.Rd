@@ -1,6 +1,7 @@
 \name{fmpq-class}
-\alias{fmpq}
 \alias{fmpq-class}
+\alias{fmpq}
+\alias{.fmpq}
 \alias{!,fmpq-method}
 \alias{+,fmpq,missing-method}
 \alias{-,fmpq,missing-method}
@@ -40,16 +41,16 @@
 }
 \usage{
 ## The class generator function:
-fmpq(\dots)
+.fmpq(\dots)
 
 ## Mode 1: initialize with zeros
-## fmpq(length = 0L)
+## .fmpq(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## fmpq(length = length(x), x)
+## .fmpq(length = length(x), x)
 ##
 ## Mode 3: initialize by parts
-## fmpq(length = max0(length(num), length(den)), num, den)
+## .fmpq(length = max0(length(num), length(den)), num, den)
 ##
 ## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
 }
@@ -123,13 +124,13 @@ fmpq(\dots)
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpq")}:\cr
-      returns \code{fmpq(x = from)}.  An error is signaled if the class
+      returns \code{.fmpq(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{
       \code{signature(x = "fmpq")}:\cr
       returns a character vector suitable for printing, using string
-      format \code{"(p/q)"}.  Optional arguments control the output; see
+      format \code{"p/q"}.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
     \item{\code{initialize}}{
       \code{signature(.Object = "fmpq", length = "\var{numeric}")}:\cr

@@ -1,8 +1,10 @@
 \name{slong-class}
-\alias{slong}
-\alias{ulong}
 \alias{slong-class}
 \alias{ulong-class}
+\alias{slong}
+\alias{ulong}
+\alias{.slong}
+\alias{.ulong}
 \alias{!,slong-method}
 \alias{!,ulong-method}
 \alias{+,slong,missing-method}
@@ -70,16 +72,16 @@
 }
 \usage{
 ## The class generator functions:
-slong(\dots)
-ulong(\dots)
+.slong(\dots)
+.ulong(\dots)
 
 ## Mode 1: initialize with zeros
-## slong(length = 0L)
-## ulong(length = 0L)
+## .slong(length = 0L)
+## .ulong(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## slong(length = length(x), x)
-## ulong(length = length(x), x)
+## .slong(length = length(x), x)
+## .ulong(length = length(x), x)
 }
 \arguments{
   \item{\dots}{
@@ -139,7 +141,7 @@ ulong(\dots)
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "slong")}:\cr
       \code{signature(from = "ANY", to = "ulong")}:\cr
-      returns \code{slong(x = from)} or \code{ulong(x = from)}.  An
+      returns \code{.slong(x = from)} or \code{.ulong(x = from)}.  An
       error is signaled if the class or type of \code{from} is not
       supported by the methods for \code{\link{initialize}}.}
     \item{\code{format}}{

@@ -112,7 +112,7 @@ Imag(z) <- value
   Virtual class \code{\linkS4class{flint}}.
 }
 \examples{
-(q <- q. <- fmpq(num = 1:10, den = 2L))
+(q <- q. <- .fmpq(num = 1:10, den = 2L))
 Num(q)
 Den(q)
 Num(q) <- Den(q)

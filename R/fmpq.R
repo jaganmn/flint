@@ -26,7 +26,7 @@ setMethod("Den",
 setMethod("Den<-",
           c(q = "fmpq"),
           function (q, value)
-              fmpq(num = Num(q), den = value))
+              .fmpq(num = Num(q), den = value))
 
 setMethod("Math",
           c(x = "fmpq"),
@@ -49,7 +49,7 @@ setMethod("Num",
 setMethod("Num<-",
           c(q = "fmpq"),
           function (q, value)
-              fmpq(num = value, den = Den(q)))
+              .fmpq(num = value, den = Den(q)))
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "fmpq"),
@@ -57,11 +57,11 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(fmpq(x = e1), e2),
+                         g(.fmpq(x = e1), e2),
                      "double" =
-                         g(arf(x = e1), arf(x = e2)),
+                         g(.arf(x = e1), .arf(x = e2)),
                      "complex" =
-                         g(acf(x = e1), acf(x = e2)),
+                         g(.acf(x = e1), .acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "fmpq"),
                           domain = NA))
@@ -73,11 +73,11 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(e1, fmpq(x = e2)),
+                         g(e1, .fmpq(x = e2)),
                      "double" =
-                         g(arf(x = e1), arf(x = e2)),
+                         g(.arf(x = e1), .arf(x = e2)),
                      "complex" =
-                         g(acf(x = e1), acf(x = e2)),
+                         g(.acf(x = e1), .acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "fmpq", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -86,17 +86,17 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, fmpq(x = e2)))
+              get(.Generic, mode = "function")(e1, .fmpq(x = e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, fmpq(x = e2)))
+              get(.Generic, mode = "function")(e1, .fmpq(x = e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, fmpq(x = e2)))
+              get(.Generic, mode = "function")(e1, .fmpq(x = e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "fmpq"),
@@ -106,27 +106,27 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), e2))
+              get(.Generic, mode = "function")(.arf(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acf(x = e1), e2))
+              get(.Generic, mode = "function")(.acf(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arb(x = e1), e2))
+              get(.Generic, mode = "function")(.arb(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(x = e1), e2))
 
 setMethod("Summary",
           c(x = "fmpq"),
@@ -154,7 +154,7 @@ setMethod("as.vector",
 
 setAs("ANY", "fmpq",
       function (from)
-          fmpq(x = from))
+          .fmpq(x = from))
 
 setMethod("format",
           c(x = "fmpq"),

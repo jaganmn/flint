@@ -1,6 +1,7 @@
 \name{acb-class}
-\alias{acb}
 \alias{acb-class}
+\alias{acb}
+\alias{.acb}
 \alias{!,acb-method}
 \alias{+,acb,missing-method}
 \alias{-,acb,missing-method}
@@ -44,16 +45,16 @@
 }
 \usage{
 ## The class generator function:
-acb(\dots)
+.acb(\dots)
 
 ## Mode 1: initialize with zeros
-## acb(length = 0L)
+## .acb(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## acb(length = length(x), x)
+## .acb(length = length(x), x)
 ##
 ## Mode 3: initialize by parts
-## acb(length = max0(length(real), length(imag)), real, imag)
+## .acb(length = max0(length(real), length(imag)), real, imag)
 ##
 ## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
 }
@@ -133,7 +134,7 @@ acb(\dots)
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acb")}:\cr
-      returns \code{acb(x = from)}.  An error is signaled if the class
+      returns \code{.acb(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{

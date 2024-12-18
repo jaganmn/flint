@@ -1,6 +1,7 @@
 \name{arb-class}
-\alias{arb}
 \alias{arb-class}
+\alias{arb}
+\alias{.arb}
 \alias{!,arb-method}
 \alias{+,arb,missing-method}
 \alias{-,arb,missing-method}
@@ -42,16 +43,16 @@
 }
 \usage{
 ## The class generator function:
-arb(\dots)
+.arb(\dots)
 
 ## Mode 1: initialize with zeros
-## arb(length = 0L)
+## .arb(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## arb(length = length(x), x)
+## .arb(length = length(x), x)
 ##
 ## Mode 3: initialize by parts
-## arb(length = max0(length(mid), length(rad)), mid, rad)
+## .arb(length = max0(length(mid), length(rad)), mid, rad)
 ##
 ## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
 }
@@ -127,7 +128,7 @@ arb(\dots)
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arb")}:\cr
-      returns \code{arb(x = from)}.  An error is signaled if the class
+      returns \code{.arb(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{

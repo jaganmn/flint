@@ -1,6 +1,7 @@
 \name{arf-class}
-\alias{arf}
 \alias{arf-class}
+\alias{arf}
+\alias{.arf}
 \alias{!,arf-method}
 \alias{+,arf,missing-method}
 \alias{-,arf,missing-method}
@@ -39,13 +40,13 @@
 }
 \usage{
 ## The class generator function:
-arf(\dots)
+.arf(\dots)
 
 ## Mode 1: initialize with zeros
-## arf(length = 0L)
+## .arf(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## arf(length = length(x), x)
+## .arf(length = length(x), x)
 }
 \arguments{
   \item{\dots}{
@@ -123,7 +124,7 @@ arf(\dots)
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
-      returns \code{arf(x = from)}.  An error is signaled if the class
+      returns \code{.arf(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{

@@ -1,6 +1,7 @@
 \name{fmpz-class}
-\alias{fmpz}
 \alias{fmpz-class}
+\alias{fmpz}
+\alias{.fmpz}
 \alias{!,fmpz-method}
 \alias{+,fmpz,missing-method}
 \alias{-,fmpz,missing-method}
@@ -40,13 +41,13 @@
 }
 \usage{
 ## The class generator function:
-fmpz(\dots)
+.fmpz(\dots)
 
 ## Mode 1: initialize with zeros
-## fmpz(length = 0L)
+## .fmpz(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## fmpz(length = length(x), x)
+## .fmpz(length = length(x), x)
 }
 \arguments{
   \item{\dots}{
@@ -118,7 +119,7 @@ fmpz(\dots)
       introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
-      returns \code{fmpz(x = from)}.  An error is signaled if the class
+      returns \code{.fmpz(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{

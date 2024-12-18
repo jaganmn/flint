@@ -37,9 +37,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(arf(x = e1), arf(x = e2)),
+                         g(.arf(x = e1), .arf(x = e2)),
                      "complex" =
-                         g(acf(x = e1), acf(x = e2)),
+                         g(.acf(x = e1), .acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "mag"),
                           domain = NA))
@@ -51,9 +51,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(arf(x = e1), arf(x = e2)),
+                         g(.arf(x = e1), .arf(x = e2)),
                      "complex" =
-                         g(acf(x = e1), acf(x = e2)),
+                         g(.acf(x = e1), .acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "mag", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -62,22 +62,22 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "mag", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "mag"),
@@ -87,22 +87,22 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "mag", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arf(x = e1), e2))
+              get(.Generic, mode = "function")(.arf(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acf(x = e1), e2))
+              get(.Generic, mode = "function")(.acf(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(arb(x = e1), e2))
+              get(.Generic, mode = "function")(.arb(x = e1), e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(x = e1), e2))
 
 setMethod("Summary",
           c(x = "mag"),
@@ -121,7 +121,7 @@ setMethod("as.vector",
 
 setAs("ANY", "mag",
       function (from)
-          mag(x = from))
+          .mag(x = from))
 
 setMethod("format",
           c(x = "mag"),

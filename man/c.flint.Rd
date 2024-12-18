@@ -32,9 +32,9 @@
   Virtual class \code{\linkS4class{flint}}.
 }
 \examples{
-x <- slong(x = 2:5)
+x <- .slong(x = 2:5)
 c(x, 6L)
-c(1L, x)
+c(1L, x) # bad
 c.flint(x, 6L)
 c.flint(1L, x)
 }

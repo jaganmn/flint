@@ -26,7 +26,7 @@ setMethod("Imag",
 setMethod("Imag<-",
           c(z = "acf"),
           function (z, value)
-              acf(real = Real(z), imag = value))
+              .acf(real = Real(z), imag = value))
 
 setMethod("Math",
           c(x = "acf"),
@@ -47,7 +47,7 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(acf(x = e1), e2),
+                         g(.acf(x = e1), e2),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "acf"),
                           domain = NA))
@@ -59,7 +59,7 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(e1, acf(x = e2)),
+                         g(e1, .acf(x = e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "acf", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -68,32 +68,32 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "acf", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, acf(x = e2)))
+              get(.Generic, mode = "function")(e1, .acf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, acf(x = e2)))
+              get(.Generic, mode = "function")(e1, .acf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, acf(x = e2)))
+              get(.Generic, mode = "function")(e1, .acf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, acf(x = e2)))
+              get(.Generic, mode = "function")(e1, .acf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, acf(x = e2)))
+              get(.Generic, mode = "function")(e1, .acf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, acf(x = e2)))
+              get(.Generic, mode = "function")(e1, .acf(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "acf"),
@@ -103,12 +103,12 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "acf", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acb(x = e1), acb(x = e2)))
+              get(.Generic, mode = "function")(.acb(x = e1), .acb(x = e2)))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(x = e1), e2))
 
 setMethod("Real",
           c(z = "acf"),
@@ -118,7 +118,7 @@ setMethod("Real",
 setMethod("Real<-",
           c(z = "acf"),
           function (z, value)
-              acf(real = value, imag = Imag(z)))
+              .acf(real = value, imag = Imag(z)))
 
 setMethod("Summary",
           c(x = "acf"),
@@ -146,7 +146,7 @@ setMethod("as.vector",
 
 setAs("ANY", "acf",
       function (from)
-          acf(x = from))
+          .acf(x = from))
 
 setMethod("format",
           c(x = "acf"),

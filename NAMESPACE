@@ -12,7 +12,7 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
-export(slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)
+export(.slong, .ulong, .fmpz, .fmpq, .mag, .arf, .acf, .arb, .acb)
 export(c.flint,
        flintBits,
        flintIdentical,

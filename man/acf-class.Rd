@@ -1,6 +1,7 @@
 \name{acf-class}
-\alias{acf}
 \alias{acf-class}
+\alias{acf}
+\alias{.acf}
 \alias{!,acf-method}
 \alias{+,acf,missing-method}
 \alias{-,acf,missing-method}
@@ -39,19 +40,26 @@
   precision significand and exponent.  The underlying \proglang{C} type
   can represent \code{NaN}, \code{-Inf}, and \code{Inf} real and
   imaginary parts.
+
+  Note that package \pkg{stats} exports a function
+  \code{\link[=stats]{acf}}, referring to autocovariance and
+  autocorrelation functions of time series.  It returns objects of
+  \emph{informal} S3 class \code{acf}, for which a small number of
+  \emph{informal} S3 methods are registered.  The \emph{formal} S4 class
+  and methods documented here are entirely unrelated.
 }
 \usage{
 ## The class generator function:
-acf(\dots)
+.acf(\dots)
 
 ## Mode 1: initialize with zeros
-## acf(length = 0L)
+## .acf(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## acf(length = length(x), x)
+## .acf(length = length(x), x)
 ##
 ## Mode 3: initialize by parts
-## acf(length = max0(length(real), length(imag)), real, imag)
+## .acf(length = max0(length(real), length(imag)), real, imag)
 ##
 ## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
 }
@@ -130,7 +138,7 @@ acf(\dots)
       \code{-Inf} or \code{Inf} is introduced with a warning.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acf")}:\cr
-      returns \code{acf(x = from)}.  An error is signaled if the class
+      returns \code{.acf(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{

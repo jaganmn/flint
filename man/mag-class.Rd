@@ -1,6 +1,7 @@
 \name{mag-class}
-\alias{mag}
 \alias{mag-class}
+\alias{mag}
+\alias{.mag}
 \alias{!,mag-method}
 \alias{+,mag,missing-method}
 \alias{-,mag,missing-method}
@@ -40,13 +41,13 @@
 }
 \usage{
 ## The class generator function:
-mag(\dots)
+.mag(\dots)
 
 ## Mode 1: initialize with zeros
-## mag(length = 0L)
+## .mag(length = 0L)
 ##
 ## Mode 2: initialize with vector
-## mag(length = length(x), x)
+## .mag(length = length(x), x)
 }
 \arguments{
   \item{\dots}{
@@ -128,7 +129,7 @@ mag(\dots)
       \code{Inf}, not always to nearest.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
-      returns \code{mag(x = from)}.  An error is signaled if the class
+      returns \code{.mag(x = from)}.  An error is signaled if the class
       or type of \code{from} is not supported by the method for
       \code{\link{initialize}}.}
     \item{\code{format}}{
