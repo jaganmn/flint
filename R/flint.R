@@ -1,3 +1,53 @@
+.subscript.class <-
+function (i)
+    switch(type. <- typeof(i),
+           "NULL" =, "logical" =, "integer" =, "double" =
+               if (anyNA(i))
+                   stop("subscript NA not supported")
+               else type.,
+           "S4" =
+               if (is.na(flintClass(i)))
+                   stop(gettextf("invalid subscript class '%s'",
+                                 class(i)),
+                        domain = NA)
+               else
+                   stop(gettextf("subscripts inheriting from virtual class '%s' are not yet supported",
+                                 "flint"),
+                        domain = NA),
+           stop(gettextf("invalid subscript type '%s'",
+                         type.),
+                domain = NA))
+
+.subassign.class <-
+function (value)
+    switch(type. <- typeof(value),
+           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+               type.,
+           "S4" =
+               if (is.na(class. <- flintClass(value)))
+                   stop(gettextf("invalid subassignment value class '%s'",
+                                 class(value)),
+                        domain = NA)
+               else class.,
+           stop(gettextf("invalid subassignment value type '%s'",
+                         type.),
+                domain = NA))
+
+.c.flint.class <-
+function (x)
+    switch(type. <- typeof(x),
+           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                                                                                       type.,
+           "S4" =
+               if (is.na(class. <- flintClass(x)))
+                   stop(gettextf("invalid argument class '%s'",
+                                 class(x)),
+                        domain = NA)
+               else class.,
+           stop(gettextf("invalid argument type '%s'",
+                         type.),
+                domain = NA))
+
 setMethod("[",
           c(x = "flint", i = "ANY", j = "missing", drop = "missing"),
           function (x, i, j, ..., drop = TRUE) {
@@ -5,48 +55,43 @@ setMethod("[",
                   stop("incorrect number of dimensions")
               if (missing(i))
                   return(x)
-              switch(typeof(i), `NULL` =, logical =, integer =, double = NULL,
-                     stop(gettextf("invalid subscript type \"%s\"", typeof(i)),
-                          domain = NA))
               nx <- length(x)
+              ci <- .subscript.class(i)
               ni <- length(i)
               if (ni == 0L)
-                  i <- integer(0L)
-              else {
-                  if (anyNA(i))
-                      stop("NA subscripts not supported")
-                  i <-
-                  switch(typeof(i),
-                         logical =
-                             {
-                                 nw <- length(w <- which(i))
-                                 if (nw == 0L)
-                                     w
-                                 else if (w[[nw]] > nx)
-                                     stop("subscript out of bounds")
-                                 else {
-                                     if (ni < nx) {
-                                         w <- w + rep(seq.int(from = 0L, by = ni, length.out = nx %/% ni + (nx %% ni > 0L)), each = nw)
-                                         if (w[length(w)] > nx)
-                                             w <- w[w <= nx]
-                                     }
-                                     w
+              i <- integer(0L)
+              else
+              i <-
+              switch(ci,
+                     "logical" =
+                         {
+                             nw <- length(w <- which(i))
+                             if (nw == 0L)
+                                 w
+                             else if (w[[nw]] > nx)
+                                 stop("subscript out of bounds")
+                             else {
+                                 if (ni < nx) {
+                                     w <- w + rep(seq.int(from = 0L, by = ni, length.out = nx %/% ni + (nx %% ni > 0L)), each = nw)
+                                     if (w[length(w)] > nx)
+                                         w <- w[w <= nx]
                                  }
-                             },
-                         integer =,
-                         double =,
-                             {
-                                 r <- max(0L, i, na.rm = TRUE)
-                                 if (r - 1L >= nx)
-                                     stop("subscript out of bounds")
-                                 r <- min(1L, i, na.rm = TRUE)
-                                 if (r >= 1L)
-                                     i
-                                 else if (r > -1L)
-                                     i[i >= 1L]
-                                 else seq_len(nx)[i]
-                             })
-              }
+                                 w
+                             }
+                         },
+                     "integer" =,
+                     "double" =,
+                         {
+                             r <- max(0L, i, na.rm = TRUE)
+                             if (r - 1L >= nx)
+                                 stop("subscript out of bounds")
+                             r <- min(1L, i, na.rm = TRUE)
+                             if (r >= 1L)
+                                 i
+                             else if (r > -1L)
+                                 i[i >= 1L]
+                             else seq_len(nx)[i]
+                         })
               .Call(R_flint_subscript, x, i)
           })
 
@@ -57,54 +102,51 @@ setMethod("[<-",
                   stop("incorrect number of dimensions")
               nx <- length(x)
               if (missing(i)) {
-              i <- NULL
               ni <- nx
+              i <- NULL
               } else {
-              switch(typeof(i), `NULL` =, logical =, integer =, double = NULL,
-                     stop(gettextf("invalid subscript type \"%s\"", typeof(i)),
-                          domain = NA))
+              ci <- .subscript.class(i)
               ni <- length(i)
               if (ni == 0L)
-                  i <- integer(0L)
+              i <- integer(0L)
               else {
-                  if (anyNA(i))
-                      stop("NA subscripts not supported")
-                  i <-
-                  switch(typeof(i),
-                         logical =
-                             {
-                                 nw <- length(w <- which(i))
-                                 if (nw == 0L)
-                                     w
-                                 else if (w[[nw]] > nx)
-                                     stop("subscript out of bounds")
-                                 else {
-                                     if (ni < nx) {
-                                         w <- w + rep(seq.int(from = 0L, by = ni, length.out = nx %/% ni + (nx %% ni > 0L)), each = nw)
-                                         if (w[length(w)] > nx)
-                                             w <- w[w <= nx]
-                                     }
-                                     w
+              i <-
+              switch(ci,
+                     "logical" =
+                         {
+                             nw <- length(w <- which(i))
+                             if (nw == 0L)
+                                 w
+                             else if (w[[nw]] > nx)
+                                 stop("subscript out of bounds")
+                             else {
+                                 if (ni < nx) {
+                                     w <- w + rep(seq.int(from = 0L, by = ni, length.out = nx %/% ni + (nx %% ni > 0L)), each = nw)
+                                     if (w[length(w)] > nx)
+                                         w <- w[w <= nx]
                                  }
-                             },
-                         integer =,
-                         double =
-                             {
-                                 r <- max(0L, i, na.rm = TRUE)
-                                 if (r - 1L >= nx)
-                                     stop("subscript out of bounds")
-                                 r <- min(1L, i, na.rm = TRUE)
-                                 if (r >= 1L)
-                                     i
-                                 else if (r > -1L)
-                                     i[i >= 1L]
-                                 else seq_len(nx)[i]
-                             })
+                                 w
+                             }
+                         },
+                     "integer" =,
+                     "double" =
+                         {
+                             r <- max(0L, i, na.rm = TRUE)
+                             if (r - 1L >= nx)
+                                 stop("subscript out of bounds")
+                             r <- min(1L, i, na.rm = TRUE)
+                             if (r >= 1L)
+                                 i
+                             else if (r > -1L)
+                                 i[i >= 1L]
+                             else seq_len(nx)[i]
+                         })
+              ni <- length(i)
               }
               }
               if (missing(value))
                   stop("missing subassignment value")
-              value <- as(value, flintClass(x))
+              cv <- .subassign.class(value)
               nv <- length(value)
               if (ni > 0L) {
               if (nv == 0L)
@@ -112,6 +154,12 @@ setMethod("[<-",
               else if (nv > ni || ni %% nv != 0L)
                   warning("number of items to replace is not a multiple of replacement length")
               }
+              m <- logical(length(flintLike))
+              names(m) <- flintLike
+              m[c(flintClass(x), cv)] <- TRUE
+              common <- flintClassCommon(m)
+              x <- as(x, common)
+              value <- as(value, common)
               .Call(R_flint_subassign, x, i, value)
           })
 
@@ -122,41 +170,37 @@ setMethod("[[",
                   stop("incorrect number of dimensions")
               if (missing(i))
                   stop("missing subscript")
-              switch(typeof(i), `NULL` =, logical =, integer =, double = NULL,
-                     stop(gettextf("invalid subscript type \"%s\"", typeof(i)),
-                          domain = NA))
               nx <- length(x)
+              ci <- .subscript.class(i)
               ni <- length(i)
               if (ni > 0L) {
-                  if (anyNA(i))
-                      stop("NA subscripts not supported")
-                  i <-
-                  switch(typeof(i),
-                         logical =
-                             {
-                                 nw <- length(w <- which(i))
-                                 if (nw != 1L)
-                                     w
-                                 else if (w > nx)
-                                     stop("subscript out of bounds")
-                                 else if (ni < nx && w <= nx - ni)
-                                     stop("attempt to select more than one element")
-                                 else w
-                             },
-                         integer =,
-                         double =
-                             {
-                                 r <- max(0L, i, na.rm = TRUE)
-                                 if (r - 1L >= nx)
-                                     stop("subscript out of bounds")
-                                 r <- min(1L, i, na.rm = TRUE)
-                                 if (r >= 1L)
-                                     i
-                                 else if (r > -1L)
-                                     i[i >= 1L]
-                                 else seq_len(nx)[i]
-                             })
-                  ni <- length(i)
+              i <-
+              switch(ci,
+                     "logical" =
+                         {
+                             nw <- length(w <- which(i))
+                             if (nw != 1L)
+                                 w
+                             else if (w > nx)
+                                 stop("subscript out of bounds")
+                             else if (ni < nx && w <= nx - ni)
+                                 stop("attempt to select more than one element")
+                             else w
+                         },
+                     "integer" =,
+                     "double" =
+                         {
+                             r <- max(0L, i, na.rm = TRUE)
+                             if (r - 1L >= nx)
+                                 stop("subscript out of bounds")
+                             r <- min(1L, i, na.rm = TRUE)
+                             if (r >= 1L)
+                                 i
+                             else if (r > -1L)
+                                 i[i >= 1L]
+                             else seq_len(nx)[i]
+                         })
+              ni <- length(i)
               }
               if (ni < 1L)
                   stop("attempt to select less than one element")
@@ -172,41 +216,37 @@ setMethod("[[<-",
                   stop("incorrect number of dimensions")
               if (missing(i))
                   stop("missing subscript")
-              switch(typeof(i), `NULL` =, logical =, integer =, double = NULL,
-                     stop(gettextf("invalid subscript type \"%s\"", typeof(i)),
-                          domain = NA))
               nx <- length(x)
+              ci <- .subscript.class(i)
               ni <- length(i)
               if (ni > 0L) {
-                  if (anyNA(i))
-                      stop("NA subscripts not supported")
-                  i <-
-                  switch(typeof(i),
-                         logical =
-                             {
-                                 nw <- length(w <- which(i))
-                                 if (nw != 1L)
-                                     w
-                                 else if (w > nx)
-                                     stop("subscript out of bounds")
-                                 else if (ni < nx && w <= nx - ni)
-                                     stop("attempt to select more than one element")
-                                 else w
-                             },
-                         integer =,
-                         double =
-                             {
-                                 r <- max(0L, i, na.rm = TRUE)
-                                 if (r - 1L >= nx)
-                                     stop("subscript out of bounds")
-                                 r <- min(1L, i, na.rm = TRUE)
-                                 if (r >= 1L)
-                                     i
-                                 else if (r > -1L)
-                                     i[i >= 1L]
-                                 else seq_len(nx)[i]
-                             })
-                  ni <- length(i)
+              i <-
+              switch(ci,
+                     "logical" =
+                         {
+                             nw <- length(w <- which(i))
+                             if (nw != 1L)
+                                 w
+                             else if (w > nx)
+                                 stop("subscript out of bounds")
+                             else if (ni < nx && w <= nx - ni)
+                                 stop("attempt to select more than one element")
+                             else w
+                         },
+                     "integer" =,
+                     "double" =
+                         {
+                             r <- max(0L, i, na.rm = TRUE)
+                             if (r - 1L >= nx)
+                                 stop("subscript out of bounds")
+                             r <- min(1L, i, na.rm = TRUE)
+                             if (r >= 1L)
+                                 i
+                             else if (r > -1L)
+                                 i[i >= 1L]
+                             else seq_len(nx)[i]
+                         })
+              ni <- length(i)
               }
               if (ni < 1L)
                   stop("attempt to select less than one element")
@@ -214,12 +254,18 @@ setMethod("[[<-",
                   stop("attempt to select more than one element")
               if (missing(value))
                   stop("missing subassignment value")
-              value <- as(value, flintClass(x))
+              cv <- .subassign.class(value)
               nv <- length(value)
               if (nv == 0L)
                   stop("replacement has length zero")
               else if (nv > 1L)
                   warning("number of items to replace is not a multiple of replacement length")
+              m <- logical(length(flintLike))
+              names(m) <- flintLike
+              m[c(flintClass(x), cv)] <- TRUE
+              common <- flintClassCommon(m)
+              x <- as(x, common)
+              value <- as(value, common)
               .Call(R_flint_subassign, x, i, value)
           })
 
@@ -268,53 +314,16 @@ setMethod("as.expression",
 ## MJ: we export this function and curse the author of DispatchAnyOrEval
 c.flint <-
 function (...) {
-    c.flint.class <-
-    function (x)
-        switch(type. <- typeof(x),
-               "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                                                                                           type.,
-               "S4" =
-                   if (is.na(class. <- flintClass(x)))
-                       stop(gettextf("argument of unsupported class %s in '%s'",
-                                     class(x), "c.flint"),
-                            domain = NA)
-                   else class.,
-               stop(gettextf("argument of unsupported type '%s' in '%s'",
-                             type., "c.flint"),
-                    domain = NA))
     n <- nargs()
     if (n == 0L)
         return(NULL)
-    nms <- c("NULL", "raw", "logical", "integer", "double", "complex",
-             "slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
-             "arb", "acb")
-    s <- `names<-`(seq_len(15L), nms)
     args <- list(...)
-    labs <- s[vapply(args, c.flint.class, "")]
-    if (max(labs) <= 6L)
+    m <- match(flintLike, vapply(args, .c.flint.class, ""), 0L)
+    if (!any(m[7L:length(m)]))
         return(c(...))
-    t <- `names<-`(tabulate(labs, 15L), nms)
-    toClass <-
-        if (t[["arb"]] || t[["acb"]]) {
-            if (t[["complex"]] || t[["acf"]] || t[["acb"]])
-                "acb"
-            else "arb"
-        }
-        else if (t[["complex"]] || t[["acf"]])
-            "acf"
-        else if (t[["double"]] || t[["mag"]] || t[["arf"]]) {
-            if (t[["double"]] || t[["arf"]])
-                "arf"
-            else "mag"
-        }
-        else if (t[["fmpq"]])
-            "fmpq"
-        else if (t[["fmpz"]] || (t[["ulong"]] && t[["slong"]]))
-            "fmpz"
-        else if (!(t[["slong"]] || t[["integer"]] || t[["logical"]]))
-            "ulong"
-        else "slong"
-    .Call(R_flint_bind, lapply(args, as, toClass))
+    names(m) <- flintLike
+    args <- lapply(args, as, flintClassCommon(m))
+    .Call(R_flint_bind, args)
 }
 
 setMethod("c",

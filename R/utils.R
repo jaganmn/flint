@@ -6,6 +6,29 @@ flintClass <-
 function (object)
     .Call(R_flint_class, object)
 
+flintClassCommon <-
+function (tab) {
+    if (tab[["acb"]] || tab[["arb"]]) {
+        if (tab[["acb"]] || tab[["acf"]] || tab[["arb"]])
+            "acb"
+        else "arb"
+    }
+    else if (tab[["acf"]] || tab[["complex"]])
+        "acf"
+    else if (tab[["arf"]] || tab[["mag"]] || tab[["double"]]) {
+        if (tab[["arf"]] || tab[["double"]])
+            "arf"
+        else "mag"
+    }
+    else if (tab[["fmpq"]])
+        "fmpq"
+    else if (tab[["fmpz"]] || (tab[["ulong"]] && tab[["slong"]]))
+        "fmpz"
+    else if (!(tab[["slong"]] || tab[["integer"]] || tab[["logical"]]))
+        "ulong"
+    else "slong"
+}
+
 flintIdentical <-
 function (object, reference)
     .Call(R_flint_identical, object, reference)
@@ -13,6 +36,10 @@ function (object, reference)
 flintLength <-
 function (object)
     .Call(R_flint_length, object)
+
+flintLike <-
+c("NULL", "raw", "logical", "integer", "double", "complex",
+  "slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf", "arb", "acb")
 
 flintNew <-
 function (class)

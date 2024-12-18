@@ -18,7 +18,7 @@
 ** DONE methods for mtfrm
 ** DONE methods for unique, duplicated, anyDuplicated using mtfrm
 ** TODO methods for Summary, mean not ignoring '...'
-** TODO x[i] <- value should conditionally promote 'x' to class(value)
+** DONE x[i] <- value should conditionally promote 'x' to class(value)
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 ** DONE export, document class generator functions
