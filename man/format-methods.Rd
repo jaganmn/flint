@@ -48,7 +48,7 @@
   \item{sep}{
     a non-empty character string used to separate the significand from
     the exponent.  The default value \code{NULL} is a equivalent to
-    \code{"e"} for \code{base} equal to 10 and to \code{"|"} for all
+    \code{"e"} for \code{base} equal to 10 and to \code{"@"} for all
     other bases.}
   \item{rnd}{
     a non-empty character string whose first character indicates a

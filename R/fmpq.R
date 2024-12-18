@@ -159,11 +159,9 @@ setAs("ANY", "fmpq",
 setMethod("format",
           c(x = "fmpq"),
           function (x, base = 10L, ...)
-              paste0("(",
-                     format(Num(x), base = base, ...),
+              paste0(format(Num(x), base = base, ...),
                      "/",
-                     format(Den(x), base = base, ...),
-                     ")"))
+                     format(Den(x), base = base, ...)))
 
 setMethod("initialize",
           c(.Object = "fmpq"),

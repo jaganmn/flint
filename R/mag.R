@@ -129,7 +129,7 @@ setMethod("format",
               if (is.null(digits))
                   digits <- getOption("digits")
               if (is.null(sep))
-                  sep <- if (identical(base, 10L)) "e" else "|"
+                  sep <- if (identical(base, 10L)) "e" else "@"
               .Call(R_flint_mag_format, x, base, digits, sep)
           })
 
