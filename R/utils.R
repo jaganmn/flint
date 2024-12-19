@@ -9,14 +9,14 @@ function (object)
 flintClassCommon <-
 function (tab) {
     if (tab[["acb"]] || tab[["arb"]]) {
-        if (tab[["acb"]] || tab[["acf"]] || tab[["arb"]])
+        if (tab[["acb"]] || tab[["acf"]] || tab[["complex"]])
             "acb"
         else "arb"
     }
     else if (tab[["acf"]] || tab[["complex"]])
         "acf"
     else if (tab[["arf"]] || tab[["mag"]] || tab[["double"]]) {
-        if (tab[["arf"]] || tab[["double"]])
+        if (sum(tab) != tab[["mag"]]) # at least one is not 'mag'
             "arf"
         else "mag"
     }
