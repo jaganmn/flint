@@ -632,16 +632,16 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					mag_log(z + j, x + j);
 				else
 					mag_neg_log(z + j, x + j);
-			if (op != 13 || s_dots != R_NilValue) {
+			if (op != 23 || s_dots != R_NilValue) {
 			mag_t tmp;
 			mag_init(tmp);
-			if (op != 13)
-				mag_set_ui(tmp, (op == 14) ? 10 : 2);
+			if (op != 23)
+				mag_set_ui(tmp, (op == 24) ? 10 : 2);
 			else {
 				arf_srcptr base = (arf_ptr) R_flint_get_pointer(s_dots);
 				if (arf_is_nan(base) || arf_sgn(base) < 0) {
 					mag_clear(tmp);
-					Rf_error(_("NaN not representable by '%s'"), "mag");
+					Rf_error(_("NaN is not representable by '%s'"), "mag");
 				}
 				arf_get_mag_lower(tmp, base);
 			}
@@ -653,7 +653,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				for (j = 0; j < n; ++j)
 					if (mag_is_inf(z + j)) {
 					mag_clear(tmp);
-					Rf_error(_("NaN not representable by '%s'"), "mag");
+					Rf_error(_("NaN is not representable by '%s'"), "mag");
 					}
 					else
 					mag_zero(z + j);
@@ -662,7 +662,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				for (j = 0; j < n; ++j)
 					if (mag_is_zero(z + j)) {
 					mag_clear(tmp);
-					Rf_error(_("NaN not representable by '%s'"), "mag");
+					Rf_error(_("NaN is not representable by '%s'"), "mag");
 					}
 					else
 					mag_inf(z + j);

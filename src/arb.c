@@ -212,7 +212,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			case R_FLINT_CLASS_FMPQ:
 			{
 				const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
-				int prec = asPrec(R_NilValue, __func__);
+				slong prec = asPrec(R_NilValue, __func__);
 				for (j = 0; j < n; ++j)
 					arb_fmpz_div_fmpz(y + j, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec);
 				break;
@@ -621,11 +621,11 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 25: /*     "log2" */
 			for (j = 0; j < n; ++j)
 				arb_log(z + j, x + j, prec);
-			if (op != 13 || s_dots != R_NilValue) {
+			if (op != 23 || s_dots != R_NilValue) {
 			arb_t tmp;
 			arb_init(tmp);
-			if (op != 13)
-				arb_set_ui(tmp, (op == 14) ? 10 : 2);
+			if (op != 23)
+				arb_set_ui(tmp, (op == 24) ? 10 : 2);
 			else {
 				arb_srcptr base = (arb_ptr) R_flint_get_pointer(s_dots);
 				arb_set(tmp, base);

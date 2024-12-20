@@ -35,7 +35,7 @@ int asRnd(SEXP rnd, int gnu, const char *where)
 		}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "rnd", where);
-	return 0;
+	return -1;
 }
 
 void R_flint_arf_finalize(SEXP x)
@@ -172,7 +172,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		case R_FLINT_CLASS_FMPQ:
 		{
 			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
-			int prec = asPrec(R_NilValue, __func__);
+			slong prec = asPrec(R_NilValue, __func__);
 			arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 			for (j = 0; j < n; ++j)
 				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec, rnd);
