@@ -20,7 +20,6 @@
 \alias{Ops,arb,arb-method}
 \alias{Ops,arb,acb-method}
 \alias{Summary,arb-method}
-\alias{all.equal,arb,arb-method}
 \alias{anyNA,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}

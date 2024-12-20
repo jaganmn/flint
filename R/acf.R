@@ -125,15 +125,6 @@ setMethod("Summary",
           function (x, ..., na.rm = FALSE)
               .Call(R_flint_acf_ops1, .Generic, x, as.logical(na.rm)))
 
-setMethod("all.equal",
-          c(target = "acf", current = "acf"),
-          function (target, current, ...)
-              all.equal(list(real = Real(target),
-                             imag = Imag(target)),
-                        list(real = Real(current),
-                             imag = Imag(current)),
-                        ...))
-
 setMethod("anyNA",
           c(x = "acf"),
           function (x, recursive = FALSE)

@@ -129,15 +129,6 @@ setMethod("Rad<-",
           function (x, value)
               .arb(mid = Mid(x), rad = value))
 
-setMethod("all.equal",
-          c(target = "arb", current = "arb"),
-          function (target, current, ...)
-              all.equal(list(mid = Mid(target),
-                             rad = Rad(target)),
-                        list(mid = Mid(current),
-                             rad = Rad(current)),
-                        ...))
-
 setMethod("anyNA",
           c(x = "arb"),
           function (x, recursive = FALSE)

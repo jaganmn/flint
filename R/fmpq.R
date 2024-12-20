@@ -133,15 +133,6 @@ setMethod("Summary",
           function (x, ..., na.rm = FALSE)
               .Call(R_flint_fmpq_ops1, .Generic, x, NULL))
 
-setMethod("all.equal",
-          c(target = "fmpq", current = "fmpq"),
-          function (target, current, ...)
-              all.equal(list(num = Num(target),
-                             den = Den(target)),
-                        list(num = Num(current),
-                             den = Den(current)),
-                        ...))
-
 setMethod("anyNA",
           c(x = "fmpq"),
           function (x, recursive = FALSE)
