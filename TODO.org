@@ -21,6 +21,8 @@
 ** DONE x[i] <- value should conditionally promote 'x' to class(value)
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
+	ideally after increasing test coverage
+** DONE methods for 'mag' consulting rounding mode, conditionally giving lower bound
 ** DONE export, document class generator functions
-** TODO configure tests for many missing acf_*
+** TODO configure tests for many missing acf_*, mag_*
 ** TODO internal function 'uu' to replace as(., "ulong")

@@ -161,7 +161,7 @@ setMethod("format",
                             rnd = rnd, ...),
                      " +/- ",
                      format(Rad(x), base = base, digits = digits, sep = sep,
-                                       ...),
+                            rnd = "A", ...),
                      ")"))
 
 setMethod("initialize",
