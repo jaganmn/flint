@@ -22,6 +22,8 @@
 \alias{mtfrm,flint-method}
 \alias{print,flint-method}
 \alias{rep,flint-method}
+\alias{rep.int,flint-method}
+\alias{rep_len,flint-method}
 \alias{show,flint-method}
 \alias{unique,flint-method}
 \title{Class of FLINT-Type Vectors}
@@ -31,6 +33,8 @@
   \acronym{FLINT} \proglang{C} type.  The \proglang{C} type is
   determined by the class attribute and interfaced exactly using \R{}'s
   external pointer type.
+
+  Names and dimensions are not yet supported.
 }
 \section{Slots}{
   \describe{
@@ -151,6 +155,12 @@
       arguments are coerced to \code{\linkS4class{ulong}} and so are
       constrained to its range; see the parenthetical comment under
       \code{length<-} above.}
+    \item{\code{rep.int}, \code{rep_len}}{
+      \code{signature(x = "flint")}:\cr
+      for now equivalent to \code{rep(x, times=)} and
+      \code{rep(x, length.out=)}.  Treatment of named \code{x} would
+      differ if virtual class \code{flint} supported names; see also
+      \code{\link{rep}}.}
     \item{\code{show}}{
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}

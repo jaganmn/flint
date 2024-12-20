@@ -396,6 +396,16 @@ setMethod("rep",
               x
           })
 
+setMethod("rep.int",
+          c(x = "flint"),
+          function (x, times)
+              .Call(R_flint_rep_times, x, as(times, "ulong")))
+
+setMethod("rep_len",
+          c(x = "flint"),
+          function (x, length.out)
+              .Call(R_flint_rep_lengthout, x, as(length.out, "ulong")))
+
 setMethod("show",
           c(object = "flint"),
           function (object) {

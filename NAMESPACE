@@ -7,8 +7,8 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               as.numeric, as.complex, as.character, as.list,
               as.expression, as.vector, c, duplicated, format,
               initialize, is.finite, is.infinite, is.na, is.nan, length,
-              "length<-", log, mean, mtfrm, print, rep, show, unique,
-              xtfrm)
+              "length<-", log, mean, mtfrm, print, rep, rep.int,
+              rep_len, show, unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
