@@ -154,10 +154,7 @@ setMethod("[<-",
               else if (nv > ni || ni %% nv != 0L)
                   warning("number of items to replace is not a multiple of replacement length")
               }
-              m <- logical(length(flintLike))
-              names(m) <- flintLike
-              m[c(flintClass(x), cv)] <- TRUE
-              common <- flintClassCommon(m)
+              common <- flintClassCommon(c(flintClass(x), cv))
               x <- as(x, common)
               value <- as(value, common)
               .Call(R_flint_subassign, x, i, value)
@@ -260,10 +257,7 @@ setMethod("[[<-",
                   stop("replacement has length zero")
               else if (nv > 1L)
                   warning("number of items to replace is not a multiple of replacement length")
-              m <- logical(length(flintLike))
-              names(m) <- flintLike
-              m[c(flintClass(x), cv)] <- TRUE
-              common <- flintClassCommon(m)
+              common <- flintClassCommon(c(flintClass(x), cv))
               x <- as(x, common)
               value <- as(value, common)
               .Call(R_flint_subassign, x, i, value)
@@ -318,11 +312,11 @@ function (...) {
     if (n == 0L)
         return(NULL)
     args <- list(...)
-    m <- match(flintLike, vapply(args, .c.class, ""), 0L)
-    if (!any(m[7L:length(m)]))
+    classes <- vapply(args, .c.class, "")
+    common <- flintClassCommon(classes, strict = FALSE)
+    if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(c(...))
-    names(m) <- flintLike
-    args <- lapply(args, as, flintClassCommon(m))
+    args <- lapply(args, as, common)
     .Call(R_flint_bind, args)
 }
 

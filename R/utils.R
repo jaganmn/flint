@@ -7,26 +7,34 @@ function (object)
     .Call(R_flint_class, object)
 
 flintClassCommon <-
-function (tab) {
-    if (tab[["acb"]] || tab[["arb"]]) {
-        if (tab[["acb"]] || tab[["acf"]] || tab[["complex"]])
+function (classes, strict = TRUE) {
+    classes. <-
+    c("NULL", "raw", "logical", "integer", "double", "complex",
+      "ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
+      "arb", "acb")
+    m <- match(classes., classes, 0L) > 0L
+    if (!strict && (w <- max(1L, which(m))) <= 6L)
+        return(flintLike[w])
+    names(m) <- classes.
+    if (m[["acb"]] || m[["arb"]]) {
+        if (m[["acb"]] || m[["acf"]] || m[["complex"]])
             "acb"
         else "arb"
     }
-    else if (tab[["acf"]] || tab[["complex"]])
+    else if (m[["acf"]] || m[["complex"]])
         "acf"
-    else if (tab[["arf"]] || tab[["mag"]] || tab[["double"]]) {
-        if (sum(tab) != tab[["mag"]]) # at least one is not 'mag'
+    else if (m[["arf"]] || m[["mag"]] || m[["double"]]) {
+        if (sum(m) != m[["mag"]]) # at least one is not 'mag'
             "arf"
         else "mag"
     }
-    else if (tab[["fmpq"]])
+    else if (m[["fmpq"]])
         "fmpq"
-    else if (tab[["fmpz"]] || (tab[["ulong"]] && tab[["slong"]]))
+    else if (m[["fmpz"]] || (m[["ulong"]] && m[["slong"]]))
         "fmpz"
-    else if (!(tab[["slong"]] || tab[["integer"]] || tab[["logical"]]))
-        "ulong"
-    else "slong"
+    else if (m[["slong"]] || m[["integer"]] || m[["logical"]])
+        "slong"
+    else "ulong"
 }
 
 flintIdentical <-
@@ -36,10 +44,6 @@ function (object, reference)
 flintLength <-
 function (object)
     .Call(R_flint_length, object)
-
-flintLike <-
-c("NULL", "raw", "logical", "integer", "double", "complex",
-  "slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf", "arb", "acb")
 
 flintNew <-
 function (class)
