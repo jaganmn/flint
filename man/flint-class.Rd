@@ -98,7 +98,7 @@
       inheriting from different subclasses of virtual class \code{flint}
       and comparison with objects (typically atomic vectors) coercible
       to virtual class \code{flint} are supported with
-      \code{check.class = FALSE}.  See \code{\link{flintIndentical}} for
+      \code{check.class = FALSE}.  See \code{\link{flintIdentical}} for
       much more strict comparison objects inheriting from \code{flint}.}
     \item{\code{anyDuplicated}}{
       \code{signature(x = "flint")}:\cr
