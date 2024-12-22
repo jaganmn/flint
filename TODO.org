@@ -8,7 +8,7 @@
 ** DONE export, document Num, Den, Mid, Rad, Real, Imag
 ** DONE methods for as.character using format
 ** DONE initialization with character vectors
-** TODO methods for all.equal
+** DONE methods for all.equal
 ** DONE coercion to the virtual class
 ** DONE methods for c
 ** DONE methods for length<-
@@ -17,8 +17,8 @@
 ** DONE methods for xtfrm
 ** DONE methods for mtfrm
 ** DONE methods for unique, duplicated, anyDuplicated using mtfrm
-** TODO methods for Summary, mean not ignoring '...'
 ** DONE x[i] <- value should conditionally promote 'x' to class(value)
+** TODO methods for Summary, mean not ignoring '...'
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage

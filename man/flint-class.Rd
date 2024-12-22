@@ -14,6 +14,9 @@
 \alias{as.character,flint-method}
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
+\alias{all.equal,ANY,flint-method}
+\alias{all.equal,flint,ANY-method}
+\alias{all.equal,flint,flint-method}
 \alias{c,flint-method}
 \alias{coerce,ANY,flint-method}
 \alias{duplicated,flint-method}
@@ -83,6 +86,20 @@
       \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
       equivalent to code \code{[<-} with the restriction that \code{i}
       must index exactly one element.}
+    \item{\code{all.equal}}{
+      \code{signature(x = "ANY", y = "flint")}:\cr
+      \code{signature(x = "flint", y = "ANY")}:\cr
+      \code{signature(x = "flint", y = "flint")}:\cr
+      returns either \code{TRUE}, indicating that there is no meaningful
+      difference between \code{x} and \code{y}, or a character vector
+      describing differences.  The implementation (including optional
+      arguments) is adapted from \code{\link{all.equal.numeric}}, hence
+      see \emph{its} documentation.  Notably, comparison of objects
+      inheriting from different subclasses of virtual class \code{flint}
+      and comparison with objects (typically atomic vectors) coercible
+      to virtual class \code{flint} are supported with
+      \code{check.class = FALSE}.  See \code{\link{flintIndentical}} for
+      much more strict comparison objects inheriting from \code{flint}.}
     \item{\code{anyDuplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{anyDuplicated(mtfrm(x), \dots)}.}

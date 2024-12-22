@@ -263,6 +263,144 @@ setMethod("[[<-",
               .Call(R_flint_subassign, x, i, value)
           })
 
+.all.equal <-
+function (target, current,
+          tolerance = sqrt(.Machine[["double.eps"]]),
+          scale = NULL,
+          countEQ = FALSE,
+          formatFUN = function(err, what) format(err),
+          ...,
+          check.attributes = TRUE,
+          check.class = TRUE,
+          giveErr = FALSE) {
+    msg <-
+    if (check.attributes) {
+        at <- attributes(target)
+        ac <- attributes(current)
+        if (is.object(target)) {
+            at[["class"]] <- NULL
+            if (typeof(target) == "S4")
+                at[[".xData"]] <- NULL
+        }
+        if (is.object(current)) {
+            ac[["class"]] <- NULL
+            if (typeof(current) == "S4")
+                ac[[".xData"]] <- NULL
+        }
+        attr.all.equal(`attributes<-`(0L, at), `attributes<-`(0L, ac),
+                       tolerance = tolerance, scale = scale, ...)
+    }
+    if (!(is.atomic( target) && !is.character( target)) &&
+        !(is.atomic(current) && !is.character(current))) {
+        if ((tt <- typeof(target)) != (tc <- typeof(current)))
+        return(c(msg, gettextf("target type is \"%s\", current type is \"%s\"",
+                               tt, tc)))
+    }
+    if (check.class) {
+        if (!identical(ct <- class(target), cc <- class(current)))
+        return(c(msg, gettextf("target class is %s, current class is %s",
+                               deparse(ct), deparse(cc))))
+        common <- cc
+    } else {
+        target <- as(target, "flint")
+        current <- as(current, "flint")
+        common <- flintClassCommon(c(class(target), class(current)))
+        if (common == "mag")
+            common <- "arf"
+        target <- as(target, common)
+        current <- as(target, common)
+    }
+    if (!identical(nt <- length(target), nc <- length(current))) {
+        if (is.null(nt.off <- attr(nt, "off")) &&
+            is.null(nc.off <- attr(nc, "off")))
+        return(c(msg, gettextf("target length is %.0f, current length is %.0f",
+                               nt, nc)))
+        else
+        return(c(msg, gettextf("target length is %.0f+%d, current length is %.0f+%d",
+                               nt, if (is.null(nt.off)) 0L else nt.off,
+                               nc, if (is.null(nc.off)) 0L else nc.off)))
+    }
+    if (any(common == c("arf", "acf", "arb", "acb"))) {
+        out <- is.na(target)
+        if (any(d <- out != is.na(current)))
+        return(c(msg, gettextf("NaN mismatch at index %.0f",
+                               which.max(d))))
+        out <- out | target == current
+    }
+    else
+        out <- target == current
+    if (all(out))
+        return(if (is.null(msg)) TRUE else msg)
+    if (scale.default <- is.null(scale)) {
+        if (countEQ)
+            scale <- mean(abs(target))
+    }
+    else if (length(scale) != 1L && length(scale) != nt)
+        stop(gettextf("length of '%s' is not 1 or length(%s)",
+                      "scale", "target"),
+             domain = NA)
+    else if (is.na(m <- min(scale)) || !(m > 0))
+        stop(gettextf("'%s' is not positive",
+                      "scale"),
+             domain = NA)
+    else scale.unit <- all(scale == 1)
+    if (any(out)) {
+        w <- which(!out)
+        target <- target[w]
+        current <- current[w]
+        if (!scale.default && length(scale) == nt)
+            scale <- scale[w]
+    }
+    if (is.null(scale))
+        scale <- mean(abs(target))
+    if (scale.default)
+        scale.unit <- is.na(scale) || scale <= tolerance
+    err <-
+    if (scale.unit)
+        mean(abs(target - current))
+    else mean(abs(target - current)/scale)
+    ans <-
+    if (err <= tolerance) {
+        if (is.null(msg))
+            TRUE
+        else msg
+    }
+    else if (scale.unit) {
+        what <- "absolute"
+        c(msg, gettextf("mean absolute difference is %s",
+                        formatFUN(err, what)))
+    }
+    else if (scale.default) {
+        what <- "relative"
+        c(msg, gettextf("mean relative difference is %s",
+                        formatFUN(err, what)))
+    }
+    else {
+        what <- "scaled"
+        c(msg, gettextf("mean scaled difference is %s",
+                        formatFUN(err, what)))
+    }
+    if (giveErr) {
+        attr(ans, "err") <- err
+        attr(ans, "what") <- what
+    }
+    ans
+}
+
+setMethod("all.equal",
+          c(target =   "ANY", current = "flint"),
+          .all.equal)
+
+setMethod("all.equal",
+          c(target = "flint", current =   "ANY"),
+          .all.equal)
+
+setMethod("all.equal",
+          c(target = "flint", current = "flint"),
+          .all.equal)
+
+rm(.all.equal)
+
 setMethod("anyDuplicated",
           c(x = "flint"),
           function (x, incomparables = FALSE, ...)
