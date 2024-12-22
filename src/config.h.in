@@ -1,7 +1,49 @@
 /* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the 'acf_conj' function. */
+#undef HAVE_ACF_CONJ
+
+/* Define to 1 if you have the 'acf_div_fmpz' function. */
+#undef HAVE_ACF_DIV_FMPZ
+
+/* Define to 1 if you have the 'acf_is_finite' function. */
+#undef HAVE_ACF_IS_FINITE
+
+/* Define to 1 if you have the 'acf_is_inf' function. */
+#undef HAVE_ACF_IS_INF
+
+/* Define to 1 if you have the 'acf_is_nan' function. */
+#undef HAVE_ACF_IS_NAN
+
+/* Define to 1 if you have the 'acf_is_zero' function. */
+#undef HAVE_ACF_IS_ZERO
+
+/* Define to 1 if you have the 'acf_nan' function. */
+#undef HAVE_ACF_NAN
+
+/* Define to 1 if you have the 'acf_one' function. */
+#undef HAVE_ACF_ONE
+
+/* Define to 1 if you have the 'acf_zero' function. */
+#undef HAVE_ACF_ZERO
+
+/* Define to 1 if you have the 'fmpq_clog_ui' function. */
+#undef HAVE_FMPQ_CLOG_UI
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the 'mag_div_fmpz_lower' function. */
+#undef HAVE_MAG_DIV_FMPZ_LOWER
+
+/* Define to 1 if you have the 'mag_expm1_lower' function. */
+#undef HAVE_MAG_EXPM1_LOWER
+
+/* Define to 1 if you have the 'mag_get_d_lower' function. */
+#undef HAVE_MAG_GET_D_LOWER
+
+/* Define to 1 if you have the 'mag_log1p_lower' function. */
+#undef HAVE_MAG_LOG1P_LOWER
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

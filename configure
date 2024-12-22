@@ -4015,6 +4015,92 @@ esac
 fi
 
 
+ac_fn_c_check_func "$LINENO" "fmpq_clog_ui" "ac_cv_func_fmpq_clog_ui"
+if test "x$ac_cv_func_fmpq_clog_ui" = xyes
+then :
+  printf "%s\n" "#define HAVE_FMPQ_CLOG_UI 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "mag_get_d_lower" "ac_cv_func_mag_get_d_lower"
+if test "x$ac_cv_func_mag_get_d_lower" = xyes
+then :
+  printf "%s\n" "#define HAVE_MAG_GET_D_LOWER 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "mag_div_fmpz_lower" "ac_cv_func_mag_div_fmpz_lower"
+if test "x$ac_cv_func_mag_div_fmpz_lower" = xyes
+then :
+  printf "%s\n" "#define HAVE_MAG_DIV_FMPZ_LOWER 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "mag_log1p_lower" "ac_cv_func_mag_log1p_lower"
+if test "x$ac_cv_func_mag_log1p_lower" = xyes
+then :
+  printf "%s\n" "#define HAVE_MAG_LOG1P_LOWER 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "mag_expm1_lower" "ac_cv_func_mag_expm1_lower"
+if test "x$ac_cv_func_mag_expm1_lower" = xyes
+then :
+  printf "%s\n" "#define HAVE_MAG_EXPM1_LOWER 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_is_zero" "ac_cv_func_acf_is_zero"
+if test "x$ac_cv_func_acf_is_zero" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_IS_ZERO 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_is_nan" "ac_cv_func_acf_is_nan"
+if test "x$ac_cv_func_acf_is_nan" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_IS_NAN 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_is_inf" "ac_cv_func_acf_is_inf"
+if test "x$ac_cv_func_acf_is_inf" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_IS_INF 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_is_finite" "ac_cv_func_acf_is_finite"
+if test "x$ac_cv_func_acf_is_finite" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_IS_FINITE 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_zero" "ac_cv_func_acf_zero"
+if test "x$ac_cv_func_acf_zero" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_ZERO 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_one" "ac_cv_func_acf_one"
+if test "x$ac_cv_func_acf_one" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_ONE 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_nan" "ac_cv_func_acf_nan"
+if test "x$ac_cv_func_acf_nan" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_NAN 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_conj" "ac_cv_func_acf_conj"
+if test "x$ac_cv_func_acf_conj" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_CONJ 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acf_div_fmpz" "ac_cv_func_acf_div_fmpz"
+if test "x$ac_cv_func_acf_div_fmpz" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_DIV_FMPZ 1" >>confdefs.h
+
+fi
+
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for int with bit width 32" >&5
 printf %s "checking for int with bit width 32... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext

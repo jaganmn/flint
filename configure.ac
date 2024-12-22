@@ -166,6 +166,8 @@ AC_CHECK_TYPE([mpfr_uexp_t], [],
 AC_CHECK_FUNC([arb_init], [],
               [AC_MSG_ERROR([FLINT missing Arb sublibrary])])
 
+AC_CHECK_FUNCS([fmpq_clog_ui mag_get_d_lower mag_div_fmpz_lower mag_log1p_lower mag_expm1_lower acf_is_zero acf_is_nan acf_is_inf acf_is_finite acf_zero acf_one acf_nan acf_conj acf_div_fmpz], [], [])
+
 AC_MSG_CHECKING([for int with bit width 32])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 int main()
