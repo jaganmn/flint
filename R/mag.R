@@ -106,8 +106,11 @@ setMethod("Ops",
 
 setMethod("Summary",
           c(x = "mag"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_mag_ops1, .Generic, x, NULL))
+          function (x, ..., na.rm = FALSE) {
+              if (...length())
+                  get(.Generic, mode = "function")(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_mag_ops1, .Generic, x, NULL)
+          })
 
 setMethod("anyNA",
           c(x = "mag"),
@@ -174,5 +177,8 @@ setMethod("log",
 
 setMethod("mean",
           c(x = "mag"),
-          function (x, ...)
-              .Call(R_flint_mag_ops1, "mean", x, NULL))
+          function (x, na.rm = FALSE, ...) {
+              if (...length())
+                  mean(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_mag_ops1, "mean", x, NULL)
+          })

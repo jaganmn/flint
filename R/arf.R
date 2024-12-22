@@ -106,8 +106,11 @@ setMethod("Ops",
 
 setMethod("Summary",
           c(x = "arf"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_arf_ops1, .Generic, x, as.logical(na.rm)))
+          function (x, ..., na.rm = FALSE) {
+              if (...length())
+                  get(.Generic, mode = "function")(c(x, ...), na.rm = FALSE)
+              else .Call(R_flint_arf_ops1, .Generic, x, as.logical(na.rm))
+          })
 
 setMethod("anyNA",
           c(x = "arf"),
@@ -161,5 +164,8 @@ setMethod("is.nan",
 
 setMethod("mean",
           c(x = "arf"),
-          function (x, na.rm = FALSE, ...)
-              .Call(R_flint_arf_ops1, "mean", x, as.logical(na.rm)))
+          function (x, na.rm = FALSE, ...) {
+              if (...length())
+                  mean(c(x, ...), na.rm = FALSE)
+              else .Call(R_flint_arf_ops1, "mean", x, as.logical(na.rm))
+          })

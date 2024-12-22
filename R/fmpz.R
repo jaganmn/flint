@@ -110,8 +110,11 @@ setMethod("Ops",
 
 setMethod("Summary",
           c(x = "fmpz"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_fmpz_ops1, .Generic, x, NULL))
+          function (x, ..., na.rm = FALSE) {
+              if (...length())
+                  get(.Generic, mode = "function")(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_fmpz_ops1, .Generic, x, NULL)
+          })
 
 setMethod("anyNA",
           c(x = "fmpz"),
@@ -159,5 +162,8 @@ setMethod("is.nan",
 
 setMethod("mean",
           c(x = "fmpz"),
-          function (x, ...)
-              .Call(R_flint_fmpz_ops1, "mean", x, NULL))
+          function (x, na.rm = FALSE, ...) {
+              if (...length())
+                  mean(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_fmpz_ops1, "mean", x, NULL)
+          })

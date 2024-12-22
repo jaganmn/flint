@@ -122,8 +122,11 @@ setMethod("Real<-",
 
 setMethod("Summary",
           c(x = "acb"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_acb_ops1, .Generic, x, as.logical(na.rm)))
+          function (x, ..., na.rm = FALSE) {
+              if (...length())
+                  get(.Generic, mode = "function")(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_acb_ops1, .Generic, x, as.logical(na.rm))
+          })
 
 setMethod("anyNA",
           c(x = "acb"),
@@ -192,8 +195,11 @@ setMethod("log",
 
 setMethod("mean",
           c(x = "acb"),
-          function (x, na.rm = FALSE, ...)
-              .Call(R_flint_acb_ops1, "mean", x, as.logical(na.rm)))
+          function (x, na.rm = FALSE, ...) {
+              if (...length())
+                  mean(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_acb_ops1, "mean", x, as.logical(na.rm))
+          })
 
 setMethod("xtfrm",
           c(x = "acb"),

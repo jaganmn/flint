@@ -116,8 +116,11 @@ setMethod("Ops",
 
 setMethod("Summary",
           c(x = "arb"),
-          function (x, ..., na.rm = FALSE)
-              .Call(R_flint_arb_ops1, .Generic, x, as.logical(na.rm)))
+          function (x, ..., na.rm = FALSE) {
+              if (...length())
+                  get(.Generic, mode = "function")(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_arb_ops1, .Generic, x, as.logical(na.rm))
+          })
 
 setMethod("Rad",
           c(x = "arb"),
@@ -197,8 +200,11 @@ setMethod("log",
 
 setMethod("mean",
           c(x = "arb"),
-          function (x, na.rm = FALSE, ...)
-              .Call(R_flint_arb_ops1, "mean", x, as.logical(na.rm)))
+          function (x, na.rm = FALSE, ...) {
+              if (...length())
+                  mean(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_arb_ops1, "mean", x, as.logical(na.rm))
+          })
 
 setMethod("xtfrm",
           c(x = "arb"),
