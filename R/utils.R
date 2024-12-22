@@ -14,7 +14,7 @@ function (classes, strict = TRUE) {
       "arb", "acb")
     m <- match(classes., classes, 0L) > 0L
     if (!strict && (w <- max(1L, which(m))) <= 6L)
-        return(flintLike[w])
+        return(classes.[w])
     names(m) <- classes.
     if (m[["acb"]] || m[["arb"]]) {
         if (m[["acb"]] || m[["acf"]] || m[["complex"]])
