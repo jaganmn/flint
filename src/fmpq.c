@@ -8,7 +8,6 @@
 #include "flint.h"
 
 #ifndef HAVE_FMPQ_CLOG_UI
-/* TODO: use configure to conditionally define HAVE_FMPQ_CLOG_UI */
 slong fmpq_clog_ui(const fmpq_t x, ulong b)
 {
 	slong clog = fmpz_clog_ui(fmpq_numref(x), b) -

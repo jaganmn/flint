@@ -10,7 +10,6 @@
 #include "flint.h"
 
 #ifndef HAVE_ACF_IS_ZERO
-/* TODO: use configure to conditionally define HAVE_ACF_IS_ZERO */
 static R_INLINE
 int acf_is_zero(const acf_t x)
 {
@@ -21,7 +20,6 @@ int acf_is_zero(const acf_t x)
 #endif
 
 #ifndef HAVE_ACF_IS_NAN
-/* TODO: use configure to conditionally define HAVE_ACF_IS_NAN */
 static R_INLINE
 int acf_is_nan(const acf_t x)
 {
@@ -32,7 +30,6 @@ int acf_is_nan(const acf_t x)
 #endif
 
 #ifndef HAVE_ACF_IS_INF
-/* TODO: use configure to conditionally define HAVE_ACF_IS_INF */
 static R_INLINE
 int acf_is_inf(const acf_t x)
 {
@@ -43,7 +40,6 @@ int acf_is_inf(const acf_t x)
 #endif
 
 #ifndef HAVE_ACF_IS_FINITE
-/* TODO: use configure to conditionally define HAVE_ACF_IS_FINITE */
 static R_INLINE
 int acf_is_finite(const acf_t x)
 {
@@ -54,7 +50,6 @@ int acf_is_finite(const acf_t x)
 #endif
 
 #ifndef HAVE_ACF_ZERO
-/* TODO: use configure to conditionally define HAVE_ACF_ZERO */
 static R_INLINE
 void acf_zero(acf_t res)
 {
@@ -65,7 +60,6 @@ void acf_zero(acf_t res)
 #endif
 
 #ifndef HAVE_ACF_ONE
-/* TODO: use configure to conditionally define HAVE_ACF_ONE */
 static R_INLINE
 void acf_one(acf_t res)
 {
@@ -76,7 +70,6 @@ void acf_one(acf_t res)
 #endif
 
 #ifndef HAVE_ACF_NAN
-/* TODO: use configure to conditionally define HAVE_ACF_NAN */
 static R_INLINE
 void acf_nan(acf_t res)
 {
@@ -87,18 +80,16 @@ void acf_nan(acf_t res)
 #endif
 
 #ifndef HAVE_ACF_CONJ
-/* TODO: use configure to conditionally define HAVE_ACF_CONJ */
 static R_INLINE
-void acf_conj(acf_t y, const acf_t x)
+void acf_conj(acf_t res, const acf_t x)
 {
-	arf_set(acf_realref(y), acf_realref(x));
-	arf_neg(acf_imagref(y), acf_imagref(x));
+	arf_set(acf_realref(res), acf_realref(x));
+	arf_neg(acf_imagref(res), acf_imagref(x));
 	return;
 }
 #endif
 
 #ifndef HAVE_ACF_DIV_FMPZ
-/* TODO: use configure to conditionally define HAVE_ACF_DIV_FMPZ */
 static R_INLINE
 int acf_div_fmpz(acf_t res, const acf_t x, const fmpz_t y, slong prec, arf_rnd_t rnd)
 {

@@ -17,7 +17,6 @@
 #define ulong_equal(rop, op) (*(rop) == *(op))
 
 #ifndef HAVE_ACF_ZERO
-/* TODO: use configure to conditionally define HAVE_ACF_ZERO */
 static R_INLINE
 void acf_zero(acf_t res)
 {
