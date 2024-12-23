@@ -89,6 +89,26 @@ void acf_conj(acf_t res, const acf_t x)
 }
 #endif
 
+#ifndef HAVE_ACF_ABS
+static
+int acf_abs(arf_t res, const acf_t x, slong prec, arf_rnd_t rnd)
+{
+	int a;
+	arf_t u, v, w;
+	arf_init(u);
+	arf_init(v);
+	arf_init(w);
+	arf_mul(u, acf_realref(x), acf_realref(x), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_mul(v, acf_imagref(x), acf_imagref(x), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_add(w, u, v, ARF_PREC_EXACT, ARF_RND_DOWN); /* FIXME */
+	a = arf_sqrt(res, w, prec, rnd);
+	arf_clear(u);
+	arf_clear(v);
+	arf_clear(w);
+	return a;
+}
+#endif
+
 #ifndef HAVE_ACF_DIV_FMPZ
 static R_INLINE
 int acf_div_fmpz(acf_t res, const acf_t x, const fmpz_t y, slong prec, arf_rnd_t rnd)
@@ -890,15 +910,11 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case  9: /*       "Re" */
 	case 10: /*       "Im" */
-#ifdef HAVE_ACF_ABS
 	case 11: /*      "Mod" */
-#endif
 #ifdef HAVE_ACF_ARG
 	case 12: /*      "Arg" */
 #endif
-#ifdef HAVE_ACF_ABS
 	case 13: /*      "abs" */
-#endif
 	{
 		SEXP ans = newObject("arf");
 		arf_ptr z = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
@@ -912,13 +928,11 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (j = 0; j < n; ++j)
 				arf_set(z + j, acf_imagref(x + j));
 			break;
-#ifdef HAVE_ACF_ABS
 		case 11: /*      "Mod" */
 		case 13: /*      "abs" */
 			for (j = 0; j < n; ++j)
 				acf_abs(z + j, x + j, prec, rnd);
 			break;
-#endif
 #ifdef HAVE_ACF_ARG
 		case 12: /*      "Arg" */
 			for (j = 0; j < n; ++j)
