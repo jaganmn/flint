@@ -732,7 +732,11 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (op != 23)
 				WRAP(mag_set_ui, !lower, tmp, (op == 24) ? 10 : 2);
 			else {
-				arf_srcptr base = (arf_ptr) R_flint_get_pointer(s_dots);
+				SEXP s_base = VECTOR_ELT(s_dots, 0);
+				if (R_flint_get_length(s_base) == 0)
+					Rf_error(_("'%s' of length zero in '%s'"),
+					         "base", CHAR(STRING_ELT(s_op, 0)));
+				arf_srcptr base = (arf_ptr) R_flint_get_pointer(s_base);
 				if (arf_is_nan(base) || arf_sgn(base) < 0) {
 					mag_clear(tmp);
 					Rf_error(_("NaN is not representable by '%s'"), "mag");
@@ -785,10 +789,11 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 48: /*   "round" */
 		{
-			if (R_flint_get_length(s_dots) == 0)
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
 				         "digits", CHAR(STRING_ELT(s_op, 0)));
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0];
 			slong prec = MAG_BITS << 1;
 			arf_rnd_t rnd = (lower) ? ARF_RND_DOWN : ARF_RND_UP;
 			fmpz_t p, q;
@@ -834,7 +839,11 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 49: /*  "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "digits", CHAR(STRING_ELT(s_op, 0)));
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0],
 				clog;
 			if (digits <= 0)
 				digits = 1;

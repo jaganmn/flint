@@ -28,7 +28,7 @@ setMethod("Math2",
           function (x, digits) {
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
-              .Call(R_flint_arb_ops1, .Generic, x, as(digits, "slong"))
+              .Call(R_flint_arb_ops1, .Generic, x, list(as(digits, "slong")))
           })
 
 setMethod("Mid",
@@ -119,7 +119,7 @@ setMethod("Summary",
           function (x, ..., na.rm = FALSE) {
               if (...length())
                   get(.Generic, mode = "function")(c(x, ...), na.rm = na.rm)
-              else .Call(R_flint_arb_ops1, .Generic, x, as.logical(na.rm))
+              else .Call(R_flint_arb_ops1, .Generic, x, list(as.logical(na.rm)))
           })
 
 setMethod("Rad",
@@ -187,23 +187,16 @@ setMethod("is.nan",
 
 setMethod("log",
           c(x = "arb"),
-          function (x, base, ...) {
-              if (missing(base))
-                  base <- NULL
-              else if (length(base) == 0L)
-                  stop(gettextf("'%s' of length zero in '%s'",
-                                "base", "log"),
-                       domain = NA)
-              else base <- as(base, "arb")
-              .Call(R_flint_arb_ops1, "log", x, base)
-          })
+          function (x, base, ...)
+              .Call(R_flint_arb_ops1, "log", x,
+                    if (!missing(base)) list(as(base, "arb"))))
 
 setMethod("mean",
           c(x = "arb"),
           function (x, na.rm = FALSE, ...) {
               if (...length())
                   mean(c(x, ...), na.rm = na.rm)
-              else .Call(R_flint_arb_ops1, "mean", x, as.logical(na.rm))
+              else .Call(R_flint_arb_ops1, "mean", x, list(as.logical(na.rm)))
           })
 
 setMethod("xtfrm",

@@ -566,7 +566,11 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (op != 23)
 				acb_set_ui(tmp, (op == 24) ? 10 : 2);
 			else {
-				acb_srcptr base = (acb_ptr) R_flint_get_pointer(s_dots);
+				SEXP s_base = VECTOR_ELT(s_dots, 0);
+				if (R_flint_get_length(s_base) == 0)
+					Rf_error(_("'%s' of length zero in '%s'"),
+					         "base", CHAR(STRING_ELT(s_op, 0)));
+				acb_srcptr base = (acb_ptr) R_flint_get_pointer(s_base);
 				acb_set(tmp, base);
 			}
 			acb_log(tmp, tmp, prec);
@@ -671,11 +675,11 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		case 48: /*    "round" */
 		{
-			if (R_flint_get_length(s_dots) == 0)
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
 				         "digits", CHAR(STRING_ELT(s_op, 0)));
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
-				prec = asPrec(R_NilValue, __func__);
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0];
 			fmpz_t p, q;
 			arf_t s;
 			mag_t d;
@@ -759,7 +763,11 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 49: /*   "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "digits", CHAR(STRING_ELT(s_op, 0)));
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0],
 				clog;
 			if (digits <= 0)
 				digits = 1;
@@ -845,10 +853,11 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	case 55: /*    "mean" */
 	{
-		if (XLENGTH(s_dots) == 0)
+		SEXP s_narm = VECTOR_ELT(s_dots, 0);
+		if (XLENGTH(s_narm) == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
-		int narm = LOGICAL_RO(s_dots)[0];
+		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("acb");
 		size_t s = (op == 52) ? 2 : 1;
 		acb_ptr z = (acb_ptr) flint_calloc(s, sizeof(acb_t));
@@ -895,10 +904,11 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 57: /*     "all" */
 	case 58: /*   "anyNA" */
 	{
-		if (XLENGTH(s_dots) == 0)
+		SEXP s_narm = VECTOR_ELT(s_dots, 0);
+		if (XLENGTH(s_narm) == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
-		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
+		int narm = LOGICAL_RO(s_narm)[0], anyna = 0;
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {

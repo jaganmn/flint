@@ -28,7 +28,7 @@ setMethod("Math2",
           function (x, digits) {
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
-              .Call(R_flint_arf_ops1, .Generic, x, as(digits, "slong"))
+              .Call(R_flint_arf_ops1, .Generic, x, list(as(digits, "slong")))
           })
 
 setMethod("Ops",
@@ -109,7 +109,7 @@ setMethod("Summary",
           function (x, ..., na.rm = FALSE) {
               if (...length())
                   get(.Generic, mode = "function")(c(x, ...), na.rm = FALSE)
-              else .Call(R_flint_arf_ops1, .Generic, x, as.logical(na.rm))
+              else .Call(R_flint_arf_ops1, .Generic, x, list(as.logical(na.rm)))
           })
 
 setMethod("anyNA",
@@ -167,5 +167,5 @@ setMethod("mean",
           function (x, na.rm = FALSE, ...) {
               if (...length())
                   mean(c(x, ...), na.rm = FALSE)
-              else .Call(R_flint_arf_ops1, "mean", x, as.logical(na.rm))
+              else .Call(R_flint_arf_ops1, "mean", x, list(as.logical(na.rm)))
           })

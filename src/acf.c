@@ -665,10 +665,11 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 48: /*   "round" */
 		{
-			if (R_flint_get_length(s_dots) == 0)
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
 				         "digits", CHAR(STRING_ELT(s_op, 0)));
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0];
 			fmpz_t p, q;
 			arf_t s;
 			arf_srcptr xm;
@@ -727,7 +728,11 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 49: /*  "signif" */
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "digits", CHAR(STRING_ELT(s_op, 0)));
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0],
 				clog;
 			if (digits <= 0)
 				digits = 1;
@@ -793,10 +798,11 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	case 55: /*    "mean" */
 	{
-		if (XLENGTH(s_dots) == 0)
+		SEXP s_narm = VECTOR_ELT(s_dots, 0);
+		if (XLENGTH(s_narm) == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
-		int narm = LOGICAL_RO(s_dots)[0];
+		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("acf");
 		size_t s = (op == 52) ? 2 : 1;
 		acf_ptr z = (acf_ptr) flint_calloc(s, sizeof(acf_t));
@@ -843,10 +849,11 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 57: /*     "all" */
 	case 58: /*   "anyNA" */
 	{
-		if (XLENGTH(s_dots) == 0)
+		SEXP s_narm = VECTOR_ELT(s_dots, 0);
+		if (XLENGTH(s_narm) == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
-		int narm = LOGICAL_RO(s_dots)[0], anyna = 0;
+		int narm = LOGICAL_RO(s_narm)[0], anyna = 0;
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {

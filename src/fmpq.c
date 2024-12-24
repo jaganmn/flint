@@ -619,10 +619,11 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 48: /*   "round" */
 		{
-			if (R_flint_get_length(s_dots) == 0)
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
 				         "digits", CHAR(STRING_ELT(s_op, 0)));
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0];
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0];
 			fmpz_t p, q, r;
 			fmpz_init(p);
 			fmpz_init(q);
@@ -661,7 +662,11 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		case 49: /*  "signif" */
 		{
-			slong digits = ((slong *) R_flint_get_pointer(s_dots))[0],
+			SEXP s_digits = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_digits) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "digits", CHAR(STRING_ELT(s_op, 0)));
+			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0],
 				clog;
 			if (digits <= 0)
 				digits = 1;
