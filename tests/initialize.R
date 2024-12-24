@@ -86,9 +86,12 @@ b <- new("arb", mid = x, rad = 0)
 stopifnot(flintIdentical(a, b))
 
 
-## Test single initialization of 'acb'.
+## Test single initialization of 'acf', 'acb'.
 
 x <- complex(real = exp(-2:2), imaginary = sin(-2:2))
+a <- new("acf", x = x)
+b <- new("acf", real = Re(x), imag = Im(x))
+stopifnot(flintIdentical(a, b))
 a <- new("acb", x = x)
 b <- new("acb", real = Re(x), imag = Im(x))
 stopifnot(flintIdentical(a, b))
@@ -96,47 +99,37 @@ stopifnot(flintIdentical(a, b))
 
 ## Test handling of unrepresentable values.
 
-allError <- function (call, l) {
+testError <-
+function (call, l) {
     call <- substitute(call)
-    for (value in l) {
+    fn <-
+    function (value) {
         call. <- do.call(substitute, list(call, list(. = value)))
-        tools::assertError(eval(call.))
+        tryCatch({ eval(call.); FALSE }, error = function (e) TRUE)
     }
-    invisible(NULL)
+    vapply(l, fn, FALSE)
 }
 
-o <- list()
-allError(new("slong", x = .),
-         list(NA_integer_, o))
-allError(new("ulong", x = .),
-         list(NA_integer_, o, -1L))
-allError(new( "fmpz", x = .),
-         list(NA_integer_, NaN, -Inf, Inf, o))
-allError(new( "fmpq", x = .),
-         list(NA_integer_, NaN, -Inf, Inf, o))
-allError(new( "fmpq", num = .),
-         list(NA_integer_, NaN, -Inf, Inf, o))
-allError(new( "fmpq", den = .),
-         list(NA_integer_, NaN, -Inf, Inf, o, 0L))
-allError(new(  "mag", x = .),
-         list(NA_integer_, NaN, o))
-allError(new(  "arf", x = .),
-         list(o))
-allError(new(  "arb", x = .),
-         list(o))
-allError(new(  "arb", mid = .),
-         list(o))
-allError(new(  "arb", rad = .),
-         list(NA_integer_, NaN, o))
-allError(new(  "acf", x = .),
-         list(o))
-allError(new(  "acf", real = .),
-         list(o))
-allError(new(  "acf", imag = .),
-         list(o))
-allError(new(  "acb", x = .),
-         list(o))
-allError(new(  "acb", real = .),
-         list(o))
-allError(new(  "acb", imag = .),
-         list(o))
+wl <- flintBits()
+wd <- .Machine[["double.digits"]]
+a <- 2^wl
+b <- 2^max(0L, wl - wd)
+stopifnot(testError(new("slong", x = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf,
+                         -a/2 - b*2, a/2)),
+          testError(new("ulong", x = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf,
+                         -1, a)),
+          testError(new("fmpz", x = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf)),
+          testError(new("fmpq", x = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf)),
+          testError(new("fmpq", num = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf)),
+          testError(new("fmpq", den = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf,
+                         0)),
+          testError(new("mag", x = .),
+                    list(NA, NA_integer_, NA_real_, NaN)),
+          testError(new("arb", rad = .),
+                    list(NA, NA_integer_, NA_real_, NaN)))
