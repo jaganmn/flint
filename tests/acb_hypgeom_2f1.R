@@ -1,5 +1,11 @@
-h2f1 <- function(a, b, c, z) as.complex(flint::acb_hypgeom_2f1(a, b, c, z))
-hgamma <- function(z) as.complex(flint:::acb_hypgeom_gamma(z))
+library(flint)
+
+h2f1 <-
+function (a, b, c, z)
+    acb_hypgeom_2f1(a, b, c, z)
+hgamma <-
+function (z)
+    acb_hypgeom_gamma(z)
 
 incl.unit.circle <- FALSE # not yet; a, b, c must meet convergence criteria
 debugging <- tolower(Sys.getenv("R_FLINT_CHECK_EXTRA")) == "true"
@@ -21,7 +27,8 @@ z.e1 <- complex(modulus  = 1,
                 argument = runif(r,     0,  2*pi))
 z.g1 <- complex(modulus  = runif(r, 1+tol, 1/tol),
                 argument = runif(r,     0,  2*pi))
-z <- c(z.l1, if (incl.unit.circle) z.e1, z.g1)
+z <- .acb(x = c(z.l1, if (incl.unit.circle) z.e1, z.g1))
+
 
 ## http://dlmf.nist.gov/15.4.E1
 stopifnot(all.equal(h2f1(1, 1, 2, z),
