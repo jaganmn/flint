@@ -7,11 +7,11 @@ hgamma <-
 function (z)
     acb_hypgeom_gamma(z)
 
-incl.unit.circle <- FALSE # not yet; a, b, c must meet convergence criteria
+incl.unit.circle <- FALSE # 'a', 'b', 'c' must meet convergence criteria
 debugging <- tolower(Sys.getenv("R_FLINT_CHECK_EXTRA")) == "true"
 
 r <- 10L
-n <- (if (incl.unit.circle) 3L else 2L) * r
+n <- r * if (incl.unit.circle) 3L else 2L
 tol <- 0x1p-4
 
 set.seed(0xabcdL)
