@@ -7,13 +7,15 @@ library(flint)
 ## Allow for imprecision in "mag" conversions which are not exact even
 ## in exactly representable cases.
 
-cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "arb", "acf", "acb")
+cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+        "arb", "acb")
+cl.complexlike <- cl == "acf" | cl == "acb"
 basic <- c("raw", "logical", "integer", "double", "numeric", "complex",
            "list", "expression", "vector")
 zu <- lapply(cl, function (s) new(s, x = c(0, 1)))
 for (t in basic) {
     as. <- match.fun(paste0("as.", t))
-    as.01 <- rep(list(as.(c(0, 1)), as.(c(0, 1)+0i)), c(7L, 2L))
+    as.01 <- list(as.(c(0, 1)), as.(c(0, 1)+0i))[1L + cl.complexlike]
     as.zu <- lapply(zu, as, t); as.zu. <- lapply(zu, as.)
     stopifnot(identical(as.zu, as.zu.),
               identical(as.zu[-5L], as.01[-5L]),
@@ -25,7 +27,7 @@ for (t in basic) {
 ## and "double" otherwise.
 
 stopifnot(identical(vapply(lapply(zu, as.vector), typeof, ""),
-                    rep(c("double", "complex"), c(7L, 2L))))
+                    c("double", "complex")[1L + cl.complexlike]))
 
 
 ## Test that exactly one condition (a warning) is signaled when

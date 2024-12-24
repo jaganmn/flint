@@ -4,7 +4,8 @@ library(flint)
 ## Test that length(new(., length = value)) ==        value
 ##           length(new(.,      x = value)) == length(value).
 
-cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "arb", "acf", "acb")
+cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+        "arb", "acb")
 n <- length(cl):1L
 a <- .mapply(new, list(cl, length = n), NULL)
 b <- .mapply(new, list(cl, x = lapply(n, raw)), NULL)
