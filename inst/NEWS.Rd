@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2024-12-22)}{
+\section{Changes in version 0.0.1 (2024-12-24)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -41,7 +41,8 @@
       \option{-lgmp}.  The other \env{R_FLINT_*} are empty by default.
 
       \item A \file{configure.win} script is provided for installation
-      under Windows.
+      under Windows.  Currently, it invokes \file{configure}, passing
+      along positional parameters, and does nothing else.
     }
   }
   \subsection{Documentation}{
