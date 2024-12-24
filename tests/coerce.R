@@ -34,8 +34,8 @@ stopifnot(identical(vapply(lapply(zu, as.vector), typeof, ""),
 ## nonzero imaginary parts are discarded and that no condition is
 ## signaled otherwise.
 
-zi <- new("acb", x = 0i)
-ui <- new("acb", x = 1i)
+zi <- .acb(x = 0i)
+ui <- .acb(x = 1i)
 tools::assertError(tools::assertCondition(zi.c <- as.complex(zi)))
 tools::assertError(tools::assertCondition(zi.d <- as.double (zi)))
 tools::assertError(tools::assertCondition(ui.c <- as.complex(ui)))
