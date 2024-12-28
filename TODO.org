@@ -1,5 +1,6 @@
 * TODO flint 0.0.1
 
+** TODO 'names' slot for the virtual class
 ** DONE flintSize for getting the size of an allocated array
 ** DONE flintIdentical testing for identical-modulo-address
 ** DONE export, document flintIdentical
