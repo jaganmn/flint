@@ -135,7 +135,7 @@ setMethod("Rad<-",
 setMethod("anyNA",
           c(x = "arb"),
           function (x, recursive = FALSE)
-              .Call(R_flint_arb_ops1, "anyNA", x, NULL))
+              .Call(R_flint_arb_ops1, "anyNA", x, list(FALSE)))
 
 setMethod("as.vector",
           c(x = "arb"),

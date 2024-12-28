@@ -115,7 +115,7 @@ setMethod("Summary",
 setMethod("anyNA",
           c(x = "arf"),
           function (x, recursive = FALSE)
-              .Call(R_flint_arf_ops1, "anyNA", x, NULL))
+              .Call(R_flint_arf_ops1, "anyNA", x, list(FALSE)))
 
 setMethod("as.vector",
           c(x = "arf"),

@@ -131,7 +131,7 @@ setMethod("Summary",
 setMethod("anyNA",
           c(x = "acb"),
           function (x, recursive = FALSE)
-              .Call(R_flint_acb_ops1, "anyNA", x, NULL))
+              .Call(R_flint_acb_ops1, "anyNA", x, list(FALSE)))
 
 setMethod("as.vector",
           c(x = "acb"),
