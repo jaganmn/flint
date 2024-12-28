@@ -517,6 +517,36 @@ setMethod("mtfrm",
           function (x)
               format(x, base = 62L, digits = 0L))
 
+setMethod("names",
+          c(x = "flint"),
+          function (x)
+              if (length(value <- x@names)) value)
+
+setMethod("names<-",
+          c(x = "flint", value = "NULL"),
+          function (x, value) {
+              if (length(x@names) != 0L)
+                  x@names <- character(0L)
+              x
+          })
+
+setMethod("names<-",
+          c(x = "flint", value = "character"),
+          function (x, value) {
+              nx <- length(x)
+              nv <- length(value)
+              if (nx != nv) {
+                  if (nx < nv)
+                  stop(gettextf("length of '%s' exceeds length of '%s'",
+                                "value", "x"),
+                       domain = NA)
+                  length(value) <- nx
+              }
+              attributes(value) <- NULL
+              x@names <- value
+              x
+          })
+
 setMethod("print",
           c(x = "flint"),
           function (x, quote = FALSE, max = NULL, ...) {

@@ -135,6 +135,7 @@ mpfr_set_emax(__emax_old); \
 extern
 SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_dot_data,
+	R_flint_symbol_names,
 	R_flint_symbol_num,
 	R_flint_symbol_den,
 	R_flint_symbol_mid,

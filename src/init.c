@@ -10,6 +10,7 @@
 
 SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_dot_data,
+	R_flint_symbol_names,
 	R_flint_symbol_num,
 	R_flint_symbol_den,
 	R_flint_symbol_mid,
@@ -249,6 +250,7 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_forceSymbols(info, TRUE);
 	R_flint_symbol_dot_xdata = Rf_install(".xData");
 	R_flint_symbol_dot_data  = Rf_install(".Data");
+	R_flint_symbol_names     = Rf_install("names");
 	R_flint_symbol_num       = Rf_install("num");
 	R_flint_symbol_den       = Rf_install("den");
 	R_flint_symbol_mid       = Rf_install("mid");

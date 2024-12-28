@@ -27,6 +27,9 @@
 \alias{length,flint-method}
 \alias{length<-,flint-method}
 \alias{mtfrm,flint-method}
+\alias{names,flint-method}
+\alias{names<-,flint,NULL-method}
+\alias{names<-,flint,character-method}
 \alias{print,flint-method}
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
@@ -40,8 +43,6 @@
   \acronym{FLINT} \proglang{C} type.  The \proglang{C} type is
   determined by the class attribute and interfaced exactly using \R{}'s
   external pointer type.
-
-  Names and dimensions are not yet supported.
 }
 \section{Slots}{
   \describe{
@@ -56,8 +57,12 @@
       Methods for \code{\link{initialize}} set a finalizer on
       \code{.xData} (see \code{\link{reg.finalizer}}) to ensure that
       allocated memory is freed before \code{.xData} is itself freed by
-      the garbage collector.
-    }
+      the garbage collector.}
+    \item{\code{names}}{
+      a character vector of length 0, indicating that the object is
+      unnamed, or of length equal to the object length.  A corollary is
+      that objects whose length exceeds the maximum length of a
+      character vector cannot have names.}
   }
 }
 \section{Methods}{
@@ -165,6 +170,21 @@
       vector representing the elements of \code{x} exactly in base 62
       (chosen over smaller bases to reduce the number of characters in
       the output); see also \code{\link{format-methods}}.}
+    \item{\code{names}}{
+      \code{signature(x = "flint")}:\cr
+      returns the value of the \code{names} slot or \code{NULL},
+      \code{NULL} if the \code{names} slot has zero length.}
+    \item{\code{names<-}}{
+      \code{signature(x = "flint", value = "NULL")}:\cr
+      returns \code{x} with \code{names} slot set to a character vector
+      of length zero.}
+    \item{\code{names<-}}{
+      \code{signature(x = "flint", value = "character")}:\cr
+      returns \code{x} with \code{names} slot set to \code{value}.
+      Attributes of \code{value} are stripped.
+      \code{\link{NA_character_}} are appended to \code{value} if its
+      length is less than the length of \code{x}.  An error is signaled
+      if its length is greater.}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
       prints \code{\link{format}(x)} and returns \code{x} invisibly.

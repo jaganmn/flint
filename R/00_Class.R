@@ -1,5 +1,6 @@
 setClass("flint",
          contains = c("VIRTUAL", "externalptr"),
+         slots = c(names = "character"),
          validity = function (object) flintValid(object))
 
 .slong <- setClass("slong", contains = "flint")

@@ -44,7 +44,7 @@ unsigned long long int R_flint_get_length(SEXP object)
 	SEXP x = R_do_slot(object, R_flint_symbol_dot_xdata),
 		length = R_ExternalPtrProtected(x);
 	unsigned long long int n;
-	uucopy(&n, (unsigned int *) INTEGER(length));
+	uucopy(&n, (unsigned int *) INTEGER_RO(length));
 	return n;
 }
 
@@ -853,11 +853,15 @@ SEXP R_flint_valid(SEXP object)
 		return INVALID(_("type of protected field is not \"%s\""), "integer");
 	if (XLENGTH(length) != 2)
 		return INVALID(_("length of protected field is not %d"), 2);
-	int length0 = INTEGER_RO(length)[0] == 0 && INTEGER_RO(length)[1] == 0;
-	if ((R_ExternalPtrAddr(x) == 0) != length0)
-		return INVALID((length0)
-		               ? _("length is zero and pointer field is non-zero")
-		               : _("length is non-zero and pointer field is zero"));
+	unsigned long long int n;
+	uucopy(&n, (unsigned int *) INTEGER_RO(length));
+	if ((R_ExternalPtrAddr(x) == 0) != (n == 0))
+		return INVALID((n == 0)
+		               ? _("object length is zero and pointer field is non-zero")
+		               : _("object length is non-zero and pointer field is zero"));
+	unsigned long long int nn = (unsigned long long int) XLENGTH(R_do_slot(object, R_flint_symbol_names));
+	if (nn != 0 && nn != n)
+		return INVALID(_("object length and '%s' slot length are not equal"), "names");
 #undef INVALID
 	return Rf_ScalarLogical(1);
 }
