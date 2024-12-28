@@ -19,7 +19,7 @@
 ** DONE methods for unique, duplicated, anyDuplicated using mtfrm
 ** DONE x[i] <- value should conditionally promote 'x' to class(value)
 ** DONE methods for Summary, mean not ignoring '...'
-** TODO methods for as.POSIXlt, as.POSIXct, as.Date
+** DONE methods for as.POSIXlt, as.POSIXct, as.Date
 ** TODO methods for cut
 ** DONE methods for is.unsorted
 ** TODO methods for pretty

@@ -443,10 +443,24 @@ setMethod("as.expression",
           c(x = "flint"),
           function (x, ...) as.vector(x, "expression"))
 
+setMethod("as.Date",
+          c(x = "flint"),
+          function (x, ...)
+              as.Date(as.vector(x), ...))
+
+setMethod("as.POSIXct",
+          c(x = "flint"),
+          function (x, tz = "", ...)
+              as.POSIXct(as.vector(x), tz = tz, ...))
+
+setMethod("as.POSIXlt",
+          c(x = "flint"),
+          function (x, tz = "", ...)
+              as.POSIXlt(as.vector(x), tz = tz, ...))
+
 setMethod("as.data.frame",
           c(x = "flint"),
-          function (x, row.names = NULL, optional = FALSE, ...)
-              as.data.frame.vector(x, row.names = row.names, optional = optional, ...))
+          as.data.frame.vector)
 
 ## MJ: we export this function and curse the author of DispatchAnyOrEval
 c.flint <-
