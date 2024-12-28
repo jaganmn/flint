@@ -443,6 +443,11 @@ setMethod("as.expression",
           c(x = "flint"),
           function (x, ...) as.vector(x, "expression"))
 
+setMethod("as.data.frame",
+          c(x = "flint"),
+          function (x, row.names = NULL, optional = FALSE, ...)
+              as.data.frame.vector(x, row.names = row.names, optional = optional, ...))
+
 ## MJ: we export this function and curse the author of DispatchAnyOrEval
 c.flint <-
 function (...) {

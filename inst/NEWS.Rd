@@ -111,12 +111,12 @@
       \code{anyNA}, \code{as.raw}, \code{as.logical}, \code{as.integer},
       \code{as.numeric}, \code{as.complex}, \code{as.character},
       \code{as.list}, \code{as.expression}, \code{as.vector},
-      \code{coerce}, \code{duplicated}, \code{format},
-      \code{initialize}, \code{is.finite}, \code{is.infinite},
-      \code{is.na}, \code{is.nan}, \code{is.unsorted}, \code{length},
-      \code{length<-}, \code{mtfrm}, \code{mean}, \code{print},
-      \code{rep}, \code{rep.int}, \code{rep_len}, \code{show},
-      \code{unique}, and \code{xtfrm}.
+      \code{as.data.frame}, \code{coerce}, \code{duplicated},
+      \code{format}, \code{initialize}, \code{is.finite},
+      \code{is.infinite}, \code{is.na}, \code{is.nan},
+      \code{is.unsorted}, \code{length}, \code{length<-}, \code{mtfrm},
+      \code{mean}, \code{print}, \code{rep}, \code{rep.int},
+      \code{rep_len}, \code{show}, \code{unique}, and \code{xtfrm}.
     }
   }
   \subsection{New Features}{

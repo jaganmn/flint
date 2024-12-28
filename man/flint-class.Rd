@@ -14,6 +14,7 @@
 \alias{as.character,flint-method}
 \alias{as.list,flint-method}
 \alias{as.expression,flint-method}
+\alias{as.data.frame,flint-method}
 \alias{all.equal,ANY,flint-method}
 \alias{all.equal,flint,ANY-method}
 \alias{all.equal,flint,flint-method}
@@ -116,6 +117,11 @@
       \code{\link[=format-methods]{format}(x, digits = 15L, rnd = "N")}.
       where 15 is chosen to match the internal default method; see
       \code{\link{as.character}}.}
+    \item{\code{as.data.frame}}{
+      \code{signature(x = "flint")}:\cr
+      passes the arguments to \code{\link{as.data.frame.vector}} and
+      returns the result, which is a data frame with \code{x} as its
+      only variable.}
     \item{\code{c}}{
       \code{signature(x = "flint")}:\cr
       returns \code{\link{c.flint}(x, \dots)}, the concatenation of the

@@ -19,6 +19,16 @@
 ** DONE methods for unique, duplicated, anyDuplicated using mtfrm
 ** DONE x[i] <- value should conditionally promote 'x' to class(value)
 ** DONE methods for Summary, mean not ignoring '...'
+** TODO methods for as.POSIXlt, as.POSIXct, as.Date
+** TODO methods for cut
+** DONE methods for is.unsorted
+** TODO methods for pretty
+** TODO methods for sequence
+** TODO methods for summary
+** DONE methods for as.data.frame
+** TODO register an S3 method format.flint for use by format.data.frame
+** TODO document generic functions whose default methods seem to work for us
+	toString, subset, split, split<-, sort_by, sort, seq, rev, labels, is.na<-, diff
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage
