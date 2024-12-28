@@ -57,6 +57,8 @@
 \alias{is.na,ulong-method}
 \alias{is.nan,slong-method}
 \alias{is.nan,ulong-method}
+\alias{is.unsorted,slong-method}
+\alias{is.unsorted,ulong-method}
 \alias{mean,slong-method}
 \alias{mean,ulong-method}
 \title{Fixed Precision Signed and Unsigned Integers}
@@ -167,18 +169,22 @@
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
       \code{\link{flintBits}()}.}
-    \item{\code{is.na}, \code{is.nan}, \code{is.infinite}}{
-      \code{signature(x = "slong")}:\cr
-      \code{signature(x = "ulong")}:\cr
-      returns a logical vector whose elements are all \code{FALSE}, as
-      \code{slong} and \code{ulong} have no representation for
-      \code{NaN}, \code{-Inf}, and \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{slong} and \code{ulong} have no representation for
       \code{NaN}, \code{-Inf}, and \code{Inf}.}
+    \item{\code{is.infinite}, \code{is.na}, \code{is.nan}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{slong} and \code{ulong} have no representation for
+      \code{NaN}, \code{-Inf}, and \code{Inf}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
     \item{\code{mean}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr

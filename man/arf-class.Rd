@@ -28,6 +28,7 @@
 \alias{is.infinite,arf-method}
 \alias{is.na,arf-method}
 \alias{is.nan,arf-method}
+\alias{is.unsorted,arf-method}
 \alias{mean,arf-method}
 \title{Arbitrary Precision Floating-Point Real Numbers}
 \docType{class}
@@ -143,18 +144,23 @@
       \code{signature(.Object = "arf", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
       as above, except that the new slot value points to an array
       initialized with values from \code{x}.}
-    \item{\code{is.na}, \code{is.nan}}{
-      \code{signature(x = "arf")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      are \code{NaN}.}
-    \item{\code{is.infinite}}{
-      \code{signature(x = "arf")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      are \code{-Inf} or \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "arf")}:\cr
       returns a logical vector indicating which elements of \code{x}
       are not \code{NaN}, \code{-Inf}, or \code{Inf}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "arf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are \code{-Inf} or \code{Inf}.}
+    \item{\code{is.na}, \code{is.nan}}{
+      \code{signature(x = "arf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are \code{NaN}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "arf")}:\cr
+      returns a logical indicating if \code{x} is not sorted in
+      nondecreasing order (increasing order if optional argument
+      \code{strictly} is set to \code{TRUE}).}
     \item{\code{mean}}{
       \code{signature(x = "arf")}:\cr
       returns the arithmetic mean.}

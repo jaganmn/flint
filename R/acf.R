@@ -180,6 +180,11 @@ setMethod("is.nan",
           function (x)
               .Call(R_flint_acf_ops1, "is.nan", x, NULL))
 
+setMethod("is.unsorted",
+          c(x = "acf"),
+          function (x, na.rm = FALSE, strictly = FALSE)
+              .Call(R_flint_acf_ops1, "is.unsorted", x, list(as.logical(na.rm), as.logical(strictly))))
+
 setMethod("mean",
           c(x = "acf"),
           function (x, na.rm = FALSE, ...) {

@@ -113,10 +113,10 @@
       \code{as.list}, \code{as.expression}, \code{as.vector},
       \code{coerce}, \code{duplicated}, \code{format},
       \code{initialize}, \code{is.finite}, \code{is.infinite},
-      \code{is.na}, \code{is.nan}, \code{length}, \code{length<-},
-      \code{mtfrm}, \code{mean}, \code{print}, \code{rep},
-      \code{rep.int}, \code{rep_len}, \code{show}, \code{unique}, and
-      \code{xtfrm}.
+      \code{is.na}, \code{is.nan}, \code{is.unsorted}, \code{length},
+      \code{length<-}, \code{mtfrm}, \code{mean}, \code{print},
+      \code{rep}, \code{rep.int}, \code{rep_len}, \code{show},
+      \code{unique}, and \code{xtfrm}.
     }
   }
   \subsection{New Features}{

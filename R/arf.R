@@ -162,6 +162,11 @@ setMethod("is.nan",
           function (x)
               .Call(R_flint_arf_ops1, "is.nan", x, NULL))
 
+setMethod("is.unsorted",
+          c(x = "arf"),
+          function (x, na.rm = FALSE, strictly = FALSE)
+              .Call(R_flint_arf_ops1, "is.unsorted", x, list(as.logical(na.rm), as.logical(strictly))))
+
 setMethod("mean",
           c(x = "arf"),
           function (x, na.rm = FALSE, ...) {

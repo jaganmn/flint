@@ -162,6 +162,11 @@ setMethod("is.nan",
           function (x)
               .Call(R_flint_mag_ops1, "is.nan", x, NULL))
 
+setMethod("is.unsorted",
+          c(x = "mag"),
+          function (x, na.rm = FALSE, strictly = FALSE)
+              .Call(R_flint_mag_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
+
 setMethod("log",
           c(x = "mag"),
           function (x, base, ...)

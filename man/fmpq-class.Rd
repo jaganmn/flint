@@ -28,6 +28,7 @@
 \alias{is.infinite,fmpq-method}
 \alias{is.na,fmpq-method}
 \alias{is.nan,fmpq-method}
+\alias{is.unsorted,fmpq-method}
 \alias{mean,fmpq-method}
 \title{Arbitrary Precision Rational Numbers}
 \docType{class}
@@ -152,16 +153,21 @@
       \code{\linkS4class{fmpz}} and recycled as necessary.  An error is
       signaled if elements of \code{num} or \code{den} are \code{NaN},
       \code{-Inf}, or \code{Inf} or elements of \code{den} are zero.}
-    \item{\code{is.na}, \code{is.nan}, \code{is.infinite}}{
-      \code{signature(x = "fmpq")}:\cr
-      returns a logical vector whose elements are all \code{FALSE}, as
-      \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and
-      \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "fmpq")}:\cr
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and
       \code{Inf}.}
+    \item{\code{is.infinite}, \code{is.na}, \code{is.nan}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{fmpq} has no representation for \code{NaN}, \code{-Inf}, and
+      \code{Inf}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a logical indicating if \code{x} is not sorted in
+      nondecreasing order (increasing order if optional argument
+      \code{strictly} is set to \code{TRUE}).}
     \item{\code{mean}}{
       \code{signature(x = "fmpq")}:\cr
       returns the arithmetic mean.  An error is signaled if the argument

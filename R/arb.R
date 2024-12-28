@@ -185,6 +185,13 @@ setMethod("is.nan",
           function (x)
               .Call(R_flint_arb_ops1, "is.nan", x, NULL))
 
+setMethod("is.unsorted",
+          c(x = "arb"),
+          function (x, na.rm = FALSE, strictly = FALSE)
+              stop(gettextf("'%s' is not a total order on the range of '%s'",
+                            "<=", "arb"),
+                   domain = NA))
+
 setMethod("log",
           c(x = "arb"),
           function (x, base, ...)

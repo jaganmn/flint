@@ -838,9 +838,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 56: /*     "any" */
-	case 57: /*     "all" */
-	case 58: /*   "anyNA" */
+	case 56: /*         "any" */
+	case 57: /*         "all" */
+	case 58: /*       "anyNA" */
+	case 59: /* "is.unsorted" */
 	{
 		SEXP s_narm = VECTOR_ELT(s_dots, 0);
 		if (XLENGTH(s_narm) == 0)
@@ -850,7 +851,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 56: /*     "any" */
+		case 56: /*         "any" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					anyna = 1;
@@ -858,7 +859,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
-		case 57: /*     "all" */
+		case 57: /*         "all" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					anyna = 1;
@@ -866,12 +867,41 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (j < n) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
 			break;
-		case 58: /*   "anyNA" */
+		case 58: /*       "anyNA" */
 			for (j = 0; j < n; ++j)
 				if (arf_is_nan(x + j))
 					break;
 			z[0] = j < n;
 			break;
+		case 59: /* "is.unsorted" */
+		{
+			SEXP s_strict = VECTOR_ELT(s_dots, 1);
+			if (XLENGTH(s_strict) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "strictly", CHAR(STRING_ELT(s_op, 0)));
+			int strict = LOGICAL(s_strict)[0];
+			arf_srcptr last = (void *) 0;
+			if (strict)
+			for (j = 0; j < n; ++j) {
+				if (arf_is_nan(x + j))
+					anyna = 1;
+				else if (!last)
+					last = x + j;
+				else if (arf_cmp(last, x + j) >= 0)
+					break;
+			}
+			else
+			for (j = 0; j < n; ++j) {
+				if (arf_is_nan(x + j))
+					anyna = 1;
+				else if (!last)
+					last = x + j;
+				else if (arf_cmp(last, x + j) >  0)
+					break;
+			}
+			z[0] = (j < n) ? 0 : (!narm && anyna && n > 1) ? NA_LOGICAL : 1;
+			break;
+		}
 		}
 		return ans;
 	}

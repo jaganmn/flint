@@ -158,6 +158,11 @@ setMethod("is.nan",
           function (x)
               logical(length(x)))
 
+setMethod("is.unsorted",
+          c(x = "slong"),
+          function (x, na.rm = FALSE, strictly = FALSE)
+              is.unsorted(.fmpz(x = x), na.rm = na.rm, strictly = strictly))
+
 setMethod("mean",
           c(x = "slong"),
           function (x, ...)

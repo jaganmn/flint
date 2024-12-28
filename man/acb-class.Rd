@@ -28,6 +28,7 @@
 \alias{is.infinite,acb-method}
 \alias{is.na,acb-method}
 \alias{is.nan,acb-method}
+\alias{is.unsorted,acb-method}
 \alias{log,acb-method}
 \alias{mean,acb-method}
 \alias{xtfrm,acb-method}
@@ -160,20 +161,24 @@
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class
       \code{\linkS4class{arb}} and recycled as necessary.}
-    \item{\code{is.na}, \code{is.nan}}{
-      \code{signature(x = "acb")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      have real or imaginary part with midpoint \code{NaN}.}
-    \item{\code{is.infinite}}{
-      \code{signature(x = "acb")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      have real or imaginary part with midpoint \code{-Inf} or
-      \code{Inf} or radius \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "acb")}:\cr
       returns a logical vector indicating which elements of \code{x}
       do not have real or imaginary part with midpoint \code{NaN},
       \code{-Inf}, or \code{Inf} or radius \code{Inf}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "acb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have real or imaginary part with midpoint \code{-Inf} or
+      \code{Inf} or radius \code{Inf}.}
+    \item{\code{is.na}, \code{is.nan}}{
+      \code{signature(x = "acb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have real or imaginary part with midpoint \code{NaN}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "acb")}:\cr
+      signals an error indicating that \code{<=} is not a total order
+      on the range of \code{arb}; see \code{xtfrm} below.}
     \item{\code{log}}{
       \code{signature(x = "acb")}:\cr
       returns the logarithm of the argument.  The natural logarithm is

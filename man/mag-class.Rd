@@ -28,6 +28,7 @@
 \alias{is.infinite,mag-method}
 \alias{is.na,mag-method}
 \alias{is.nan,mag-method}
+\alias{is.unsorted,mag-method}
 \alias{log,mag-method}
 \alias{mean,mag-method}
 \title{Fixed Precision Magnitude (Error) Bounds}
@@ -149,18 +150,23 @@
       as above, except that the new slot value points to an array
       initialized with upper bounds for \code{abs(x)}.  An error is
       signaled if any \code{x[i]} is \code{NaN}.}
-    \item{\code{is.na}, \code{is.nan}}{
-      \code{signature(x = "mag")}:\cr
-      returns a logical vector whose elements are all \code{FALSE}, as
-      \code{mag} has no representation for \code{NaN}.}
-    \item{\code{is.infinite}}{
-      \code{signature(x = "mag")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      are \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector indicating which elements of \code{x}
       are not \code{Inf}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "mag")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      are \code{Inf}.}
+    \item{\code{is.na}, \code{is.nan}}{
+      \code{signature(x = "mag")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{mag} has no representation for \code{NaN}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "mag")}:\cr
+      returns a logical indicating if \code{x} is not sorted in
+      nondecreasing order (increasing order if optional argument
+      \code{strictly} is set to \code{TRUE}).}
     \item{\code{log}}{
       \code{signature(x = "mag")}:\cr
       returns an upper bound for the absolute value of the logarithm of

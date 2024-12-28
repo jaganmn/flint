@@ -67,7 +67,7 @@ const char *R_flint_ops1[] =
 	/* Summary (9) : */
 	"min", "max", "range",
 	"sum", "prod", "mean",
-	"any", "all", "anyNA",
+	"any", "all", "anyNA", "is.unsorted",
 	NULL
 };
 

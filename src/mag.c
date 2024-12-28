@@ -961,24 +961,39 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		return ans;
 	}
-	case 56: /*     "any" */
-	case 57: /*     "all" */
-	case 58: /*   "anyNA" */
+	case 56: /*         "any" */
+	case 57: /*         "all" */
+	case 58: /*       "anyNA" */
+	case 59: /* "is.unsorted" */
 	{
 		SEXP ans = Rf_allocVector(LGLSXP, 1);
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 56: /*     "any" */
+		case 56: /*         "any" */
 			for (j = 0; j < n &&  mag_is_zero(x + j); ++j) ;
 			z[0] = j <  n;
 			break;
-		case 57: /*     "all" */
+		case 57: /*         "all" */
 			for (j = 0; j < n && !mag_is_zero(x + j); ++j) ;
 			z[0] = j >= n;
 			break;
-		case 58: /*   "anyNA" */
+		case 58: /*       "anyNA" */
 			z[0] = 0;
 			break;
+		case 59: /* "is.unsorted" */
+		{
+			SEXP s_strict = VECTOR_ELT(s_dots, 1);
+			if (XLENGTH(s_strict) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "strictly", CHAR(STRING_ELT(s_op, 0)));
+			int strict = LOGICAL(s_strict)[0];
+			if (strict)
+			for (j = 1; j < n && mag_cmp(x, x + 1) <  0; ++j, ++x) ;
+			else
+			for (j = 1; j < n && mag_cmp(x, x + 1) <= 0; ++j, ++x) ;
+			z[0] = j <  n;
+			break;
+		}
 		}
 		return ans;
 	}

@@ -28,6 +28,7 @@
 \alias{is.infinite,acf-method}
 \alias{is.na,acf-method}
 \alias{is.nan,acf-method}
+\alias{is.unsorted,acf-method}
 \alias{mean,acf-method}
 \alias{xtfrm,acf-method}
 \title{Arbitrary Precision Floating-Point Complex Numbers}
@@ -163,19 +164,25 @@
       real and imaginary parts are initialized separately with values
       from \code{real} and \code{imag}, which are coerced to class
       \code{\linkS4class{arf}} and recycled as necessary.}
-    \item{\code{is.na}, \code{is.nan}}{
-      \code{signature(x = "acf")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      have real or imaginary part \code{NaN}.}
-    \item{\code{is.infinite}}{
-      \code{signature(x = "acf")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      have real or imaginary part \code{-Inf} or \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "acf")}:\cr
       returns a logical vector indicating which elements of \code{x}
       do not have real or imaginary part \code{NaN}, \code{-Inf}, or
       \code{Inf}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "acf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have real or imaginary part \code{-Inf} or \code{Inf}.}
+    \item{\code{is.na}, \code{is.nan}}{
+      \code{signature(x = "acf")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have real or imaginary part \code{NaN}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "acf")}:\cr
+      returns a logical indicating if \code{x} is not sorted in
+      nondecreasing order (increasing order if optional argument
+      \code{strictly} is set to \code{TRUE}) by real part then by
+      imaginary part.}
     \item{\code{mean}}{
       \code{signature(x = "acf")}:\cr
       returns the arithmetic mean.}

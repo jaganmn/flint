@@ -160,6 +160,11 @@ setMethod("is.nan",
           function (x)
               .Call(R_flint_fmpz_ops1, "is.nan", x, NULL))
 
+setMethod("is.unsorted",
+          c(x = "fmpz"),
+          function (x, na.rm = FALSE, strictly = FALSE)
+              .Call(R_flint_fmpz_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
+
 setMethod("mean",
           c(x = "fmpz"),
           function (x, na.rm = FALSE, ...) {

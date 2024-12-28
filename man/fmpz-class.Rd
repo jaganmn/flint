@@ -30,6 +30,7 @@
 \alias{is.infinite,fmpz-method}
 \alias{is.na,fmpz-method}
 \alias{is.nan,fmpz-method}
+\alias{is.unsorted,fmpz-method}
 \alias{mean,fmpz-method}
 \title{Arbitrary Precision Signed Integers}
 \docType{class}
@@ -139,15 +140,20 @@
       initialized with values from \code{x} truncated towards zero.  An
       error is signaled if elements of \code{x} are \code{NaN},
       \code{-Inf}, or \code{Inf}.}
-    \item{\code{is.na}, \code{is.nan}, \code{is.infinite}}{
-      \code{signature(x = "fmpz")}:\cr
-      returns a logical vector whose elements are all \code{FALSE}, as
-      \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
-      \code{Inf}.}
     \item{\code{is.finite}}{
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
       \code{Inf}.}
+    \item{\code{is.infinite}, \code{is.na}, \code{is.nan}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns a logical vector whose elements are all \code{FALSE}, as
+      \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and
+      \code{Inf}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns a logical indicating if \code{x} is not sorted in
+      nondecreasing order (increasing order if optional argument
+      \code{strictly} is set to \code{TRUE}).}
     \item{\code{mean}}{
       \code{signature(x = "fmpz")}:\cr
       returns the arithmetic mean.  An error is signaled if the argument

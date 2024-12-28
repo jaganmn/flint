@@ -28,6 +28,7 @@
 \alias{is.infinite,arb-method}
 \alias{is.na,arb-method}
 \alias{is.nan,arb-method}
+\alias{is.unsorted,arb-method}
 \alias{log,arb-method}
 \alias{mean,arb-method}
 \alias{xtfrm,arb-method}
@@ -154,19 +155,23 @@
       \code{mid} and \code{rad}, which are coerced to classes
       \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
       as necessary.}
-    \item{\code{is.na}, \code{is.nan}}{
-      \code{signature(x = "arb")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      have midpoint \code{NaN}.}
-    \item{\code{is.infinite}}{
-      \code{signature(x = "arb")}:\cr
-      returns a logical vector indicating which elements of \code{x}
-      have midpoint \code{-Inf} or \code{Inf} or radius \code{Inf}.}
     \item{\code{is.finite}}{
       \code{signature(x = "arb")}:\cr
       returns a logical vector indicating which elements of \code{x}
       do not have midpoint \code{NaN}, \code{-Inf}, or \code{Inf} or
       radius \code{Inf}.}
+    \item{\code{is.infinite}}{
+      \code{signature(x = "arb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have midpoint \code{-Inf} or \code{Inf} or radius \code{Inf}.}
+    \item{\code{is.na}, \code{is.nan}}{
+      \code{signature(x = "arb")}:\cr
+      returns a logical vector indicating which elements of \code{x}
+      have midpoint \code{NaN}.}
+    \item{\code{is.unsorted}}{
+      \code{signature(x = "arb")}:\cr
+      signals an error indicating that \code{<=} is not a total order
+      on the range of \code{arb}; see \code{xtfrm} below.}
     \item{\code{log}}{
       \code{signature(x = "arb")}:\cr
       returns the logarithm of the argument.  The natural logarithm is
