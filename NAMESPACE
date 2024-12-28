@@ -36,4 +36,8 @@ export(c.flint,
        acb_hypgeom_polygamma,
        arb_hypgeom_2f1,
        acb_hypgeom_2f1)
-S3method(c, flint)
+S3method(as.data.frame, flint, .S3.as.data.frame.flint)
+S3method(format, flint, .S3.format.flint)
+S3method(is.unsorted, flint, .S3.is.unsorted.flint)
+S3method(rep.int, flint, .S3.rep.int.flint)
+S3method(rep_len, flint, .S3.rep_len.flint)
