@@ -69,12 +69,16 @@ void R_flint_set(SEXP object,
 
 SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 {
+	if (XLENGTH(s_usenames) == 0)
+		Rf_error(_("'%s' of length zero in '%s'"),
+		         "use.names", "c.flint");
+	int usenames = LOGICAL(s_usenames)[0], anynamed = !usenames;
 	R_xlen_t a, ndots = XLENGTH(dots);
 	if (ndots == 0)
 		return R_NilValue;
 	R_flint_class_t class = R_flint_get_class(VECTOR_ELT(dots, 0));
 	void *y;
-	unsigned long long int j, nx, ny = 0;
+	unsigned long long int jx, jy = 0, nx, ny = 0;
 	R_CFinalizer_t f;
 	const char *what;
 
@@ -85,8 +89,16 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 		if (nx > (unsigned long long int) -1 - ny)
 			Rf_error(_("value length would exceed maximum %llu"),
 			         (unsigned long long int) -1);
+		if (!anynamed && XLENGTH(R_do_slot(elt, R_flint_symbol_names)) > 0)
+			anynamed = 1;
 		ny += nx;
 	}
+
+	SEXP sx, sy = R_NilValue;
+	usenames = usenames && anynamed && ny <= R_XLEN_T_MAX;
+	if (usenames)
+		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	PROTECT(sy);
 
 #define BIND_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -99,10 +111,15 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 			elt = VECTOR_ELT(dots, a); \
 			nx = R_flint_get_length(elt); \
 			x__ = (xptr_t) R_flint_get_pointer(elt); \
-			for (j = 0; j < nx; ++j) { \
-				name##_set(y__, x__ + j); \
-				y__++; \
+			if (usenames && XLENGTH(sx = R_do_slot(elt, R_flint_symbol_names)) > 0) \
+			for (jx = 0; jx < nx; ++jx, ++jy) { \
+				name##_set(y__ + jy, x__ + jx); \
+				SET_STRING_ELT(sy, (R_xlen_t) jy, \
+				               STRING_ELT(sx, (R_xlen_t) jx)); \
 			} \
+			else \
+			for (jx = 0; jx < nx; ++jx, ++jy) \
+				name##_set(y__ + jy, x__ + jx); \
 		} \
 	} while (0)
 
@@ -142,7 +159,9 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sy);
+	UNPROTECT(2);
 	return ans;
 }
 
@@ -250,12 +269,14 @@ SEXP R_flint_new(SEXP class)
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
 SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 {
+	int usenames = 1;
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
-	unsigned long long int i, j, q, r,
+	unsigned long long int j,
 		nx = R_flint_get_length(object),
-		ny = 0;
+		ny = 0,
+		n0 = 0;
 	R_CFinalizer_t f;
 	const char *what;
 
@@ -263,6 +284,14 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 		Rf_error(_("length(%s) not equal to 1 in '%s'"),
 		         "value", "length<-");
 	ny = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
+	n0 = (nx < ny) ? nx : ny;
+
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
+		sy = R_NilValue;
+	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
+	if (usenames)
+		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	PROTECT(sy);
 
 #define REALLOC_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -271,15 +300,17 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
-		if (ny <= nx) \
-			for (j = 0; j < ny; ++j) \
-				name##_set(y__ + j, x__ + j); \
-		else { \
-			for (j = 0; j < nx; ++j) \
-				name##_set(y__ + j, x__ + j); \
-			for (j = nx; j < ny; ++j) \
-				name##_zero(y__ + j); \
+		if (usenames) \
+		for (j =  0; j < n0; ++j) { \
+			name##_set(y__ + j, x__ + j); \
+			SET_STRING_ELT(sy, (R_xlen_t) j, \
+			               STRING_ELT(sx, (R_xlen_t) j)); \
 		} \
+		else \
+		for (j =  0; j < n0; ++j) \
+			name##_set(y__ + j, x__ + j); \
+		for (j = n0; j < ny; ++j) \
+			name##_zero(y__ + j); \
 	} while (0)
 
 	switch (class) {
@@ -318,17 +349,20 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sy);
+	UNPROTECT(3);
 	return ans;
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
 SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 {
+	int usenames = LOGICAL(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
-	unsigned long long int j,
+	unsigned long long int jx, jy = 0,
 		nx = R_flint_get_length(object),
 		ny = 0;
 	R_CFinalizer_t f;
@@ -343,6 +377,13 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 		         (unsigned long long int) -1);
 	ny = nx * each;;
 
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
+		sy = R_NilValue, nm;
+	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
+	if (usenames)
+		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	PROTECT(sy);
+
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
@@ -350,13 +391,18 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
-		for (j = 0; j < nx; ++j) { \
-			for (i = 0; i < each; ++i) { \
-				name##_set(y__, x__); \
-				y__++; \
+		if (usenames) \
+		for (jx = 0; jx < nx; ++jx) { \
+			nm = STRING_ELT(sx, (R_xlen_t) jx); \
+			for (i = 0; i < each; ++i, ++jy) { \
+				name##_set(y__ + jy, x__ + jx); \
+				SET_STRING_ELT(sy, (R_xlen_t) jy, nm); \
 			} \
-			x__++; \
 		} \
+		else \
+		for (jx = 0; jx < nx; ++jx) \
+			for (i = 0; i < each; ++i, ++jy) \
+				name##_set(y__ + jy, x__ + jx); \
 	} while (0)
 
 	switch (class) {
@@ -395,17 +441,20 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sy);
+	UNPROTECT(3);
 	return ans;
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
 SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 {
+	int usenames = LOGICAL(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
-	unsigned long long int i, j, q, r,
+	unsigned long long int q, r, i, jx, jy = 0,
 		nx = R_flint_get_length(object),
 		ny = 0;
 	R_CFinalizer_t f;
@@ -424,6 +473,13 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 		q = ny / nx, r = ny % nx;
 	}
 
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
+		sy = R_NilValue;
+	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
+	if (usenames)
+		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	PROTECT(sy);
+
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
@@ -431,15 +487,25 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
+		if (usenames) { \
 		for (i = 0; i < q; ++i) { \
-			for (j = 0; j < nx; ++j) { \
-				name##_set(y__, x__ + j); \
-				y__++; \
+			for (jx = 0; jx < nx; ++jx, ++jy) { \
+				name##_set(y__ + jy, x__ + jx); \
+				SET_STRING_ELT(sy, (R_xlen_t) jy, \
+				               STRING_ELT(sx, (R_xlen_t) jx)); \
 			} \
 		} \
-		for (j = 0; j < r; ++j) { \
-			name##_set(y__, x__ + j); \
-			y__++; \
+		for (jx = 0; jx < r; ++jx, ++jy) { \
+			name##_set(y__ + jy, x__ + jx); \
+			SET_STRING_ELT(sy, (R_xlen_t) jy, \
+			               STRING_ELT(sx, (R_xlen_t) jx)); \
+		} \
+		} else { \
+		for (i = 0; i < q; ++i) \
+			for (jx = 0; jx < nx; ++jx, ++jy) \
+				name##_set(y__ + jy, x__ + jx); \
+		for (jx = 0; jx < r; ++jx, ++jy) \
+			name##_set(y__ + jy, x__ + jx); \
 		} \
 	} while (0)
 
@@ -479,17 +545,20 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sy);
+	UNPROTECT(3);
 	return ans;
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
 SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 {
+	int usenames = LOGICAL(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
-	unsigned long long int j,
+	unsigned long long int jx, jy = 0,
 		nx = R_flint_get_length(object),
 		ny = 0;
 	R_CFinalizer_t f;
@@ -502,18 +571,27 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 	ulong i, t;
 	const ulong *times = (ulong *) R_flint_get_pointer(s_times);
 	if (ntimes == 1) {
-		if (times[0] > 0 && nx > (unsigned long long int) -1 / times[0])
+		t = times[0];
+		if (t > 0 && nx > (unsigned long long int) -1 / t)
 			Rf_error(_("value length would exceed maximum %llu"),
 			         (unsigned long long int) -1);
-		ny = nx * times[0];
+		ny = nx * t;
 	} else {
-		for (j = 0; j < ntimes; ++j) {
-			if (times[j] > (unsigned long long int) -1 - ny)
-			Rf_error(_("value length would exceed maximum %llu"),
-			         (unsigned long long int) -1);
-			ny += times[j];
+		for (jx = 0; jx < nx; ++jx) {
+			t = times[jx];
+			if (t > (unsigned long long int) -1 - ny)
+				Rf_error(_("value length would exceed maximum %llu"),
+				         (unsigned long long int) -1);
+			ny += t;
 		}
 	}
+
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
+		sy = R_NilValue, nm;
+	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
+	if (usenames)
+		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	PROTECT(sy);
 
 #define REP_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -524,20 +602,33 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 		what = #name; \
 		if (ntimes == 1) { \
 			t = times[0]; \
+			if (usenames) \
 			for (i = 0; i < t; ++i) { \
-				for (j = 0; j < nx; ++j) { \
-					name##_set(y__, x__ + j); \
-					y__++; \
+				for (jx = 0; jx < nx; ++jx, ++jy) { \
+					name##_set(y__ + jy, x__ + jx); \
+					SET_STRING_ELT(sy, (R_xlen_t) jy, \
+					               STRING_ELT(sx, (R_xlen_t) jx)); \
 				} \
 			} \
+			else \
+			for (i = 0; i < t; ++i) \
+				for (jx = 0; jx < nx; ++jx, ++jy) \
+					name##_set(y__ + jy, x__ + jx); \
 		} else { \
-			for (j = 0; j < nx; ++j) { \
-				t = times[j]; \
-				for (i = 0; i < t; ++i) { \
-					name##_set(y__, x__); \
-					y__++; \
+			if (usenames) \
+			for (jx = 0; jx < nx; ++jx) { \
+				nm = STRING_ELT(sx, (R_xlen_t) nx); \
+				t = times[jx]; \
+				for (i = 0; i < t; ++i, ++jy) { \
+					name##_set(y__ + jy, x__ + jx); \
+					SET_STRING_ELT(sy, (R_xlen_t) jy, nm); \
 				} \
-				x__++; \
+			} \
+			else \
+			for (jx = 0; jx < nx; ++jx) { \
+				t = times[jx]; \
+				for (i = 0; i < t; ++i, ++jy) \
+					name##_set(y__ + jy, x__ + jx); \
 			} \
 		} \
 	} while (0)
@@ -578,7 +669,9 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sy);
+	UNPROTECT(3);
 	return ans;
 }
 
@@ -612,7 +705,7 @@ SEXP R_flint_size(SEXP object)
 	do { \
 		fmpz_size(ARF_EXPREF(p)); \
 		if (ARF_HAS_PTR(p)) \
-			count += ARF_PTR_ALLOC(p) * sizeof(mp_limb_t); \
+			count += (size_t) ARF_PTR_ALLOC(p) * sizeof(mp_limb_t); \
 	} while (0)
 
 #define acf_size(p) \
@@ -680,6 +773,7 @@ SEXP R_flint_size(SEXP object)
 
 SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 {
+	int usenames = 1;
 	R_flint_class_t class = R_flint_get_class(object);
 	const void
 		*v = R_flint_get_pointer(value),
@@ -692,6 +786,9 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 		ny = nx;
 	R_CFinalizer_t f;
 	const char *what;
+
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names));
+	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
 
 #define SUBASSIGN_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -755,22 +852,32 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sx);
+	UNPROTECT(2);
 	return ans;
 }
 
 SEXP R_flint_subscript(SEXP object, SEXP subscript)
 {
+	int usenames = 1;
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
-	unsigned long long int j,
+	unsigned long long int jx, jy,
 #if 0
 		nx = R_flint_get_length(object),
 #endif
 		ny = (unsigned long long int) XLENGTH(subscript);
 	R_CFinalizer_t f;
 	const char *what;
+
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
+		sy = R_NilValue;
+	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
+	if (usenames)
+		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	PROTECT(sy);
 
 #define SUBSCRIPT_CASE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -781,12 +888,28 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript)
 		what = #name; \
 		if (TYPEOF(subscript) == INTSXP) { \
 			const int *s__ = INTEGER_RO(subscript); \
-			for (j = 0; j < ny; ++j) \
-				name##_set(y__ + j, x__ + s__[j] - 1); \
+			if (usenames) \
+			for (jy = 0; jy < ny; ++jy) { \
+				jx = (unsigned long long int) s__[jy] - 1; \
+				name##_set(y__ + jy, x__ + jx); \
+				SET_STRING_ELT(sy, (R_xlen_t) jy, \
+				               STRING_ELT(sx, (R_xlen_t) jx)); \
+			} \
+			else \
+			for (jy = 0; jy < ny; ++jy) \
+				name##_set(y__ + jy, x__ + s__[jy] - 1); \
 		} else { \
 			const double *s__ = REAL_RO(subscript); \
-			for (j = 0; j < ny; ++j) \
-				name##_set(y__ + j, x__ + (unsigned long long int) s__[j] - 1); \
+			if (usenames) \
+			for (jy = 0; jy < ny; ++jy) { \
+				jx = (unsigned long long int) s__[jy] - 1; \
+				name##_set(y__ + jy, x__ + jx); \
+				SET_STRING_ELT(sy, (R_xlen_t) jy, \
+				               STRING_ELT(sx, (R_xlen_t) jx)); \
+			} \
+			else \
+			for (jy = 0; jy < ny; ++jy) \
+				name##_set(y__ + jy, x__ + (unsigned long long int) s__[jy] - 1); \
 		} \
 	} while (0)
 
@@ -826,7 +949,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript)
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
-	UNPROTECT(1);
+	if (usenames)
+		R_do_slot_assign(ans, R_flint_symbol_names, sy);
+	UNPROTECT(3);
 	return ans;
 }
 

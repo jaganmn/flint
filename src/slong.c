@@ -16,7 +16,7 @@ void R_flint_slong_finalize(SEXP x)
 
 SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int j, n, nx = 0;
+	unsigned long long int j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
@@ -29,34 +29,34 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			nx = R_flint_get_length(s_x);
 		}
 		if (s_length == R_NilValue)
-			n = nx;
+			ny = nx;
 		else {
-			n = asLength(s_length, __func__);
-			if (n > 0 && nx == 0)
+			ny = asLength(s_length, __func__);
+			if (ny > 0 && nx == 0)
 				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
 				         "x");
 		}
 	}
 	else if (s_length != R_NilValue)
-		n = asLength(s_length, __func__);
+		ny = asLength(s_length, __func__);
 	else
-		n = 0;
-	slong *y = (slong *) ((n) ? flint_malloc(n * sizeof(slong)) : 0);
-	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+		ny = 0;
+	slong *y = (slong *) ((ny) ? flint_malloc(ny * sizeof(slong)) : 0);
+	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		break;
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (j = 0; j < n; ++j)
+		for (j = 0; j < ny; ++j)
 			y[j] = (slong) x[j % nx];
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (j = 0; j < n; ++j) {
+		for (j = 0; j < ny; ++j) {
 			if (x[j % nx] == NA_LOGICAL)
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 			else
@@ -67,7 +67,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (j = 0; j < n; ++j) {
+		for (j = 0; j < ny; ++j) {
 			if (x[j % nx] == NA_INTEGER)
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 			else
@@ -80,7 +80,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (j = 0; j < n; ++j) {
+		for (j = 0; j < ny; ++j) {
 			if (ISNAN(x[j % nx]))
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 #if FLINT64
@@ -101,7 +101,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		mpz_t r;
 		mpz_init(r);
 		const char *s;
-		for (j = 0; j < n; ++j) {
+		for (j = 0; j < ny; ++j) {
 			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
 			if (mpz_set_str(r, s, 0) != 0) {
 				mpz_clear(r);
@@ -121,14 +121,14 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = (slong *) R_flint_get_pointer(s_x);
-			for (j = 0; j < n; ++j)
+			for (j = 0; j < ny; ++j)
 				y[j] = x[j % nx];
 			break;
 		}
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				if (x[j % nx] > ((ulong) -1) >> 1)
 				Rf_error(_("integer not in range of '%s'"), "slong");
 				else
@@ -139,7 +139,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				if (!fmpz_fits_si(x + j % nx))
 				Rf_error(_("integer not in range of '%s'"), "slong");
 				else
@@ -152,7 +152,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				fmpz_tdiv_q(q, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx));
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
@@ -169,7 +169,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				mag_get_fmpz_lower(q, x + j % nx);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
@@ -186,7 +186,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				arf_get_fmpz(q, x + j % nx, ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
@@ -203,7 +203,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				arf_get_fmpz(q, acf_realref(x + j % nx), ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
@@ -225,17 +225,17 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	if (s_x != R_NilValue && n > 0 && n <= R_XLEN_T_MAX) {
-	SEXP srcnames = Rf_getAttrib(s_x, R_NamesSymbol);
-	if (srcnames != R_NilValue && XLENGTH(srcnames) > 0) {
-	if (n == nx)
-	Rf_setAttrib(object, R_NamesSymbol, srcnames);
+	if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
+	SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
+	if (sx != R_NilValue && XLENGTH(sx) > 0) {
+	if (nx == ny)
+	R_do_slot_assign(object, R_flint_symbol_names, sx);
 	else {
-	SEXP destnames = Rf_allocVector(STRSXP, (R_xlen_t) n);
-	for (j = 0; j < n; ++j)
-		SET_STRING_ELT(destnames, (R_xlen_t) j,
-		               STRING_ELT(srcnames, (R_xlen_t) (j % nx)));
-	Rf_setAttrib(object, R_NamesSymbol, destnames);
+	SEXP sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+	for (j = 0; j < ny; ++j)
+		SET_STRING_ELT(sy, (R_xlen_t) j,
+		               STRING_ELT(sx, (R_xlen_t) (j % nx)));
+	R_do_slot_assign(object, R_flint_symbol_names, sy);
 	}
 	}
 	}

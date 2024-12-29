@@ -24,7 +24,7 @@ void R_flint_arb_finalize(SEXP x)
 SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_mid, SEXP s_rad)
 {
-	unsigned long long int j, n, nx = 0, nm = 1, nr = 1;
+	unsigned long long int j, nm = 1, nr = 1, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		if (s_x != R_NilValue)
@@ -35,10 +35,10 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		if (s_rad != R_NilValue)
 			nr = R_flint_get_length(s_rad);
 		if (s_length == R_NilValue)
-			n = RECYCLE2(nm, nr);
+			ny = RECYCLE2(nm, nr);
 		else {
-			n = asLength(s_length, __func__);
-			if (n > 0 && (nm == 0 || nr == 0))
+			ny = asLength(s_length, __func__);
+			if (ny > 0 && (nm == 0 || nr == 0))
 				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
 				         (nm == 0) ? "mid" : "rad");
 		}
@@ -54,31 +54,31 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			nx = R_flint_get_length(s_x);
 		}
 		if (s_length == R_NilValue)
-			n = nx;
+			ny = nx;
 		else {
-			n = asLength(s_length, __func__);
-			if (n > 0 && nx == 0)
+			ny = asLength(s_length, __func__);
+			if (ny > 0 && nx == 0)
 				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
 				         "x");
 		}
 	}
 	else if (s_length != R_NilValue)
-		n = asLength(s_length, __func__);
+		ny = asLength(s_length, __func__);
 	else
-		n = 0;
-	arb_ptr y = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
-	R_flint_set(object, y, n, (R_CFinalizer_t) &R_flint_arb_finalize);
+		ny = 0;
+	arb_ptr y = (arb_ptr) ((ny) ? flint_calloc((size_t) ny, sizeof(arb_t)) : 0);
+	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_arb_finalize);
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		if (s_mid != R_NilValue) {
 			arf_srcptr xm = (arf_ptr) R_flint_get_pointer(s_mid);
 			if (s_rad != R_NilValue) {
 				mag_srcptr xr = (mag_ptr) R_flint_get_pointer(s_rad);
-				for (j = 0; j < n; ++j) {
+				for (j = 0; j < ny; ++j) {
 					arf_set(arb_midref(y + j), xm + j % nm);
 					mag_set(arb_radref(y + j), xr + j % nr);
 				}
 			} else {
-				for (j = 0; j < n; ++j) {
+				for (j = 0; j < ny; ++j) {
 					arf_set(arb_midref(y + j), xm + j % nm);
 					mag_zero(arb_radref(y + j));
 				}
@@ -86,7 +86,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		} else {
 			if (s_rad != R_NilValue) {
 				mag_srcptr xr = (mag_ptr) R_flint_get_pointer(s_rad);
-				for (j = 0; j < n; ++j) {
+				for (j = 0; j < ny; ++j) {
 					arf_zero(arb_midref(y + j));
 					mag_set(arb_radref(y + j), xr + j % nr);
 				}
@@ -95,20 +95,20 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	} else {
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
-			for (j = 0; j < n; ++j)
+			for (j = 0; j < ny; ++j)
 				arb_zero(y + j);
 			break;
 		case RAWSXP:
 		{
 			const Rbyte *x = RAW_RO(s_x);
-			for (j = 0; j < n; ++j)
+			for (j = 0; j < ny; ++j)
 				arb_set_ui(y + j, x[j % nx]);
 			break;
 		}
 		case LGLSXP:
 		{
 			const int *x = LOGICAL_RO(s_x);
-			for (j = 0; j < n; ++j)
+			for (j = 0; j < ny; ++j)
 				if (x[j % nx] == NA_LOGICAL)
 				arb_set_d(y + j, R_NaN);
 				else
@@ -118,7 +118,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);
-			for (j = 0; j < n; ++j)
+			for (j = 0; j < ny; ++j)
 				if (x[j % nx] == NA_INTEGER)
 				arb_set_d(y + j, R_NaN);
 				else
@@ -130,7 +130,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case REALSXP:
 		{
 			const double *x = REAL_RO(s_x);
-			for (j = 0; j < n; ++j)
+			for (j = 0; j < ny; ++j)
 				arb_set_d(y + j, x[j % nx]);
 			break;
 		}
@@ -145,7 +145,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			arf_init(tmp);
 			const char *s;
 			char *t;
-			for (j = 0; j < n; ++j) {
+			for (j = 0; j < ny; ++j) {
 				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
 				while (isspace(*s))
 					s++;
@@ -182,7 +182,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			mpfr_clear(m);
 			mpfr_clear(r);
 			arf_clear(tmp);
-			if (j < n)
+			if (j < ny)
 				Rf_error(_("invalid input in string conversion"));
 			break;
 		}
@@ -191,21 +191,21 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			case R_FLINT_CLASS_SLONG:
 			{
 				const slong *x = (slong *) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j)
+				for (j = 0; j < ny; ++j)
 					arb_set_si(y + j, x[j % nx]);
 				break;
 			}
 			case R_FLINT_CLASS_ULONG:
 			{
 				const ulong *x = (ulong *) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j)
+				for (j = 0; j < ny; ++j)
 					arb_set_ui(y + j, x[j % nx]);
 				break;
 			}
 			case R_FLINT_CLASS_FMPZ:
 			{
 				const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j)
+				for (j = 0; j < ny; ++j)
 					arb_set_fmpz(y + j, x + j % nx);
 				break;
 			}
@@ -213,14 +213,14 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
 				slong prec = asPrec(R_NilValue, __func__);
-				for (j = 0; j < n; ++j)
+				for (j = 0; j < ny; ++j)
 					arb_fmpz_div_fmpz(y + j, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec);
 				break;
 			}
 			case R_FLINT_CLASS_MAG:
 			{
 				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j) {
+				for (j = 0; j < ny; ++j) {
 					arf_set_mag(arb_midref(y + j), x + j % nx);
 					mag_zero(arb_radref(y + j));
 				}
@@ -229,7 +229,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j) {
+				for (j = 0; j < ny; ++j) {
 					arf_set(arb_midref(y + j), x + j % nx);
 					mag_zero(arb_radref(y + j));
 				}
@@ -238,7 +238,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j) {
+				for (j = 0; j < ny; ++j) {
 					arf_set(arb_midref(y + j), acf_realref(x + j % nx));
 					mag_zero(arb_radref(y + j));
 				}
@@ -247,14 +247,14 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			case R_FLINT_CLASS_ARB:
 			{
 				arb_srcptr x = (arb_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j)
+				for (j = 0; j < ny; ++j)
 					arb_set(y + j, x + j % nx);
 				break;
 			}
 			case R_FLINT_CLASS_ACB:
 			{
 				acb_srcptr x = (acb_ptr) R_flint_get_pointer(s_x);
-				for (j = 0; j < n; ++j)
+				for (j = 0; j < ny; ++j)
 					arb_set(y + j, acb_realref(x + j % nx));
 				break;
 			}
@@ -264,17 +264,17 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			break;
 		}
-		if (s_x != R_NilValue && n > 0 && n <= R_XLEN_T_MAX) {
-		SEXP srcnames = Rf_getAttrib(s_x, R_NamesSymbol);
-		if (srcnames != R_NilValue && XLENGTH(srcnames) > 0) {
-		if (n == nx)
-		Rf_setAttrib(object, R_NamesSymbol, srcnames);
+		if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
+		SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
+		if (sx != R_NilValue && XLENGTH(sx) > 0) {
+		if (nx == ny)
+		R_do_slot_assign(object, R_flint_symbol_names, sx);
 		else {
-		SEXP destnames = Rf_allocVector(STRSXP, (R_xlen_t) n);
-		for (j = 0; j < n; ++j)
-			SET_STRING_ELT(destnames, (R_xlen_t) j,
-						   STRING_ELT(srcnames, (R_xlen_t) (j % nx)));
-		Rf_setAttrib(object, R_NamesSymbol, destnames);
+		SEXP sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
+		for (j = 0; j < ny; ++j)
+			SET_STRING_ELT(sy, (R_xlen_t) j,
+			               STRING_ELT(sx, (R_xlen_t) (j % nx)));
+		R_do_slot_assign(object, R_flint_symbol_names, sy);
 		}
 		}
 		}
@@ -287,23 +287,26 @@ SEXP R_flint_arb_part(SEXP object, SEXP s_op)
 	unsigned long long int j, n = R_flint_get_length(object);
 	arb_srcptr x = (arb_ptr) R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
+	SEXP ans = PROTECT(newObject((op == 0) ? "arf" : "mag"));
 	if (op == 0) {
-		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr y = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
 		R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		for (j = 0; j < n; ++j)
 			arf_set(y + j, arb_midref(x + j));
-		UNPROTECT(1);
-		return ans;
 	} else {
-		SEXP ans = PROTECT(newObject("mag"));
 		mag_ptr y = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
 		R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		for (j = 0; j < n; ++j)
 			mag_set(y + j, arb_radref(x + j));
-		UNPROTECT(1);
-		return ans;
 	}
+	SEXP nms = R_do_slot(object, R_flint_symbol_names);
+	if (XLENGTH(nms) > 0) {
+		PROTECT(nms);
+		R_do_slot_assign(ans, R_flint_symbol_names, nms);
+		UNPROTECT(1);
+	}
+	UNPROTECT(1);
+	return ans;
 }
 
 SEXP R_flint_arb_vector(SEXP object)
