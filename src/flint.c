@@ -858,9 +858,9 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 	return ans;
 }
 
-SEXP R_flint_subscript(SEXP object, SEXP subscript)
+SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 {
-	int usenames = 1;
+	int usenames = LOGICAL(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;

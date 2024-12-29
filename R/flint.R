@@ -99,7 +99,7 @@ setMethod("[",
                                  stop("subscript out of bounds")
                              m
                          })
-              .Call(R_flint_subscript, x, i)
+              .Call(R_flint_subscript, x, i, TRUE)
           })
 
 setMethod("[<-",
@@ -224,7 +224,7 @@ setMethod("[[",
                   stop("attempt to select less than one element")
               else if (ni > 1L)
                   stop("attempt to select more than one element")
-              .Call(R_flint_subscript, x, i)
+              .Call(R_flint_subscript, x, i, FALSE)
           })
 
 setMethod("[[<-",
