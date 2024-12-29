@@ -423,6 +423,16 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	unsigned long long int j, n = RECYCLE2(nx, ny);
 	slong prec = (slong) asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+#define COMMON \
+	do { \
+	SEXP nms; \
+	if ((nx == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0) || \
+	    (ny == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0)) { \
+		PROTECT(nms); \
+		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
+		UNPROTECT(1); \
+	} \
+	} while (0)
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -450,6 +460,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				arf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -529,6 +540,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				: 0;
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	default:
@@ -536,6 +548,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		         CHAR(STRING_ELT(s_op, 0)), "arf");
 		return R_NilValue;
 	}
+#undef COMMON
 }
 
 SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
@@ -545,6 +558,15 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
 	slong prec = (slong) asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+#define COMMON \
+	do { \
+	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
+	if (XLENGTH(nms) > 0) { \
+		PROTECT(nms); \
+		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
+		UNPROTECT(1); \
+	} \
+	} while (0)
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */
@@ -762,6 +784,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		COMMON;
 		return ans;
 	}
 	case 50: /*     "min" */
@@ -956,6 +979,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[j] = arf_is_zero(x + j) != 0;
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	default:
@@ -963,4 +987,5 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		         CHAR(STRING_ELT(s_op, 0)), "arf");
 		return R_NilValue;
 	}
+#undef COMMON
 }

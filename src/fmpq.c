@@ -367,6 +367,16 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
 	unsigned long long int j, n = RECYCLE2(nx, ny);
+#define COMMON \
+	do { \
+	SEXP nms; \
+	if ((nx == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0) || \
+	    (ny == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0)) { \
+		PROTECT(nms); \
+		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
+		UNPROTECT(1); \
+	} \
+	} while (0)
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -461,6 +471,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
+		COMMON;
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -509,6 +520,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				z[j] = !fmpq_is_zero(x + j % nx) || !fmpq_is_zero(y + j % ny);
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	default:
@@ -516,6 +528,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		         CHAR(STRING_ELT(s_op, 0)), "fmpq");
 		return R_NilValue;
 	}
+#undef COMMON
 }
 
 SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
@@ -523,6 +536,15 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
 	unsigned long long int j, n = R_flint_get_length(s_x);
 	const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+#define COMMON \
+	do { \
+	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
+	if (XLENGTH(nms) > 0) { \
+		PROTECT(nms); \
+		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
+		UNPROTECT(1); \
+	} \
+	} while (0)
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */
@@ -737,6 +759,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		COMMON;
 		return ans;
 	}
 	case 50: /*     "min" */
@@ -864,6 +887,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[j] = fmpq_is_zero(x + j) != 0;
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	default:
@@ -871,4 +895,5 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		         CHAR(STRING_ELT(s_op, 0)), "fmpq");
 		return R_NilValue;
 	}
+#undef COMMON
 }

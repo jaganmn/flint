@@ -474,6 +474,16 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
 	unsigned long long int j, n = RECYCLE2(nx, ny);
 	int lower = isRndZ(R_NilValue, __func__);
+#define COMMON \
+	do { \
+	SEXP nms; \
+	if ((nx == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0) || \
+	    (ny == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0)) { \
+		PROTECT(nms); \
+		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
+		UNPROTECT(1); \
+	} \
+	} while (0)
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -542,6 +552,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
+		COMMON;
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -590,6 +601,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				z[j] = !mag_is_zero(x + j % nx) || !mag_is_zero(y + j % ny);
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	default:
@@ -597,6 +609,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		         CHAR(STRING_ELT(s_op, 0)), "mag");
 		return R_NilValue;
 	}
+#undef COMMON
 }
 
 SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
@@ -605,6 +618,15 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	unsigned long long int j, n = R_flint_get_length(s_x);
 	mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
 	int lower = isRndZ(R_NilValue, __func__);
+#define COMMON \
+	do { \
+	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
+	if (XLENGTH(nms) > 0) { \
+		PROTECT(nms); \
+		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
+		UNPROTECT(1); \
+	} \
+	} while (0)
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */
@@ -916,6 +938,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		COMMON;
 		return ans;
 	}
 	case 55: /*    "mean" */
@@ -1045,6 +1068,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[j] = mag_is_zero(x + j) != 0;
 			break;
 		}
+		COMMON;
 		return ans;
 	}
 	default:
@@ -1052,4 +1076,5 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		         CHAR(STRING_ELT(s_op, 0)), "mag");
 		return R_NilValue;
 	}
+#undef COMMON
 }
