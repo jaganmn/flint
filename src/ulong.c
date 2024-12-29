@@ -226,6 +226,20 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
+	if (s_x != R_NilValue && n > 0 && n <= R_XLEN_T_MAX) {
+	SEXP srcnames = Rf_getAttrib(s_x, R_NamesSymbol);
+	if (srcnames != R_NilValue && XLENGTH(srcnames) > 0) {
+	if (n == nx)
+	Rf_setAttrib(object, R_NamesSymbol, srcnames);
+	else {
+	SEXP destnames = Rf_allocVector(STRSXP, (R_xlen_t) n);
+	for (j = 0; j < n; ++j)
+		SET_STRING_ELT(destnames, (R_xlen_t) j,
+		               STRING_ELT(srcnames, (R_xlen_t) (j % nx)));
+	Rf_setAttrib(object, R_NamesSymbol, destnames);
+	}
+	}
+	}
 	return object;
 }
 
@@ -287,6 +301,12 @@ SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 		SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
 	mpz_clear(z);
+	SEXP nms = R_do_slot(object, R_flint_symbol_names);
+	if (XLENGTH(nms) > 0) {
+		PROTECT(nms);
+		Rf_setAttrib(ans, R_NamesSymbol, nms);
+		UNPROTECT(1);
+	}
 	UNPROTECT(1);
 	return ans;
 }

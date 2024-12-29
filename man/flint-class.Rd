@@ -204,10 +204,9 @@
       \code{length<-} above.}
     \item{\code{rep.int}, \code{rep_len}}{
       \code{signature(x = "flint")}:\cr
-      for now equivalent to \code{rep(x, times=)} and
-      \code{rep(x, length.out=)}.  Treatment of named \code{x} would
-      differ if virtual class \code{flint} supported names; see also
-      \code{\link{rep}}.}
+      analogues of \code{rep(x, times=)} and
+      \code{rep(x, length.out=)} not preserving names, faster than
+      \code{rep} when \code{x} has names.}
     \item{\code{show}}{
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}

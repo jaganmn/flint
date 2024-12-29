@@ -141,22 +141,22 @@ setMethod("initialize",
 setMethod("is.finite",
           c(x = "slong"),
           function (x)
-              rep.int(TRUE, length(x)))
+              `names<-`(rep.int(TRUE, length(x)), names(x)))
 
 setMethod("is.infinite",
           c(x = "slong"),
           function (x)
-              logical(length(x)))
+              `names<-`(logical(length(x)), names(x)))
 
 setMethod("is.na",
           c(x = "slong"),
           function (x)
-              logical(length(x)))
+              `names<-`(logical(length(x)), names(x)))
 
 setMethod("is.nan",
           c(x = "slong"),
           function (x)
-              logical(length(x)))
+              `names<-`(logical(length(x)), names(x)))
 
 setMethod("is.unsorted",
           c(x = "slong"),

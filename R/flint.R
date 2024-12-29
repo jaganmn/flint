@@ -1,7 +1,7 @@
 .subscript.class <-
 function (i)
     switch(type. <- typeof(i),
-           "NULL" =, "logical" =, "integer" =, "double" =
+           "NULL" =, "logical" =, "integer" =, "double" =, "character" =
                if (anyNA(i))
                    stop("subscript NA not supported")
                else type.,
@@ -91,6 +91,13 @@ setMethod("[",
                              else if (r > -1L)
                                  i[i >= 1L]
                              else seq_len(nx)[i]
+                         },
+                     "character" =
+                         {
+                             if (is.null(nms <- names(x)) ||
+                                 anyNA(m <- match(i, nms)))
+                                 stop("subscript out of bounds")
+                             m
                          })
               .Call(R_flint_subscript, x, i)
           })
@@ -140,6 +147,13 @@ setMethod("[<-",
                              else if (r > -1L)
                                  i[i >= 1L]
                              else seq_len(nx)[i]
+                         },
+                     "character" =
+                         {
+                             if (is.null(nms <- names(x)) ||
+                                 anyNA(m <- match(i, nms)))
+                                 stop("subscript out of bounds")
+                             m
                          })
               ni <- length(i)
               }
@@ -196,6 +210,13 @@ setMethod("[[",
                              else if (r > -1L)
                                  i[i >= 1L]
                              else seq_len(nx)[i]
+                         },
+                     "character" =
+                         {
+                             if (is.null(nms <- names(x)) ||
+                                 anyNA(m <- match(i, nms)))
+                                 stop("subscript out of bounds")
+                             m
                          })
               ni <- length(i)
               }
@@ -242,6 +263,13 @@ setMethod("[[<-",
                              else if (r > -1L)
                                  i[i >= 1L]
                              else seq_len(nx)[i]
+                         },
+                     "character" =
+                         {
+                             if (is.null(nms <- names(x)) ||
+                                 anyNA(m <- match(i, nms)))
+                                 stop("subscript out of bounds")
+                             m
                          })
               ni <- length(i)
               }
@@ -433,7 +461,7 @@ setMethod("as.complex",
 
 setMethod("as.character",
           c(x = "flint"),
-          function (x, ...) format(x, digits = 15L, rnd = "N"))
+          function (x, ...) format(`names<-`(x, NULL), digits = 15L, rnd = "N"))
 
 setMethod("as.list",
           c(x = "flint"),
@@ -446,17 +474,17 @@ setMethod("as.expression",
 setMethod("as.Date",
           c(x = "flint"),
           function (x, ...)
-              as.Date(as.vector(x), ...))
+              as.Date   (`names<-`(as.vector(x), names(x)),          ...))
 
 setMethod("as.POSIXct",
           c(x = "flint"),
           function (x, tz = "", ...)
-              as.POSIXct(as.vector(x), tz = tz, ...))
+              as.POSIXct(`names<-`(as.vector(x), names(x)), tz = tz, ...))
 
 setMethod("as.POSIXlt",
           c(x = "flint"),
           function (x, tz = "", ...)
-              as.POSIXlt(as.vector(x), tz = tz, ...))
+              as.POSIXlt(`names<-`(as.vector(x), names(x)), tz = tz, ...))
 
 setMethod("as.data.frame",
           c(x = "flint"),
@@ -464,7 +492,7 @@ setMethod("as.data.frame",
 
 ## MJ: we export this function and curse the author of DispatchAnyOrEval
 c.flint <-
-function (...) {
+function (..., use.names = TRUE) {
     n <- nargs()
     if (n == 0L)
         return(NULL)
@@ -472,15 +500,15 @@ function (...) {
     classes <- vapply(args, .c.class, "")
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
-        return(c(...))
+        return(c(..., use.names = use.names))
     args <- lapply(args, as, common)
-    .Call(R_flint_bind, args)
+    .Call(R_flint_bind, args, as.logical(use.names))
 }
 
 setMethod("c",
           c(x = "flint"),
-          function (x, ...)
-              c.flint(x, ...))
+          function (x, ..., use.names = TRUE)
+              c.flint(x, ..., use.names = use.names))
 
 setAs("ANY", "flint",
       function (from)
@@ -515,7 +543,7 @@ setMethod("length<-",
 setMethod("mtfrm",
           c(x = "flint"),
           function (x)
-              format(x, base = 62L, digits = 0L))
+              format(`names<-`(x, NULL), base = 62L, digits = 0L))
 
 setMethod("names",
           c(x = "flint"),
@@ -525,7 +553,7 @@ setMethod("names",
 setMethod("names<-",
           c(x = "flint", value = "NULL"),
           function (x, value) {
-              if (length(x@names) != 0L)
+              if (length(x@names))
                   x@names <- character(0L)
               x
           })
@@ -534,16 +562,23 @@ setMethod("names<-",
           c(x = "flint", value = "character"),
           function (x, value) {
               nx <- length(x)
-              nv <- length(value)
-              if (nx != nv) {
-                  if (nx < nv)
+              if (nx > 0x1p+52) {
+                  warning(gettextf("length of '%s' exceeds maximum character vector length; ignoring non-NULL '%s'",
+                                   "x", "value"),
+                          domain = NA)
+                  return(x)
+              }
+              nv <- length(value <- as.character(value))
+              x@names <-
+              if (nv == nx)
+                  value
+              else {
+                  if (nv > nx)
                   stop(gettextf("length of '%s' exceeds length of '%s'",
                                 "value", "x"),
                        domain = NA)
-                  length(value) <- nx
+                  c(value, character(nx - nv))
               }
-              attributes(value) <- NULL
-              x@names <- value
               x
           })
 
@@ -575,23 +610,23 @@ setMethod("rep",
           c(x = "flint"),
           function (x, times, length.out, each, ...) {
               if (!missing(each))
-                  x <- .Call(R_flint_rep_each, x, as(each, "ulong"))
+                  x <- .Call(R_flint_rep_each, x, as(each, "ulong"), TRUE)
               if (!missing(length.out))
-                  x <- .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"))
+                  x <- .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), TRUE)
               else if (!missing(times))
-                  x <- .Call(R_flint_rep_times, x, as(times, "ulong"))
+                  x <- .Call(R_flint_rep_times, x, as(times, "ulong"), TRUE)
               x
           })
 
 setMethod("rep.int",
           c(x = "flint"),
           function (x, times)
-              .Call(R_flint_rep_times, x, as(times, "ulong")))
+              .Call(R_flint_rep_times, x, as(times, "ulong"), FALSE))
 
 setMethod("rep_len",
           c(x = "flint"),
           function (x, length.out)
-              .Call(R_flint_rep_lengthout, x, as(length.out, "ulong")))
+              .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), FALSE))
 
 setMethod("show",
           c(object = "flint"),
@@ -602,5 +637,7 @@ setMethod("show",
 
 setMethod("unique",
           c(x = "flint"),
-          function (x, incomparables = FALSE, ...)
-              x[!duplicated(x, incomparables = incomparables, ...)])
+          function (x, incomparables = FALSE, ...) {
+              names(x) <- NULL
+              x[!duplicated(x, incomparables = incomparables, ...)]
+          })

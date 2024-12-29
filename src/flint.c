@@ -67,7 +67,7 @@ void R_flint_set(SEXP object,
 	return;
 }
 
-SEXP R_flint_bind(SEXP dots)
+SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 {
 	R_xlen_t a, ndots = XLENGTH(dots);
 	if (ndots == 0)
@@ -323,7 +323,7 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
-SEXP R_flint_rep_each(SEXP object, SEXP s_each)
+SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 {
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
@@ -400,7 +400,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each)
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
-SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout)
+SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 {
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
@@ -484,7 +484,7 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout)
 }
 
 /* FIXME: clearly suboptimal for 32-bit 'ulong' */
-SEXP R_flint_rep_times(SEXP object, SEXP s_times)
+SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 {
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
@@ -753,10 +753,10 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 
 #undef SUBASSIGN_CASE
 
-	SEXP to = PROTECT(newObject(what));
-	R_flint_set(to, y, ny, f);
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, y, ny, f);
 	UNPROTECT(1);
-	return to;
+	return ans;
 }
 
 SEXP R_flint_subscript(SEXP object, SEXP subscript)

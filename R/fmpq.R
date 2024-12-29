@@ -25,8 +25,12 @@ setMethod("Den",
 
 setMethod("Den<-",
           c(q = "fmpq"),
-          function (q, value)
-              .fmpq(num = Num(q), den = value))
+          function (q, value) {
+              ans <- .fmpq(num = Num(q), den = value)
+              if (!is.null(nms <- names(q)) && (n <- length(ans)) <= 0x1p+52)
+                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans
+          })
 
 setMethod("Math",
           c(x = "fmpq"),
@@ -48,8 +52,12 @@ setMethod("Num",
 
 setMethod("Num<-",
           c(q = "fmpq"),
-          function (q, value)
-              .fmpq(num = value, den = Den(q)))
+          function (q, value) {
+              ans <- .fmpq(num = value, den = Den(q))
+              if (!is.null(nms <- names(q)) && (n <- length(ans)) <= 0x1p+52)
+                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "fmpq"),
@@ -153,9 +161,10 @@ setAs("ANY", "fmpq",
 setMethod("format",
           c(x = "fmpq"),
           function (x, base = 10L, ...)
-              paste0(format(Num(x), base = base, ...),
-                     "/",
-                     format(Den(x), base = base, ...)))
+              `names<-`(paste0(format(Num(x), base = base, ...),
+                               "/",
+                               format(Den(x), base = base, ...)),
+                        names(x)))
 
 setMethod("initialize",
           c(.Object = "fmpq"),

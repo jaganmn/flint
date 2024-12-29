@@ -7,17 +7,19 @@
   \code{c(x, \dots)} does \emph{not} dispatch the S4 method with
   signature \code{x="flint"} if \code{x} is not a \code{flint} vector,
   even if a \code{flint} vector appears later in the call as an element
-  of \dots.  An S3 method \code{c.flint} is registered \emph{and}
-  exported so that users can concatenate with \code{c.flint(x, \dots)}
-  instead of \code{c(as(x, "flint"), \dots)}.
+  of \code{\dots}.  An S3 method \code{c.flint} is registered \emph{and
+    exported} to support concatenation with \code{c.flint(x, \dots)} as
+  an alternative to \code{c(as(x, "flint"), \dots)}.
 }
 \usage{
-\method{c}{flint}(\dots)
+\method{c}{flint}(\dots, use.names = TRUE)
 }
 \arguments{
   \item{\dots}{
     objects inheriting from virtual class \code{\linkS4class{flint}},
     atomic (except character) vectors, and \code{NULL}.}
+  \item{use.names}{
+    a logical indicating if names should be preserved.}
 }
 \value{
   If at least one argument is a \code{flint} vector, then the return
@@ -27,7 +29,7 @@
   arguments.
 
   If none of the arguments is a \code{flint} vector, then the return
-  value is \code{c(\dots)}.
+  value is \code{c(\dots, use.names = use.names)}.
 }
 \seealso{
   Virtual class \code{\linkS4class{flint}}.

@@ -264,6 +264,20 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			break;
 		}
+		if (s_x != R_NilValue && n > 0 && n <= R_XLEN_T_MAX) {
+		SEXP srcnames = Rf_getAttrib(s_x, R_NamesSymbol);
+		if (srcnames != R_NilValue && XLENGTH(srcnames) > 0) {
+		if (n == nx)
+		Rf_setAttrib(object, R_NamesSymbol, srcnames);
+		else {
+		SEXP destnames = Rf_allocVector(STRSXP, (R_xlen_t) n);
+		for (j = 0; j < n; ++j)
+			SET_STRING_ELT(destnames, (R_xlen_t) j,
+						   STRING_ELT(srcnames, (R_xlen_t) (j % nx)));
+		Rf_setAttrib(object, R_NamesSymbol, destnames);
+		}
+		}
+		}
 	}
 	return object;
 }

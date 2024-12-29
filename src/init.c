@@ -72,16 +72,16 @@ const char *R_flint_ops1[] =
 	NULL
 };
 
-SEXP R_flint_bind(SEXP);
+SEXP R_flint_bind(SEXP, SEXP);
 SEXP R_flint_bits(void);
 SEXP R_flint_class(SEXP);
 SEXP R_flint_identical(SEXP, SEXP);
 SEXP R_flint_length(SEXP);
 SEXP R_flint_new(SEXP);
 SEXP R_flint_realloc(SEXP, SEXP);
-SEXP R_flint_rep_each(SEXP, SEXP);
-SEXP R_flint_rep_lengthout(SEXP, SEXP);
-SEXP R_flint_rep_times(SEXP, SEXP);
+SEXP R_flint_rep_each(SEXP, SEXP, SEXP);
+SEXP R_flint_rep_lengthout(SEXP, SEXP, SEXP);
+SEXP R_flint_rep_times(SEXP, SEXP, SEXP);
 SEXP R_flint_size(SEXP);
 SEXP R_flint_subassign(SEXP, SEXP, SEXP);
 SEXP R_flint_subscript(SEXP, SEXP);
@@ -167,16 +167,16 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
-	CALL_ENTRY(R_flint_bind, 1),
+	CALL_ENTRY(R_flint_bind, 2),
 	CALL_ENTRY(R_flint_bits, 0),
 	CALL_ENTRY(R_flint_class, 1),
 	CALL_ENTRY(R_flint_identical, 2),
 	CALL_ENTRY(R_flint_length, 1),
 	CALL_ENTRY(R_flint_new, 1),
 	CALL_ENTRY(R_flint_realloc, 2),
-	CALL_ENTRY(R_flint_rep_each, 2),
-	CALL_ENTRY(R_flint_rep_lengthout, 2),
-	CALL_ENTRY(R_flint_rep_times, 2),
+	CALL_ENTRY(R_flint_rep_each, 3),
+	CALL_ENTRY(R_flint_rep_lengthout, 3),
+	CALL_ENTRY(R_flint_rep_times, 3),
 	CALL_ENTRY(R_flint_size, 1),
 	CALL_ENTRY(R_flint_subassign, 3),
 	CALL_ENTRY(R_flint_subscript, 2),

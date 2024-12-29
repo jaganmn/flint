@@ -38,8 +38,12 @@ setMethod("Mid",
 
 setMethod("Mid<-",
           c(x = "arb"),
-          function (x, value)
-              .arb(mid = value, rad = Rad(x)))
+          function (x, value) {
+              ans <- .arb(mid = value, rad = Rad(x))
+              if (!is.null(nms <- names(x)) && (n <- length(ans)) <= 0x1p+52)
+                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans
+          })
 
 setMethod("Ops",
           c(e1 = "ANY", e2 = "arb"),
@@ -129,8 +133,12 @@ setMethod("Rad",
 
 setMethod("Rad<-",
           c(x = "arb"),
-          function (x, value)
-              .arb(mid = Mid(x), rad = value))
+          function (x, value) {
+              ans <- .arb(mid = Mid(x), rad = value)
+              if (!is.null(nms <- names(x)) && (n <- length(ans)) <= 0x1p+52)
+                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans
+          })
 
 setMethod("anyNA",
           c(x = "arb"),
@@ -150,13 +158,12 @@ setMethod("format",
           c(x = "arb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
                     rnd = flintRnd(), ...)
-              paste0("(",
-                     format(Mid(x), base = base, digits = digits, sep = sep,
-                            rnd = rnd, ...),
-                     " +/- ",
-                     format(Rad(x), base = base, digits = digits, sep = sep,
-                            rnd = "A", ...),
-                     ")"))
+              `names<-`(paste0("(",
+                               format(Mid(x), base = base, digits = digits, sep = sep, rnd = rnd, ...),
+                               " +/- ",
+                               format(Rad(x), base = base, digits = digits, sep = sep, rnd = "A", ...),
+                               ")"),
+                        names(x)))
 
 setMethod("initialize",
           c(.Object = "arb"),

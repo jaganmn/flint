@@ -25,8 +25,12 @@ setMethod("Imag",
 
 setMethod("Imag<-",
           c(z = "acb"),
-          function (z, value)
-              .acb(real = Real(z), imag = value))
+          function (z, value) {
+              ans <- .acb(real = Real(z), imag = value)
+              if (!is.null(nms <- names(z)) && (n <- length(ans)) <= 0x1p+52)
+                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans
+          })
 
 setMethod("Math",
           c(x = "acb"),
@@ -117,8 +121,12 @@ setMethod("Real",
 
 setMethod("Real<-",
           c(z = "acb"),
-          function (z, value)
-              .acb(real = value, imag = Imag(z)))
+          function (z, value) {
+              ans <- .acb(real = value, imag = Imag(z))
+              if (!is.null(nms <- names(z)) && (n <- length(ans)) <= 0x1p+52)
+                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans
+          })
 
 setMethod("Summary",
           c(x = "acb"),
@@ -146,12 +154,11 @@ setMethod("format",
           c(x = "acb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
                     rnd = flintRnd(), ...)
-              paste0(format(Real(x), base = base, digits = digits, sep = sep,
-                            rnd = rnd, ...),
-                     "+",
-                     format(Imag(x), base = base, digits = digits, sep = sep,
-                            rnd = rnd, ...),
-                     "i"))
+              `names<-`(paste0(format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...),
+                               "+",
+                               format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...),
+                               "i"),
+                        names(x)))
 
 setMethod("initialize",
           c(.Object = "acb"),
