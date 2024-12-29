@@ -355,6 +355,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 						break;
 					arf_set_mpfr(acf_imagref(y + j), m);
 				}
+#undef COMMON
 			}
 			mpfr_clear(m);
 			if (j < ny)
@@ -537,7 +538,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	do { \
 	SEXP nms; \
 	if ((nx == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0) || \
-	    (ny == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0)) { \
+	    (ny == n && XLENGTH(nms = R_do_slot(s_y, R_flint_symbol_names)) > 0)) { \
 		PROTECT(nms); \
 		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
 		UNPROTECT(1); \

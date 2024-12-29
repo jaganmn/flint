@@ -307,7 +307,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	do { \
 	SEXP nms; \
 	if ((nx == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0) || \
-	    (ny == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0)) { \
+	    (ny == n && XLENGTH(nms = R_do_slot(s_y, R_flint_symbol_names)) > 0)) { \
 		PROTECT(nms); \
 		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
 		UNPROTECT(1); \
