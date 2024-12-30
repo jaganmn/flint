@@ -982,8 +982,8 @@ SEXP R_flint_valid(SEXP object)
 	uucopy(&n, (unsigned int *) INTEGER_RO(length));
 	if ((R_ExternalPtrAddr(x) == 0) != (n == 0))
 		return INVALID((n == 0)
-		               ? _("object length is zero and pointer field is non-zero")
-		               : _("object length is non-zero and pointer field is zero"));
+		               ? _("object length is zero and pointer field is nonzero")
+		               : _("object length is nonzero and pointer field is zero"));
 	unsigned long long int nn = (unsigned long long int) XLENGTH(R_do_slot(object, R_flint_symbol_names));
 	if (nn != 0 && nn != n)
 		return INVALID(_("object length and '%s' slot length are not equal"), "names");

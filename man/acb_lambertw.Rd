@@ -27,7 +27,7 @@ acb_lambertw(z, k = 0L, flags = 0L, prec = flintPrec())
     \cr
     for \code{acb_lambertw}:\cr
     an integer vector indicating how branch cuts are defined.
-    Non-zero values are non-standard; see the first reference.}
+    Nonzero values are nonstandard; see the first reference.}
   \item{prec}{
     a numeric or \code{\linkS4class{slong}} vector indicating the
     desired precision as a number of bits.}

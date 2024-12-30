@@ -47,7 +47,7 @@ acb_hypgeom_lgamma(z, prec = flintPrec())
 \details{
   \code{acb_hypgeom_polygamma(s, z)} evaluates the polygamma function of
   order \code{s} at \code{z}.  The order \code{s} can be any complex
-  number.  For non-negative integers \code{m}, \code{s = m} corresponds
+  number.  For nonnegative integers \code{m}, \code{s = m} corresponds
   to the derivative of order \code{m} of the digamma function
   \eqn{\psi(z) = \Gamma'(z)/\Gamma(z)}.  Use
   \code{acb_hypgeom_polygamma(0, z)} to evaluate the digamma function at

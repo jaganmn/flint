@@ -47,12 +47,12 @@
     the specified base.  The default value \code{NULL} is equivalent to
     \code{getOption("digits")}.}
   \item{sep}{
-    a non-empty character string used to separate the significand from
+    a nonempty character string used to separate the significand from
     the exponent.  The default value \code{NULL} is a equivalent to
     \code{"e"} for \code{base} equal to 10 and to \code{"@"} for all
     other bases.}
   \item{rnd}{
-    a non-empty character string whose first character indicates a
+    a nonempty character string whose first character indicates a
     rounding mode.  Methods for \code{\linkS4class{arb}} and
     \code{\linkS4class{acb}} require \code{rnd} of length 2, specifying
     rounding modes separately for midpoints and radii.  See
