@@ -18,6 +18,10 @@ function (x, row.names = NULL, optional = FALSE, ...)
 function (x, ...)
     format(x, ...)
 
+`.S3.is.na<-.flint` <-
+function (x, value)
+    `is.na<-`(x, value)
+
 .S3.is.unsorted.flint <-
 function (x, na.rm = FALSE, strictly = FALSE)
     is.unsorted(x, na.rm = na.rm, strictly = strictly)

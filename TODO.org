@@ -22,7 +22,7 @@
 ** DONE methods for Summary, mean not ignoring '...'
 ** DONE methods for as.POSIXlt, as.POSIXct, as.Date
 ** TODO methods for cut
-** TODO methods for is.na<-
+** DONE methods for is.na<-
 ** DONE methods for is.unsorted
 ** TODO methods for pretty
 ** TODO methods for sequence
@@ -30,7 +30,7 @@
 ** DONE methods for as.data.frame
 ** DONE register an S3 method format.flint for use by format.data.frame
 ** TODO document generic functions whose default methods seem to work for us
-	toString, subset, split, split<-, sort_by, sort, seq, rev, labels, is.na<-, diff
+	toString, subset, split, split<-, sort_by, sort, seq, rev, labels, diff
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage

@@ -24,6 +24,7 @@
 \alias{c,flint-method}
 \alias{coerce,ANY,flint-method}
 \alias{duplicated,flint-method}
+\alias{is.na<-,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
 \alias{mtfrm,flint-method}
@@ -146,6 +147,11 @@
     \item{\code{duplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{duplicated(mtfrm(x), \dots)}.}
+    \item{\code{is.na<-}}{
+      \code{signature(x = "flint")}:\cr
+      returns the value of \code{x} after \code{x[value] <- \var{na}},
+      where \code{\var{na}} is an \code{\link{NA}} of integer, double,
+      or complex type, depending on the class of \code{x}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
       returns an integer vector of length 1 giving the object length.

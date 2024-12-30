@@ -530,6 +530,13 @@ setMethod("duplicated",
           function (x, incomparables = FALSE, ...)
               duplicated(mtfrm(x), incomparables = incomparables, ...))
 
+setMethod("is.na<-",
+          c(x = "flint"),
+          function (x, value) {
+              x[value] <- switch(flintClass(x), "slong" =, "ulong" =, "fmpz" =, "fmpq" = NA_integer_, "mag" =, "arf" =, "arb" = NA_real_, "acf" =, "acb" = NA_complex_)
+              x
+          })
+
 setMethod("length",
           c(x = "flint"),
           function (x)

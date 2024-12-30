@@ -117,7 +117,7 @@
       \code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt},
       \code{as.data.frame}, \code{coerce}, \code{duplicated},
       \code{format}, \code{initialize}, \code{is.finite},
-      \code{is.infinite}, \code{is.na}, \code{is.nan},
+      \code{is.infinite}, \code{is.na}, \code{is.na<-}, \code{is.nan},
       \code{is.unsorted}, \code{length}, \code{length<-}, \code{mtfrm},
       \code{mean}, \code{names}, \code{names<-}, \code{print},
       \code{quantile}, \code{rep}, \code{rep.int}, \code{rep_len},
