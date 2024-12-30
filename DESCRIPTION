@@ -17,6 +17,7 @@ Authors@R:
 	         role = c("aut", "cre"),
 	         comment = c(ORCID = "0000-0002-3542-2938")))
 Depends: R (>= 4.3), methods
+Imports: stats
 SystemRequirements: gmp, mpfr (>= 3.1), flint (>= 3)
 SystemRequirementsNote: purely informational on Unix as we use
 	configure there

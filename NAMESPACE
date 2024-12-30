@@ -1,6 +1,7 @@
 useDynLib(flint, .registration = TRUE)
 importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
            initialize, new, setAs, setClass, setMethod, show)
+importFrom(stats, quantile)
 exportClasses(flint, slong, ulong, fmpz, fmpq, mag, arf, acf, arb, acb)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
@@ -37,12 +38,14 @@ export(c.flint,
        acb_hypgeom_polygamma,
        arb_hypgeom_2f1,
        acb_hypgeom_2f1)
-S3method(as.Date, flint, .S3.as.Date)
-S3method(as.POSIXct, flint, .S3.as.POSIXct)
-S3method(as.POSIXlt, flint, .S3.as.POSIXlt)
+S3method(as.Date, flint, .S3.as.Date.flint)
+S3method(as.POSIXct, flint, .S3.as.POSIXct.flint)
+S3method(as.POSIXlt, flint, .S3.as.POSIXlt.flint)
 S3method(as.data.frame, flint, .S3.as.data.frame.flint)
 S3method(c, flint)
 S3method(format, flint, .S3.format.flint)
 S3method(is.unsorted, flint, .S3.is.unsorted.flint)
+S3method(quantile, flint, .S3.quantile.flint)
 S3method(rep.int, flint, .S3.rep.int.flint)
 S3method(rep_len, flint, .S3.rep_len.flint)
+S3method(summary, flint, .S3.summary.flint)

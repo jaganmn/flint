@@ -605,6 +605,94 @@ setMethod("print",
               invisible(x)
           })
 
+setMethod("quantile",
+          c(x = "flint"),
+          function (x, probs = .fmpq(num = 0L:4L, den = 4L), type = 7L,
+                    na.rm = FALSE, ...) {
+              class. <-
+              switch(flintClass(x),
+                     "slong" =, "ulong" =, "fmpz" =, "fmpq" = "fmpq",
+                     "mag" =, "arf" = "arf",
+                     "acf" = "acf",
+                     stop(gettextf("'%s' is not a total order on the range of '%s'",
+                                   "<=", "arb"),
+                          domain = NA))
+              if (anyNA(x)) {
+                  if (!na.rm)
+                      stop(gettextf("'%s' contains NaN and '%s' is FALSE",
+                                    "x", "na.rm"),
+                           domain = NA)
+                  x <- x[!is.na(x)]
+              }
+              x <- as(x, class.)
+              n <- .fmpz(x = length(x))
+              if (n == 0L)
+                  stop(gettextf("'%s' of length zero are not yet supported",
+                                "x"),
+                       domain = NA)
+              if (!missing(probs)) {
+                  if (anyNA(rp <- range(probs)) || rp[1L] < 0 || rp[2L] > 1)
+                      stop(gettextf("'%s' is not in [%.0f,%.0f]",
+                                    "probs", 0, 1),
+                           domain = NA)
+                  probs <- as(probs, "fmpq")
+              }
+              if (!missing(type)) {
+                  if (type < 1L || type >= 10L)
+                      stop(gettextf("'%s' is not in %d:%d",
+                                    "type", 1L, 9L),
+                           domain = NA)
+                  type <- as.integer(type)
+              }
+              ## Adapting stats:::quantile.default ...
+              if (type == 7L) {
+                  index <- 1L + (n - 1L) * probs
+                  lo <- floor(index)
+                  hi <- ceiling(index)
+                  x <- sort(x, partial = as.double(unique(c(lo, hi))))
+                  qs <- x[lo]
+                  i <- which(index > lo & x[hi] != qs)
+                  h <- (index - lo)[i]
+                  qs[i] <- (1L - h) * qs[i] + h * x[hi[i]]
+              } else {
+                  if (type <= 3L) {
+                      nppm <- n * probs
+                      if (type == 3L)
+                          nppm <- nppm - .fmpq(num = 1L, den = 2L)
+                      j <- floor(nppm)
+                      h <- switch(type,
+                                  nppm > j,
+                                  .fmpq(num = (nppm > j) + 1L, den = 2L),
+                                  nppm != j | j%%2L == 1L)
+                  } else {
+                      switch(type - 3L,
+                             {
+                                 a <- 0L
+                                 b <- 1L
+                             },
+                             a <- b <- .fmpq(num = 1L, den = 2L),
+                             a <- b <- 0L,
+                             a <- b <- 1L,
+                             a <- b <- .fmpq(num = 1L, den = 3L),
+                             a <- b <- .fmpq(num = 3L, den = 8L))
+                      nppm <- a + (n + 1L - a - b) * probs
+                      j <- floor(nppm)
+                      h <- nppm - j
+                  }
+                  x <- sort(x, partial = as.double(unique(c(1L, j[j > 0L & j <= n], (j + 1L)[j > 0L & j < n], n))))
+                  x <- c(x[c(1L, 1L)], x, x[c(n, n)])
+                  qs <- x[j + 2L]
+                  qs[h == 1L] <- x[j + 3L][h == 1L]
+                  other <- 0L < h & h < 1L & x[j + 2L] != x[j + 3L]
+                  if (is.na(a <- any(other)) || a) {
+                      if (is.na(a))
+                          other[is.na(other)] <- TRUE
+                      qs[other] <- ((1L - h) * x[j + 2L] + h * x[j + 3L])[other]
+                  }
+              }
+              qs
+          })
+
 ## FIXME: clearly suboptimal for 32-bit 'ulong'
 setMethod("rep",
           c(x = "flint"),
@@ -633,6 +721,19 @@ setMethod("show",
           function (object) {
               print(object, quote = FALSE)
               invisible(NULL)
+          })
+
+setMethod("summary",
+          c(object = "flint"),
+          function (object, triple = FALSE, quantile.type = 7L, ...) {
+              if (triple || any(flintClass(object) == c("acf", "arb", "acb")))
+                  return(`class<-`(`names<-`(flintTriple(object), c("class", "length", "address")), "noquote"))
+              if (anyna <- anyNA(object))
+                  object <- object[!(isna <- is.na(object))]
+              qq <- quantile(object, type = quantile.type)
+              qq <- c(qq[1L:3L], mean(object), qq[4L:5L])
+              names(qq) <- c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.")
+              if (anyna) c(qq, "NaN" = sum(isna)) else qq
           })
 
 setMethod("unique",

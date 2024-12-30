@@ -31,10 +31,12 @@
 \alias{names<-,flint,NULL-method}
 \alias{names<-,flint,character-method}
 \alias{print,flint-method}
+\alias{quantile,flint-method}
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
 \alias{rep_len,flint-method}
 \alias{show,flint-method}
+\alias{summary,flint-method}
 \alias{unique,flint-method}
 \title{Class of FLINT-Type Vectors}
 \docType{class}

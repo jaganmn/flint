@@ -16,6 +16,9 @@
       \item \code{Depends: methods} as \pkg{flint} defines S4 classes,
       generic functions, and methods.
 
+      \item \code{Imports: stats} as \pkg{flint} provides S3 and S4
+      methods for \code{quantile}.
+
       \item \code{SystemRequirements: gmp, mpfr (>= 3.1), flint (>= 3)}
       as \pkg{flint} links \acronym{GNU} \acronym{MP},
       \acronym{GNU} \acronym{MPFR}, and \acronym{FLINT}.  The version
@@ -117,8 +120,8 @@
       \code{is.infinite}, \code{is.na}, \code{is.nan},
       \code{is.unsorted}, \code{length}, \code{length<-}, \code{mtfrm},
       \code{mean}, \code{names}, \code{names<-}, \code{print},
-      \code{rep}, \code{rep.int}, \code{rep_len}, \code{show},
-      \code{unique}, and \code{xtfrm}.
+      \code{quantile}, \code{rep}, \code{rep.int}, \code{rep_len},
+      \code{show}, \code{summary}, \code{unique}, and \code{xtfrm}.
     }
   }
   \subsection{New Features}{
