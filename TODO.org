@@ -22,12 +22,13 @@
 ** DONE methods for Summary, mean not ignoring '...'
 ** DONE methods for as.POSIXlt, as.POSIXct, as.Date
 ** TODO methods for cut
+** TODO methods for is.na<-
 ** DONE methods for is.unsorted
 ** TODO methods for pretty
 ** TODO methods for sequence
-** TODO methods for summary
+** TODO methods for summary, quantile
 ** DONE methods for as.data.frame
-** TODO register an S3 method format.flint for use by format.data.frame
+** DONE register an S3 method format.flint for use by format.data.frame
 ** TODO document generic functions whose default methods seem to work for us
 	toString, subset, split, split<-, sort_by, sort, seq, rev, labels, is.na<-, diff
 ** TODO document details of operations on real, complex balls
@@ -36,4 +37,5 @@
 ** DONE methods for 'mag' consulting rounding mode, conditionally giving lower bound
 ** DONE export, document class generator functions
 ** DONE configure tests for many missing acf_*, mag_*
-** TODO internal function 'uu' to replace as(., "ulong")
+** TODO abandon 64-bit lengths on 32-bit builds
+** TODO support 'ulong' subscripts
