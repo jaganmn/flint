@@ -9,12 +9,13 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               anyDuplicated, anyNA, as.raw, as.logical, as.integer,
               as.numeric, as.complex, as.character, as.list,
               as.expression, as.vector, as.Date, as.POSIXct, as.POSIXlt,
-              as.data.frame, c, duplicated, format, initialize,
-              is.finite, is.infinite, is.na, "is.na<-", is.nan,
-              is.unsorted, length, "length<-", log, mean, mtfrm, names,
-              "names<-", print, quantile, rep, rep.int, rep_len, show,
-              summary, unique, xtfrm)
-exportMethods(Complex, Math, Math2, Ops, Summary, coerce)
+              as.data.frame, c, duplicated, format, is.finite,
+              is.infinite, is.na, "is.na<-", is.nan, is.unsorted,
+              length, "length<-", log, mean, mtfrm, names, "names<-",
+              print, rep, rep.int, rep_len, summary, unique, xtfrm)
+exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
+              show)
+exportMethods(quantile)
 export(.slong, .ulong, .fmpz, .fmpq, .mag, .arf, .acf, .arb, .acb)
 export(c.flint,
        flintABI,
@@ -40,15 +41,22 @@ export(c.flint,
        acb_hypgeom_polygamma,
        arb_hypgeom_2f1,
        acb_hypgeom_2f1)
+S3method(all.equal, flint, .S3.all.equal.flint)
+S3method(anyDuplicated, flint, .S3.anyDuplicated.flint)
 S3method(as.Date, flint, .S3.as.Date.flint)
 S3method(as.POSIXct, flint, .S3.as.POSIXct.flint)
 S3method(as.POSIXlt, flint, .S3.as.POSIXlt.flint)
 S3method(as.data.frame, flint, .S3.as.data.frame.flint)
 S3method(c, flint)
+S3method(duplicated, flint, .S3.duplicated.flint)
 S3method(format, flint, .S3.format.flint)
 S3method("is.na<-", flint, ".S3.is.na<-.flint")
 S3method(is.unsorted, flint, .S3.is.unsorted.flint)
+S3method(mean, flint, .S3.mean.flint)
+S3method(mtfrm, flint, .S3.mtfrm.flint)
+S3method(print, flint, .S3.print.flint)
 S3method(quantile, flint, .S3.quantile.flint)
 S3method(rep.int, flint, .S3.rep.int.flint)
 S3method(rep_len, flint, .S3.rep_len.flint)
 S3method(summary, flint, .S3.summary.flint)
+S3method(unique, flint, .S3.unique.flint)

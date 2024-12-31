@@ -1,3 +1,11 @@
+.S3.all.equal.flint <-
+function (target, current, ...)
+    all.equal(target, current, ...)
+
+.S3.anyDuplicated.flint <-
+function (x, incomparables = FALSE, ...)
+    anyDuplicated(x, incomparables = incomparables, ...)
+
 .S3.as.Date.flint <-
 function (x, ...)
     as.Date(x, ...)
@@ -14,6 +22,10 @@ function (x, tz = "", ...)
 function (x, row.names = NULL, optional = FALSE, ...)
     as.data.frame(x, row.names = row.names, optional = optional, ...)
 
+.S3.duplicated.flint <-
+function (x, incomparables = FALSE, ...)
+    duplicated(x, incomparables = incomparables, ...)
+
 .S3.format.flint <-
 function (x, ...)
     format(x, ...)
@@ -26,18 +38,34 @@ function (x, value)
 function (x, na.rm = FALSE, strictly = FALSE)
     is.unsorted(x, na.rm = na.rm, strictly = strictly)
 
+.S3.mean.flint <-
+function (x, ...)
+    mean(x, ...)
+
+.S3.mtfrm.flint <-
+function (x)
+    mtfrm(x)
+
+.S3.print.flint <-
+function (x, ...)
+    print(x, ...)
+
 .S3.quantile.flint <-
 function (x, ...)
     quantile(x, ...)
 
 .S3.rep.int.flint <-
 function (x, times)
-    rep.int(x, times = times)
+    rep.int(x, times)
 
 .S3.rep_len.flint <-
 function (x, length.out)
-    rep_len(x, length.out = length.out)
+    rep_len(x, length.out)
 
 .S3.summary.flint <-
 function (object, ...)
     summary(object, ...)
+
+.S3.unique.flint <-
+function (x, incomparables = FALSE, ...)
+    unique(x, incomparables = incomparables, ...)
