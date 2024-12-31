@@ -6,14 +6,12 @@ function (i)
                    stop("subscript NA not supported")
                else type.,
            "S4" =
-               if (is.na(flintClass(i)))
+               if (is.na(class. <- flintClass(i)) ||
+                   any(class. == c("acf", "arb", "acb")))
                    stop(gettextf("invalid subscript class '%s'",
                                  class(i)),
                         domain = NA)
-               else
-                   stop(gettextf("subscripts inheriting from virtual class '%s' are not yet supported",
-                                 "flint"),
-                        domain = NA),
+               else class.,
            stop(gettextf("invalid subscript type '%s'",
                          type.),
                 domain = NA))
@@ -540,7 +538,7 @@ setMethod("is.na<-",
 setMethod("length",
           c(x = "flint"),
           function (x)
-              flintLength(x))
+              flintLength(x, exact = FALSE))
 
 setMethod("length<-",
           c(x = "flint"),

@@ -233,11 +233,20 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 	return Rf_ScalarLogical(1);
 }
 
-SEXP R_flint_length(SEXP object)
+SEXP R_flint_length(SEXP object, SEXP s_exact)
 {
+	if (XLENGTH(s_exact) == 0)
+		Rf_error(_("'%s' of length zero in '%s'"),
+		         "exact", "flintLength");
+	int exact = LOGICAL(s_exact)[0];
 	SEXP ans;
 	unsigned long int n = R_flint_get_length(object);
-	if (n <= INT_MAX) {
+	if (exact) {
+		ans = newObject("ulong");
+		ulong *p = (ulong *) flint_calloc(1U, sizeof(ulong));
+		R_flint_set(ans, p, 1U, (R_CFinalizer_t) &R_flint_ulong_finalize);
+		p[0] = n;
+	} else if (n <= INT_MAX) {
 		ans = Rf_allocVector(INTSXP, 1);
 		INTEGER(ans)[0] = (int) n;
 	} else {

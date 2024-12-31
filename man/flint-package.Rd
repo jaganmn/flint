@@ -3,6 +3,7 @@
 \alias{flint-package}
 \alias{flintABI}
 \alias{flintIdentical}
+\alias{flintLength}
 \alias{flintPrec}
 \alias{flintRnd}
 \alias{flintSize}
@@ -19,6 +20,7 @@
 \usage{
 flintABI()
 flintIdentical(object, reference)
+flintLength(object, exact = TRUE)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
 flintSize(object)
@@ -27,6 +29,9 @@ flintVersion()
 \arguments{
   \item{object, reference}{
     objects inheriting from virtual class \code{\linkS4class{flint}}.}
+  \item{exact}{
+    a logical indicating if the length should be represented exactly as
+    an object of class \code{\linkS4class{ulong}}.}
   \item{prec}{
     a new default value for the precision of inexact floating-point
     operations, if non-\code{NULL}.  The value should be a positive
@@ -58,6 +63,24 @@ flintVersion()
   same nonvirtual subclass of \code{\linkS4class{flint}} and have equal
   length and equal (in the bitwise sense) elements.  If the elements
   are recursive structures, then they are compared recursively.
+
+  \code{flintLength} returns a representation of the length of
+  \code{object}.  If \code{exact = TRUE}, then the return value is an
+  object of class \code{\linkS4class{ulong}} representing the length
+  exactly.  Otherwise, if the length is less than or equal to
+  \code{.Machine[["integer.max"]]}, then the return value is a
+  traditional integer vector representing the length exactly.
+  Otherwise, the return value is a traditional double vector
+  representing the length exactly if and only if
+  \eqn{n \le 2^d-1}{n <= 2^d-1} or
+  \eqn{2^{d+p} \le n < 2^{d+p+1}}{2^(d+p) <= n < 2^(d+p+1)} and \eqn{n}
+  is divisible by \eqn{2^{p+1}}{2^(p+1)}, where \eqn{n} is the length,
+  \eqn{d} is \code{.Machine[["double.digits"]]}, and
+  \eqn{p = 0,1,\ldots}.  Lengths not exactly representable in double
+  precision are rounded to the next representable number in the
+  direction of zero.  Return values not representing the length exactly
+  have an attribute \code{off} preserving the rounding error (an integer
+  in \eqn{1,\ldots,2^p}).
 
   \code{flintPrec} returns the previous default precision.
 

@@ -61,14 +61,13 @@
       \item Virtual class \code{flint} with nonvirtual subclasses
       \code{slong}, \code{ulong}, \code{fmpz}, \code{fmpq}, \code{mag},
       \code{arf}, \code{acf}, \code{arb}, and \code{acb}.  Objects can
-      be understood as vectors of length at most \code{2^64-1} of the
-      so-named \proglang{C} types.  The implementation is based on
-      external pointers.
+      be understood as vectors of length at most \code{2^32-1} or
+      \code{2^64-1} (depending on the ABI) of the so-named \proglang{C}
+      types.  The implementation is based on external pointers.
 
       \item \code{slong} and \code{ulong} represent vectors of fixed
       precision signed and unsigned integers.  The integer size is 32 or
-      64 bits, depending on the configuration of the linked
-      \acronym{FLINT} library.
+      64 bits (depending on the ABI).
 
       \item \code{fmpz} represents vectors of arbitrary precision signed
       integers.
@@ -147,6 +146,10 @@
       \dQuote{content}.  This test is less strict than the test for
       pointer equality done by \code{identical(x, y)} when \code{x}
       and \code{y} are external pointers.
+
+      \item \R{} function \code{flintLength} for getting the length of a
+      \code{flint} vector as a \code{ulong} vector or, optionally, as a
+      traditional numeric vector subject to rounding error.
 
       \item \R{} functions \code{flintPrec} and \code{flintRnd} for
       getting and setting the global default precision and rounding

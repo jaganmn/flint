@@ -46,8 +46,8 @@ function (object, reference)
     .Call(R_flint_identical, object, reference)
 
 flintLength <-
-function (object)
-    .Call(R_flint_length, object)
+function (object, exact = TRUE)
+    .Call(R_flint_length, object, as.logical(exact))
 
 flintNew <-
 function (class)

@@ -155,13 +155,7 @@
       or complex type, depending on the class of \code{x}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
-      returns an integer vector of length 1 giving the object length.
-      If the length exceeds \code{.Machine[["integer.max"]]}, then the
-      method returns a double vector of length 1 instead.  If the length
-      exceeds \code{2^.Machine[["double.digits"]]-1} and is not exactly
-      representable, then the return value is the next representable
-      number in the direction of zero and has an attribute \code{off}
-      preserving the rounding error.}
+      returns \code{\link{flintLength}(x, exact = FALSE)}.}
     \item{\code{length<-}}{
       \code{signature(x = "flint")}:\cr
       returns a \code{flint} vector of length given by the second
