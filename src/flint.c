@@ -9,6 +9,41 @@
 #include <flint/acb.h>
 #include "flint.h"
 
+#define R_FLINT_SWITCH(class, template) \
+do { \
+	switch (class) { \
+	case R_FLINT_CLASS_SLONG: \
+		template(slong, slong, const slong *, slong *); \
+		break; \
+	case R_FLINT_CLASS_ULONG: \
+		template(ulong, ulong, const ulong *, ulong *); \
+		break; \
+	case R_FLINT_CLASS_FMPZ: \
+		template(fmpz, fmpz, const fmpz *, fmpz *); \
+		break; \
+	case R_FLINT_CLASS_FMPQ: \
+		template(fmpq, fmpq, const fmpq *, fmpq *); \
+		break; \
+	case R_FLINT_CLASS_MAG: \
+		template(mag, mag_t, mag_srcptr, mag_ptr); \
+		break; \
+	case R_FLINT_CLASS_ARF: \
+		template(arf, arf_t, arf_srcptr, arf_ptr); \
+		break; \
+	case R_FLINT_CLASS_ACF: \
+		template(acf, acf_t, acf_srcptr, acf_ptr); \
+		break; \
+	case R_FLINT_CLASS_ARB: \
+		template(arb, arb_t, arb_srcptr, arb_ptr); \
+		break; \
+	case R_FLINT_CLASS_ACB: \
+		template(acb, acb_t, acb_srcptr, acb_ptr); \
+		break; \
+	default: \
+		return Rf_error(_("should never happen ...")); \
+	} \
+} while (0)
+
 #define slong_zero(rop) *(rop) = 0
 #define ulong_zero(rop) *(rop) = 0U
 #define slong_set(rop, op) *(rop) = *(op)
@@ -100,7 +135,7 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
 	PROTECT(sy);
 
-#define BIND_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
@@ -123,39 +158,9 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 		} \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		BIND_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		BIND_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		BIND_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		BIND_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		BIND_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		BIND_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		BIND_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		BIND_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		BIND_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef BIND_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
@@ -186,49 +191,19 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 		*x = R_flint_get_pointer(object),
 		*y = R_flint_get_pointer(reference);
 
-#define IDENTICAL_CASE(name, ptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		ptr_t x__ = (ptr_t) x; \
-		ptr_t y__ = (ptr_t) y; \
+		xptr_t x__ = (xptr_t) x; \
+		xptr_t y__ = (xptr_t) y; \
 		for (j = 0; j < n; ++j) \
 			if (!name##_equal(x__ + j, y__ + j)) \
 				return Rf_ScalarLogical(0); \
 	} while (0)
 
 	if (x != y)
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		IDENTICAL_CASE(slong, const slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		IDENTICAL_CASE(ulong, const ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		IDENTICAL_CASE(fmpz, const fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		IDENTICAL_CASE(fmpq, const fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		IDENTICAL_CASE(mag, mag_srcptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		IDENTICAL_CASE(arf, arf_srcptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		IDENTICAL_CASE(acf, acf_srcptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		IDENTICAL_CASE(arb, arb_srcptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		IDENTICAL_CASE(acb, acb_srcptr);
-		break;
-	default:
-		break;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef IDENTICAL_CASE
+#undef TEMPLATE
 
 	return Rf_ScalarLogical(1);
 }
@@ -239,8 +214,8 @@ SEXP R_flint_length(SEXP object, SEXP s_exact)
 		Rf_error(_("'%s' of length zero in '%s'"),
 		         "exact", "flintLength");
 	int exact = LOGICAL(s_exact)[0];
-	SEXP ans;
 	unsigned long int n = R_flint_get_length(object);
+	SEXP ans;
 	if (exact) {
 		ans = newObject("ulong");
 		ulong *p = (ulong *) flint_calloc(1U, sizeof(ulong));
@@ -301,7 +276,7 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
 	PROTECT(sy);
 
-#define REALLOC_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
@@ -321,39 +296,9 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 			name##_zero(y__ + j); \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		REALLOC_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		REALLOC_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		REALLOC_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		REALLOC_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		REALLOC_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		REALLOC_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		REALLOC_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		REALLOC_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		REALLOC_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef REALLOC_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
@@ -391,7 +336,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
 	PROTECT(sy);
 
-#define REP_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
@@ -412,39 +357,9 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 				name##_set(y__ + jy, x__ + jx); \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		REP_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		REP_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		REP_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		REP_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		REP_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		REP_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		REP_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		REP_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		REP_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef REP_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
@@ -486,7 +401,7 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
 	PROTECT(sy);
 
-#define REP_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
@@ -515,39 +430,9 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 		} \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		REP_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		REP_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		REP_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		REP_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		REP_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		REP_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		REP_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		REP_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		REP_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef REP_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
@@ -598,7 +483,7 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
 	PROTECT(sy);
 
-#define REP_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
@@ -638,39 +523,9 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 		} \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		REP_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		REP_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		REP_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		REP_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		REP_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		REP_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		REP_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		REP_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		REP_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef REP_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
@@ -795,7 +650,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names));
 	usenames = usenames && XLENGTH(sx) > 0 && ny <= R_XLEN_T_MAX;
 
-#define SUBASSIGN_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t v__ = (xptr_t) v; \
 		xptr_t x__ = (xptr_t) x; \
@@ -832,39 +687,9 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 		} \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		SUBASSIGN_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		SUBASSIGN_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		SUBASSIGN_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		SUBASSIGN_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		SUBASSIGN_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		SUBASSIGN_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		SUBASSIGN_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		SUBASSIGN_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		SUBASSIGN_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef SUBASSIGN_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
@@ -895,7 +720,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 		sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
 	PROTECT(sy);
 
-#define SUBSCRIPT_CASE(name, elt_t, xptr_t, yptr_t) \
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__ = (xptr_t) x; \
 		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
@@ -948,39 +773,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 		} \
 	} while (0)
 
-	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		SUBSCRIPT_CASE(slong, slong, const slong *, slong *);
-		break;
-	case R_FLINT_CLASS_ULONG:
-		SUBSCRIPT_CASE(ulong, ulong, const ulong *, ulong *);
-		break;
-	case R_FLINT_CLASS_FMPZ:
-		SUBSCRIPT_CASE(fmpz, fmpz, const fmpz *, fmpz *);
-		break;
-	case R_FLINT_CLASS_FMPQ:
-		SUBSCRIPT_CASE(fmpq, fmpq, const fmpq *, fmpq *);
-		break;
-	case R_FLINT_CLASS_MAG:
-		SUBSCRIPT_CASE(mag, mag_t, mag_srcptr, mag_ptr);
-		break;
-	case R_FLINT_CLASS_ARF:
-		SUBSCRIPT_CASE(arf, arf_t, arf_srcptr, arf_ptr);
-		break;
-	case R_FLINT_CLASS_ACF:
-		SUBSCRIPT_CASE(acf, acf_t, acf_srcptr, acf_ptr);
-		break;
-	case R_FLINT_CLASS_ARB:
-		SUBSCRIPT_CASE(arb, arb_t, arb_srcptr, arb_ptr);
-		break;
-	case R_FLINT_CLASS_ACB:
-		SUBSCRIPT_CASE(acb, acb_t, acb_srcptr, acb_ptr);
-		break;
-	default:
-		return R_NilValue;
-	}
+	R_FLINT_SWITCH(class, TEMPLATE);
 
-#undef SUBSCRIPT_CASE
+#undef TEMPLATE
 
 	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
