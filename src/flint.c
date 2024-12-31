@@ -809,14 +809,25 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 		} else { \
 			for (j = 0; j < ny; ++j) \
 				name##_set(y__ + j, x__ + j); \
-			if (TYPEOF(subscript) == INTSXP) { \
+			switch (TYPEOF(subscript)) { \
+			case INTSXP: \
+			{ \
 				const int *s__ = INTEGER_RO(subscript); \
 				for (j = 0; j < ns; ++j) \
-					name##_set(y__ + s__[j] - 1, v__ + j % nv); \
-			} else { \
+					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
+			} \
+			case REALSXP: \
+			{ \
 				const double *s__ = REAL_RO(subscript); \
 				for (j = 0; j < ns; ++j) \
 					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
+			} \
+			case OBJSXP: \
+			{ \
+				const ulong *s__ = (ulong *) R_flint_get_pointer(subscript); \
+				for (j = 0; j < ns; ++j) \
+					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
+			} \
 			} \
 		} \
 	} while (0)
@@ -891,7 +902,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 		y = (void *) y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
-		if (TYPEOF(subscript) == INTSXP) { \
+		switch (TYPEOF(subscript)) { \
+		case INTSXP: \
+		{ \
 			const int *s__ = INTEGER_RO(subscript); \
 			if (usenames) \
 			for (jy = 0; jy < ny; ++jy) { \
@@ -903,7 +916,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 			else \
 			for (jy = 0; jy < ny; ++jy) \
 				name##_set(y__ + jy, x__ + s__[jy] - 1); \
-		} else { \
+		} \
+		case REALSXP: \
+		{ \
 			const double *s__ = REAL_RO(subscript); \
 			if (usenames) \
 			for (jy = 0; jy < ny; ++jy) { \
@@ -915,6 +930,21 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 			else \
 			for (jy = 0; jy < ny; ++jy) \
 				name##_set(y__ + jy, x__ + (unsigned long int) s__[jy] - 1); \
+		} \
+		case OBJSXP: \
+		{ \
+			const ulong *s__ = (ulong *) R_flint_get_pointer(subscript); \
+			if (usenames) \
+			for (jy = 0; jy < ny; ++jy) { \
+				jx = (unsigned long int) s__[jy] - 1; \
+				name##_set(y__ + jy, x__ + jx); \
+				SET_STRING_ELT(sy, (R_xlen_t) jy, \
+				               STRING_ELT(sx, (R_xlen_t) jx)); \
+			} \
+			else \
+			for (jy = 0; jy < ny; ++jy) \
+				name##_set(y__ + jy, x__ + (unsigned long int) s__[jy] - 1); \
+		} \
 		} \
 	} while (0)
 
