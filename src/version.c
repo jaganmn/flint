@@ -8,9 +8,18 @@
 #include "config.h"
 #endif
 
-SEXP R_flint_bits(void)
+SEXP R_flint_abi(void)
 {
-	return Rf_ScalarInteger(FLINT_BITS);
+#ifdef R_FLINT_ABI_64
+	return Rf_ScalarInteger(64);
+#else
+	return Rf_ScalarInteger(32);
+#endif
+}
+
+SEXP R_flint_bits_per_limb(void)
+{
+	return Rf_ScalarInteger(mp_bits_per_limb);
 }
 
 SEXP R_flint_version(void)

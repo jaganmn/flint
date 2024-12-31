@@ -16,12 +16,12 @@ void R_flint_ulong_finalize(SEXP x)
 
 SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int j, nx = 0, ny = 0;
+	unsigned long int j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long long int) XLENGTH(s_x);
+			nx = (unsigned long int) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -85,7 +85,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		for (j = 0; j < ny; ++j) {
 			if (ISNAN(x[j % nx]))
 			Rf_error(_("NaN is not representable by '%s'"), "ulong");
-#if FLINT64
+#ifdef R_FLINT_ABI_64
 			else if (x[j % nx] <= -1.0 || x[j % nx] >= 0x1.0p+64)
 #else
 			else if (x[j % nx] <= -1.0 || x[j % nx] >= 0x1.0p+32)
@@ -244,12 +244,12 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_ulong_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const ulong *x = (ulong *) R_flint_get_pointer(object);
 	double *y = REAL(ans);
-#if FLINT64
+#if R_FLINT_ABI_64
 	fmpz_t tmp;
 	fmpz_init(tmp);
 	for (j = 0; j < n; ++j) {
@@ -267,7 +267,7 @@ SEXP R_flint_ulong_vector(SEXP object)
 
 SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));

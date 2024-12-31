@@ -50,12 +50,13 @@
 \section{Slots}{
   \describe{
     \item{\code{.xData}}{
-      an external pointer.  The protected field is an integer vector
-      of length 2 storing the lower and upper bits of the 64-bit object
-      length.  The pointer field contains the address of a block of
-      allocated memory of size greater than or equal to the object
-      length times the size of the \acronym{FLINT} type.  It is a null
-      pointer if and only if the object length is zero.\cr
+      an external pointer.  The protected field is an integer vector of
+      length 1 or 2 storing the object length whose size is 32 or 64
+      bits depending on the ABI; see \code{\link{flintABI}}.  The
+      pointer field contains the address of a block of allocated memory
+      of size greater than or equal to the object length times the size
+      of the \acronym{FLINT} \proglang{C} type.  It is a null pointer if
+      and only if the object length is zero.\cr
       \cr
       Methods for \code{\link{initialize}} set a finalizer on
       \code{.xData} (see \code{\link{reg.finalizer}}) to ensure that
@@ -166,12 +167,7 @@
       returns a \code{flint} vector of length given by the second
       argument \code{value}.  The first \code{min(length(x), value)}
       elements are copied from \code{x} and the remaining elements are
-      initialized to zero.  Note that \code{value} is coerced to
-      \code{\linkS4class{ulong}} and so is constrained to its range.
-      (Ideally, \code{value} would have 64-bit range even for 32-bit
-      \code{ulong}.  If this \dQuote{ideal} matters to you, then please
-      submit a feature request using
-      \code{\link{bug.report}(package = "flint")}.)}
+      initialized to zero.}
     \item{\code{mtfrm}}{
       \code{signature(x = "flint")}:\cr
       returns \code{format(x, base = 62L, digits = 0L)}, a character
@@ -206,10 +202,7 @@
       hence see \code{\link{rep}}.  One difference is that
       \code{rep(\var{0-length}, length.out=\var{nonzero})} signals an
       error, because the underlying \proglang{C} types have no
-      representation for missing values.  Note that the optional
-      arguments are coerced to \code{\linkS4class{ulong}} and so are
-      constrained to its range; see the parenthetical comment under
-      \code{length<-} above.}
+      representation for missing values.}
     \item{\code{rep.int}, \code{rep_len}}{
       \code{signature(x = "flint")}:\cr
       analogues of \code{rep(x, times=)} and

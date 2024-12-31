@@ -110,7 +110,7 @@ function (call, l) {
     vapply(l, fn, FALSE)
 }
 
-wl <- flintBits()
+wl <- flintABI()
 wd <- .Machine[["double.digits"]]
 a <- 2^wl
 b <- 2^max(0L, wl - wd)

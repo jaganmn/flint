@@ -1622,6 +1622,245 @@ printf "%s\n" "$ac_res" >&6; }
 
 } # ac_fn_c_check_type
 
+# ac_fn_c_try_run LINENO
+# ----------------------
+# Try to run conftest.$ac_ext, and return whether this succeeded. Assumes that
+# executables *can* be run.
+ac_fn_c_try_run ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+printf "%s\n" "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && { ac_try='./conftest$ac_exeext'
+  { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+printf "%s\n" "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; }
+then :
+  ac_retval=0
+else case e in #(
+  e) printf "%s\n" "$as_me: program exited with status $ac_status" >&5
+       printf "%s\n" "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+       ac_retval=$ac_status ;;
+esac
+fi
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_try_run
+
+# ac_fn_c_compute_int LINENO EXPR VAR INCLUDES
+# --------------------------------------------
+# Tries to find the compile-time value of EXPR in a program that includes
+# INCLUDES, setting VAR accordingly. Returns whether the value could be
+# computed
+ac_fn_c_compute_int ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  if test "$cross_compiling" = yes; then
+    # Depending upon the size, compute the lo and hi bounds.
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+int
+main (void)
+{
+static int test_array [1 - 2 * !(($2) >= 0)];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_lo=0 ac_mid=0
+  while :; do
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+int
+main (void)
+{
+static int test_array [1 - 2 * !(($2) <= $ac_mid)];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_hi=$ac_mid; break
+else case e in #(
+  e) as_fn_arith $ac_mid + 1 && ac_lo=$as_val
+			if test $ac_lo -le $ac_mid; then
+			  ac_lo= ac_hi=
+			  break
+			fi
+			as_fn_arith 2 '*' $ac_mid + 1 && ac_mid=$as_val ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  done
+else case e in #(
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+int
+main (void)
+{
+static int test_array [1 - 2 * !(($2) < 0)];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_hi=-1 ac_mid=-1
+  while :; do
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+int
+main (void)
+{
+static int test_array [1 - 2 * !(($2) >= $ac_mid)];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_lo=$ac_mid; break
+else case e in #(
+  e) as_fn_arith '(' $ac_mid ')' - 1 && ac_hi=$as_val
+			if test $ac_mid -le $ac_hi; then
+			  ac_lo= ac_hi=
+			  break
+			fi
+			as_fn_arith 2 '*' $ac_mid && ac_mid=$as_val ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+  done
+else case e in #(
+  e) ac_lo= ac_hi= ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+# Binary search between lo and hi bounds.
+while test "x$ac_lo" != "x$ac_hi"; do
+  as_fn_arith '(' $ac_hi - $ac_lo ')' / 2 + $ac_lo && ac_mid=$as_val
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+int
+main (void)
+{
+static int test_array [1 - 2 * !(($2) <= $ac_mid)];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_hi=$ac_mid
+else case e in #(
+  e) as_fn_arith '(' $ac_mid ')' + 1 && ac_lo=$as_val ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+done
+case $ac_lo in #((
+?*) eval "$3=\$ac_lo"; ac_retval=0 ;;
+'') ac_retval=1 ;;
+esac
+  else
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+static long int longval (void) { return $2; }
+static unsigned long int ulongval (void) { return $2; }
+#include <stdio.h>
+#include <stdlib.h>
+int
+main (void)
+{
+
+  FILE *f = fopen ("conftest.val", "w");
+  if (! f)
+    return 1;
+  if (($2) < 0)
+    {
+      long int i = longval ();
+      if (i != ($2))
+	return 1;
+      fprintf (f, "%ld", i);
+    }
+  else
+    {
+      unsigned long int i = ulongval ();
+      if (i != ($2))
+	return 1;
+      fprintf (f, "%lu", i);
+    }
+  /* Do not output a trailing newline, as this causes \r\n confusion
+     on some platforms.  */
+  return ferror (f) || fclose (f) != 0;
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"
+then :
+  echo >>conftest.val; read $3 <conftest.val; ac_retval=0
+else case e in #(
+  e) ac_retval=1 ;;
+esac
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+rm -f conftest.val
+
+  fi
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_compute_int
+
 # ac_fn_c_check_func LINENO FUNC VAR
 # ----------------------------------
 # Tests whether FUNC exists, setting the cache variable VAR accordingly
@@ -4005,6 +4244,197 @@ else case e in #(
 esac
 fi
 
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of int" >&5
+printf %s "checking size of int... " >&6; }
+if test ${ac_cv_sizeof_int+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (int))" "ac_cv_sizeof_int"        "$ac_includes_default"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_int" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (int)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_int=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_int" >&5
+printf "%s\n" "$ac_cv_sizeof_int" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_INT $ac_cv_sizeof_int" >>confdefs.h
+
+
+case ${ac_cv_sizeof_int} in
+	4) : ;;
+	*) as_fn_error $? "package requires 32-bit int" "$LINENO" 5 ;;
+esac
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of long int" >&5
+printf %s "checking size of long int... " >&6; }
+if test ${ac_cv_sizeof_long_int+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (long int))" "ac_cv_sizeof_long_int"        "$ac_includes_default"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_long_int" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (long int)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_long_int=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_long_int" >&5
+printf "%s\n" "$ac_cv_sizeof_long_int" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_LONG_INT $ac_cv_sizeof_long_int" >>confdefs.h
+
+
+case ${ac_cv_sizeof_long_int} in
+	4) : ;;
+	8)
+printf "%s\n" "#define R_FLINT_ABI_64 1" >>confdefs.h
+ ;;
+	*) as_fn_error $? "package requires 32-bit or 64-bit long int" "$LINENO" 5 ;;
+esac
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for R_XLEN_T_MAX in range of unsigned long int" >&5
+printf %s "checking for R_XLEN_T_MAX in range of unsigned long int... " >&6; }
+save_CPPFLAGS="${CPPFLAGS}"
+CPPFLAGS="${CPPFLAGS} -I${R_HOME}/include"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <Rinternals.h>
+int main()
+{
+	return R_XLEN_T_MAX > (unsigned long int) -1;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "basic vector length can overflow unsigned long int" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+CPPFLAGS="${save_CPPFLAGS}"
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for unsigned long int in range of size_t" >&5
+printf %s "checking for unsigned long int in range of size_t... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <stddef.h>
+int main()
+{
+	return sizeof(unsigned long int) > sizeof(size_t);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "flint vector length can overflow size_t" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_exp_t in range of long int" >&5
+printf %s "checking for mpfr_exp_t in range of long int... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_exp_t) > sizeof(long int);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "GNU MPFR exponent can overflow long int" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for unsigned long int and mp_limb_t of equal size" >&5
+printf %s "checking for unsigned long int and mp_limb_t of equal size... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <gmp.h>
+int main()
+{
+	return sizeof(unsigned long int) != sizeof(mp_limb_t);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "package requires GNU MP with matching integer, limb types" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
 ac_fn_c_check_func "$LINENO" "arb_init" "ac_cv_func_arb_init"
 if test "x$ac_cv_func_arb_init" = xyes
 then :
@@ -4112,116 +4542,6 @@ then :
 
 fi
 
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for int with bit width 32" >&5
-printf %s "checking for int with bit width 32... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int main()
-{
-	return sizeof(int) != 4;
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else case e in #(
-  e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                   as_fn_error $? "package requires a 32-bit int" "$LINENO" 5
-                   ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for size_t with bit width at least 64" >&5
-printf %s "checking for size_t with bit width at least 64... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <stddef.h>
-int main()
-{
-	return sizeof(size_t) < 8;
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else case e in #(
-  e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                   as_fn_error $? "package requires a >= 64-bit size_t" "$LINENO" 5
-                   ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_exp_t in range of long int" >&5
-printf %s "checking for mpfr_exp_t in range of long int... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <limits.h>
-#include <mpfr.h>
-int main()
-{
-	return sizeof(mpfr_exp_t) > sizeof(long int);
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else case e in #(
-  e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                   as_fn_error $? "GNU MPFR exponent can overflow long int" "$LINENO" 5
-                   ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for consistent limb size" >&5
-printf %s "checking for consistent limb size... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <limits.h>
-#include <gmp.h>
-#include <flint/flint.h>
-int main()
-{
-	return FLINT_BITS != CHAR_BIT * sizeof(mp_limb_t) ||
-		FLINT_BITS != mp_bits_per_limb;
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else case e in #(
-  e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
-printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
-as_fn_error $? "FLINT and GNU MP installations seem incompatible
-See 'config.log' for more details" "$LINENO" 5; }
-                   ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
 
 

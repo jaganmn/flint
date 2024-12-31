@@ -67,10 +67,8 @@
   Classes \code{slong} and \code{ulong} extend virtual class
   \code{\linkS4class{flint}}.  They represent vectors of fixed precision
   signed and unsigned integers, respectively.  The integer size is 32 or
-  64 bits, depending on the configuration of the linked \acronym{FLINT}
-  library.  The number of bits is given by \code{\link{flintBits}()}.
-  There is no representation for \R{}'s missing value
-  \code{\link{NA_integer_}}.
+  64 bits, depending on the ABI; see \code{\link{flintABI}}.  There is
+  no representation for \R{}'s missing value \code{\link{NA_integer_}}.
 }
 \usage{
 ## The class generator functions:
@@ -168,7 +166,7 @@
       the \proglang{C} type, in particular if elements are \code{NaN}.
       The range is \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong} and
       \eqn{(-1, 2^{n})} for \code{ulong}, where \eqn{n} is the value of
-      \code{\link{flintBits}()}.}
+      \code{\link{flintABI}()}.}
     \item{\code{is.finite}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr

@@ -37,5 +37,5 @@
 ** DONE methods for 'mag' consulting rounding mode, conditionally giving lower bound
 ** DONE export, document class generator functions
 ** DONE configure tests for many missing acf_*, mag_*
-** TODO abandon 64-bit lengths on 32-bit builds
+** DONE abandon 64-bit lengths on 32-bit builds
 ** TODO support 'ulong' subscripts

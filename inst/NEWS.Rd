@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2024-12-29)}{
+\section{Changes in version 0.0.1 (2024-12-31)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -138,9 +138,9 @@
       identical names and \dQuote{prototypes}.  Arguments are coerced to
       the correct class and recycled internally.
 
-      \item \R{} function \code{flintBits} returning the limb width as a
-      number of bits, either 32 or 64.  The result is determined at
-      compile time.
+      \item \R{} function \code{flintABI} returning the size in bits of
+      \proglang{C} type \code{long int}, either 32 or 64.  The value is
+      determined at configure time.
 
       \item \R{} function \code{flintIdentical} for testing whether
       two \code{flint} vectors have identical class, length, and

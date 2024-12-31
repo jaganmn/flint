@@ -93,12 +93,16 @@ do { \
 		         func); \
 } while (0)
 
+#ifdef R_FLINT_ABI_64
 #define ERROR_TOO_LONG(n) \
 do { \
 	if (n > R_XLEN_T_MAX) \
-		Rf_error(_("value length would exceed maximum %lld"), \
-		         (long long int) R_XLEN_T_MAX); \
+		Rf_error(_("value length would exceed maximum %ld"), \
+		         (long int) R_XLEN_T_MAX); \
 } while (0)
+#else
+#define ERROR_TOO_LONG(n)
+#endif
 
 #define ARB_CONTAINS_NAN(x) \
 	(arf_is_nan(arb_midref(x)))
@@ -134,7 +138,6 @@ mpfr_set_emax(__emax_old); \
 
 extern
 SEXP R_flint_symbol_dot_xdata,
-	R_flint_symbol_dot_data,
 	R_flint_symbol_names,
 	R_flint_symbol_num,
 	R_flint_symbol_den,
@@ -142,11 +145,7 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_rad,
 	R_flint_symbol_real,
 	R_flint_symbol_imag,
-	R_flint_symbol_off,
-	R_flint_symbol_prec,
-	R_flint_symbol_exp,
-	R_flint_symbol_sign,
-	R_flint_symbol_d;
+	R_flint_symbol_off;
 
 typedef enum {
 	R_FLINT_CLASS_SLONG = 0,
@@ -180,27 +179,26 @@ void CLEAR_ATTRIB(SEXP);
 char *R_alloc_snprintf(size_t, const char *, ...);
 
 SEXP newObject(const char *);
-SEXP newBasic(const char *, SEXPTYPE, R_xlen_t);
 
 SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
-unsigned long long int asLength(SEXP, const char *);
+unsigned long int asLength(SEXP, const char *);
 int asPrec(SEXP, const char *);
 int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
 const char *asSep(SEXP, const char *);
 int asRnd(SEXP, int, const char *);
 
-void  ucopy(unsigned int *, const unsigned long long int *);
-void uucopy(unsigned long long int *, const unsigned int *);
+void  ucopy(unsigned int *, const unsigned long int *);
+void uucopy(unsigned long int *, const unsigned int *);
 
 size_t strmatch(const char *, const char **);
 
 void *R_flint_get_pointer(SEXP);
-unsigned long long int R_flint_get_length(SEXP);
+unsigned long int R_flint_get_length(SEXP);
 R_flint_class_t R_flint_get_class(SEXP);
-void R_flint_set(SEXP, void *, unsigned long long int, R_CFinalizer_t);
+void R_flint_set(SEXP, void *, unsigned long int, R_CFinalizer_t);
 
 void R_flint_slong_finalize(SEXP);
 void R_flint_ulong_finalize(SEXP);

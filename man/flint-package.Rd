@@ -1,7 +1,7 @@
 \name{flint-package}
 \alias{flint}
 \alias{flint-package}
-\alias{flintBits}
+\alias{flintABI}
 \alias{flintIdentical}
 \alias{flintPrec}
 \alias{flintRnd}
@@ -17,7 +17,7 @@
   Library).
 }
 \usage{
-flintBits()
+flintABI()
 flintIdentical(object, reference)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
@@ -48,9 +48,11 @@ flintVersion()
   \code{\link{bug.report}(package = "flint")}.
 }
 \value{
-  \code{flintBits} returns the current limb size as a number of bits,
-  either \code{32L} or \code{64L}.  The value depends on the
-  configuration of the linked \acronym{FLINT} library.
+  \code{flintABI} returns the size in bits of \proglang{C} type
+  \code{long int}, either \code{32} or \code{64}.  The value is
+  determined when package \pkg{flint} is configured.  It is checked at
+  configure time and at load time that linked \proglang{C} libraries
+  were configured for the same ABI.
 
   \code{flintIdentical} tests whether its arguments inherit from the
   same nonvirtual subclass of \code{\linkS4class{flint}} and have equal
@@ -91,8 +93,8 @@ flintVersion()
   \email{jaganmn@mcmaster.ca}
 }
 \examples{
-flintBits()
-flintVersion()
+flintABI()
+stopifnot(identical(flintABI(), 8L * .Machine[["sizeof.long"]]))
 
 oprec <- flintPrec()
 nprec <- 100L
@@ -107,4 +109,6 @@ stopifnot(identical(flintRnd(nrnd), ornd),
           identical(flintRnd(), nrnd),
           identical(flintRnd(ornd), nrnd),
           identical(flintRnd(), ornd))
+
+flintVersion()
 }

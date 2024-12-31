@@ -37,8 +37,8 @@ slong fmpq_clog_ui(const fmpq_t x, ulong b)
 
 void R_flint_fmpq_finalize(SEXP x)
 {
-	unsigned long long int j, n;
-	uucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)));
+	unsigned long int j, n;
+	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	fmpq *p = (fmpq *) R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		fmpq_clear(p + j);
@@ -49,7 +49,7 @@ void R_flint_fmpq_finalize(SEXP x)
 SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
                              SEXP s_num, SEXP s_den)
 {
-	unsigned long long int j, np = 1, nq = 1, nx = 0, ny = 0;
+	unsigned long int j, np = 1, nq = 1, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		if (s_x != R_NilValue)
@@ -71,7 +71,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long long int) XLENGTH(s_x);
+			nx = (unsigned long int) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -306,7 +306,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 
 SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	const fmpq *x = (fmpq *) R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("fmpz"));
@@ -330,7 +330,7 @@ SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 
 SEXP R_flint_fmpq_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const fmpq *x = (fmpq *) R_flint_get_pointer(object);
@@ -358,7 +358,7 @@ SEXP R_flint_fmpq_vector(SEXP object)
 SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long long int
+	unsigned long int
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	const fmpq
@@ -366,7 +366,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		*y = (fmpq *) R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long long int j, n = RECYCLE2(nx, ny);
+	unsigned long int j, n = RECYCLE2(nx, ny);
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -429,14 +429,14 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				if (!fmpz_abs_fits_ui(fmpq_numref(e))) {
 				fmpz_clear(a);
 				fmpz_clear(p);
-				Rf_error(_("<%s> %s <%s>: exponent numerator exceeds maximum %llu in absolute value"),
-				         "fmpq", "^", "fmpq", (unsigned long long int) (ulong) -1);
+				Rf_error(_("<%s> %s <%s>: exponent numerator exceeds maximum %lu in absolute value"),
+				         "fmpq", "^", "fmpq", (unsigned long int) -1);
 				}
 				if (!fmpz_fits_si(fmpq_denref(e))) {
 				fmpz_clear(a);
 				fmpz_clear(p);
-				Rf_error(_("<%s> %s <%s>: exponent denominator exceeds maximum %llu"),
-				         "fmpq", "^", "fmpq", (unsigned long long int) ((ulong) -1 >> 1));
+				Rf_error(_("<%s> %s <%s>: exponent denominator exceeds maximum %lu"),
+				         "fmpq", "^", "fmpq", (unsigned long int) -1 >> 1);
 				}
 				s = fmpz_get_si(fmpq_denref(e));
 				if (fmpz_sgn(fmpq_numref(e)) >= 0) {
@@ -534,7 +534,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long long int j, n = R_flint_get_length(s_x);
+	unsigned long int j, n = R_flint_get_length(s_x);
 	const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
 #define COMMON \
 	do { \

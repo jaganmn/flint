@@ -9,7 +9,6 @@
 #endif /* < 4.4.0 */
 
 SEXP R_flint_symbol_dot_xdata,
-	R_flint_symbol_dot_data,
 	R_flint_symbol_names,
 	R_flint_symbol_num,
 	R_flint_symbol_den,
@@ -17,11 +16,7 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_rad,
 	R_flint_symbol_real,
 	R_flint_symbol_imag,
-	R_flint_symbol_off,
-	R_flint_symbol_prec,
-	R_flint_symbol_exp,
-	R_flint_symbol_sign,
-	R_flint_symbol_d;
+	R_flint_symbol_off;
 
 SEXPTYPE R_flint_sexptypes[] =
 { OBJSXP, STRSXP, CPLXSXP, REALSXP, INTSXP, LGLSXP, RAWSXP, NILSXP };
@@ -72,8 +67,9 @@ const char *R_flint_ops1[] =
 	NULL
 };
 
+SEXP R_flint_abi(void);
 SEXP R_flint_bind(SEXP, SEXP);
-SEXP R_flint_bits(void);
+SEXP R_flint_bits_per_limb(void);
 SEXP R_flint_class(SEXP);
 SEXP R_flint_identical(SEXP, SEXP);
 SEXP R_flint_length(SEXP);
@@ -167,8 +163,9 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 static R_CallMethodDef CallEntries[] =
 {
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
+	CALL_ENTRY(R_flint_abi, 0),
 	CALL_ENTRY(R_flint_bind, 2),
-	CALL_ENTRY(R_flint_bits, 0),
+	CALL_ENTRY(R_flint_bits_per_limb, 0),
 	CALL_ENTRY(R_flint_class, 1),
 	CALL_ENTRY(R_flint_identical, 2),
 	CALL_ENTRY(R_flint_length, 1),
@@ -249,7 +246,6 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_useDynamicSymbols(info, FALSE);
 	R_forceSymbols(info, TRUE);
 	R_flint_symbol_dot_xdata = Rf_install(".xData");
-	R_flint_symbol_dot_data  = Rf_install(".Data");
 	R_flint_symbol_names     = Rf_install("names");
 	R_flint_symbol_num       = Rf_install("num");
 	R_flint_symbol_den       = Rf_install("den");
@@ -258,10 +254,6 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_flint_symbol_real      = Rf_install("real");
 	R_flint_symbol_imag      = Rf_install("imag");
 	R_flint_symbol_off       = Rf_install("off");
-	R_flint_symbol_prec      = Rf_install("prec");
-	R_flint_symbol_exp       = Rf_install("exp");
-	R_flint_symbol_sign      = Rf_install("sign");
-	R_flint_symbol_d         = Rf_install("d");
 	void R_flint_abort(void);
 	flint_set_abort(&R_flint_abort);
 	return;

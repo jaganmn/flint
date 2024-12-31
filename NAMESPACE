@@ -17,7 +17,7 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce)
 export(.slong, .ulong, .fmpz, .fmpq, .mag, .arf, .acf, .arb, .acb)
 export(c.flint,
-       flintBits,
+       flintABI,
        flintIdentical,
        flintPrec,
        flintRnd,

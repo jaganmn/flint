@@ -1,6 +1,10 @@
-flintBits <-
+flintABI <-
 function ()
-    .Call(R_flint_bits)
+    .Call(R_flint_abi)
+
+flintBitsPerLimb <-
+function ()
+    .Call(R_flint_bits_per_limb)
 
 flintClass <-
 function (object)

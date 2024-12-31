@@ -9,8 +9,8 @@
 
 void R_flint_fmpz_finalize(SEXP x)
 {
-	unsigned long long int j, n;
-	uucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)));
+	unsigned long int j, n;
+	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	fmpz *p = (fmpz *) R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		fmpz_clear(p + j);
@@ -20,12 +20,12 @@ void R_flint_fmpz_finalize(SEXP x)
 
 SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long long int j, nx = 0, ny = 0;
+	unsigned long int j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long long int) XLENGTH(s_x);
+			nx = (unsigned long int) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -200,7 +200,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_fmpz_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const fmpz *x = (fmpz *) R_flint_get_pointer(object);
@@ -240,7 +240,7 @@ static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
 
 SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
@@ -294,7 +294,7 @@ SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long long int
+	unsigned long int
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	const fmpz
@@ -302,7 +302,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		*y = (fmpz *) R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long long int j, n = RECYCLE2(nx, ny);
+	unsigned long int j, n = RECYCLE2(nx, ny);
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -387,8 +387,8 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				}
 				if (!fmpz_abs_fits_ui(e)) {
 				fmpz_clear(a);
-				Rf_error(_("<%s> %s <%s>: exponent exceeds maximum %llu in absolute value"),
-				         "fmpz", "^", "fmpz", (unsigned long long int) (ulong) -1);
+				Rf_error(_("<%s> %s <%s>: exponent exceeds maximum %lu in absolute value"),
+				         "fmpz", "^", "fmpz", (unsigned long int) -1);
 				}
 				if (fmpz_sgn(e) >= 0) {
 				u = fmpz_get_ui(e);
@@ -469,7 +469,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long long int j, n = R_flint_get_length(s_x);
+	unsigned long int j, n = R_flint_get_length(s_x);
 	const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
 #define COMMON \
 	do { \

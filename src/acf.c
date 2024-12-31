@@ -174,8 +174,8 @@ int R_flint_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 
 void R_flint_acf_finalize(SEXP x)
 {
-	unsigned long long int j, n;
-	uucopy(&n, (unsigned int *) INTEGER(R_ExternalPtrProtected(x)));
+	unsigned long int j, n;
+	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	acf_ptr p = (acf_ptr) R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		acf_clear(p + j);
@@ -186,7 +186,7 @@ void R_flint_acf_finalize(SEXP x)
 SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_real, SEXP s_imag)
 {
-	unsigned long long int j, nr = 1, ni = 1, nx = 0, ny = 0;
+	unsigned long int j, nr = 1, ni = 1, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_real != R_NilValue || s_imag != R_NilValue) {
 		if (s_x != R_NilValue)
@@ -208,7 +208,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long long int) XLENGTH(s_x);
+			nx = (unsigned long int) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -457,7 +457,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 
 SEXP R_flint_acf_part(SEXP object, SEXP s_op)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	acf_srcptr x = (acf_ptr) R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("arf"));
@@ -481,7 +481,7 @@ SEXP R_flint_acf_part(SEXP object, SEXP s_op)
 
 SEXP R_flint_acf_vector(SEXP object)
 {
-	unsigned long long int j, n = R_flint_get_length(object);
+	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
@@ -523,7 +523,7 @@ SEXP R_flint_acf_vector(SEXP object)
 SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long long int
+	unsigned long int
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	acf_srcptr
@@ -531,7 +531,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = (acf_ptr) R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long long int j, n = RECYCLE2(nx, ny);
+	unsigned long int j, n = RECYCLE2(nx, ny);
 	slong prec = (slong) asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 #define COMMON \
@@ -637,7 +637,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long long int j, n = R_flint_get_length(s_x);
+	unsigned long int j, n = R_flint_get_length(s_x);
 	acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
 	slong prec = (slong) asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
@@ -866,7 +866,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 55: /*    "mean" */
 		{
-			unsigned long long int c = n;
+			unsigned long int c = n;
 			acf_zero(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && acf_is_nan(x + j)))

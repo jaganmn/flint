@@ -700,7 +700,6 @@ setMethod("quantile",
               qs
           })
 
-## FIXME: clearly suboptimal for 32-bit 'ulong'
 setMethod("rep",
           c(x = "flint"),
           function (x, times, length.out, each, ...) {

@@ -28,15 +28,6 @@ SEXP newObject(const char *what)
 	return object;
 }
 
-SEXP newBasic(const char *what, SEXPTYPE type, R_xlen_t length)
-{
-	SEXP s = PROTECT(newObject(what)),
-		data = PROTECT(Rf_allocVector(type, length));
-	s = R_do_slot_assign(s, R_flint_symbol_dot_data, data);
-	UNPROTECT(2);
-	return s;
-}
-
 SEXPTYPE checkType(SEXP object, SEXPTYPE *valid, const char *where)
 {
 	SEXPTYPE s = (SEXPTYPE) TYPEOF(object), t;
@@ -55,21 +46,26 @@ const char *checkClass(SEXP object, const char **valid, const char *where)
 	return valid[i];
 }
 
-unsigned long long int asLength(SEXP length, const char *where)
+unsigned long int asLength(SEXP length, const char *where)
 {
 	switch (TYPEOF(length)) {
 	case INTSXP:
 	{
 		const int *s = INTEGER_RO(length);
 		if (XLENGTH(length) >= 1 && s[0] != NA_INTEGER && s[0] > -1)
-			return (unsigned long long int) s[0];
+			return (unsigned long int) s[0];
 		break;
 	}
 	case REALSXP:
 	{
 		const double *s = REAL_RO(length);
-		if (XLENGTH(length) >= 1 && !ISNAN(s[0]) && s[0] > -1.0 && s[0] < 0x1.0p+64)
-			return (unsigned long long int) s[0];
+		if (XLENGTH(length) >= 1 && !ISNAN(s[0]) && s[0] > -1.0 &&
+#ifdef R_FLINT_ABI_64
+		    s[0] < 0x1.0p+64)
+#else
+		    s[0] < 0x1.0p+32)
+#endif
+			return (unsigned long int) s[0];
 		break;
 	}
 	}
@@ -166,17 +162,25 @@ const char *asSep(SEXP sep, const char *where)
 	return (const char *) 0;
 }
 
-void  ucopy(unsigned int *uu, const unsigned long long int *u)
+void  ucopy(unsigned int *uu, const unsigned long int *u)
 {
+#ifdef R_FLINT_ABI_64
 	uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
 	uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
+#else
+	uu[0] = (unsigned int) u[0];
+#endif
 	return;
 }
 
-void uucopy(unsigned long long int *u, const unsigned int *uu)
+void uucopy(unsigned long int *u, const unsigned int *uu)
 {
-	u[0] = (unsigned long long int) uu[1] << (sizeof(int) * CHAR_BIT) |
-		(unsigned long long int) uu[0];
+#ifdef R_FLINT_ABI_64
+	u[0] = (unsigned long int) uu[1] << (sizeof(int) * CHAR_BIT) |
+		(unsigned long int) uu[0];
+#else
+	u[0] = (unsigned long int) uu[0];
+#endif
 	return;
 }
 
