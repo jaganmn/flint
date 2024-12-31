@@ -40,7 +40,7 @@ do { \
 		template(acb, acb_t, acb_srcptr, acb_ptr); \
 		break; \
 	default: \
-		return Rf_error(_("should never happen ...")); \
+		Rf_error(_("should never happen ...")); \
 	} \
 } while (0)
 
