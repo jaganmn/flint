@@ -383,7 +383,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				if (fmpz_is_zero(b) && fmpz_sgn(e) < 0) {
 				fmpz_clear(a);
 				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
-				         "fmpz", "^", "fmpz", "fmpz");
+				         "fmpz", "^", "fmpz", "fmpq");
 				}
 				if (!fmpz_abs_fits_ui(e)) {
 				fmpz_clear(a);
@@ -397,8 +397,8 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				} else {
 				fmpz_neg(a, e);
 				u = fmpz_get_ui(a);
-				fmpz_pow_ui(fmpq_denref(z + j), b, u);
 				fmpz_one(fmpq_numref(z + j));
+				fmpz_pow_ui(fmpq_denref(z + j), b, u);
 				fmpq_canonicalise(z + j);
 				}
 			}

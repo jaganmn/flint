@@ -78,7 +78,7 @@ setMethod("[",
                              }
                          },
                      "integer" =,
-                     "double" =,
+                     "double" =
                          {
                              r <- max(0L, i, na.rm = TRUE)
                              if (r - 1L >= nx)
