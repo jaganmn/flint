@@ -670,18 +670,21 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 				const int *s__ = INTEGER_RO(subscript); \
 				for (j = 0; j < ns; ++j) \
 					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
+				break; \
 			} \
 			case REALSXP: \
 			{ \
 				const double *s__ = REAL_RO(subscript); \
 				for (j = 0; j < ns; ++j) \
 					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
+				break; \
 			} \
 			case OBJSXP: \
 			{ \
 				const ulong *s__ = (ulong *) R_flint_get_pointer(subscript); \
 				for (j = 0; j < ns; ++j) \
 					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
+				break; \
 			} \
 			} \
 		} \
@@ -741,6 +744,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 			else \
 			for (jy = 0; jy < ny; ++jy) \
 				name##_set(y__ + jy, x__ + s__[jy] - 1); \
+			break; \
 		} \
 		case REALSXP: \
 		{ \
@@ -755,6 +759,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 			else \
 			for (jy = 0; jy < ny; ++jy) \
 				name##_set(y__ + jy, x__ + (unsigned long int) s__[jy] - 1); \
+			break; \
 		} \
 		case OBJSXP: \
 		{ \
@@ -769,6 +774,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 			else \
 			for (jy = 0; jy < ny; ++jy) \
 				name##_set(y__ + jy, x__ + (unsigned long int) s__[jy] - 1); \
+			break; \
 		} \
 		} \
 	} while (0)
