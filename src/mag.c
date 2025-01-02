@@ -1029,7 +1029,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (XLENGTH(s_strict) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
 				         "strictly", CHAR(STRING_ELT(s_op, 0)));
-			int strict = LOGICAL(s_strict)[0];
+			int strict = LOGICAL_RO(s_strict)[0];
 			if (strict)
 			for (j = 1; j < n && mag_cmp(x, x + 1) <  0; ++j, ++x) ;
 			else

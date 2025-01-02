@@ -107,7 +107,7 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 	if (XLENGTH(s_usenames) == 0)
 		Rf_error(_("'%s' of length zero in '%s'"),
 		         "use.names", "c.flint");
-	int usenames = LOGICAL(s_usenames)[0], anynamed = !usenames;
+	int usenames = LOGICAL_RO(s_usenames)[0], anynamed = !usenames;
 	R_xlen_t a, ndots = XLENGTH(dots);
 	if (ndots == 0)
 		return R_NilValue;
@@ -213,7 +213,7 @@ SEXP R_flint_length(SEXP object, SEXP s_exact)
 	if (XLENGTH(s_exact) == 0)
 		Rf_error(_("'%s' of length zero in '%s'"),
 		         "exact", "flintLength");
-	int exact = LOGICAL(s_exact)[0];
+	int exact = LOGICAL_RO(s_exact)[0];
 	unsigned long int n = R_flint_get_length(object);
 	SEXP ans;
 	if (exact) {
@@ -310,7 +310,7 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 
 SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 {
-	int usenames = LOGICAL(s_usenames)[0];
+	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
@@ -371,7 +371,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 
 SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 {
-	int usenames = LOGICAL(s_usenames)[0];
+	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
@@ -444,7 +444,7 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 
 SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 {
-	int usenames = LOGICAL(s_usenames)[0];
+	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;
@@ -701,7 +701,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 
 SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 {
-	int usenames = LOGICAL(s_usenames)[0];
+	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
 	void *y;

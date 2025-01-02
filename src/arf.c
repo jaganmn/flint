@@ -922,7 +922,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (XLENGTH(s_strict) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
 				         "strictly", CHAR(STRING_ELT(s_op, 0)));
-			int strict = LOGICAL(s_strict)[0];
+			int strict = LOGICAL_RO(s_strict)[0];
 			arf_srcptr last = (void *) 0;
 			if (strict)
 			for (j = 0; j < n; ++j) {
