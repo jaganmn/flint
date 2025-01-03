@@ -103,28 +103,52 @@
     \item{\code{!}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{+}, \code{-}}{
+      equivalent to (but faster than) \code{x == 0}.}
+    \item{\code{+}}{
       \code{signature(e1 = "slong", e2 = "missing")}:\cr
       \code{signature(e1 = "ulong", e2 = "missing")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+      returns a copy of the argument.}
+    \item{\code{-}}{
+      \code{signature(e1 = "slong", e2 = "missing")}:\cr
+      \code{signature(e1 = "ulong", e2 = "missing")}:\cr
+      returns the negation of the argument.}
     \item{\code{Complex}}{
       \code{signature(z = "slong")}:\cr
       \code{signature(z = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
-    \item{\code{Math}, \code{Math2}, \code{Summary}}{
+      mathematical functions of one argument; see
+      \code{\link[methods]{S4groupGeneric}}.  Member functions requiring
+      promotion to a floating-point type may not be implemented.}
+    \item{\code{Math}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+      mathematical functions of one argument; see
+      \code{\link[methods]{S4groupGeneric}}.  Member functions requiring
+      promotion to a floating-point type may not be implemented.}
+    \item{\code{Math2}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      decimal rounding according to a second argument \code{digits}; see
+      \code{\link[methods]{S4groupGeneric}}.  There are just two member
+      member functions: \code{\link{round}}, \code{\link{signif}}.}
     \item{\code{Ops}}{
       \code{signature(e1 = "ANY", e2 = "slong")}:\cr
       \code{signature(e1 = "ANY", e2 = "ulong")}:\cr
       \code{signature(e1 = "slong", e2 = "ANY")}:\cr
       \code{signature(e1 = "ulong", e2 = "ANY")}:\cr
-      coerces \code{slong} and \code{ulong} operands to a different
-      subclass of \code{\linkS4class{flint}} (never \code{slong} or
-      \code{ulong}, but always a class that can represent their range)
-      and dispatches.}
+      binary arithmetic, comparison, and logical operators; see
+      \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
+      must be atomic or inherit from virtual class
+      \code{\linkS4class{flint}}.  The operands are recycled and
+      promoted as necessary.}
+    \item{\code{Summary}}{
+      \code{signature(x = "slong")}:\cr
+      \code{signature(x = "ulong")}:\cr
+      univariate summary statistics; see
+      \code{\link[methods]{S4groupGeneric}}.  The return value is a
+      logical vector of length 1 (\code{any}, \code{all}) or a
+      \code{slong}, \code{ulong}, or \code{\linkS4class{fmpz}} vector of
+      length 1 or 2 (\code{sum}, \code{prod}, \code{min}, \code{max},
+      \code{range}).}
     \item{\code{anyNA}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
@@ -182,11 +206,15 @@
     \item{\code{is.unsorted}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+      returns a logical indicating if \code{x} is not sorted in
+      nondecreasing order (increasing order if optional argument
+      \code{strictly} is set to \code{TRUE}).}
     \item{\code{mean}}{
       \code{signature(x = "slong")}:\cr
       \code{signature(x = "ulong")}:\cr
-      coerces the argument to \code{\linkS4class{fmpz}} and dispatches.}
+      returns the arithmetic mean.  An error is signaled if the argument
+      length is 0, because the return type is \code{\linkS4class{fmpq}}
+      which cannot represent the result of division by 0.}
   }
 }
 \seealso{

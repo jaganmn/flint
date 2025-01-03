@@ -88,10 +88,14 @@ SEXP R_flint_version(void);
 SEXP R_flint_slong_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_slong_vector(SEXP);
 SEXP R_flint_slong_format(SEXP, SEXP);
+SEXP R_flint_slong_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_slong_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_ulong_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_ulong_vector(SEXP);
 SEXP R_flint_ulong_format(SEXP, SEXP);
+SEXP R_flint_ulong_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_ulong_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_fmpz_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpz_vector(SEXP);
@@ -183,9 +187,13 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_slong_initialize, 3),
 	CALL_ENTRY(R_flint_slong_vector, 1),
 	CALL_ENTRY(R_flint_slong_format, 2),
+	CALL_ENTRY(R_flint_slong_ops2, 3),
+	CALL_ENTRY(R_flint_slong_ops1, 3),
 	CALL_ENTRY(R_flint_ulong_initialize, 3),
 	CALL_ENTRY(R_flint_ulong_vector, 1),
 	CALL_ENTRY(R_flint_ulong_format, 2),
+	CALL_ENTRY(R_flint_ulong_ops2, 3),
+	CALL_ENTRY(R_flint_ulong_ops1, 3),
 	CALL_ENTRY(R_flint_fmpz_initialize, 3),
 	CALL_ENTRY(R_flint_fmpz_vector, 1),
 	CALL_ENTRY(R_flint_fmpz_format, 2),

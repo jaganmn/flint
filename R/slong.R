@@ -1,35 +1,34 @@
 setMethod("!",
           c(x = "slong"),
           function (x)
-              !.fmpz(x = x))
+              .Call(R_flint_slong_ops1, "!", x, NULL))
 
 setMethod("+",
           c(e1 = "slong", e2 = "missing"),
           function (e1, e2)
-              +.fmpz(x = e1))
+              .Call(R_flint_slong_ops1, "+", e1, NULL))
 
 setMethod("-",
           c(e1 = "slong", e2 = "missing"),
           function (e1, e2)
-              -.fmpz(x = e1))
+              .Call(R_flint_slong_ops1, "-", e1, NULL))
 
 setMethod("Complex",
           c(z = "slong"),
           function (z)
-              get(.Generic, mode = "function")(.fmpz(x = z)))
+              .Call(R_flint_slong_ops1, .Generic, z, NULL))
 
 setMethod("Math",
           c(x = "slong"),
           function (x)
-              get(.Generic, mode = "function")(.fmpz(x = x)))
+              .Call(R_flint_slong_ops1, .Generic, x, NULL))
 
 setMethod("Math2",
           c(x = "slong"),
           function (x, digits) {
-              g <- get(.Generic, mode = "function")
               if (missing(digits))
-                  g(.fmpz(x = x))
-              else g(.fmpz(x = x), digits = digits)
+                  digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
+              .Call(R_flint_slong_ops1, .Generic, x, list(as(digits, "slong")))
           })
 
 setMethod("Ops",
@@ -37,7 +36,9 @@ setMethod("Ops",
           function (e1, e2) {
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
-                     "NULL" =, "raw" =, "logical" =, "integer" =
+                     "NULL" =, "logical" =, "integer" =
+                         g(.slong(x = e1), e2),
+                     "raw" =
                          g(.fmpz(x = e1), .fmpz(x = e2)),
                      "double" =
                          g(.arf(x = e1), .arf(x = e2)),
@@ -53,7 +54,9 @@ setMethod("Ops",
           function (e1, e2) {
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
-                     "NULL" =, "raw" =, "logical" =, "integer" =
+                     "NULL" =, "logical" =, "integer" =
+                         g(e1, .slong(x = e2)),
+                     "raw" =
                          g(.fmpz(x = e1), .fmpz(x = e2)),
                      "double" =
                          g(.arf(x = e1), .arf(x = e2)),
@@ -67,7 +70,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "slong", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(x = e1), .fmpz(x = e2)))
+              .Call(R_flint_slong_ops2, .Generic, e1, e2))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "ulong"),
@@ -111,8 +114,11 @@ setMethod("Ops",
 
 setMethod("Summary",
           c(x = "slong"),
-          function (x, ..., na.rm = FALSE)
-              get(.Generic, mode = "function")(.fmpz(x = x), ..., na.rm = na.rm))
+          function (x, ..., na.rm = FALSE) {
+              if (...length())
+                  get(.Generic, mode = "function")(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_slong_ops1, .Generic, x, NULL)
+          })
 
 setMethod("anyNA",
           c(x = "slong"),
@@ -141,29 +147,32 @@ setMethod("initialize",
 setMethod("is.finite",
           c(x = "slong"),
           function (x)
-              `names<-`(rep.int(TRUE, length(x)), names(x)))
+              .Call(R_flint_slong_ops1, "is.finite", x, NULL))
 
 setMethod("is.infinite",
           c(x = "slong"),
           function (x)
-              `names<-`(logical(length(x)), names(x)))
+              .Call(R_flint_slong_ops1, "is.infinite", x, NULL))
 
 setMethod("is.na",
           c(x = "slong"),
           function (x)
-              `names<-`(logical(length(x)), names(x)))
+              .Call(R_flint_slong_ops1, "is.na", x, NULL))
 
 setMethod("is.nan",
           c(x = "slong"),
           function (x)
-              `names<-`(logical(length(x)), names(x)))
+              .Call(R_flint_slong_ops1, "is.nan", x, NULL))
 
 setMethod("is.unsorted",
           c(x = "slong"),
           function (x, na.rm = FALSE, strictly = FALSE)
-              is.unsorted(.fmpz(x = x), na.rm = na.rm, strictly = strictly))
+              .Call(R_flint_slong_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
 setMethod("mean",
           c(x = "slong"),
-          function (x, ...)
-              mean(.fmpz(x = x), ...))
+          function (x, na.rm = FALSE, ...) {
+              if (...length())
+                  mean(c(x, ...), na.rm = na.rm)
+              else .Call(R_flint_slong_ops1, "mean", x, NULL)
+          })
