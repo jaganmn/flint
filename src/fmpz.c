@@ -654,7 +654,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("fmpz");
-		size_t s = (op == 52) ? 2 : 1;
+		unsigned long int s = (op == 52) ? 2 : 1;
 		fmpz *z = (fmpz *) flint_calloc(s, sizeof(fmpz));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {

@@ -903,7 +903,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("acb");
-		size_t s = (op == 52) ? 2 : 1;
+		unsigned long int s = (op == 52) ? 2 : 1;
 		acb_ptr z = (acb_ptr) flint_calloc(s, sizeof(acb_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {

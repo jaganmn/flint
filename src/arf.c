@@ -800,7 +800,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("arf");
-		size_t s = (op == 52) ? 2 : 1;
+		unsigned long int s = (op == 52) ? 2 : 1;
 		arf_ptr z = (arf_ptr) flint_calloc(s, sizeof(arf_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
