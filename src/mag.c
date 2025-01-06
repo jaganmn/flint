@@ -311,7 +311,7 @@ SEXP R_flint_mag_vector(SEXP object)
 	double *y = REAL(ans);
 	mag_t ub;
 	mag_init(ub);
-	mag_set_ui_2exp_si(ub, 1U, DBL_MAX_EXP);
+	mag_set_ui_2exp_si(ub, 1, DBL_MAX_EXP);
 	int w = 1;
 	for (j = 0; j < n; ++j) {
 		if (mag_cmp(x + j, ub) < 0)

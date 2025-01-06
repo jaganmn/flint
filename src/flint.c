@@ -45,7 +45,7 @@ do { \
 } while (0)
 
 #define slong_zero(rop) *(rop) = 0
-#define ulong_zero(rop) *(rop) = 0U
+#define ulong_zero(rop) *(rop) = 0
 #define slong_set(rop, op) *(rop) = *(op)
 #define ulong_set(rop, op) *(rop) = *(op)
 #define slong_equal(rop, op) (*(rop) == *(op))
@@ -218,8 +218,8 @@ SEXP R_flint_length(SEXP object, SEXP s_exact)
 	SEXP ans;
 	if (exact) {
 		ans = newObject("ulong");
-		ulong *p = flint_calloc(1U, sizeof(ulong));
-		R_flint_set(ans, p, 1U, (R_CFinalizer_t) &R_flint_ulong_finalize);
+		ulong *p = flint_calloc(1, sizeof(ulong));
+		R_flint_set(ans, p, 1, (R_CFinalizer_t) &R_flint_ulong_finalize);
 		p[0] = n;
 	} else if (n <= INT_MAX) {
 		ans = Rf_allocVector(INTSXP, 1);

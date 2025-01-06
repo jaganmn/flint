@@ -1002,3 +1002,10 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 #undef COMMON
 }
+
+SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout)
+{
+	unsigned long int j, n = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
+	ulong *p = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
+	
+}
