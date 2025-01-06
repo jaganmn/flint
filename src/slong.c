@@ -12,19 +12,6 @@
 #endif
 #include "flint.h"
 
-#ifndef HAVE_FMPZ_FDIV_R_SI
-static R_INLINE
-void fmpz_fdiv_r_si(fmpz_t z, const fmpz_t x, slong y)
-{
-	fmpz_t t;
-	fmpz_init(t);
-	fmpz_set_si(t, y);
-	fmpz_fdiv_r(z, x, t);
-	fmpz_clear(t);
-	return;
-}
-#endif
-
 void R_flint_slong_finalize(SEXP x)
 {
 	slong *p = R_ExternalPtrAddr(x);
