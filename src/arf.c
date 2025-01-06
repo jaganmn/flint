@@ -42,7 +42,7 @@ void R_flint_arf_finalize(SEXP x)
 {
 	unsigned long int j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	arf_ptr p = (arf_ptr) R_ExternalPtrAddr(x);
+	arf_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		arf_clear(p + j);
 	flint_free(p);
@@ -76,7 +76,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	arf_ptr y = (arf_ptr) ((ny) ? flint_calloc(ny, sizeof(arf_t)) : 0);
+	arf_ptr y = (ny) ? flint_calloc(ny, sizeof(arf_t)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -150,28 +150,28 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		switch (class) {
 		case R_FLINT_CLASS_SLONG:
 		{
-			const slong *x = (slong *) R_flint_get_pointer(s_x);
+			const slong *x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				arf_set_si(y + j, x[j % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_ULONG:
 		{
-			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+			const ulong *x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				arf_set_ui(y + j, x[j % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
-			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+			const fmpz *x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				arf_set_fmpz(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
 		{
-			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+			const fmpq *x = R_flint_get_pointer(s_x);
 			slong prec = asPrec(R_NilValue, __func__);
 			arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 			for (j = 0; j < ny; ++j)
@@ -180,21 +180,21 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		case R_FLINT_CLASS_MAG:
 		{
-			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+			mag_srcptr x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				arf_set_mag(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
 		{
-			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+			arf_srcptr x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				arf_set(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
-			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+			acf_srcptr x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				arf_set(y + j, acf_realref(x + j % nx));
 			break;
@@ -232,7 +232,7 @@ SEXP R_flint_arf_vector(SEXP object)
 	ERROR_TOO_LONG(n);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	arf_srcptr x = (arf_ptr) R_flint_get_pointer(object);
+	arf_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
 	arf_t lb, ub;
 	arf_init(lb);
@@ -266,7 +266,7 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 	const char *sep = asSep(s_sep, __func__);
 	mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(s_rnd, 1, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	arf_srcptr x = (arf_ptr) R_flint_get_pointer(object);
+	arf_srcptr x = R_flint_get_pointer(object);
 	mpfr_exp_t e__;
 	slong p__;
 	mpfr_uexp_t e, emax = 0;
@@ -416,8 +416,8 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	arf_srcptr
-		x = (arf_ptr) R_flint_get_pointer(s_x),
-		y = (arf_ptr) R_flint_get_pointer(s_y);
+		x = R_flint_get_pointer(s_x),
+		y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
 	unsigned long int j, n = RECYCLE2(nx, ny);
@@ -440,7 +440,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  6: /*   "/" */
 	{
 		SEXP ans = newObject("arf");
-		arf_ptr z = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
+		arf_ptr z = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -555,7 +555,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
 	unsigned long int j, n = R_flint_get_length(s_x);
-	arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+	arf_srcptr x = R_flint_get_pointer(s_x);
 	slong prec = (slong) asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 #define COMMON \
@@ -589,7 +589,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("arf");
-		arf_ptr z = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
+		arf_ptr z = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case  1: /*       "+" */
@@ -801,7 +801,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("arf");
 		unsigned long int s = (op == 52) ? 2 : 1;
-		arf_ptr z = (arf_ptr) flint_calloc(s, sizeof(arf_t));
+		arf_ptr z = flint_calloc(s, sizeof(arf_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case 50: /*     "min" */

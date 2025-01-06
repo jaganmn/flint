@@ -43,7 +43,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	ulong *y = (ulong *) ((ny) ? flint_malloc(ny * sizeof(ulong)) : 0);
+	ulong *y = (ny) ? flint_malloc(ny * sizeof(ulong)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -343,7 +343,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans;
-		ulong *z = (ulong *) ((n) ? flint_malloc(n * sizeof(ulong)) : 0);
+		ulong *z = (n) ? flint_malloc(n * sizeof(ulong)) : 0;
 #ifndef __GNUC__
 		ulong a;
 #endif
@@ -366,7 +366,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			for (j = 0; j < n; ++j) {
 				fmpz_set_ui(Z + j, x[j % nx]);
 				fmpz_add_ui(Z + j, Z + j, y[j % ny]);
@@ -389,7 +389,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			for (j = 0; j < n; ++j) {
 				fmpz_set_ui(Z + j, x[j % nx]);
 				fmpz_sub_ui(Z + j, Z + j, y[j % ny]);
@@ -412,7 +412,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			for (j = 0; j < n; ++j) {
 				fmpz_set_ui(Z + j, x[j % nx]);
 				fmpz_mul_ui(Z + j, Z + j, y[j % ny]);
@@ -463,7 +463,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			for (j = 0; j < n; ++j)
 				fmpz_ui_pow_ui(Z + j, x[j % nx], y[j % ny]);
 			}
@@ -478,7 +478,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  6: /*   "/" */
 	{
 		SEXP ans = newObject("fmpq");
-		fmpq *z = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
+		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 6: /*   "/" */
@@ -587,7 +587,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans;
-		ulong *z = (ulong *) ((n) ? flint_malloc(n * sizeof(ulong)) : 0);
+		ulong *z = (n) ? flint_malloc(n * sizeof(ulong)) : 0;
 		int over = 0;
 		switch (op) {
 		case  1: /*       "+" */
@@ -610,7 +610,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			for (j = 0; j < n; ++j) {
 				fmpz_set_ui(Z + j, x[j]);
 				fmpz_neg(Z + j, Z + j);
@@ -668,7 +668,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			fmpz_set_ui(Z, x[0]);
 			for (j = 1; j < n; ++j)
 				fmpz_add_ui(Z + j, Z + j - 1, x[j]);
@@ -696,7 +696,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			fmpz_set_ui(Z, x[0]);
 			for (j = 1; j < n; ++j)
 				if (x[j])
@@ -743,7 +743,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			fmpz_t t;
 			fmpz_init(t);
 			fmpz_set_ui(t, p);
@@ -798,7 +798,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			over = j < n;
 			if (over) {
 			memset(z, 0, n * sizeof(ulong));
-			fmpz *Z = (fmpz *) z;
+			fmpz *Z = (void *) z;
 			fmpz_t t;
 			fmpz_init(t);
 			for (j = 0; j < n; ++j) {
@@ -841,7 +841,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans;
 		unsigned long int s = (op == 52) ? 2 : 1;
-		ulong *z = (ulong *) flint_malloc(s * sizeof(ulong));
+		ulong *z = flint_malloc(s * sizeof(ulong));
 		int over = 0;
 		switch (op) {
 		case 50: /*     "min" */
@@ -875,7 +875,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[0] = fmpz_get_ui(t);
 			else {
 				z[0] = 0;
-				fmpz_set((fmpz *) z, t);
+				fmpz_set((void *) z, t);
 				over = 1;
 			}
 			fmpz_clear(t);
@@ -898,7 +898,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[0] = fmpz_get_ui(t);
 			else {
 				z[0] = 0;
-				fmpz_set((fmpz *) z, t);
+				fmpz_set((void *) z, t);
 				over = 1;
 			}
 			fmpz_clear(t);
@@ -916,7 +916,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			Rf_error(_("argument of length zero in '%s'"),
 			         CHAR(STRING_ELT(s_op, 0)));
 		SEXP ans = newObject("fmpq");
-		fmpq *z = (fmpq *) flint_calloc(1, sizeof(fmpq));
+		fmpq *z = flint_calloc(1, sizeof(fmpq));
 		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 55: /*    "mean" */

@@ -97,7 +97,7 @@ void R_flint_mag_finalize(SEXP x)
 {
 	unsigned long int j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	mag_ptr p = (mag_ptr) R_ExternalPtrAddr(x);
+	mag_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		mag_clear(p + j);
 	flint_free(p);
@@ -132,7 +132,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	mag_ptr y = (mag_ptr) ((ny) ? flint_calloc(ny, sizeof(mag_t)) : 0);
+	mag_ptr y = (ny) ? flint_calloc(ny, sizeof(mag_t)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -255,21 +255,21 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		case R_FLINT_CLASS_MAG:
 		{
-			mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+			mag_srcptr x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				mag_set(y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
 		{
-			arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+			arf_srcptr x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				WRAP(arf_get_mag, lower, y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
-			acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+			acf_srcptr x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				WRAP(arf_get_mag, lower, y + j, acf_realref(x + j % nx));
 			break;
@@ -307,7 +307,7 @@ SEXP R_flint_mag_vector(SEXP object)
 	ERROR_TOO_LONG(n);
 	int lower = isRndZ(R_NilValue, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	mag_srcptr x = (mag_ptr) R_flint_get_pointer(object);
+	mag_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
 	mag_t ub;
 	mag_init(ub);
@@ -337,7 +337,7 @@ SEXP R_flint_mag_format(SEXP object, SEXP s_base,
 	int lower = isRndZ(s_rnd, __func__);
 	mpfr_rnd_t rnd = (lower) ? MPFR_RNDZ : MPFR_RNDA;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
-	mag_srcptr x = (mag_ptr) R_flint_get_pointer(object);
+	mag_srcptr x = R_flint_get_pointer(object);
 	mpfr_exp_t e__;
 	slong p__;
 	mpfr_uexp_t e, emax = 0;
@@ -468,8 +468,8 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	mag_srcptr
-		x = (mag_ptr) R_flint_get_pointer(s_x),
-		y = (mag_ptr) R_flint_get_pointer(s_y);
+		x = R_flint_get_pointer(s_x),
+		y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
 	unsigned long int j, n = RECYCLE2(nx, ny);
@@ -492,7 +492,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("mag");
-		mag_ptr z = (mag_ptr) ((n) ? flint_calloc(n, sizeof(mag_t)) : 0);
+		mag_ptr z = (n) ? flint_calloc(n, sizeof(mag_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -616,7 +616,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
 	unsigned long int j, n = R_flint_get_length(s_x);
-	mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+	mag_srcptr x = R_flint_get_pointer(s_x);
 	int lower = isRndZ(R_NilValue, __func__);
 #define COMMON \
 	do { \
@@ -655,7 +655,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("mag");
-		mag_ptr z = (mag_ptr) ((n) ? flint_calloc(n, sizeof(mag_t)) : 0);
+		mag_ptr z = (n) ? flint_calloc(n, sizeof(mag_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case  1: /*       "+" */
@@ -778,7 +778,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (R_flint_get_length(s_base) == 0)
 					Rf_error(_("'%s' of length zero in '%s'"),
 					         "base", CHAR(STRING_ELT(s_op, 0)));
-				arf_srcptr base = (arf_ptr) R_flint_get_pointer(s_base);
+				arf_srcptr base = R_flint_get_pointer(s_base);
 				if (arf_is_nan(base) || arf_sgn(base) < 0) {
 					mag_clear(tmp);
 					Rf_error(_("NaN is not representable by '%s'"), "mag");
@@ -953,7 +953,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("mag");
 		unsigned long int s = (op == 52) ? 2 : 1;
-		mag_ptr z = (mag_ptr) flint_calloc(s, sizeof(mag_t));
+		mag_ptr z = flint_calloc(s, sizeof(mag_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 50: /*     "min" */

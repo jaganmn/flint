@@ -91,7 +91,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	fmpq *y = (fmpq *) ((ny) ? flint_calloc(ny, sizeof(fmpq)) : 0);
+	fmpq *y = (ny) ? flint_calloc(ny, sizeof(fmpq)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		if (s_num != R_NilValue) {
@@ -245,7 +245,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			case R_FLINT_CLASS_MAG:
 			{
-				mag_srcptr x = (mag_ptr) R_flint_get_pointer(s_x);
+				mag_srcptr x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					if (mag_is_inf(x + j % nx))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
@@ -256,7 +256,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			case R_FLINT_CLASS_ARF:
 			{
-				arf_srcptr x = (arf_ptr) R_flint_get_pointer(s_x);
+				arf_srcptr x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					if (!arf_is_finite(x + j % nx))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
@@ -267,7 +267,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			case R_FLINT_CLASS_ACF:
 			{
-				acf_srcptr x = (acf_ptr) R_flint_get_pointer(s_x);
+				acf_srcptr x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					if (!arf_is_finite(acf_realref(x + j % nx)))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
@@ -310,7 +310,7 @@ SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 	const fmpq *x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("fmpz"));
-	fmpz *y = (fmpz *) ((n) ? flint_calloc(n, sizeof(fmpz)) : 0);
+	fmpz *y = (n) ? flint_calloc(n, sizeof(fmpz)) : 0;
 	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 	if (op == 0)
 	for (j = 0; j < n; ++j)
@@ -385,7 +385,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("fmpq");
-		fmpq *z = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
+		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -566,7 +566,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("fmpq");
-		fmpq *z = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
+		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case  1: /*       "+" */
@@ -774,7 +774,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans = newObject("fmpq");
 		unsigned long int s = (op == 52) ? 2 : 1;
-		fmpq *z = (fmpq *) flint_calloc(s, sizeof(fmpq));
+		fmpq *z = flint_calloc(s, sizeof(fmpq));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 50: /*     "min" */

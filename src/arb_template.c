@@ -9,11 +9,11 @@ SEXP R_flint_arb_1ary(void (*fn)(arb_t, const arb_t, slong),
 	unsigned long int
 		na0 = R_flint_get_length(s_a0),
 		nprec = R_flint_get_length(s_prec);
-	arb_srcptr a0 = (arb_ptr) R_flint_get_pointer(s_a0);
-	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
+	arb_srcptr a0 = R_flint_get_pointer(s_a0);
+	const slong *prec = R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE2(na0, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
+	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)
@@ -29,12 +29,12 @@ SEXP R_flint_arb_2ary(void (*fn)(arb_t, const arb_t, const arb_t, slong),
 		na1 = R_flint_get_length(s_a1),
 		nprec = R_flint_get_length(s_prec);
 	arb_srcptr
-		a0 = (arb_ptr) R_flint_get_pointer(s_a0),
-		a1 = (arb_ptr) R_flint_get_pointer(s_a1);
-	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
+		a0 = R_flint_get_pointer(s_a0),
+		a1 = R_flint_get_pointer(s_a1);
+	const slong *prec = R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE3(na0, na1, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
+	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)
@@ -51,13 +51,13 @@ SEXP R_flint_arb_3ary(void (*fn)(arb_t, const arb_t, const arb_t, const arb_t, s
 		na2 = R_flint_get_length(s_a2),
 		nprec = R_flint_get_length(s_prec);
 	arb_srcptr
-		a0 = (arb_ptr) R_flint_get_pointer(s_a0),
-		a1 = (arb_ptr) R_flint_get_pointer(s_a1),
-		a2 = (arb_ptr) R_flint_get_pointer(s_a2);
-	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
+		a0 = R_flint_get_pointer(s_a0),
+		a1 = R_flint_get_pointer(s_a1),
+		a2 = R_flint_get_pointer(s_a2);
+	const slong *prec = R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE4(na0, na1, na2, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
+	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)

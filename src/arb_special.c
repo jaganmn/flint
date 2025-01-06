@@ -13,12 +13,12 @@ SEXP R_flint_arb_lambertw(SEXP s_res, SEXP s_x, SEXP s_flags, SEXP s_prec)
 		nx = R_flint_get_length(s_x),
 		nflags = (unsigned long int) XLENGTH(s_flags),
 		nprec = R_flint_get_length(s_prec);
-	arb_srcptr x = (arb_ptr) R_flint_get_pointer(s_x);
+	arb_srcptr x = R_flint_get_pointer(s_x);
 	const int *flags = INTEGER_RO(s_flags);
-	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
+	const slong *prec = R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE3(nx, nflags, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
+	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)
@@ -64,15 +64,15 @@ SEXP R_flint_arb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_x,
 		nflags = (unsigned long int) XLENGTH(s_flags),
 		nprec = R_flint_get_length(s_prec);
 	arb_srcptr
-		a = (arb_ptr) R_flint_get_pointer(s_a),
-		b = (arb_ptr) R_flint_get_pointer(s_b),
-		c = (arb_ptr) R_flint_get_pointer(s_c),
-		x = (arb_ptr) R_flint_get_pointer(s_x);
+		a = R_flint_get_pointer(s_a),
+		b = R_flint_get_pointer(s_b),
+		c = R_flint_get_pointer(s_c),
+		x = R_flint_get_pointer(s_x);
 	const int *flags = INTEGER_RO(s_flags);
-	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
+	const slong *prec = R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE6(na, nb, nc, nx, nflags, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
+	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)
