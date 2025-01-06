@@ -138,14 +138,14 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
 		xptr_t x__; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		for (a = 0; a < ndots; ++a) { \
 			elt = VECTOR_ELT(dots, a); \
 			nx = R_flint_get_length(elt); \
-			x__ = (xptr_t) R_flint_get_pointer(elt); \
+			x__ = R_flint_get_pointer(elt); \
 			if (usenames && XLENGTH(sx = R_do_slot(elt, R_flint_symbol_names)) > 0) \
 			for (jx = 0; jx < nx; ++jx, ++jy) { \
 				name##_set(y__ + jy, x__ + jx); \
@@ -193,8 +193,8 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t x__ = (xptr_t) x; \
-		xptr_t y__ = (xptr_t) y; \
+		xptr_t x__ = x; \
+		xptr_t y__ = y; \
 		for (j = 0; j < n; ++j) \
 			if (!name##_equal(x__ + j, y__ + j)) \
 				return Rf_ScalarLogical(0); \
@@ -278,9 +278,9 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		xptr_t x__ = x; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		if (usenames) \
@@ -338,9 +338,9 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		xptr_t x__ = x; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		if (usenames) \
@@ -403,9 +403,9 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		xptr_t x__ = x; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		if (usenames) { \
@@ -459,7 +459,7 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 		Rf_error(_("length(%s) not equal to 1 or length(%s) in '%s'"),
 		         "times", "x", "rep");
 	ulong i, t;
-	const ulong *times = (ulong *) R_flint_get_pointer(s_times);
+	const ulong *times = R_flint_get_pointer(s_times);
 	if (ntimes == 1) {
 		t = times[0];
 		if (t > 0 && nx > (unsigned long int) -1 / t)
@@ -485,9 +485,9 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		xptr_t x__ = x; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		if (ntimes == 1) { \
@@ -588,7 +588,7 @@ SEXP R_flint_size(SEXP object)
 
 #define SIZE_CASE(name, elt_t, ptr_t) \
 	do { \
-		ptr_t x__ = (ptr_t) x; \
+		ptr_t x__ = x; \
 		count += n * sizeof(elt_t); \
 		for (j = 0; j < n; ++j) \
 			name##_size(x__ + j); \
@@ -652,10 +652,10 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t v__ = (xptr_t) v; \
-		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		xptr_t v__ = v; \
+		xptr_t x__ = x; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		if (subscript == R_NilValue) { \
@@ -681,7 +681,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 			} \
 			case OBJSXP: \
 			{ \
-				const ulong *s__ = (ulong *) R_flint_get_pointer(subscript); \
+				const ulong *s__ = R_flint_get_pointer(subscript); \
 				for (j = 0; j < ns; ++j) \
 					name##_set(y__ + (unsigned long int) s__[j] - 1, v__ + j % nv); \
 				break; \
@@ -725,9 +725,9 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
-		xptr_t x__ = (xptr_t) x; \
-		yptr_t y__ = (yptr_t) ((ny) ? flint_calloc((size_t) ny, sizeof(elt_t)) : 0); \
-		y = (void *) y__; \
+		xptr_t x__ = x; \
+		yptr_t y__ = ((ny) ? flint_calloc(ny, sizeof(elt_t)) : 0); \
+		y = y__; \
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		switch (TYPEOF(subscript)) { \
@@ -763,7 +763,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 		} \
 		case OBJSXP: \
 		{ \
-			const ulong *s__ = (ulong *) R_flint_get_pointer(subscript); \
+			const ulong *s__ = R_flint_get_pointer(subscript); \
 			if (usenames) \
 			for (jy = 0; jy < ny; ++jy) { \
 				jx = (unsigned long int) s__[jy] - 1; \

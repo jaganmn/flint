@@ -39,7 +39,7 @@ void R_flint_fmpq_finalize(SEXP x)
 {
 	unsigned long int j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	fmpq *p = (fmpq *) R_ExternalPtrAddr(x);
+	fmpq *p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		fmpq_clear(p + j);
 	flint_free(p);
@@ -91,13 +91,13 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	fmpq *y = (fmpq *) ((ny) ? flint_calloc((size_t) ny, sizeof(fmpq)) : 0);
+	fmpq *y = (fmpq *) ((ny) ? flint_calloc(ny, sizeof(fmpq)) : 0);
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		if (s_num != R_NilValue) {
-			const fmpz *xp = (fmpz *) R_flint_get_pointer(s_num);
+			const fmpz *xp = R_flint_get_pointer(s_num);
 			if (s_den != R_NilValue) {
-				const fmpz *xq = (fmpz *) R_flint_get_pointer(s_den);
+				const fmpz *xq = R_flint_get_pointer(s_den);
 				for (j = 0; j < ny; ++j) {
 					if (fmpz_is_zero(xq + j % nq))
 					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
@@ -115,7 +115,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 		} else {
 			if (s_den != R_NilValue) {
-				const fmpz *xq = (fmpz *) R_flint_get_pointer(s_den);
+				const fmpz *xq = R_flint_get_pointer(s_den);
 				for (j = 0; j < ny; ++j) {
 					if (fmpz_is_zero(xq + j % nq))
 					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
@@ -211,7 +211,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			switch (class) {
 			case R_FLINT_CLASS_SLONG:
 			{
-				const slong *x = (slong *) R_flint_get_pointer(s_x);
+				const slong *x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					fmpz_set_si(fmpq_numref(y + j), x[j % nx]);
 					fmpz_one(fmpq_denref(y + j));
@@ -220,7 +220,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			case R_FLINT_CLASS_ULONG:
 			{
-				const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+				const ulong *x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					fmpz_set_ui(fmpq_numref(y + j), x[j % nx]);
 					fmpz_one(fmpq_denref(y + j));
@@ -229,7 +229,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			case R_FLINT_CLASS_FMPZ:
 			{
-				const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+				const fmpz *x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					fmpz_set(fmpq_numref(y + j), x + j % nx);
 					fmpz_one(fmpq_denref(y + j));
@@ -238,7 +238,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			}
 			case R_FLINT_CLASS_FMPQ:
 			{
-				const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+				const fmpq *x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j)
 					fmpq_set(y + j, x + j % nx);
 				break;
@@ -307,10 +307,10 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 {
 	unsigned long int j, n = R_flint_get_length(object);
-	const fmpq *x = (fmpq *) R_flint_get_pointer(object);
+	const fmpq *x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("fmpz"));
-	fmpz *y = (fmpz *) ((n) ? flint_calloc((size_t) n, sizeof(fmpz)) : 0);
+	fmpz *y = (fmpz *) ((n) ? flint_calloc(n, sizeof(fmpz)) : 0);
 	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 	if (op == 0)
 	for (j = 0; j < n; ++j)
@@ -333,7 +333,7 @@ SEXP R_flint_fmpq_vector(SEXP object)
 	unsigned long int j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
-	const fmpq *x = (fmpq *) R_flint_get_pointer(object);
+	const fmpq *x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
 	fmpz_t lb, ub;
 	fmpz_init(lb);
@@ -362,8 +362,8 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	const fmpq
-		*x = (fmpq *) R_flint_get_pointer(s_x),
-		*y = (fmpq *) R_flint_get_pointer(s_y);
+		*x = R_flint_get_pointer(s_x),
+		*y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
 	unsigned long int j, n = RECYCLE2(nx, ny);
@@ -385,7 +385,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("fmpq");
-		fmpq *z = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
+		fmpq *z = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -535,7 +535,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
 	unsigned long int j, n = R_flint_get_length(s_x);
-	const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+	const fmpq *x = R_flint_get_pointer(s_x);
 #define COMMON \
 	do { \
 	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
@@ -566,7 +566,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("fmpq");
-		fmpq *z = (fmpq *) ((n) ? flint_calloc((size_t) n, sizeof(fmpq)) : 0);
+		fmpq *z = (fmpq *) ((n) ? flint_calloc(n, sizeof(fmpq)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case  1: /*       "+" */

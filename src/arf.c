@@ -76,7 +76,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	arf_ptr y = (arf_ptr) ((ny) ? flint_calloc((size_t) ny, sizeof(arf_t)) : 0);
+	arf_ptr y = (arf_ptr) ((ny) ? flint_calloc(ny, sizeof(arf_t)) : 0);
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -440,7 +440,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  6: /*   "/" */
 	{
 		SEXP ans = newObject("arf");
-		arf_ptr z = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
+		arf_ptr z = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -589,7 +589,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("arf");
-		arf_ptr z = (arf_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arf_t)) : 0);
+		arf_ptr z = (arf_ptr) ((n) ? flint_calloc(n, sizeof(arf_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case  1: /*       "+" */

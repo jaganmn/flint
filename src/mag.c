@@ -132,7 +132,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	mag_ptr y = (mag_ptr) ((ny) ? flint_calloc((size_t) ny, sizeof(mag_t)) : 0);
+	mag_ptr y = (mag_ptr) ((ny) ? flint_calloc(ny, sizeof(mag_t)) : 0);
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -216,7 +216,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		switch (class) {
 		case R_FLINT_CLASS_SLONG:
 		{
-			const slong *x = (slong *) R_flint_get_pointer(s_x);
+			const slong *x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j) {
 				if (x[j % nx] >= 0)
 				WRAP(mag_set_ui, lower, y + j, (ulong) x[j % nx]);
@@ -227,21 +227,21 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		case R_FLINT_CLASS_ULONG:
 		{
-			const ulong *x = (ulong *) R_flint_get_pointer(s_x);
+			const ulong *x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				WRAP(mag_set_ui, lower, y + j, x[j % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
-			const fmpz *x = (fmpz *) R_flint_get_pointer(s_x);
+			const fmpz *x = R_flint_get_pointer(s_x);
 			for (j = 0; j < ny; ++j)
 				WRAP(mag_set_fmpz, lower, y + j, x + j % nx);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
 		{
-			const fmpq *x = (fmpq *) R_flint_get_pointer(s_x);
+			const fmpq *x = R_flint_get_pointer(s_x);
 			slong prec = MAG_BITS << 1;
 			arf_rnd_t rnd = (lower) ? ARF_RND_DOWN : ARF_RND_UP;
 			arf_t q;
@@ -492,7 +492,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = newObject("mag");
-		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
+		mag_ptr z = (mag_ptr) ((n) ? flint_calloc(n, sizeof(mag_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case 1: /*   "+" */
@@ -655,7 +655,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = newObject("mag");
-		mag_ptr z = (mag_ptr) ((n) ? flint_calloc((size_t) n, sizeof(mag_t)) : 0);
+		mag_ptr z = (mag_ptr) ((n) ? flint_calloc(n, sizeof(mag_t)) : 0);
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
 		case  1: /*       "+" */

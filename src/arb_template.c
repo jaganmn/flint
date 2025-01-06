@@ -13,7 +13,7 @@ SEXP R_flint_arb_1ary(void (*fn)(arb_t, const arb_t, slong),
 	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE2(na0, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)
@@ -34,7 +34,7 @@ SEXP R_flint_arb_2ary(void (*fn)(arb_t, const arb_t, const arb_t, slong),
 	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE3(na0, na1, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)
@@ -57,7 +57,7 @@ SEXP R_flint_arb_3ary(void (*fn)(arb_t, const arb_t, const arb_t, const arb_t, s
 	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE4(na0, na1, na2, nprec);
-	arb_ptr res = (arb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(arb_t)) : 0);
+	arb_ptr res = (arb_ptr) ((n) ? flint_calloc(n, sizeof(arb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
 	for (j = 0; j < n; ++j)

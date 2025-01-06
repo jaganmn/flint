@@ -21,7 +21,7 @@ SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_p
 	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE4(nz, nk, nflags, nprec);
-	acb_ptr res = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
+	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
 	for (j = 0; j < n; ++j)
@@ -85,7 +85,7 @@ SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z,
 	const slong *prec = (slong *) R_flint_get_pointer(s_prec);
 
 	unsigned long int j, n = RECYCLE6(na, nb, nc, nz, nflags, nprec);
-	acb_ptr res = (acb_ptr) ((n) ? flint_calloc((size_t) n, sizeof(acb_t)) : 0);
+	acb_ptr res = (acb_ptr) ((n) ? flint_calloc(n, sizeof(acb_t)) : 0);
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
 	for (j = 0; j < n; ++j)
