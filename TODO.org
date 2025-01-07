@@ -1,6 +1,6 @@
 * TODO flint 0.0.1
 
-** TODO 'names' slot for the virtual class
+** DONE 'names' slot for the virtual class
 ** DONE flintSize for getting the size of an allocated array
 ** DONE flintIdentical testing for identical-modulo-address
 ** DONE export, document flintIdentical
@@ -25,12 +25,12 @@
 ** DONE methods for is.na<-
 ** DONE methods for is.unsorted
 ** TODO methods for pretty
-** TODO methods for sequence
+** DONE methods for seq, sequence
 ** DONE methods for summary, quantile
 ** DONE methods for as.data.frame
 ** DONE register an S3 method format.flint for use by format.data.frame
 ** TODO document generic functions whose default methods seem to work for us
-	toString, subset, split, split<-, sort_by, sort, seq, rev, labels, diff
+	toString, seq.int, subset, split, split<-, sort_by, sort, rev, labels, diff
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage

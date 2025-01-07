@@ -1003,9 +1003,26 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 #undef COMMON
 }
 
-SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout)
+SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 {
-	unsigned long int j, n = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
-	ulong *p = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
-	
+	unsigned long int
+		m = ((ulong *) R_flint_get_pointer(s_from))[0],
+		n = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
+	int reverse = LOGICAL_RO(s_reverse)[0];
+	SEXP ans = newObject("ulong");
+	ulong *p = (n) ? flint_malloc(n * sizeof(ulong)) : 0;
+	R_flint_set(ans, p, n, (R_CFinalizer_t) &R_flint_ulong_finalize);
+	if (n) {
+	if (m > ULONG_MAX - (n - 1))
+		Rf_error(_("should never happen ..."));
+	if (reverse) {
+		p += n;
+		while (n--)
+			*(--p) = m++;
+	} else {
+		while (n--)
+			*(p++) = m++;
+	}
+	}
+	return ans;
 }

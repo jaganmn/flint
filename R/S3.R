@@ -62,6 +62,14 @@ function (x, times)
 function (x, length.out)
     rep_len(x, length.out)
 
+.S3.seq.flint <-
+function (...)
+    seq(...)
+
+.S3.sequence.flint <-
+function (nvec, ...)
+    sequence(nvec, ...)
+
 .S3.summary.flint <-
 function (object, ...)
     summary(object, ...)

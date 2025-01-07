@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2025-01-04)}{
+\section{Changes in version 0.0.1 (2025-01-07)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -50,7 +50,7 @@
   }
   \subsection{Documentation}{
     \itemize{
-      \item Classes and methods for generic functions are documented
+      \item S4 classes and methods for generic functions are documented
       under help topics named \code{*-class}.  Functions that are not
       methods are documented separately.  The package index provides a
       complete list of help topics: see \code{help(package = "flint")}.
@@ -89,22 +89,22 @@
   }
   \subsection{Generic Functions}{
     \itemize{
-      \item Generic functions \code{Num}, \code{Num<-}, \code{Den}, and
-      \code{Den<-} for getting and setting numerators and denominators
-      of quotients.
+      \item S4 generic functions \code{Num}, \code{Num<-}, \code{Den},
+      and \code{Den<-} for getting and setting numerators and
+      denominators of quotients.
 
-      \item Generic functions \code{Mid}, \code{Mid<-}, \code{Rad}, and
-      \code{Rad<-} for getting and setting midpoints and radii of balls
-      in a metric space.
+      \item S4 generic functions \code{Mid}, \code{Mid<-}, \code{Rad},
+      and \code{Rad<-} for getting and setting midpoints and radii of
+      balls in a metric space.
 
-      \item Generic functions \code{Real}, \code{Real<-}, \code{Imag},
-      and \code{Imag<-} for getting and setting real and imaginary parts
-      of complex numbers.
+      \item S4 generic functions \code{Real}, \code{Real<-},
+      \code{Imag}, and \code{Imag<-} for getting and setting real and
+      imaginary parts of complex numbers.
     }
   }
   \subsection{Methods}{
     \itemize{
-      \item Methods are defined for generic functions \code{[},
+      \item S4 methods are defined for generic functions \code{[},
       \code{[<-}, \code{[[}, \code{[[<-}, \code{Complex}, \code{Den},
       \code{Den<-}, \code{Imag}, \code{Imag<-}, \code{Math},
       \code{Math2}, \code{Mid}, \code{Mid<-}, \code{Num}, \code{Num<-},
@@ -120,7 +120,12 @@
       \code{is.unsorted}, \code{length}, \code{length<-}, \code{mtfrm},
       \code{mean}, \code{names}, \code{names<-}, \code{print},
       \code{quantile}, \code{rep}, \code{rep.int}, \code{rep_len},
-      \code{show}, \code{summary}, \code{unique}, and \code{xtfrm}.
+      \code{show}, \code{seq}, \code{sequence}, \code{summary},
+      \code{unique}, and \code{xtfrm}.
+
+      \item S3 methods are defined for S3-turned-S4 generic functions.
+      These methods call the S4 generic function so that S4 dispatch
+      occurs if the S3 generic function is called.
     }
   }
   \subsection{New Features}{

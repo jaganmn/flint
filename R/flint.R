@@ -7,11 +7,11 @@ function (i)
                else type.,
            "S4" =
                if (is.na(class. <- flintClass(i)) ||
-                   any(class. == c("acf", "arb", "acb")))
+                   any(class. == c("mag", "arf", "acf", "arb", "acb")))
                    stop(gettextf("invalid subscript class '%s'",
                                  class(i)),
                         domain = NA)
-               else class.,
+               else "flint",
            stop(gettextf("invalid subscript type '%s'",
                          type.),
                 domain = NA))
@@ -719,6 +719,143 @@ setMethod("rep_len",
           c(x = "flint"),
           function (x, length.out)
               .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), FALSE))
+
+setMethod("seq",
+          c("..." = "flint"),
+          function (from, to, by, length.out, along.with, ...) {
+               if (!missing(from)) {
+               if (length(from) != 1L)
+                   stop(gettextf("length of '%s' is not %d",
+                                 "from", 1L),
+                        domain = NA)
+               else if (!is.finite(from))
+                   stop(gettextf("'%s' is not a finite number",
+                                 "from"),
+                        domain = NA)
+               }
+               if (!missing(to)) {
+               if (length(to) != 1L)
+                   stop(gettextf("length of '%s' is not %d",
+                                 "to", 1L),
+                        domain = NA)
+               else if (!is.finite(to))
+                   stop(gettextf("'%s' is not a finite number",
+                                 "to"),
+                        domain = NA)
+               }
+               if (!missing(by)) {
+               if (length(by) != 1L)
+                   stop(gettextf("length of '%s' is not %d",
+                                 "by", 1L),
+                        domain = NA)
+               else if (!is.finite(by))
+                   stop(gettextf("'%s' is not a finite number",
+                                 "by"),
+                        domain = NA)
+               else if (!missing(from) && !missing(to) && from != to &&
+                        (from < to) == (by < 0L))
+                   stop(gettextf("sign of to-from and sign of '%s' are not equal",
+                                 "by"),
+                        domain = NA)
+               }
+               if (!missing(length.out)) {
+               if (length(length.out) != 1L)
+                   stop(gettextf("length of '%s' is not %d",
+                                 "length.out", 1L),
+                        domain = NA)
+               else if (is.na(length.out) || length.out < 0L)
+                   stop(gettextf("'%s' is not a nonnegative number",
+                                 "length.out"),
+                        domain = NA)
+               else if (length.out >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
+                   stop(gettextf("value length would exceed maximum 2^%d-1",
+                                 flintABI()),
+                        domain = NA)
+               length.out <- as(length.out, "ulong")
+               }
+               if (!missing(along.with)) {
+               if (!missing(length.out))
+                   stop(gettextf("one of '%s' and '%s' must be missing",
+                                 "length.out", "along.with"),
+                        domain = NA)
+               length.out <- flintLengthAny(along.with)
+               }
+               .seq <-
+               function (from, length.out, reverse = FALSE)
+                   .Call(R_flint_ulong_seq, from, length.out, reverse)
+               zero <- .ulong(x = 0L)
+               unit <- .ulong(x = 1L)
+               switch(nargs() - ...length(),
+               {
+                   if (missing(length.out))
+                       stop(gettextf("usage seq(%s=) is not yet implemented",
+                                     if (missing(from)) if (missing(to)) "by" else "to" else "from"),
+                            domain = NA)
+                   .seq(.ulong(x = 1L), length.out)
+               },
+               {
+                   if (missing(length.out) != missing(by))
+                       stop(gettextf("usage seq(%s=, %s=) is not yet implemented",
+                                     if (missing(from)) "to" else "from", if (missing(by)) "length.out" else "by"),
+                            domain = NA)
+                   if (missing(length.out)) {
+                       d <- if (from <= to) { op <- `+`; to - from } else { op <- `-`; from - to }
+                       d. <- as(d, "fmpz")
+                       if (d. == d)
+                           d. <- d. + unit
+                       if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
+                           stop(gettextf("value length would exceed maximum 2^%d-1",
+                                         flintABI()),
+                                domain = NA)
+                       op(from, .seq(zero, as(d., "ulong")))
+                   }
+                   else unit + by * .seq(zero, length.out)
+               },
+               {
+                   if (missing(length.out)) {
+                       d <- if (from == to) 0L else if (from < to) (to - from)/by else (from - to)/by
+                       d. <- as(d, "fmpz")
+                       if (d. == d)
+                           d. <- d. + unit
+                       if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
+                           stop(gettextf("value length would exceed maximum 2^%d-1",
+                                         flintABI()),
+                                domain = NA)
+                       from + by * .seq(zero, as(d., "ulong"))
+                   }
+                   else if (missing(by)) {
+                       by <- if (length.out <= unit) zero else (to - from)/(length.out - unit)
+                       from + by * .seq(zero, length.out)
+                   }
+                   else if (missing(to))
+                       from + by * .seq(zero, length.out)
+                   else to - by * .seq(zero, length.out, reverse = TRUE)
+               },
+               stop(gettextf("usage seq(%s=, %s=, %s=, %s=) is not yet implemented",
+                             "from", "to", "by", if (missing(along.with)) "length.out" else "along.with"),
+                    domain = NA))
+          })
+
+setMethod("sequence",
+          c(nvec = "flint"),
+          function (nvec, from = .ulong(x = 1L), by = .ulong(x = 1L), ...) {
+              n. <- c(flintLengthAny(nvec),
+                      flintLengthAny(from),
+                      flintLengthAny(by))
+              if (max(n.) > .Machine[["integer.max"]])
+                  stop("too many subsequences")
+              n <- max(n. <- as.integer(n.))
+              if (n.[1L] < n)
+                  nvec <- rep_len(nvec, n)
+              if (n.[2L] < n)
+                  from <- rep_len(from, n)
+              if (n.[3L] < n)
+                  by   <- rep_len(by  , n)
+              l <- vector("list", n)
+              for (i in seq_len(n))
+                  l[[i]] <- seq(from = from[i], by = by[i], length.out = nvec[i])
+              do.call(c, l)
+          })
 
 setMethod("show",
           c(object = "flint"),

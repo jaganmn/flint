@@ -36,6 +36,8 @@
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
 \alias{rep_len,flint-method}
+\alias{seq,flint-method}
+\alias{sequence,flint-method}
 \alias{show,flint-method}
 \alias{summary,flint-method}
 \alias{unique,flint-method}
@@ -202,6 +204,26 @@
       analogues of \code{rep(x, times=)} and
       \code{rep(x, length.out=)} not preserving names, faster than
       \code{rep} when \code{x} has names.}
+    \item{\code{seq}}{
+      \code{signature(... = "flint")}:\cr
+      generates \code{flint} vectors whose elements are equally spaced.
+      This method is dispatched by calls to \code{seq} or \code{seq.int}
+      in which the first positional argument is a \code{flint} vector.
+      Accepted usage is any of \preformatted{seq(length.out=)
+seq(length.out=, by=)
+seq(from=, to=)
+seq(from=, to=, by=)
+seq(from=, to=, length.out=)
+seq(from=, by=, length.out=)
+seq(to=, by=, length.out=)}
+      where \code{length.out=n} and \code{along.with=x} are equivalent
+      for \code{x} of length \code{n}.  Good users name all arguments.}
+    \item{\code{sequence}}{
+      \code{signature(nvec = "flint")}:\cr
+      returns the concatenation of
+      \code{seq(from = from[i], by = by[i], length.out = nvec[i])}
+      after recycling arguments \code{nvec}, \code{from}, and \code{by}
+      to a common length.}
     \item{\code{show}}{
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}

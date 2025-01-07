@@ -12,7 +12,8 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               as.data.frame, c, duplicated, format, is.finite,
               is.infinite, is.na, "is.na<-", is.nan, is.unsorted,
               length, "length<-", log, mean, mtfrm, names, "names<-",
-              print, rep, rep.int, rep_len, summary, unique, xtfrm)
+              print, rep, rep.int, rep_len, seq, sequence, summary,
+              unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
 exportMethods(quantile)
@@ -58,5 +59,7 @@ S3method(print, flint, .S3.print.flint)
 S3method(quantile, flint, .S3.quantile.flint)
 S3method(rep.int, flint, .S3.rep.int.flint)
 S3method(rep_len, flint, .S3.rep_len.flint)
+S3method(seq, flint, .S3.seq.flint)
+S3method(sequence, flint, .S3.sequence.flint)
 S3method(summary, flint, .S3.summary.flint)
 S3method(unique, flint, .S3.unique.flint)

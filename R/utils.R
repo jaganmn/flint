@@ -49,6 +49,17 @@ flintLength <-
 function (object, exact = TRUE)
     .Call(R_flint_length, object, as.logical(exact))
 
+flintLengthAny <-
+function (object, exact = TRUE) {
+    if (is.na(flintClass(object))) {
+        n <- length(object)
+        if (exact)
+            as(n, "ulong")
+        else n
+    }
+    else flintLength(object, exact = exact)
+}
+
 flintNew <-
 function (class)
     .Call(R_flint_new, class)
