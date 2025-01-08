@@ -24,6 +24,7 @@ flintLength(object, exact = TRUE)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
 flintSize(object)
+flintTriple(object)
 flintVersion()
 }
 \arguments{
@@ -95,6 +96,10 @@ flintVersion()
   \code{flintSize(object)} is zero for \code{object} of zero length.
   Another corollary is that the bytes counted by \code{flintSize} and
   the bytes counted by \code{\link{object.size}} are disjoint.
+
+  \code{flintTriple} returns a character vector of length 3 containing
+  the class of \code{object}, the length of \code{object}, and the
+  address stored by \code{object}.
 
   \code{flintVersion} returns a named list of numeric versions with
   elements:

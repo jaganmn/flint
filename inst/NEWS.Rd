@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2025-01-07)}{
+\section{Changes in version 0.0.1 (2025-01-08)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -162,6 +162,10 @@
 
       \item \R{} function \code{flintSize} for calculating the number of
       bytes used by a \code{flint} vector.
+
+      \item \R{} function \code{flintTriple} returning a character
+      vector of length 3 of the form \code{c(class, length, address)},
+      useful if details about a \code{flint} vector must be printed.
 
       \item \R{} function \code{flintVersion} returning a list
       containing header and library versions for \acronym{GNU}
