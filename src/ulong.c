@@ -1026,3 +1026,33 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 	}
 	return ans;
 }
+
+SEXP R_flint_ulong_complement(SEXP s_x, SEXP s_length, SEXP s_nozero)
+{
+	unsigned long int n = ((ulong *) R_flint_get_pointer(s_length))[0];
+	if (n == ULONG_MAX)
+		Rf_error(_("cardinality exceeds maximum %lu"),
+		         ULONG_MAX - 1);
+	unsigned long int j, jx, jy,
+		nx = R_flint_get_length(s_x),
+		ny = 0;
+	const ulong *x = R_flint_get_pointer(s_x);
+	ulong *y;
+	unsigned char *work = flint_calloc(n, 1);
+	for (jx = 0; jx < nx; ++jx)
+		work[x[jx]] = 1;
+	if (LOGICAL_RO(s_nozero)[0])
+		work[0] = 1;
+	for (j = 0; j < n; ++j)
+		ny += work[j];
+	jy = 0;
+	ny = n - ny;
+	y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
+	for (j = 0; j < n; ++j)
+		if (work[j] == 0)
+			y[jy++] = j;
+	flint_free(work);
+	SEXP ans = newObject("ulong");
+	R_flint_set(ans, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
+	return ans;
+}

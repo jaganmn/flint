@@ -8,8 +8,8 @@ function (i)
            "S4" =
                if (is.na(class. <- flintClass(i)) ||
                    any(class. == c("mag", "arf", "acf", "arb", "acb")))
-                   stop(gettextf("invalid subscript class '%s'",
-                                 class(i)),
+                   stop(gettextf("invalid subscript class %s",
+                                 deparse(class(i))),
                         domain = NA)
                else "flint",
            stop(gettextf("invalid subscript type '%s'",
@@ -23,8 +23,8 @@ function (value)
                type.,
            "S4" =
                if (is.na(class. <- flintClass(value)))
-                   stop(gettextf("invalid subassignment value class '%s'",
-                                 class(value)),
+                   stop(gettextf("invalid subassignment value class %s",
+                                 deparse(class(value))),
                         domain = NA)
                else class.,
            stop(gettextf("invalid subassignment value type '%s'",
@@ -38,8 +38,8 @@ function (x)
                                                                                        type.,
            "S4" =
                if (is.na(class. <- flintClass(x)))
-                   stop(gettextf("invalid argument class '%s'",
-                                 class(x)),
+                   stop(gettextf("invalid argument class %s",
+                                 deparse(class(x))),
                         domain = NA)
                else class.,
            stop(gettextf("invalid argument type '%s'",
@@ -53,9 +53,9 @@ setMethod("[",
                   stop("incorrect number of dimensions")
               if (missing(i))
                   return(x)
-              nx <- length(x)
+              nx <- flintLength(x)
+              ni <- flintLengthAny(i)
               ci <- .subscript.class(i)
-              ni <- length(i)
               if (ni == 0L)
               i <- integer(0L)
               else
@@ -70,25 +70,34 @@ setMethod("[",
                                  stop("subscript out of bounds")
                              else {
                                  if (ni < nx) {
-                                     w <- w + rep(seq.int(from = 0L, by = ni, length.out = nx %/% ni + (nx %% ni > 0L)), each = nw)
-                                     if (w[length(w)] > nx)
-                                         w <- w[w <= nx]
+                                     q <- nx %/% ni
+                                     r <- nx %% ni
+                                     w <- w. <- .ulong(x = w)
+                                     if (q >= 1L)
+                                         w <- w + rep(seq(from = .ulong(x = 0L), by = ni, length.out = q), each = flintLength(w))
+                                     if (r >= w[1L])
+                                         w <- c(w, flintLength(w) + w.[w. <= r])
                                  }
                                  w
                              }
                          },
                      "integer" =,
-                     "double" =
+                     "double" =,
+                     "flint" =
                          {
-                             r <- max(0L, i, na.rm = TRUE)
-                             if (r - 1L >= nx)
+                             a <- min(i)
+                             b <- max(i)
+                             if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
-                             r <- min(1L, i, na.rm = TRUE)
-                             if (r >= 1L)
+                             else if (a >= 1L)
                                  i
-                             else if (r > -1L)
+                             else if (a > -1L)
                                  i[i >= 1L]
-                             else seq_len(nx)[i]
+                             else if (b >= 1L)
+                                 stop("negative and positive subscripts cannot be mixed")
+                             else if (nx <= .Machine[["integer.max"]])
+                                 seq_len(as.integer(nx))[as.integer(i)]
+                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
                          },
                      "character" =
                          {
@@ -105,13 +114,13 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               if (...length())
                   stop("incorrect number of dimensions")
-              nx <- length(x)
+              nx <- flintLength(x)
               if (missing(i)) {
               ni <- nx
               i <- NULL
               } else {
+              ni <- flintLengthAny(i)
               ci <- .subscript.class(i)
-              ni <- length(i)
               if (ni == 0L)
               i <- integer(0L)
               else {
@@ -126,25 +135,34 @@ setMethod("[<-",
                                  stop("subscript out of bounds")
                              else {
                                  if (ni < nx) {
-                                     w <- w + rep(seq.int(from = 0L, by = ni, length.out = nx %/% ni + (nx %% ni > 0L)), each = nw)
-                                     if (w[length(w)] > nx)
-                                         w <- w[w <= nx]
+                                     q <- nx %/% ni
+                                     r <- nx %% ni
+                                     w <- w. <- .ulong(x = w)
+                                     if (q >= 1L)
+                                         w <- w + rep(seq(from = .ulong(x = 0L), by = ni, length.out = q), each = flintLength(w))
+                                     if (r >= w[1L])
+                                         w <- c(w, flintLength(w) + w.[w. <= r])
                                  }
                                  w
                              }
                          },
                      "integer" =,
-                     "double" =
+                     "double" =,
+                     "flint" =
                          {
-                             r <- max(0L, i, na.rm = TRUE)
-                             if (r - 1L >= nx)
+                             a <- min(i)
+                             b <- max(i)
+                             if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
-                             r <- min(1L, i, na.rm = TRUE)
-                             if (r >= 1L)
+                             else if (a >= 1L)
                                  i
-                             else if (r > -1L)
+                             else if (a > -1L)
                                  i[i >= 1L]
-                             else seq_len(nx)[i]
+                             else if (b >= 1L)
+                                 stop("negative and positive subscripts cannot be mixed")
+                             else if (nx <= .Machine[["integer.max"]])
+                                 seq_len(as.integer(nx))[as.integer(i)]
+                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
                          },
                      "character" =
                          {
@@ -153,13 +171,13 @@ setMethod("[<-",
                                  stop("subscript out of bounds")
                              m
                          })
-              ni <- length(i)
+              ni <- flintLengthAny(i)
               }
               }
               if (missing(value))
                   stop("missing subassignment value")
+              nv <- flintLengthAny(value)
               cv <- .subassign.class(value)
-              nv <- length(value)
               if (ni > 0L) {
               if (nv == 0L)
                   stop("replacement has length zero")
@@ -179,9 +197,9 @@ setMethod("[[",
                   stop("incorrect number of dimensions")
               if (missing(i))
                   stop("missing subscript")
-              nx <- length(x)
+              nx <- flintlength(x)
+              ni <- flintLengthAny(i)
               ci <- .subscript.class(i)
-              ni <- length(i)
               if (ni > 0L) {
               i <-
               switch(ci,
@@ -197,17 +215,22 @@ setMethod("[[",
                              else w
                          },
                      "integer" =,
-                     "double" =
+                     "double" =,
+                     "flint" =
                          {
-                             r <- max(0L, i, na.rm = TRUE)
-                             if (r - 1L >= nx)
+                             a <- min(i)
+                             b <- max(i)
+                             if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
-                             r <- min(1L, i, na.rm = TRUE)
-                             if (r >= 1L)
+                             else if (a >= 1L)
                                  i
-                             else if (r > -1L)
+                             else if (a > -1L)
                                  i[i >= 1L]
-                             else seq_len(nx)[i]
+                             else if (b >= 1L)
+                                 stop("negative and positive subscripts cannot be mixed")
+                             else if (nx <= .Machine[["integer.max"]])
+                                 seq_len(as.integer(nx))[as.integer(i)]
+                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
                          },
                      "character" =
                          {
@@ -216,7 +239,7 @@ setMethod("[[",
                                  stop("subscript out of bounds")
                              m
                          })
-              ni <- length(i)
+              ni <- flintLengthAny(i)
               }
               if (ni < 1L)
                   stop("attempt to select less than one element")
@@ -232,9 +255,9 @@ setMethod("[[<-",
                   stop("incorrect number of dimensions")
               if (missing(i))
                   stop("missing subscript")
-              nx <- length(x)
+              nx <- flintLength(x)
+              ni <- flintLengthAny(i)
               ci <- .subscript.class(i)
-              ni <- length(i)
               if (ni > 0L) {
               i <-
               switch(ci,
@@ -250,17 +273,22 @@ setMethod("[[<-",
                              else w
                          },
                      "integer" =,
-                     "double" =
+                     "double" =,
+                     "flint" =
                          {
-                             r <- max(0L, i, na.rm = TRUE)
-                             if (r - 1L >= nx)
+                             a <- min(i)
+                             b <- max(i)
+                             if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
-                             r <- min(1L, i, na.rm = TRUE)
-                             if (r >= 1L)
+                             else if (a >= 1L)
                                  i
-                             else if (r > -1L)
+                             else if (a > -1L)
                                  i[i >= 1L]
-                             else seq_len(nx)[i]
+                             else if (b >= 1L)
+                                 stop("negative and positive subscripts cannot be mixed")
+                             else if (nx <= .Machine[["integer.max"]])
+                                 seq_len(as.integer(nx))[as.integer(i)]
+                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
                          },
                      "character" =
                          {
@@ -269,7 +297,7 @@ setMethod("[[<-",
                                  stop("subscript out of bounds")
                              m
                          })
-              ni <- length(i)
+              ni <- flintLengthAny(i)
               }
               if (ni < 1L)
                   stop("attempt to select less than one element")
@@ -277,8 +305,8 @@ setMethod("[[<-",
                   stop("attempt to select more than one element")
               if (missing(value))
                   stop("missing subassignment value")
+              nv <- flintLengthAny(value)
               cv <- .subassign.class(value)
-              nv <- length(value)
               if (nv == 0L)
                   stop("replacement has length zero")
               else if (nv > 1L)

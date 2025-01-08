@@ -38,4 +38,4 @@
 ** DONE export, document class generator functions
 ** DONE configure tests for many missing acf_*, mag_*
 ** DONE abandon 64-bit lengths on 32-bit builds
-** TODO support 'ulong' subscripts
+** DONE support 'ulong' subscripts

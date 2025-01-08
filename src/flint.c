@@ -640,7 +640,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 		*x = R_flint_get_pointer(object);
 	void *y;
 	unsigned long int j,
-		ns = (unsigned long int) XLENGTH(subscript),
+		ns = (TYPEOF(subscript) == OBJSXP) ? R_flint_get_length(subscript) : (unsigned long int) XLENGTH(subscript),
 		nv = R_flint_get_length(value),
 		nx = R_flint_get_length(object),
 		ny = nx;
@@ -709,10 +709,11 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 	const void *x = R_flint_get_pointer(object);
 	void *y;
 	unsigned long int jx, jy,
+		ns = (TYPEOF(subscript) == OBJSXP) ? R_flint_get_length(subscript) : (unsigned long int) XLENGTH(subscript),
 #if 0
 		nx = R_flint_get_length(object),
 #endif
-		ny = (unsigned long int) XLENGTH(subscript);
+		ny = ns;
 	R_CFinalizer_t f;
 	const char *what;
 
