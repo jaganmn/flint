@@ -67,7 +67,7 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{.xData}}{
+    \item{\code{.xData}, \code{names}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
 }
