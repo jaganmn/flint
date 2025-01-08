@@ -190,6 +190,12 @@
       prints \code{\link{format}(x)} and returns \code{x} invisibly.
       For more options, consider \code{print(format(x, \dots), \dots)}
       instead of \code{print(x, \dots)}.}
+    \item{\code{quantile}}{
+      \code{signature(x = "flint")}:\cr
+      returns a \code{flint} vector containing sample quantiles computed
+      according to additional arguments \code{probs} and \code{type};
+      see \code{\link{quantile}}.  Currently, an error is is signaled
+      for \code{x} of length zero and \code{x} containing \code{NaN}.}
     \item{\code{rep}}{
       \code{signature(x = "flint")}:\cr
       repeats \code{x} (or elements of \code{x}) according to optional
@@ -228,6 +234,16 @@ seq(to=, by=, length.out=)}
       \code{signature(object = "flint")}:\cr
       prints \code{\link{format}(object)} and returns \code{NULL}
       invisibly.}
+    \item{\code{summary}}{
+      \code{signature(object = "flint")}:\cr
+      returns a \code{flint} vector containing the minimum, first
+      quartile, median, mean, third quartile, maximum, and (if nonzero)
+      the number of \code{NaN}, unless \code{object} is complex
+      (inherits from \code{\linkS4class{acf}} or
+      \code{\linkS4class{acb}}) or \code{x} has error bounds (inherits
+      from \code{\linkS4class{arb}} or \code{\linkS4class{acb}}) or
+      optional argument \code{triple} is \code{TRUE}, in which case the
+      value is just \code{\link{flintTriple}()} with names.}
     \item{\code{unique}}{
       \code{signature(x = "flint")}:\cr
       returns \code{x[!duplicated(x, \dots)]}.}
