@@ -43,7 +43,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	ulong *y = (ny) ? flint_malloc(ny * sizeof(ulong)) : 0;
+	ulong *y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -343,7 +343,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans;
-		ulong *z = (n) ? flint_malloc(n * sizeof(ulong)) : 0;
+		ulong *z = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 #ifndef __GNUC__
 		ulong a;
 #endif
@@ -587,7 +587,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans;
-		ulong *z = (n) ? flint_malloc(n * sizeof(ulong)) : 0;
+		ulong *z = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 		int over = 0;
 		switch (op) {
 		case  1: /*       "+" */
@@ -841,7 +841,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans;
 		unsigned long int s = (op == 52) ? 2 : 1;
-		ulong *z = flint_malloc(s * sizeof(ulong));
+		ulong *z = flint_calloc(s, sizeof(ulong));
 		int over = 0;
 		switch (op) {
 		case 50: /*     "min" */
@@ -1006,22 +1006,22 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 {
 	unsigned long int
-		m = ((ulong *) R_flint_get_pointer(s_from))[0],
+		j = ((ulong *) R_flint_get_pointer(s_from))[0],
 		n = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
 	int reverse = LOGICAL_RO(s_reverse)[0];
 	SEXP ans = newObject("ulong");
-	ulong *p = (n) ? flint_malloc(n * sizeof(ulong)) : 0;
+	ulong *p = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 	R_flint_set(ans, p, n, (R_CFinalizer_t) &R_flint_ulong_finalize);
 	if (n) {
-	if (m > ULONG_MAX - (n - 1))
+	if (j > ULONG_MAX - (n - 1))
 		Rf_error(_("should never happen ..."));
 	if (reverse) {
 		p += n;
 		while (n--)
-			*(--p) = m++;
+			*(--p) = j++;
 	} else {
 		while (n--)
-			*(p++) = m++;
+			*(p++) = j++;
 	}
 	}
 	return ans;

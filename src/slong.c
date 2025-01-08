@@ -46,7 +46,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		ny = asLength(s_length, __func__);
 	else
 		ny = 0;
-	slong *y = (ny) ? flint_malloc(ny * sizeof(slong)) : 0;
+	slong *y = (ny) ? flint_calloc(ny, sizeof(slong)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
@@ -352,7 +352,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  5: /* "%/%" */
 	{
 		SEXP ans;
-		slong *z = (n) ? flint_malloc(n * sizeof(slong)) : 0;
+		slong *z = (n) ? flint_calloc(n, sizeof(slong)) : 0;
 		slong a, b;
 		int over = 0;
 		switch (op) {
@@ -626,7 +626,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans;
-		slong *z = (n) ? flint_malloc(n * sizeof(slong)) : 0;
+		slong *z = (n) ? flint_calloc(n, sizeof(slong)) : 0;
 		int over = 0;
 		switch (op) {
 		case  1: /*       "+" */
@@ -942,7 +942,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	{
 		SEXP ans;
 		unsigned long int s = (op == 52) ? 2 : 1;
-		slong *z = flint_malloc(s * sizeof(slong));
+		slong *z = flint_calloc(s, sizeof(slong));
 		int over = 0;
 		switch (op) {
 		case 50: /*     "min" */
