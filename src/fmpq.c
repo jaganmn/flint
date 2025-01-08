@@ -381,6 +381,8 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  1: /*   "+" */
 	case  2: /*   "-" */
 	case  3: /*   "*" */
+	case  4: /*  "%%" */
+	case  5: /* "%/%" */
 	case  6: /*   "/" */
 	case  7: /*   "^" */
 	{
@@ -399,6 +401,28 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case 3: /*   "*" */
 			for (j = 0; j < n; ++j)
 				fmpq_mul(z + j, x + j % nx, y + j % ny);
+			break;
+		case 4: /*  "%%" */
+			for (j = 0; j < n; ++j) {
+				if (fmpz_is_zero(fmpq_numref(y + j % ny)))
+				Rf_error(_("quotient with 0 is undefined"));
+				else {
+				fmpq_div(z + j, x + j % nx, y + j % ny);
+				fmpz_fdiv_r(fmpq_numref(z + j), fmpq_numref(z + j), fmpq_denref(z + j));
+				fmpq_mul(z + j, z + j, y + j % ny);
+				}
+			}
+			break;
+		case 5: /* "%/%" */
+			for (j = 0; j < n; ++j) {
+				if (fmpz_is_zero(fmpq_numref(y + j % ny)))
+				Rf_error(_("quotient with 0 is undefined"));
+				else {
+				fmpq_div(z + j, x + j % nx, y + j % ny);
+				fmpz_fdiv_q(fmpq_numref(z + j), fmpq_numref(z + j), fmpq_denref(z + j));
+				fmpz_one(fmpq_denref(z + j));
+				}
+			}
 			break;
 		case 6: /*   "/" */
 			for (j = 0; j < n; ++j)
