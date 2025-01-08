@@ -90,14 +90,14 @@ setMethod("[",
                              if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
                              else if (a >= 1L)
-                                 i
+                                 (if (ci == "flint") as(i         , "ulong") else i)
                              else if (a > -1L)
-                                 i[i >= 1L]
+                                 (if (ci == "flint") as(i[i >= 1L], "ulong") else i)
                              else if (b >= 1L)
                                  stop("negative and positive subscripts cannot be mixed")
                              else if (nx <= .Machine[["integer.max"]])
                                  seq_len(as.integer(nx))[as.integer(i)]
-                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
+                             else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
                          },
                      "character" =
                          {
@@ -155,14 +155,14 @@ setMethod("[<-",
                              if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
                              else if (a >= 1L)
-                                 i
+                                 (if (ci == "flint") as(i         , "ulong") else i)
                              else if (a > -1L)
-                                 i[i >= 1L]
+                                 (if (ci == "flint") as(i[i >= 1L], "ulong") else i)
                              else if (b >= 1L)
                                  stop("negative and positive subscripts cannot be mixed")
                              else if (nx <= .Machine[["integer.max"]])
                                  seq_len(as.integer(nx))[as.integer(i)]
-                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
+                             else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
                          },
                      "character" =
                          {
@@ -223,14 +223,14 @@ setMethod("[[",
                              if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
                              else if (a >= 1L)
-                                 i
+                                 (if (ci == "flint") as(i         , "ulong") else i)
                              else if (a > -1L)
-                                 i[i >= 1L]
+                                 (if (ci == "flint") as(i[i >= 1L], "ulong") else i)
                              else if (b >= 1L)
                                  stop("negative and positive subscripts cannot be mixed")
                              else if (nx <= .Machine[["integer.max"]])
                                  seq_len(as.integer(nx))[as.integer(i)]
-                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
+                             else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
                          },
                      "character" =
                          {
@@ -281,14 +281,14 @@ setMethod("[[<-",
                              if (a + 1L <= -nx || b - 1L >= nx)
                                  stop("subscript out of bounds")
                              else if (a >= 1L)
-                                 i
+                                 (if (ci == "flint") as(i         , "ulong") else i)
                              else if (a > -1L)
-                                 i[i >= 1L]
+                                 (if (ci == "flint") as(i[i >= 1L], "ulong") else i)
                              else if (b >= 1L)
                                  stop("negative and positive subscripts cannot be mixed")
                              else if (nx <= .Machine[["integer.max"]])
                                  seq_len(as.integer(nx))[as.integer(i)]
-                             else .Call(R_flint_ulong_complement, as(-i, "ulong"), nx, TRUE)
+                             else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
                          },
                      "character" =
                          {
@@ -641,7 +641,7 @@ setMethod("print",
 setMethod("quantile",
           c(x = "flint"),
           function (x, probs = .fmpq(num = 0L:4L, den = 4L), type = 7L,
-                    na.rm = FALSE, ...) {
+                    ...) {
               class. <-
               switch(flintClass(x),
                      "slong" =, "ulong" =, "fmpz" =, "fmpq" = "fmpq",
@@ -650,15 +650,12 @@ setMethod("quantile",
                      stop(gettextf("'%s' is not a total order on the range of '%s'",
                                    "<=", "arb"),
                           domain = NA))
-              if (anyNA(x)) {
-                  if (!na.rm)
-                      stop(gettextf("'%s' contains NaN and '%s' is FALSE",
-                                    "x", "na.rm"),
-                           domain = NA)
-                  x <- x[!is.na(x)]
-              }
+              if (anyNA(x))
+                  stop(gettextf("'%s' contains NaN",
+                                "x"),
+                       domain = NA)
               x <- as(x, class.)
-              n <- .fmpz(x = length(x))
+              n <- flintLength(x)
               if (n == 0L)
                   stop(gettextf("'%s' of length zero are not yet supported",
                                 "x"),
