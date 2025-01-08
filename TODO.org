@@ -29,8 +29,8 @@
 ** DONE methods for summary, quantile
 ** DONE methods for as.data.frame
 ** DONE register an S3 method format.flint for use by format.data.frame
-** TODO document generic functions whose default methods seem to work for us
-	toString, seq.int, subset, split, split<-, sort_by, sort, rev, labels, diff
+** DONE document generic functions whose default methods seem to work for us
+	diff, labels, rev, seq.int, sort, sort_by, split, split<-, subset, toString
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage

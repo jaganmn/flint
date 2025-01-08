@@ -248,6 +248,11 @@ seq(to=, by=, length.out=)}
       \code{signature(x = "flint")}:\cr
       returns \code{x[!duplicated(x, \dots)]}.}
   }
+  Methods are on purpose \emph{not} defined for generic functions whose
+  default methods correctly handle objects inheriting from virtual class
+  \code{flint}.  Examples are \code{\link{diff}}, \code{\link{rev}},
+  \code{\link{seq.int}}, \code{\link{sort}}, \code{\link{split}}, and
+  \code{\link{toString}}.
 }
 \seealso{
   The nonvirtual subclasses:
