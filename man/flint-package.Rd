@@ -7,6 +7,7 @@
 \alias{flintPrec}
 \alias{flintRnd}
 \alias{flintSize}
+\alias{flintTriple}
 \alias{flintVersion}
 \title{\R{} Package \pkg{flint}}
 \docType{package}
