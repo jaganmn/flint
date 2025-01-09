@@ -39,4 +39,4 @@
 ** DONE abandon 64-bit lengths on 32-bit builds
 ** DONE support 'flint' subscripts of 'flint' vectors
 ** TODO support 'flint' subscripts of traditional vectors
-** TODO fix all.equal(check.attributes=TRUE)
+** DONE fix all.equal(check.attributes=TRUE)

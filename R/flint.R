@@ -325,24 +325,37 @@ function (target, current,
           formatFUN = function(err, what) format(err),
           ...,
           check.attributes = TRUE,
+          check.names = TRUE,
           check.class = TRUE,
           giveErr = FALSE) {
-    msg <-
+    msg <- NULL
     if (check.attributes) {
+        if (check.names) {
+            nt <- names(target)
+            nc <- names(current)
+            if (length(nt) && length(nc)) {
+                if (is.character(ae <- all.equal.character(nt, nc)))
+                    msg <- c(msg, paste0("Names: ", ae))
+            }
+            else if (length(nt))
+                msg <- c(msg, "names for target but not for current")
+            else if (length(nc))
+                msg <- c(msg, "names for current but not for target")
+        }
         at <- attributes(target)
         ac <- attributes(current)
-        if (is.object(target)) {
-            at[["class"]] <- NULL
-            if (typeof(target) == "S4")
-                at[[".xData"]] <- NULL
+        at[["class"]] <- ac[["class"]] <- NULL
+        at[["names"]] <- ac[["names"]] <- NULL
+        if (!is.na(flintClass(target)))
+        at[[".xData"]] <- NULL
+        if (!is.na(flintClass(current)))
+        ac[[".xData"]] <- NULL
+        if (length(at) || length(ac)) {
+            at <- if (length(nt <- names(at))) at[order(nt)]
+            ac <- if (length(nc <- names(ac))) at[order(nc)]
+            if (is.character(ae <- all.equal(at, ac, tolerance = tolerance, scale = scale, ...)))
+                msg <- c(msg, paste0("Attributes: < ", ae, " >"))
         }
-        if (is.object(current)) {
-            ac[["class"]] <- NULL
-            if (typeof(current) == "S4")
-                ac[[".xData"]] <- NULL
-        }
-        attr.all.equal(`attributes<-`(0L, at), `attributes<-`(0L, ac),
-                       tolerance = tolerance, scale = scale, ...)
     }
     if (!(is.atomic( target) && !is.character( target)) &&
         !(is.atomic(current) && !is.character(current))) {
