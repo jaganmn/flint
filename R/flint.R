@@ -536,6 +536,15 @@ setMethod("c",
           function (x, ..., use.names = TRUE)
               c.flint(x, ..., use.names = use.names))
 
+setMethod("cut",
+          c(x = "flint"),
+          function (x, breaks,
+                    include.lowest = FALSE, right = TRUE, ...)
+              findInterval(x,
+                           vec = breaks,
+                           left.open = right,
+                           rightmost.closed = include.lowest))
+
 setAs("ANY", "flint",
       function (from)
           switch(type. <- typeof(from),
@@ -555,6 +564,37 @@ setMethod("duplicated",
           c(x = "flint"),
           function (x, incomparables = FALSE, ...)
               duplicated(mtfrm(x), incomparables = incomparables, ...))
+
+setMethod("findInterval",
+          c(x = "flint"),
+          function (x, vec,
+                    rightmost.closed = FALSE,
+                    all.inside = FALSE,
+                    left.open = FALSE) {
+              common <- flintClassCommon(c(flintClass(x), flintClassAny(vec)))
+              if (any(common == c("acf", "acb")))
+                  stop(gettextf("'%s' and '%s' are not both real",
+                                "x", "vec"),
+                       domain = NA)
+              if (anyNA(x))
+                  stop(gettextf("'%s' contains NaN",
+                                "x"),
+                       domain = NA)
+              if (length(vec) < 2L)
+                  stop(gettextf("length of '%s' is not greater than or equal to 2",
+                                "vec"),
+                       domain = NA)
+              if (is.na(u <- is.unsorted(vec)) || u)
+                  stop(gettextf("'%s' is not nondecreasing",
+                                "vec"),
+                       domain = NA)
+              x <- as(x, common)
+              vec <- as(vec, common)
+              .Call(R_flint_findinterval, x, vec,
+                    as.logical(left.open),
+                    as.logical(rightmost.closed),
+                    as.logical(all.inside))
+          })
 
 setMethod("is.na<-",
           c(x = "flint"),

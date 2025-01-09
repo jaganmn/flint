@@ -23,7 +23,9 @@
 \alias{all.equal,flint,flint-method}
 \alias{c,flint-method}
 \alias{coerce,ANY,flint-method}
+\alias{cut,flint-method}
 \alias{duplicated,flint-method}
+\alias{findInterval,flint-method}
 \alias{is.na<-,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
@@ -147,9 +149,24 @@
       coerces atomic (except character) vectors \code{from} to the most
       specific subclass of \code{flint} whose range contains the range
       of \code{typeof(from)}.}
+    \item{\code{cut}}{
+      \code{signature(x = "flint")}:\cr
+      returns
+      \code{findInterval(x=x, vec=breaks, left.open=right, rightmost.closed=include.lowest)},
+      hence see below.  The behaviour is consistent with the default
+      method for \code{\link{cut}} with argument \code{labels} set to
+      \code{FALSE}, provided that \code{breaks} is sorted and no element
+      of \code{x} is out of bounds.}
     \item{\code{duplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{duplicated(mtfrm(x), \dots)}.}
+    \item{\code{findInterval}}{
+      returns a \code{\linkS4class{ulong}} vector of length equal to the
+      length of \code{x}, following the documented behaviour of the
+      \pkg{base} function, hence see \code{\link{findInterval}}.  A
+      caveat is that an error is signaled if \code{x} contains
+      \code{NaN}, because \code{ulong} has no representation for \R{}'s
+      missing value \code{\link{NA_integer_}}.}
     \item{\code{is.na<-}}{
       \code{signature(x = "flint")}:\cr
       returns the value of \code{x} after \code{x[value] <- \var{na}},

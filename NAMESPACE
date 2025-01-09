@@ -9,11 +9,11 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               anyDuplicated, anyNA, as.raw, as.logical, as.integer,
               as.numeric, as.complex, as.character, as.list,
               as.expression, as.vector, as.Date, as.POSIXct, as.POSIXlt,
-              as.data.frame, c, duplicated, format, is.finite,
-              is.infinite, is.na, "is.na<-", is.nan, is.unsorted,
-              length, "length<-", log, mean, mtfrm, names, "names<-",
-              print, rep, rep.int, rep_len, seq, sequence, summary,
-              unique, xtfrm)
+              as.data.frame, c, cut, duplicated, findInterval, format,
+              is.finite, is.infinite, is.na, "is.na<-", is.nan,
+              is.unsorted, length, "length<-", log, mean, mtfrm, names,
+              "names<-", print, rep, rep.int, rep_len, seq, sequence,
+              summary, unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
 exportMethods(quantile)

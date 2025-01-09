@@ -179,6 +179,253 @@ SEXP R_flint_class(SEXP object)
 	return ans;
 }
 
+SEXP R_flint_findinterval(SEXP object, SEXP breaks,
+                          SEXP s_left_open,
+                          SEXP s_rightmost_closed,
+                          SEXP s_all_inside)
+{
+	if (XLENGTH(s_left_open) == 0)
+		Rf_error(_("'%s' of length zero in '%s'"),
+		         "left.open", "findInterval");
+	if (XLENGTH(s_rightmost_closed) == 0)
+		Rf_error(_("'%s' of length zero in '%s'"),
+		         "rightmost.closed", "findInterval");
+	if (XLENGTH(s_all_inside) == 0)
+		Rf_error(_("'%s' of length zero in '%s'"),
+		         "all.inside", "findInterval");
+	int left_open = LOGICAL_RO(s_left_open)[0],
+		rightmost_closed = LOGICAL_RO(s_rightmost_closed)[0],
+		all_inside = LOGICAL_RO(s_all_inside)[0],
+		chk;
+	R_flint_class_t class = R_flint_get_class(object);
+	const void
+		*x = R_flint_get_pointer(object),
+		*b = R_flint_get_pointer(breaks);
+	unsigned long int j,
+		nx = R_flint_get_length(object),
+		nb = R_flint_get_length(breaks),
+		ny = nx,
+		ilo = 0, ihi, iav, ist, iof = (all_inside) ? 1 : 0;
+	SEXP ans = newObject("ulong");
+	ulong *y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
+	R_flint_set(ans, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
+
+#define slong_cmp_l(x, jx, b, jb)                x[jx] < b[jb]
+#define ulong_cmp_l(x, jx, b, jb)                x[jx] < b[jb]
+#define  fmpz_cmp_l(x, jx, b, jb) fmpz_cmp(x + jx, b + jb) < 0
+#define  fmpq_cmp_l(x, jx, b, jb) fmpq_cmp(x + jx, b + jb) < 0
+#define   mag_cmp_l(x, jx, b, jb)  mag_cmp(x + jx, b + jb) < 0
+#define   arf_cmp_l(x, jx, b, jb)  arf_cmp(x + jx, b + jb) < 0
+
+#define slong_cmp_le(x, jx, b, jb)                x[jx] <= b[jb]
+#define ulong_cmp_le(x, jx, b, jb)                x[jx] <= b[jb]
+#define  fmpz_cmp_le(x, jx, b, jb) fmpz_cmp(x + jx, b + jb) <= 0
+#define  fmpq_cmp_le(x, jx, b, jb) fmpq_cmp(x + jx, b + jb) <= 0
+#define   mag_cmp_le(x, jx, b, jb)  mag_cmp(x + jx, b + jb) <= 0
+#define   arf_cmp_le(x, jx, b, jb)  arf_cmp(x + jx, b + jb) <= 0
+
+#define TEMPLATE(name, xptr_t) \
+	do { \
+		xptr_t x__ = x; \
+		xptr_t b__ = b; \
+		--b__; \
+		if (left_open) { \
+		for (j = 0; j < nx; ++j) { \
+			if (ilo == 0) { \
+				if (name##_cmp_le(x__, j, b__, 1)) { \
+					y[j] = (all_inside || (rightmost_closed && !(name##_cmp_l(x__, j, b__, 1)))) ? 1 : 0; \
+					continue; \
+				} \
+				ilo = 1; \
+			} \
+			if ((ihi = ilo + 1) >= nb) { \
+				if (name##_cmp_l(b__, nb, x__, j)) { \
+					y[j] = nb - iof; \
+					continue; \
+				} \
+				ilo = nb - 1; \
+				ihi = nb; \
+			} \
+			if (name##_cmp_le(x__, j, b__, ihi)) { \
+				if (name##_cmp_l(b__, ilo, x__, j)) { \
+					y[j] = ilo; \
+					continue; \
+				} \
+				ist = 1; \
+				chk = 1; \
+				while (ist && ist < ilo) { \
+					ihi = ilo; \
+					ilo -= ist; \
+					if (name##_cmp_l(b__, ilo, x__, j)) { \
+						chk = 0; \
+						break; \
+					} \
+					ist = ist << 1; \
+				} \
+				if (chk) { \
+					ihi = ilo; \
+					if (name##_cmp_le(x__, j, b__, 1)) { \
+						y[j] = (all_inside || (rightmost_closed && !(name##_cmp_l(x__, j, b__, 1)))) ? 1 : 0; \
+						ilo = 0; \
+						continue; \
+					} \
+					ilo = 1; \
+				} \
+			} else { \
+				ist = 1; \
+				chk = 1; \
+				while (ist && ist < nb - ihi) { \
+					ilo = ihi; \
+					ihi += ist; \
+					if (name##_cmp_le(x__, j, b__, ihi)) { \
+						chk = 0; \
+						break; \
+					} \
+					ist = ist << 1; \
+				} \
+				if (chk) { \
+					ilo = ihi; \
+					if (name##_cmp_l(b__, nb, x__, j)) { \
+						y[j] = nb - iof; \
+						ihi = nb; \
+						continue; \
+					} \
+					ihi = nb - 1; \
+				} \
+			} \
+			while (1) { \
+				iav = ilo + (ihi - ilo) / 2; \
+				if (iav == ilo) { \
+					y[j] = ilo; \
+					break; \
+				} \
+				else if (name##_cmp_l(b__, iav, x__, j)) \
+					ilo = iav; \
+				else \
+					ihi = iav; \
+			} \
+		} \
+		} else { \
+		for (j = 0; j < nx; ++j) { \
+			if (ilo == 0) { \
+				if (name##_cmp_l(x__, j, b__, 1)) { \
+					y[j] = iof; \
+					continue; \
+				} \
+				ilo = 1; \
+			} \
+			if ((ihi = ilo + 1) >= nb) { \
+				if (name##_cmp_le(b__, nb, x__, j)) { \
+					y[j] = (all_inside || (rightmost_closed && !(name##_cmp_l(b__, nb, x__, j)))) ? nb - 1 : nb; \
+					continue; \
+				} \
+				ilo = nb - 1; \
+				ihi = nb; \
+			} \
+			if (name##_cmp_l(x__, j, b__, ihi)) { \
+				if (name##_cmp_le(b__, ilo, x__, j)) { \
+					y[j] = ilo; \
+					continue; \
+				} \
+				ist = 1; \
+				chk = 1; \
+				while (ist && ist < ilo) { \
+					ihi = ilo; \
+					ilo -= ist; \
+					if (name##_cmp_le(b__, ilo, x__, j)) { \
+						chk = 0; \
+						break; \
+					} \
+					ist = ist << 1; \
+				} \
+				if (chk) { \
+					ihi = ilo; \
+					if (name##_cmp_l(x__, j, b__, 1)) { \
+						y[j] = iof; \
+						ilo = 0; \
+						continue; \
+					} \
+					ilo = 1; \
+				} \
+			} else { \
+				ist = 1; \
+				chk = 1; \
+				while (ist && ist < nb - ihi) { \
+					ilo = ihi; \
+					ihi += ist; \
+					if (name##_cmp_l(x__, j, b__, ihi)) { \
+						chk = 0; \
+						break; \
+					} \
+					ist = ist << 1; \
+				} \
+				if (chk) { \
+					ilo = ihi; \
+					if (name##_cmp_le(b__, nb, x__, j)) { \
+						y[j] = (all_inside || (rightmost_closed && !(name##_cmp_l(b__, nb, x__, j)))) ? nb - 1 : nb; \
+						ihi = nb; \
+						continue; \
+					} \
+					ihi = nb - 1; \
+				} \
+			} \
+			while (1) { \
+				iav = ilo + (ihi - ilo) / 2; \
+				if (iav == ilo) { \
+					y[j] = ilo; \
+					break; \
+				} \
+				else if (name##_cmp_le(b__, iav, x__, j)) \
+					ilo = iav; \
+				else \
+					ihi = iav; \
+			} \
+		} \
+		} \
+	} while (0)
+
+	switch (class) {
+	case R_FLINT_CLASS_SLONG:
+		TEMPLATE(slong, const slong *);
+		break;
+	case R_FLINT_CLASS_ULONG:
+		TEMPLATE(ulong, const ulong *);
+		break;
+	case R_FLINT_CLASS_FMPZ:
+		TEMPLATE(fmpz, const fmpz *);
+		break;
+	case R_FLINT_CLASS_FMPQ:
+		TEMPLATE(fmpq, const fmpq *);
+		break;
+	case R_FLINT_CLASS_MAG:
+		TEMPLATE(mag, mag_srcptr);
+		break;
+	case R_FLINT_CLASS_ARF:
+		TEMPLATE(arf, arf_srcptr);
+		break;
+	default:
+		Rf_error(_("should never happen ..."));
+	}
+
+#undef TEMPLATE
+
+#undef slong_cmp_l
+#undef ulong_cmp_l
+#undef  fmpz_cmp_l
+#undef  fmpq_cmp_l
+#undef   mag_cmp_l
+#undef   arf_cmp_l
+
+#undef slong_cmp_le
+#undef ulong_cmp_le
+#undef  fmpz_cmp_le
+#undef  fmpq_cmp_le
+#undef   mag_cmp_le
+#undef   arf_cmp_le
+
+	return ans;
+}
+
 SEXP R_flint_identical(SEXP object, SEXP reference)
 {
 	R_flint_class_t class = R_flint_get_class(reference);

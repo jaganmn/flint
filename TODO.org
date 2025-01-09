@@ -21,10 +21,9 @@
 ** DONE x[i] <- value should conditionally promote 'x' to class(value)
 ** DONE methods for Summary, mean not ignoring '...'
 ** DONE methods for as.POSIXlt, as.POSIXct, as.Date
-** TODO methods for cut
+** DONE methods for cut, findInterval
 ** DONE methods for is.na<-
 ** DONE methods for is.unsorted
-** TODO methods for pretty
 ** DONE methods for seq, sequence
 ** DONE methods for summary, quantile
 ** DONE methods for as.data.frame
@@ -38,4 +37,6 @@
 ** DONE export, document class generator functions
 ** DONE configure tests for many missing acf_*, mag_*
 ** DONE abandon 64-bit lengths on 32-bit builds
-** DONE support 'ulong' subscripts
+** DONE support 'flint' subscripts of 'flint' vectors
+** TODO support 'flint' subscripts of traditional vectors
+** TODO fix all.equal(check.attributes=TRUE)

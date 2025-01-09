@@ -10,6 +10,13 @@ flintClass <-
 function (object)
     .Call(R_flint_class, object)
 
+flintClassAny <-
+function (object) {
+    if (is.na(class. <- flintClass(object)))
+        typeof(object)
+    else class.
+}
+
 flintClassCommon <-
 function (classes, strict = TRUE) {
     classes. <-
