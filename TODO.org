@@ -1,3 +1,8 @@
+* TODO flint 0.0.2
+
+** TODO random number generation
+
+
 * TODO flint 0.0.1
 
 ** DONE 'names' slot for the virtual class
@@ -29,7 +34,9 @@
 ** DONE methods for as.data.frame
 ** DONE register an S3 method format.flint for use by format.data.frame
 ** DONE document generic functions whose default methods seem to work for us
-	diff, labels, rev, seq.int, sort, sort_by, split, split<-, subset, toString
+	as.character, as.symbol, as.pairlist, as.list, as.expression,
+	diff, labels, rev, seq.int, sort, sort_by, split, split<-, subset,
+	toString
 ** TODO document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage
@@ -38,6 +45,6 @@
 ** DONE configure tests for many missing acf_*, mag_*
 ** DONE abandon 64-bit lengths on 32-bit builds
 ** DONE support 'flint' subscripts of 'flint' vectors
-** TODO support 'flint' subscripts of traditional vectors
+** DONE support 'flint' subscripts of traditional vectors
 ** DONE fix all.equal(check.attributes=TRUE)
 ** DONE fix coercions to character, symbol, pairlist, list, expression
