@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2025-01-08)}{
+\section{Changes in version 0.0.1 (2025-01-10)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -111,8 +111,7 @@
       \code{Ops}, \code{Rad}, \code{Rad<-}, \code{Real}, \code{Real<-},
       \code{Summary}, \code{all.equal}, \code{anyDuplicated},
       \code{anyNA}, \code{as.raw}, \code{as.logical}, \code{as.integer},
-      \code{as.numeric}, \code{as.complex}, \code{as.character},
-      \code{as.list}, \code{as.expression}, \code{as.vector},
+      \code{as.numeric}, \code{as.complex}, \code{as.vector},
       \code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt},
       \code{as.data.frame}, \code{coerce}, \code{cut},
       \code{duplicated}, \code{findInterval}, \code{format},

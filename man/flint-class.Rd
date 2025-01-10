@@ -11,9 +11,6 @@
 \alias{as.double,flint-method} % stub
 \alias{as.numeric,flint-method}
 \alias{as.complex,flint-method}
-\alias{as.character,flint-method}
-\alias{as.list,flint-method}
-\alias{as.expression,flint-method}
 \alias{as.Date,flint-method}
 \alias{as.POSIXct,flint-method}
 \alias{as.POSIXlt,flint-method}
@@ -120,19 +117,13 @@
     \item{\code{anyDuplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{anyDuplicated(mtfrm(x), \dots)}.}
-    \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}, \code{as.list}, \code{as.expression}}{
+    \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}}{
       \code{signature(x = "flint")}:\cr
       returns the value of \code{as.vector(x, mode = *)}.  Methods for
       \code{as.vector} must be defined for subclasses of \code{flint}.
       Note that \code{as.double} dispatches internally the method for
       \code{as.numeric}, so there is no method for \code{as.double};
       see also \code{\link{as.numeric}}, section \sQuote{S4 Methods}.}
-    \item{\code{as.character}}{
-      \code{signature(x = "flint")}:\cr
-      returns the value of
-      \code{\link[=format-methods]{format}(x, digits = 15L, rnd = "N")}.
-      where 15 is chosen to match the internal default method; see
-      \code{\link{as.character}}.}
     \item{\code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt}}{
       \code{signature(x = "flint")}:\cr
       coerces the argument with \code{as.vector} and dispatches.}
@@ -267,9 +258,11 @@ seq(to=, by=, length.out=)}
   }
   Methods are on purpose \emph{not} defined for generic functions whose
   default methods correctly handle objects inheriting from virtual class
-  \code{flint}.  Examples are \code{\link{diff}}, \code{\link{rev}},
-  \code{\link{seq.int}}, \code{\link{sort}}, \code{\link{split}}, and
-  \code{\link{toString}}.
+  \code{flint}, typically by calling \emph{other} generic functions for
+  which methods \emph{are} defined.  Examples are
+  \code{\link{as.character}}, \code{\link{as.list}}, \code{\link{diff}},
+  \code{\link{rev}}, \code{\link{seq.int}}, \code{\link{sort}}, and
+  \code{\link{split}}.
 }
 \seealso{
   The nonvirtual subclasses:

@@ -22,8 +22,6 @@
 \alias{Summary,fmpz-method}
 \alias{anyNA,fmpz-method}
 \alias{as.vector,fmpz-method}
-\alias{as.vector,fmpz-method}
-\alias{as.vector,fmpz-method}
 \alias{coerce,ANY,fmpz-method}
 \alias{initialize,fmpz-method}
 \alias{is.finite,fmpz-method}
@@ -117,7 +115,10 @@
       to the nearest representable number in the direction of zero,
       unless the element exceeds \code{.Machine[["double.xmax"]]} in
       absolute value, in which case \code{-Inf} or \code{Inf} is
-      introduced with a warning.}
+      introduced with a warning.  Coercion to types \code{"character"},
+      \code{"symbol"} (synonym \code{"name"}), \code{"pairlist"},
+      \code{"list"}, and \code{"expression"}, which are not
+      \dQuote{number-like}, is handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
       returns \code{.fmpz(x = from)}.  An error is signaled if the class

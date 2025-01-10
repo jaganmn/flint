@@ -226,10 +226,10 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	return object;
 }
 
-SEXP R_flint_arf_vector(SEXP object)
+SEXP R_flint_arf_atomic(SEXP object)
 {
 	unsigned long int j, n = R_flint_get_length(object);
-	ERROR_TOO_LONG(n);
+	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arf_srcptr x = R_flint_get_pointer(object);
@@ -260,7 +260,7 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
 	unsigned long int j, n = R_flint_get_length(object);
-	ERROR_TOO_LONG(n);
+	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
@@ -472,7 +472,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n);
+		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
 		int *z = LOGICAL(ans);
 		switch (op) {
@@ -954,7 +954,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  6: /*   "is.finite" */
 	case  7: /*           "!" */
 	{
-		ERROR_TOO_LONG(n);
+		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
 		int *z = LOGICAL(ans);
 		switch (op) {

@@ -11,7 +11,7 @@ cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
         "arb", "acb")
 cl.complexlike <- cl == "acf" | cl == "acb"
 basic <- c("raw", "logical", "integer", "double", "numeric", "complex",
-           "list", "expression", "vector")
+           "vector")
 zu <- lapply(cl, function (s) new(s, x = c(0, 1)))
 for (t in basic) {
     as. <- match.fun(paste0("as.", t))

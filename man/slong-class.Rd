@@ -161,7 +161,11 @@
       vector containing the result of converting each element of
       \code{x} to the range of double, rounding if the value is not
       exactly representable in double precision.  The rounding mode is
-      to the nearest representable number in the direction of zero.}
+      to the nearest representable number in the direction of zero.
+      Coercion to types \code{"character"}, \code{"symbol"} (synonym
+      \code{"name"}), \code{"pairlist"}, \code{"list"}, and
+      \code{"expression"}, which are not \dQuote{number-like}, is
+      handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "slong")}:\cr
       \code{signature(from = "ANY", to = "ulong")}:\cr

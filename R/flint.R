@@ -498,18 +498,6 @@ setMethod("as.complex",
           c(x = "flint"),
           function (x, ...) as.vector(x, "complex"))
 
-setMethod("as.character",
-          c(x = "flint"),
-          function (x, ...) format(`names<-`(x, NULL), digits = 15L, rnd = "N"))
-
-setMethod("as.list",
-          c(x = "flint"),
-          function (x, ...) as.vector(x, "list"))
-
-setMethod("as.expression",
-          c(x = "flint"),
-          function (x, ...) as.vector(x, "expression"))
-
 setMethod("as.Date",
           c(x = "flint"),
           function (x, ...)

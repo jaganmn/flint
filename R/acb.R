@@ -144,7 +144,12 @@ setMethod("anyNA",
 setMethod("as.vector",
           c(x = "acb"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_acb_vector, x), mode))
+              switch(mode,
+                     "pairlist" =, "list" =, "expression" =
+                         .Call(R_flint_list, x, mode),
+                     "symbol" =, "name" =, "character" =
+                         as.vector(format(x, digits = 15L, rnd = "N"), mode),
+                     as.vector(.Call(R_flint_acb_atomic, x), mode)))
 
 setAs("ANY", "acb",
       function (from)

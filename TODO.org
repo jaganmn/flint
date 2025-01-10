@@ -40,3 +40,4 @@
 ** DONE support 'flint' subscripts of 'flint' vectors
 ** TODO support 'flint' subscripts of traditional vectors
 ** DONE fix all.equal(check.attributes=TRUE)
+** DONE fix coercions to character, symbol, pairlist, list, expression

@@ -93,16 +93,12 @@ do { \
 		         func); \
 } while (0)
 
-#ifdef R_FLINT_ABI_64
-#define ERROR_TOO_LONG(n) \
+#define ERROR_TOO_LONG(n, nmax) \
 do { \
-	if (n > R_XLEN_T_MAX) \
-		Rf_error(_("value length would exceed maximum %ld"), \
-		         (long int) R_XLEN_T_MAX); \
+	if ((n) > (nmax)) \
+		Rf_error(_("value length would exceed maximum %llu"), \
+		         (unsigned long long int) (nmax)); \
 } while (0)
-#else
-#define ERROR_TOO_LONG(n)
-#endif
 
 #define ARB_CONTAINS_NAN(x) \
 	(arf_is_nan(arb_midref(x)))

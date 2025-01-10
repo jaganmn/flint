@@ -152,7 +152,12 @@ setMethod("anyNA",
 setMethod("as.vector",
           c(x = "fmpq"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_fmpq_vector, x), mode))
+              switch(mode,
+                     "pairlist" =, "list" =, "expression" =
+                         .Call(R_flint_list, x, mode),
+                     "symbol" =, "name" =, "character" =
+                         as.vector(format(x), mode),
+                     as.vector(.Call(R_flint_fmpq_atomic, x), mode)))
 
 setAs("ANY", "fmpq",
       function (from)

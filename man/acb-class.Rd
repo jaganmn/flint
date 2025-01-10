@@ -131,7 +131,10 @@
       number (with precedence to even significands in case of ties),
       unless a midpoint exceeds \code{.Machine[["double.xmax"]]} in
       absolute value, in which case \code{-Inf} or \code{Inf} is
-      introduced with a warning.}
+      introduced with a warning.  Coercion to types \code{"character"},
+      \code{"symbol"} (synonym \code{"name"}), \code{"pairlist"},
+      \code{"list"}, and \code{"expression"}, which are not
+      \dQuote{number-like}, is handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acb")}:\cr
       returns \code{.acb(x = from)}.  An error is signaled if the class

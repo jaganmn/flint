@@ -128,7 +128,12 @@ setMethod("anyNA",
 setMethod("as.vector",
           c(x = "slong"),
           function (x, mode = "any")
-              as.vector(.Call(R_flint_slong_vector, x), mode))
+              switch(mode,
+                     "pairlist" =, "list" =, "expression" =
+                         .Call(R_flint_list, x, mode),
+                     "symbol" =, "name" =, "character" =
+                         as.vector(format(x), mode),
+                     as.vector(.Call(R_flint_slong_atomic, x), mode)))
 
 setAs("ANY", "slong",
       function (from)

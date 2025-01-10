@@ -21,13 +21,18 @@ flintClassCommon <-
 function (classes, strict = TRUE) {
     classes. <-
     c("NULL", "raw", "logical", "integer", "double", "complex",
+      "symbol", "pairlist", "list", "expression",
       "ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
       "arb", "acb")
     m <- match(classes., classes, 0L) > 0L
-    if (!strict && (w <- max(1L, which(m))) <= 6L)
-        return(classes.[w])
+    if (!strict && (w <- max(1L, which(m))) <= 10L)
+        return(classes.[if (w == 7L || w == 8L) 9L else w])
     names(m) <- classes.
-    if (m[["acb"]] || m[["arb"]]) {
+    if (m[["expression"]])
+        "expression"
+    else if (m[["symbol"]] || m[["pairlist"]] || m[["list"]])
+        "list"
+    else if (m[["acb"]] || m[["arb"]]) {
         if (m[["acb"]] || m[["acf"]] || m[["complex"]])
             "acb"
         else "arb"

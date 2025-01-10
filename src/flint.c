@@ -492,6 +492,48 @@ SEXP R_flint_length(SEXP object, SEXP s_exact)
 	return ans;
 }
 
+SEXP R_flint_list(SEXP object, SEXP s_type)
+{
+	const char *type = CHAR(STRING_ELT(s_type, 0));
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	unsigned long int j, n = R_flint_get_length(object);
+	ERROR_TOO_LONG(n, (type[0] == 'p') ? INT_MAX : R_XLEN_T_MAX);
+	SEXP tmp, ans = PROTECT((type[0] == 'p') ? Rf_allocList((int) n) : Rf_allocVector((type[0] == 'l') ? VECSXP : EXPRSXP, (R_xlen_t) n));
+
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__ = x; \
+		yptr_t y__; \
+		if (type[0] == 'p') { \
+			SEXP a = ans; \
+			for (j = 0; j < n; ++j) { \
+				y__ = flint_calloc(1, sizeof(elt_t)); \
+				name##_set(y__, x__ + j); \
+				tmp = newObject(#name); \
+				R_flint_set(tmp, y__, 1, (R_CFinalizer_t) &R_flint_##name##_finalize); \
+				SETCAR(a, tmp); \
+				a = CDR(a); \
+			} \
+		} else { \
+			for (j = 0; j < n; ++j) { \
+				y__ = flint_calloc(1, sizeof(elt_t)); \
+				name##_set(y__, x__ + j); \
+				tmp = newObject(#name); \
+				R_flint_set(tmp, y__, 1, (R_CFinalizer_t) &R_flint_##name##_finalize); \
+				SET_VECTOR_ELT(ans, (R_xlen_t) j, tmp); \
+			} \
+		} \
+	} while (0)
+
+	R_FLINT_SWITCH(class, TEMPLATE);
+
+#undef TEMPLATE
+
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXP R_flint_new(SEXP class)
 {
 	return newObject(CHAR(STRING_ELT(class, 0)));
@@ -511,7 +553,7 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 	const char *what;
 
 	if (R_flint_get_length(s_lengthout) != 1)
-		Rf_error(_("length(%s) not equal to 1 in '%s'"),
+		Rf_error(_("length of '%s' is not equal to 1 in '%s'"),
 		         "value", "length<-");
 	ny = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
 	n0 = (nx < ny) ? nx : ny;
@@ -568,7 +610,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 	const char *what;
 
 	if (R_flint_get_length(s_each) != 1)
-		Rf_error(_("length(%s) not equal to 1 in '%s'"),
+		Rf_error(_("length of '%s' is not equal to 1 in '%s'"),
 		         "each", "rep");
 	ulong i, each = ((ulong *) R_flint_get_pointer(s_each))[0];
 	if (each > 0 && nx > (unsigned long int) -1 / each)
@@ -629,7 +671,7 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 	const char *what;
 
 	if (R_flint_get_length(s_lengthout) != 1)
-		Rf_error(_("length(%s) not equal to 1 in '%s'"),
+		Rf_error(_("length of '%s' is not equal to 1 in '%s'"),
 		         "length.out", "rep");
 	ny = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
 	if (ny == 0)
@@ -703,7 +745,7 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 
 	unsigned long int ntimes = R_flint_get_length(s_times);
 	if (ntimes != 1 && ntimes != nx)
-		Rf_error(_("length(%s) not equal to 1 or length(%s) in '%s'"),
+		Rf_error(_("length of '%s' is not equal to 1 or length(%s) in '%s'"),
 		         "times", "x", "rep");
 	ulong i, t;
 	const ulong *times = R_flint_get_pointer(s_times);

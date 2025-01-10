@@ -127,7 +127,10 @@
       returns \code{as.vector(y, mode)}, where \code{y} is a double
       vector containing the result of converting each element of
       \code{x} to the range of double, rounding in the direction of
-      \code{Inf}, not always to nearest.}
+      \code{Inf}, not always to nearest.  Coercion to types
+      \code{"character"}, \code{"symbol"} (synonym \code{"name"}),
+      \code{"pairlist"}, \code{"list"}, and \code{"expression"}, which
+      are not \dQuote{number-like}, is handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
       returns \code{.mag(x = from)}.  An error is signaled if the class

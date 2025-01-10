@@ -349,10 +349,10 @@ SEXP R_flint_acb_part(SEXP object, SEXP s_op)
 	return ans;
 }
 
-SEXP R_flint_acb_vector(SEXP object)
+SEXP R_flint_acb_atomic(SEXP object)
 {
 	unsigned long int j, n = R_flint_get_length(object);
-	ERROR_TOO_LONG(n);
+	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acb_srcptr x = R_flint_get_pointer(object);
@@ -453,7 +453,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n);
+		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
 		int *z = LOGICAL(ans);
 		switch (op) {
@@ -994,7 +994,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  6: /*   "is.finite" */
 	case  7: /*           "!" */
 	{
-		ERROR_TOO_LONG(n);
+		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
 		int *z = LOGICAL(ans);
 		switch (op) {
