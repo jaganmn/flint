@@ -492,6 +492,7 @@ SEXP R_flint_length(SEXP object, SEXP s_exact)
 	return ans;
 }
 
+/* FIXME: LISTSXP and VECSXP keeping names for strict compatibility */
 SEXP R_flint_list(SEXP object, SEXP s_type)
 {
 	const char *type = CHAR(STRING_ELT(s_type, 0));
