@@ -13,16 +13,11 @@ subclasses named after corresponding C types:
 `ulong` | fixed precision (32-bit or 64-bit) unsigned integers.
  `fmpz` | arbitrary precision signed integers.
  `fmpq` | rational numbers with `fmpz` numerator and denominator.
-  `mag` | unsigned floating-point real numbers with fixed precision
-          (30-bit) significand and `fmpz` exponent.
-  `arf` | floating-point real numbers with arbitrary precision.
-          significand and `fmpz` exponent.
-  `acf` | floating-point complex numbers with `arf` real and imaginary
-          parts.
-  `arb` | real balls with `arf` midpoint and `mag` radius, of the form
-          `(a +/- b)`.
-  `acb` | complex balls with `arb` real and imaginary parts, of the form
-          `(a +/- b)+(c +/- d)i`.
+  `mag` | unsigned floating-point real numbers with fixed precision (30-bit) significand and `fmpz` exponent.
+  `arf` | floating-point real numbers with arbitrary precision significand and `fmpz` exponent.
+  `acf` | floating-point complex numbers with `arf` real and imaginary parts.
+  `arb` | real balls with `arf` midpoint and `mag` radius, of the form `(a +/- b)`.
+  `acb` | complex balls with `arb` real and imaginary parts, of the form `(a +/- b)+(c +/- d)i`.
 
 Classes `arb` and `acb` support arithmetic with rigorous error
 propagation ("ball arithmetic").  S4 methods are defined for most
