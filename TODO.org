@@ -1,6 +1,7 @@
 * TODO flint 0.0.2
 
 ** TODO random number generation
+** TODO greater coverage of special functions
 
 
 * TODO flint 0.0.1

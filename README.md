@@ -24,7 +24,7 @@ propagation ("ball arithmetic").  S4 methods are defined for most
 generic functions in **base**, partly by way of group generic functions
 in **methods**, so that one can typically handle `flint` vectors just
 as one would handle traditional numeric and complex vectors.  By design,
-`flint` vectors and atomic vectors are interoperable, and methods will
+`flint` vectors and atomic vectors are interoperable, and methods
 promote arguments as necessary.
 
 ```
@@ -130,3 +130,19 @@ you can also do:
 > help("flint-class", package = "flint") # the virtual class
 > help("arb-class", package = "flint") # a nonvirtual class
 ```
+
+## Bug reports and feature requests
+
+Please use the issue tracker to report bugs and request features:
+https://github.com/jaganmn/flint.
+
+The focus of version 0.0.1 has been the implementation of S4 classes,
+generic functions, and methods, rather than extensive coverage of
+entry points in the FLINT C library.  Nonetheless, as a starting
+point, version 0.0.1 provides an R interface to certain entry points
+so that users can already compute (analytically continued) zeta, gamma, 
+and hypergeometric functions as well as Lambert's W.
+
+If there are entry points to which you need an R interface, then just
+let me know, ideally including in your request links to the online
+documentation: https://flintlib.org/doc/.
