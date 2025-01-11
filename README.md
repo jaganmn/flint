@@ -83,29 +83,28 @@ R package **flint** links C libraries FLINT, GNU MPFR, and GNU MP.
 Headers and libraries must be found on the preprocessor and linker
 search paths when installing **flint** from sources.
 
-On Linux, do one of the following depending on the package manager:
+If you obtained R from your operating system's package manager, then
+use the same package manager to install FLINT:
 
 ```
 $ sudo apt install libflint-dev
 $ sudo dnf install flint-devel
 $ sudo yum install flint-devel
 $ sudo pacman -S flint
-```
-
-On macOS, if you obtained R from a CRAN binary, then follow the
-instructions [here](https://mac.r-project.org/bin/) for installing
-architecture-specific binaries for packages `flint`, `mpfr`, and `gmp`.
-Otherwise, if you obtained R from Homebrew or MacPorts, then do one
-of the following depending on the package manager:
-
-```
 $ brew install flint
 $ sudo port install flint
 ```
 
-On Windows, use the headers and libraries provided by 
-[Rtools](https://cran.r-project.org/bin/windows/Rtools/)
-since Rtools44 (r6346).
+GNU MPFR and GNU MP are dependencies of FLINT, so they should be
+installed (if not already) automatically.
+
+If you use macOS and you obtained R from a CRAN binary, then follow the
+instructions [here](https://mac.r-project.org/bin/) to install
+architecture-specific binaries for packages `flint`, `mpfr`, and `gmp`.
+
+If you use Windows and you obtained R from a CRAN binary, then install
+[Rtools](https://cran.r-project.org/bin/windows/Rtools/).  The headers
+and libraries that you need are available as of Rtools44 (r6346).
 
 Once the system dependencies are satisfied, change to the top level
 directory of the R package sources and do:
