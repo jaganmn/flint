@@ -1,8 +1,11 @@
 * TODO flint 0.0.2
 
-** TODO random number generation
-** TODO greater coverage of special functions
-
+** TODO increase coverage of special functions
+** TODO random number generation, something like 'sample', 'runif'
+** TODO rounding to 'prec' bits
+** TODO plotting ... ??
+** TODO work around missing 'arf', 'acf' functionality
+** TODO write a vignette
 
 * TODO flint 0.0.1
 
