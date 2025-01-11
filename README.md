@@ -87,16 +87,16 @@ If you obtained R from your operating system's package manager, then
 use the same package manager to install FLINT:
 
 ```
+$ sudo pacman -S flint
 $ sudo apt install libflint-dev
 $ sudo dnf install flint-devel
 $ sudo yum install flint-devel
-$ sudo pacman -S flint
-$ brew install flint
 $ sudo port install flint
+$ brew install flint
 ```
 
 GNU MPFR and GNU MP are dependencies of FLINT, so they should be
-installed (if not already) automatically.
+installed (if not already) automatically when you install FLINT.
 
 If you use macOS and you obtained R from a CRAN binary, then follow the
 instructions [here](https://mac.r-project.org/bin/) to install
