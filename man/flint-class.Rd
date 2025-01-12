@@ -50,8 +50,8 @@
 \alias{show,flint-method}
 \alias{summary,flint-method}
 \alias{unique,flint-method}
-\title{Class of FLINT-Type Vectors}
 \docType{class}
+\title{Class of FLINT-Type Vectors}
 \description{
   Class \code{flint} is a virtual class representing vectors of any
   \acronym{FLINT} \proglang{C} type.  The \proglang{C} type is
@@ -317,3 +317,4 @@ seq(to=, by=, length.out=)}
 showClass("flint")
 showMethods(classes = "flint")
 }
+\keyword{classes}

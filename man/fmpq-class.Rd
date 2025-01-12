@@ -30,8 +30,8 @@
 \alias{is.nan,fmpq-method}
 \alias{is.unsorted,fmpq-method}
 \alias{mean,fmpq-method}
-\title{Arbitrary Precision Rational Numbers}
 \docType{class}
+\title{Arbitrary Precision Rational Numbers}
 \description{
   Class \code{fmpq} extends virtual class \code{\linkS4class{flint}}.
   It represents vectors of arbitrary precision rational numbers.
@@ -191,3 +191,4 @@
 showClass("fmpq")
 showMethods(classes = "fmpq")
 }
+\keyword{classes}

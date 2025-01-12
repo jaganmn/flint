@@ -61,8 +61,8 @@
 \alias{is.unsorted,ulong-method}
 \alias{mean,slong-method}
 \alias{mean,ulong-method}
-\title{Fixed Precision Signed and Unsigned Integers}
 \docType{class}
+\title{Fixed Precision Signed and Unsigned Integers}
 \description{
   Classes \code{slong} and \code{ulong} extend virtual class
   \code{\linkS4class{flint}}.  They represent vectors of fixed precision
@@ -233,3 +233,4 @@ showClass("slong")
 showClass("ulong")
 showMethods(classes = c("slong", "ulong"))
 }
+\keyword{classes}

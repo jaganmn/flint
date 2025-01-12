@@ -41,3 +41,4 @@ c(1L, x) # bad
 c.flint(x, 6L)
 c.flint(1L, x)
 }
+\keyword{manip}

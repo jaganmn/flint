@@ -9,8 +9,8 @@
 \alias{format,acf-method}
 \alias{format,arb-method}
 \alias{format,acb-method}
-\title{Format FLINT-type Numbers as Strings}
 \docType{methods}
+\title{Format FLINT-type Numbers as Strings}
 \description{
   Format a \code{\linkS4class{flint}} vector for pretty printing.
 }
@@ -76,3 +76,6 @@ format(z)
 format(z, base = 62L, sep = "*[62]^")
 strsplit(format(Re(z), digits = 80L), "[( )]")[[1L]][c(FALSE, TRUE)]
 }
+\keyword{character}
+\keyword{methods}
+\keyword{print}

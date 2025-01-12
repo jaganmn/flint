@@ -52,3 +52,4 @@ acb_lambertw(z, k = 0L, flags = 0L, prec = flintPrec())
 \examples{
 ## TODO
 }
+\keyword{math}

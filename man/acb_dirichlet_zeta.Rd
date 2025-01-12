@@ -85,3 +85,4 @@ stopifnot(all.equal(dler(z.l1, 1, a), h2f1(a, 1, a + 1, z.l1)/a))
 
 ## TODO: test values for 'z' with Mod(z) > 1 ...
 }
+\keyword{math}

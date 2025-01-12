@@ -31,8 +31,8 @@
 \alias{is.unsorted,acf-method}
 \alias{mean,acf-method}
 \alias{xtfrm,acf-method}
-\title{Arbitrary Precision Floating-Point Complex Numbers}
 \docType{class}
+\title{Arbitrary Precision Floating-Point Complex Numbers}
 \description{
   Class \code{acf} extends virtual class \code{\linkS4class{flint}}.  It
   represents vectors of arbitrary precision floating-point complex
@@ -206,3 +206,4 @@
 showClass("acf")
 showMethods(classes = "acf")
 }
+\keyword{classes}

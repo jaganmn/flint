@@ -31,8 +31,8 @@
 \alias{is.unsorted,mag-method}
 \alias{log,mag-method}
 \alias{mean,mag-method}
-\title{Fixed Precision Magnitude (Error) Bounds}
 \docType{class}
+\title{Fixed Precision Magnitude (Error) Bounds}
 \description{
   Class \code{mag} extends virtual class \code{\linkS4class{flint}}.  It
   represents vectors of fixed precision error bounds.  Elements are
@@ -191,3 +191,4 @@
 showClass("mag")
 showMethods(classes = "mag")
 }
+\keyword{classes}

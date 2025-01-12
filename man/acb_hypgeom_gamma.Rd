@@ -67,3 +67,4 @@ acb_hypgeom_lgamma(z, prec = flintPrec())
 \examples{
 ## TODO
 }
+\keyword{math}

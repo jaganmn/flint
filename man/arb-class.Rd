@@ -32,8 +32,8 @@
 \alias{log,arb-method}
 \alias{mean,arb-method}
 \alias{xtfrm,arb-method}
-\title{Arbitrary Precision Floating-Point Real Numbers with Error Bounds}
 \docType{class}
+\title{Arbitrary Precision Floating-Point Real Numbers with Error Bounds}
 \description{
   Class \code{arb} extends virtual class \code{flint}.  It represents
   vectors of arbitrary precision floating-point real numbers with error
@@ -207,3 +207,4 @@
 showClass("arb")
 showMethods(classes = "arb")
 }
+\keyword{classes}

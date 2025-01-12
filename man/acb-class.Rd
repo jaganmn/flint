@@ -32,8 +32,8 @@
 \alias{log,acb-method}
 \alias{mean,acb-method}
 \alias{xtfrm,acb-method}
-\title{Arbitrary Precision Floating-Point Complex Numbers with Error Bounds}
 \docType{class}
+\title{Arbitrary Precision Floating-Point Complex Numbers with Error Bounds}
 \description{
   Class \code{acb} extends virtual class \code{flint}.  It represents
   vectors of complex numbers with error bounds on the real and imaginary
@@ -215,3 +215,4 @@
 showClass("acb")
 showMethods(classes = "acb")
 }
+\keyword{classes}

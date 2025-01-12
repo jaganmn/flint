@@ -30,8 +30,8 @@
 \alias{is.nan,arf-method}
 \alias{is.unsorted,arf-method}
 \alias{mean,arf-method}
-\title{Arbitrary Precision Floating-Point Real Numbers}
 \docType{class}
+\title{Arbitrary Precision Floating-Point Real Numbers}
 \description{
   Class \code{arf} extends virtual class \code{\linkS4class{flint}}.  It
   represents vectors of arbitrary precision floating-point real numbers.
@@ -181,3 +181,4 @@
 showClass("arf")
 showMethods(classes = "arf")
 }
+\keyword{classes}

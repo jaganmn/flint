@@ -30,8 +30,8 @@
 \alias{is.nan,fmpz-method}
 \alias{is.unsorted,fmpz-method}
 \alias{mean,fmpz-method}
-\title{Arbitrary Precision Signed Integers}
 \docType{class}
+\title{Arbitrary Precision Signed Integers}
 \description{
   Class \code{fmpz} extends virtual class \code{\linkS4class{flint}}.
   It represents vectors of arbitrary precision signed integers.  There
@@ -173,3 +173,4 @@
 showClass("fmpz")
 showMethods(classes = "fmpz")
 }
+\keyword{classes}

@@ -28,6 +28,7 @@
 \alias{Imag<-}
 \alias{Imag<-,acf-method}
 \alias{Imag<-,acb-method}
+\docType{methods}
 \title{Get or Set One Part of a Vector}
 \description{
   The subclasses of virtual class \code{\linkS4class{flint}} are
@@ -121,3 +122,4 @@ q
 (n <- Den(q))
 stopifnot(m == 1L, n == 1L, q == 1L)
 }
+\keyword{methods}

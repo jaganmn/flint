@@ -9,14 +9,11 @@
 \alias{flintSize}
 \alias{flintTriple}
 \alias{flintVersion}
-\title{\R{} Package \pkg{flint}}
 \docType{package}
+\title{\R{} Package \pkg{flint}}
 \description{
-  An \R{} interface to the \acronym{FLINT} (Fast Library for Number
-  Theory) \proglang{C} library, an extension of \acronym{GNU}
-  \acronym{MFPR} (Multiple Precision Floating-Point Reliable Library)
-  and \acronym{GNU} \acronym{MP} (Multiple Precision Arithmetic
-  Library).
+  An \R{} interface to \acronym{FLINT}, the \proglang{C} library for
+  number theory.
 }
 \usage{
 flintABI()
@@ -48,11 +45,21 @@ flintVersion()
     precedence to even significands).}
 }
 \details{
-  To render a list of available help topics, use
-  \code{\link{help}(package = "flint")}.
-
-  To report a bug or request a change, use
+  To report a bug or request a feature, use
   \code{\link{bug.report}(package = "flint")}.
+
+  To render the change log, use
+  \code{\link{news}(package = "flint")}.
+
+  To render the index, use
+  \code{\link{help}(package = "flint")}
+
+  To render a list of help topics for S4 classes, use
+  \code{\link{help.search}(package = "flint", keyword = "classes")}
+
+  To render a list of help topics for special mathematical functions,
+  use
+  \code{\link{help.search}(package = "flint", keyword = "math")}
 }
 \value{
   \code{flintABI} returns the size in bits of \proglang{C} type
@@ -141,3 +148,5 @@ stopifnot(identical(flintRnd(nrnd), ornd),
 
 flintVersion()
 }
+\keyword{package}
+\keyword{utilities}

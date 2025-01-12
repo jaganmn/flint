@@ -66,3 +66,4 @@ all.equal(h2f1(0.5, 1.0, 1.5, -z^2),
           atan(z)/z)
 ## [ see more in ../tests/acb_hypgeom_2f1.R ]
 }
+\keyword{math}
