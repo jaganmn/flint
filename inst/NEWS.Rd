@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2025-01-10)}{
+\section{Changes in version 0.0.1 (2025-01-12)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -50,10 +50,13 @@
   }
   \subsection{Documentation}{
     \itemize{
-      \item S4 classes and methods for generic functions are documented
-      under help topics named \code{*-class}.  Functions that are not
-      methods are documented separately.  The package index provides a
-      complete list of help topics: see \code{help(package = "flint")}.
+      \item S4 classes, generic functions, and methods are documented
+      under help topics with keyword \code{classes} or \code{methods}.
+      Interfaces to special mathematical functions are documented under
+      help topics with keyword \code{math}.  One can use
+      \code{help(package = "flint")} or (for example)
+      \code{help.search(package = "flint", keyword = "math")} to get a
+      list of (non-internal) help topics.
     }
   }
   \subsection{Classes}{
