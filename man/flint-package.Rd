@@ -128,6 +128,11 @@ flintVersion()
   Mikael Jagan
   \email{jaganmn@mcmaster.ca}
 }
+\references{
+  FLINT Team (2025).
+  FLINT: Fast Library for Number Theory.
+  \url{https://flintlib.org/}
+}
 \examples{
 flintABI()
 stopifnot(identical(flintABI(), 8L * .Machine[["sizeof.long"]]))

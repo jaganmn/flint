@@ -186,6 +186,13 @@
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
   type: \url{https://flintlib.org/doc/mag.html}
+
+  Johansson, F. (2017).
+  Arb: efficient arbitrary-precision midpoint-radius interval
+  arithmetic.
+  \emph{IEEE Transactions on Computers},
+  \emph{66}(8), 1281-1292.
+  \doi{10.1109/TC.2017.2690633}
 }
 \examples{
 showClass("mag")
