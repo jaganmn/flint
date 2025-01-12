@@ -3,12 +3,13 @@
 R package **flint** is an R interface to FLINT (https://flintlib.org/),
 a C library for number theory.  FLINT implements arithmetic in rings,
 including midpoint-radius interval arithmetic, also known as ball
-arithmetic, in the real and complex numbers, enabling computation with
-rigorous propagation of errors.  Notably, FLINT provides ball arithmetic
-implementations of many special mathematical functions not previously
-supported by R or any R package available on CRAN (or, where supported,
-only defined for real numbers or only defined inside the radius of
-convergence of a power series).
+arithmetic, in the real and complex numbers, enabling computation in
+arbitrary precision with rigorous propagation of errors.  Notably, FLINT
+provides ball arithmetic implementations of many special mathematical
+functions not previously supported by R or any R package available on
+CRAN (or, where supported, not defined over the complex numbers, to
+arbitrary precision, or beyond the radius of convergence of a power
+series representation).
 
 **flint** uses S4 classes based on external pointers to represent
 vectors of numbers of a given C type.  There is a virtual class `flint`

@@ -12,14 +12,15 @@ Description:
 	matrices, polynomials, and power series over rings.  'FLINT'
 	implements midpoint-radius interval arithmetic, also known as ball
 	arithmetic, in the real and complex numbers, enabling computation
-	with rigorous propagation of errors; see Johansson (2017)
-	<doi:10.1109/TC.2017.2690633>.  Finally, 'FLINT' provides ball
-	arithmetic implementations of many special mathematical functions,
-	with high coverage of reference works such as the NIST Digital
-	Library of Mathematical Functions <https://dlmf.nist.gov/>.  The
-	R interface defines S4 classes, generic functions, and methods for
-	representation and basic operations as well as plain R functions
-	matching (and vectorizing) entry points in the C library.
+	in arbitrary precision with rigorous propagation of errors; see
+	Johansson (2017) <doi:10.1109/TC.2017.2690633>.  Finally, 'FLINT'
+	provides ball arithmetic implementations of many
+	special mathematical functions, with high coverage of reference
+	works such as the NIST Digital Library of Mathematical Functions
+	<https://dlmf.nist.gov/>.  The R interface defines S4 classes,
+	generic functions, and methods for representation and basic
+	operations as well as plain R functions matching (and vectorizing)
+	entry points in the C library.
 License: GPL (>= 2)
 URL: https://github.com/jaganmn/flint
 BugReports: https://github.com/jaganmn/flint/issues
