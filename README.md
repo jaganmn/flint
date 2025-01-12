@@ -10,7 +10,7 @@ supported by R or any R package available on CRAN (or, where supported,
 only defined for real numbers or only defined inside the radius of
 convergence of a power series).
 
-The R package uses S4 classes based on external pointers to represent
+**flint** uses S4 classes based on external pointers to represent
 vectors of numbers of a given C type.  There is a virtual class `flint`
 with nonvirtual subclasses named after a corresponding C type:
 
