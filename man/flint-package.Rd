@@ -12,7 +12,7 @@
 \docType{package}
 \title{\R{} Package \pkg{flint}}
 \description{
-  An \R{} interface to \acronym{FLINT}, the \proglang{C} library for
+  An \R{} interface to \acronym{FLINT}, a \proglang{C} library for
   number theory.
 }
 \usage{

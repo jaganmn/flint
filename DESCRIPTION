@@ -4,8 +4,8 @@ VersionNote: sync configure.ac
 Date: 2025-01-12
 Title: Fast Library for Number Theory
 Description:
-	An R interface to 'FLINT' <https://flintlib.org/>, the C library
-	for number theory.  'FLINT' extends GNU 'MP' <https://gmplib.org/>
+	An R interface to 'FLINT' <https://flintlib.org/>, a C library for
+	number theory.  'FLINT' extends GNU 'MP' <https://gmplib.org/>
 	and GNU 'MPFR' <https://www.mpfr.org/> with support for arithmetic
 	in standard rings (the integers, the integers modulo n, the
 	rational, p-adic, real, and complex numbers) as well as vectors,
