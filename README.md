@@ -1,7 +1,7 @@
 # R package **flint**
 
 R package **flint** is an R interface to FLINT (https://flintlib.org/),
-a C library for number theory.  FLINT implements arithmetic on rings,
+a C library for number theory.  FLINT implements arithmetic in rings,
 including midpoint-radius interval arithmetic, also known as ball
 arithmetic, in the real and complex numbers, enabling computation with
 rigorous propagation of errors.  Notably, FLINT provides ball arithmetic
