@@ -1,7 +1,7 @@
 acb_lambertw <-
 function (z, k = 0L, flags = 0L, prec = flintPrec()) {
     res <- flintNew("acb")
-    .Call(R_flint_acb_lambertw, res, as(z, "acb"), as(k, "fmpz"), flags, as(prec, "slong"))
+    .Call(R_flint_acb_lambertw, res, as(z, "acb"), as(k, "fmpz"), as.integer(flags), as(prec, "slong"))
     res
 }
 
@@ -58,6 +58,6 @@ function (s = 0, z, prec = flintPrec()) {
 acb_hypgeom_2f1 <-
 function (a, b, c, z, flags = 0L, prec = flintPrec()) {
     res <- flintNew("acb")
-    .Call(R_flint_acb_hypgeom_2f1, res, as(a, "acb"), as(b, "acb"), as(c, "acb"), as(z, "acb"), flags, as(prec, "slong"))
+    .Call(R_flint_acb_hypgeom_2f1, res, as(a, "acb"), as(b, "acb"), as(c, "acb"), as(z, "acb"), as.integer(flags), as(prec, "slong"))
     res
 }

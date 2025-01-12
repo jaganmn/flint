@@ -1,7 +1,7 @@
 arb_lambertw <-
 function (x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_lambertw, res, as(x, "arb"), flags, as(prec, "slong"))
+    .Call(R_flint_arb_lambertw, res, as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }
 
@@ -45,6 +45,6 @@ function (x, prec = flintPrec()) {
 arb_hypgeom_2f1 <-
 function (a, b, c, x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_2f1, res, as(a, "arb"), as(b, "arb"), as(c, "arb"), as(x, "arb"), flags, as(prec, "slong"))
+    .Call(R_flint_arb_hypgeom_2f1, res, as(a, "arb"), as(b, "arb"), as(c, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }

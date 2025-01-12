@@ -6,9 +6,6 @@
 
 SEXP R_flint_arb_lambertw(SEXP s_res, SEXP s_x, SEXP s_flags, SEXP s_prec)
 {
-	if (TYPEOF(s_flags) != INTSXP)
-		Rf_error(_("type of '%s' is not \"%s\""), "flags", "integer");
-
 	unsigned long int
 		nx = R_flint_get_length(s_x),
 		nflags = (unsigned long int) XLENGTH(s_flags),
@@ -53,9 +50,6 @@ SEXP R_flint_arb_hypgeom_lgamma(SEXP s_res, SEXP s_x, SEXP s_prec)
 
 SEXP R_flint_arb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_x, SEXP s_flags, SEXP s_prec)
 {
-	if (TYPEOF(s_flags) != INTSXP)
-		Rf_error(_("type of '%s' is not \"%s\""), "flags", "integer");
-
 	unsigned long int
 		na = R_flint_get_length(s_a),
 		nb = R_flint_get_length(s_b),
