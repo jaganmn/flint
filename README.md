@@ -1,11 +1,18 @@
 # R package **flint**
 
-R package **flint** provides an R interface to types and functions in
-the FLINT C library (https://flintlib.org/), an extension of GNU MPFR
-(https://www.mpfr.org) and GNU MP (https://gmplib.org/).  S4 classes
-based on external pointers are provided to represent vectors of numbers
-of a given C type.  There is a virtual class `flint` with nonvirtual
-subclasses named after corresponding C types:
+R package **flint** is an R interface to FLINT (https://flintlib.org/),
+a C library for number theory.  FLINT implements arithmetic on rings,
+including midpoint-radius interval arithmetic, also known as ball
+arithmetic, in the real and complex numbers, enabling computation with
+rigorous propagation of errors.  Notably, FLINT provides ball arithmetic
+implementations of many special mathematical functions not previously
+supported by R or any R package available on CRAN (or, where supported,
+only defined for real numbers or only defined inside the radius of
+convergence of a power series).
+
+The R package uses S4 classes based on external pointers to represent
+vectors of numbers of a given C type.  There is a virtual class `flint`
+with nonvirtual subclasses named after a corresponding C type:
 
   Class | Description
    ---: | :---
@@ -19,44 +26,42 @@ subclasses named after corresponding C types:
   `arb` | real balls with `arf` midpoint and `mag` radius, of the form `(a +/- b)`.
   `acb` | complex balls with `arb` real and imaginary parts, of the form `(a +/- b)+(c +/- d)i`.
 
-Classes `arb` and `acb` support arithmetic with rigorous error
-propagation ("ball arithmetic").  S4 methods are defined for most
-generic functions in **base**, partly by way of group generic functions
-in **methods**, so that one can typically handle `flint` vectors just
-as one would handle traditional numeric and complex vectors.  By design,
-`flint` vectors and atomic vectors are interoperable, and methods
-promote arguments as necessary.
+S4 methods are defined for most generic functions in **base**, partly
+by way of group generic functions in **methods**, so that, typically,
+one can handle `flint` vectors just as one would handle traditional
+numeric and complex vectors.  By design, `flint` vectors and atomic
+vectors are interoperable, and methods promote arguments as needed.
 
 ```
 > library(flint)
 > p <- as.environment("package:flint")
 > getClasses(p)
- [1] "acb"   "acf"   "slong" "mag"   "ulong" "arb"   "arf"  
- [8] "flint" "fmpq"  "fmpz" 
+ [1] "acb"   "acf"   "slong" "mag"   "ulong" "arb"   "arf"
+ [8] "flint" "fmpq"  "fmpz"
 > getDataPart(getGenerics(p))
- [1] "!"             "+"             "-"            
- [4] "Complex"       "Den"           "Den<-"        
- [7] "Imag"          "Imag<-"        "Math2"        
-[10] "Math"          "Mid"           "Mid<-"        
-[13] "Num"           "Num<-"         "Ops"          
-[16] "Rad"           "Rad<-"         "Real"         
-[19] "Real<-"        "Summary"       "["            
-[22] "[<-"           "[["            "[[<-"         
-[25] "all.equal"     "anyDuplicated" "anyNA"        
-[28] "as.Date"       "as.POSIXct"    "as.POSIXlt"   
-[31] "as.complex"    "as.data.frame" "as.integer"   
-[34] "as.logical"    "as.numeric"    "as.raw"       
-[37] "as.vector"     "c"             "coerce"       
-[40] "cut"           "duplicated"    "findInterval" 
-[43] "format"        "initialize"    "is.finite"    
-[46] "is.infinite"   "is.na"         "is.na<-"      
-[49] "is.nan"        "is.unsorted"   "length"       
-[52] "length<-"      "log"           "mean"         
-[55] "mtfrm"         "names"         "names<-"      
-[58] "print"         "quantile"      "rep.int"      
-[61] "rep"           "rep_len"       "seq"          
-[64] "sequence"      "show"          "summary"      
-[67] "unique"        "xtfrm"        
+ [1] "!"             "+"             "-"
+ [4] "Complex"       "Den"           "Den<-"
+ [7] "Imag"          "Imag<-"        "Math2"
+[10] "Math"          "Mid"           "Mid<-"
+[13] "Num"           "Num<-"         "Ops"
+[16] "Rad"           "Rad<-"         "Real"
+[19] "Real<-"        "Summary"       "["
+[22] "[<-"           "[["            "[[<-"
+[25] "all.equal"     "anyDuplicated" "anyNA"
+[28] "as.Date"       "as.POSIXct"    "as.POSIXlt"
+[31] "as.complex"    "as.data.frame" "as.integer"
+[34] "as.logical"    "as.numeric"    "as.raw"
+[37] "as.vector"     "c"             "coerce"
+[40] "cut"           "duplicated"    "findInterval"
+[43] "format"        "initialize"    "is.finite"
+[46] "is.infinite"   "is.na"         "is.na<-"
+[49] "is.nan"        "is.unsorted"   "length"
+[52] "length<-"      "log"           "mean"
+[55] "mtfrm"         "names"         "names<-"
+[58] "print"         "quantile"      "rep.int"
+[61] "rep"           "rep_len"       "seq"
+[64] "sequence"      "show"          "summary"
+[67] "unique"        "xtfrm"
 > oprec <- flintPrec(0x1p+12L) # 2^12 = 4096 bits
 > (x <- 0:3 * acos(.arb(x = -1)) / 2) # acos(-1) = pi
 class 'arb', length 4, address 0x600002715ec0
@@ -125,9 +130,9 @@ you can also do:
 
 ```
 > news(package = "flint") # the change log
-> help(package = "flint") # the help index
-> help("flint-class", package = "flint") # the virtual class
-> help("arb-class", package = "flint") # a nonvirtual class
+> help(package = "flint") # the index
+> help.search(package = "flint", keyword = "classes") # S4 classes
+> help.search(package = "flint", keyword = "math") # special mathematical functions
 ```
 
 ## Bug reports and feature requests
@@ -136,11 +141,11 @@ Please use the issue tracker to report bugs and request features:
 https://github.com/jaganmn/flint.
 
 The focus of version 0.0.1 has been the implementation of S4 classes,
-generic functions, and methods, rather than extensive coverage of
-entry points in the FLINT C library.  Nonetheless, as a starting
-point, version 0.0.1 provides an R interface to certain entry points
-so that users can already compute (analytically continued) zeta, gamma, 
-and hypergeometric functions as well as Lambert's W.
+generic functions, and methods, rather than extensive coverage of entry
+points in the FLINT C library.  Nevertheless, as a starting point,
+version 0.0.1 provides an R interface to certain entry points so that
+users can already compute (analytically continued) zeta, gamma, and
+hypergeometric functions as well as Lambert's W.
 
 If there are entry points to which you need an R interface, then just
 let me know, ideally including in your request links to the online
