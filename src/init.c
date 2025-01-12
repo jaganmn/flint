@@ -143,6 +143,11 @@ SEXP R_flint_acb_atomic(SEXP);
 SEXP R_flint_acb_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_acb_ops1(SEXP, SEXP, SEXP);
 
+SEXP R_flint_arb_const_pi(SEXP, SEXP);
+SEXP R_flint_arb_const_log2(SEXP, SEXP);
+SEXP R_flint_arb_const_log10(SEXP, SEXP);
+SEXP R_flint_arb_const_e(SEXP, SEXP);
+
 SEXP R_flint_arb_lambertw(SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_lambertw(SEXP, SEXP, SEXP, SEXP, SEXP);
 
@@ -237,6 +242,10 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_acb_atomic, 1),
 	CALL_ENTRY(R_flint_acb_ops2, 3),
 	CALL_ENTRY(R_flint_acb_ops1, 3),
+	CALL_ENTRY(R_flint_arb_const_pi, 2),
+	CALL_ENTRY(R_flint_arb_const_log2, 2),
+	CALL_ENTRY(R_flint_arb_const_log10, 2),
+	CALL_ENTRY(R_flint_arb_const_e, 2),
 	CALL_ENTRY(R_flint_arb_lambertw, 4),
 	CALL_ENTRY(R_flint_acb_lambertw, 5),
 	CALL_ENTRY(R_flint_arb_dirichlet_zeta, 3),

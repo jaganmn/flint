@@ -136,14 +136,24 @@
       \item Generator functions for each of the nonvirtual subclasses of
       virtual class \code{flint}.
 
-      \item \proglang{C} library functions \code{acb_lambertw},
+      \item \proglang{C} library functions \code{arb_const_pi},
+      \code{arb_const_log2}, \code{arb_const_log10}, \code{arb_const_e},
+      \code{arb_lambertw}, \code{acb_lambertw},
+      \code{arb_dirichlet_zeta}, \code{acb_dirichlet_zeta},
+      \code{arb_dirichlet_hurwitz}, \code{acb_dirichlet_hurwitz},
+      \code{acb_dirichlet_lerch_phi},
+      \code{arb_hypgeom_gamma}, \code{acb_hypgeom_gamma},
+      \code{arb_hypgeom_rgamma}, \code{acb_hypgeom_rgamma},
+      \code{arb_hypgeom_lgamma}, \code{acb_hypgeom_lgamma},
+      \code{acb_hypgeom_polygamma},
+      \code{arb_hypgeom_2f1}, and \code{acb_hypgeom_2f1}
       \code{acb_polygamma}, \code{acb_dirichlet_zeta},
       \code{acb_dirichlet_hurwitz}, \code{acb_dirichlet_lerch_phi},
       \code{acb_hypgeom_gamma}, \code{acb_hypgeom_rgamma},
-      \code{acb_hypgeom_lgamma}, and \code{acb_hypgeom_2f1}, and their
-      \code{arb_*} counterparts, are interfaced as \R{} functions with
-      identical names and \dQuote{prototypes}.  Arguments are coerced to
-      the correct class and recycled internally.
+      \code{acb_hypgeom_lgamma}, and \code{acb_hypgeom_2f1}
+      are interfaced as \R{} functions with identical names and
+      \dQuote{prototypes}.  Arguments are coerced to the correct class
+      and recycled internally.
 
       \item \R{} function \code{flintABI} returning the size in bits of
       \proglang{C} type \code{long int}, either 32 or 64.  The value is

@@ -5,6 +5,8 @@
 #include <flint/arb.h>
 #include <Rinternals.h>
 
+SEXP R_flint_arb_0ary(void (*)(arb_t, slong),
+                      SEXP, SEXP);
 SEXP R_flint_arb_1ary(void (*)(arb_t, const arb_t, slong),
                       SEXP, SEXP, SEXP);
 SEXP R_flint_arb_2ary(void (*)(arb_t, const arb_t, const arb_t, slong),

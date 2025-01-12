@@ -64,14 +64,14 @@ vectors are interoperable, and methods promote arguments as needed.
 [64] "sequence"      "show"          "summary"
 [67] "unique"        "xtfrm"
 > oprec <- flintPrec(0x1p+12L) # 2^12 = 4096 bits
-> (x <- 0:3 * acos(.arb(x = -1)) / 2) # acos(-1) = pi
-class 'arb', length 4, address 0x600002715ec0
+> (x <- 0:3 * arb_const_pi() / 2)
+class 'arb', length 4, address 0x6000001c7c00
 [1] (0.000000e+0 +/- 0.000000e+0000)
 [2] (1.570796e+0 +/- 9.574978e-1234)
 [3] (3.141593e+0 +/- 1.914996e-1233)
 [4] (4.712389e+0 +/- 1.053248e-1232)
 > (y <- exp(1i * x))
-class 'acb', length 4, address 0x11eff9f80
+class 'acb', length 4, address 0x1177085a0
 [1] ( 1.000000e+0000 +/- 0.000000e+0000)+( 0.000000e+0000 +/- 0.000000e+0000)i
 [2] (-4.080025e-1234 +/- 9.574978e-1234)+( 1.000000e+0000 +/- 9.574978e-1234)i
 [3] (-1.000000e+0000 +/- 1.914996e-1233)+(-8.160051e-1234 +/- 1.914996e-1233)i
