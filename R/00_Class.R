@@ -1,7 +1,7 @@
 setClass("flint",
          contains = c("VIRTUAL", "externalptr"),
          slots = c(names = "character"),
-         validity = function (object) flintValid(object))
+         validity = function (object) .Call(R_flint_valid, object))
 
 .slong <- setClass("slong", contains = "flint")
 .ulong <- setClass("ulong", contains = "flint")
