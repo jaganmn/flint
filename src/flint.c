@@ -79,7 +79,7 @@ unsigned long int R_flint_get_length(SEXP object)
 	SEXP x = R_do_slot(object, R_flint_symbol_dot_xdata),
 		length = R_ExternalPtrProtected(x);
 	unsigned long int n;
-	uucopy(&n, (unsigned int *) INTEGER_RO(length));
+	uucopy(&n, (const unsigned int *) INTEGER_RO(length));
 	return n;
 }
 
@@ -1112,7 +1112,7 @@ SEXP R_flint_valid(SEXP object)
 		return INVALID(_("length of protected field is not %d"), NPROTECTED);
 #undef NPROTECTED
 	unsigned long int n;
-	uucopy(&n, (unsigned int *) INTEGER_RO(length));
+	uucopy(&n, (const unsigned int *) INTEGER_RO(length));
 	if ((R_ExternalPtrAddr(x) == 0) != (n == 0))
 		return INVALID((n == 0)
 		               ? _("object length is zero and pointer field is nonzero")
