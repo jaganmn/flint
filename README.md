@@ -93,11 +93,10 @@ If you obtained R from your operating system's package manager, then
 use the same package manager to install FLINT:
 
 ```
-$ sudo pacman -S flint
-$ sudo apt install libflint-dev
-$ sudo dnf install flint-devel
-$ sudo yum install flint-devel
-$ sudo port install flint
+$ pacman -S flint
+$ apt install libflint-dev
+$ dnf install flint-devel
+$ port install flint
 $ brew install flint
 ```
 
