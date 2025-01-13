@@ -1,4 +1,4 @@
-\name{acb_dirichlet_zeta}
+\name{arb_dirichlet_zeta}
 \alias{arb_dirichlet_zeta}
 \alias{acb_dirichlet_zeta}
 \alias{arb_dirichlet_hurwitz}

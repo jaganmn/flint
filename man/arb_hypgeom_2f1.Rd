@@ -1,4 +1,4 @@
-\name{acb_hypgeom_2f1}
+\name{arb_hypgeom_2f1}
 \alias{arb_hypgeom_2f1}
 \alias{acb_hypgeom_2f1}
 \title{Hypergeometric Functions}

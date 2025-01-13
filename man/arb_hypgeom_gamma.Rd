@@ -1,4 +1,4 @@
-\name{acb_hypgeom_gamma}
+\name{arb_hypgeom_gamma}
 \alias{arb_hypgeom_gamma}
 \alias{acb_hypgeom_gamma}
 \alias{arb_hypgeom_rgamma}

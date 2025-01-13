@@ -1,4 +1,4 @@
-\name{acb_lambertw}
+\name{arb_lambertw}
 \alias{arb_lambertw}
 \alias{acb_lambertw}
 \title{Lambert W function}
