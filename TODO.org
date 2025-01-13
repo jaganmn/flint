@@ -1,5 +1,6 @@
 * TODO flint 0.0.2
 
+** TODO increase coverage of standard mathematical constants
 ** TODO increase coverage of special mathematical functions
 ** TODO random number generation, something like 'sample', 'runif'
 ** TODO rounding to 'prec' bits
@@ -42,7 +43,7 @@
 	as.character, as.symbol, as.pairlist, as.list, as.expression,
 	diff, labels, rev, seq.int, sort, sort_by, split, split<-, subset,
 	toString
-** TODO document details of operations on real, complex balls
+** DONE document details of operations on real, complex balls
 ** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage
 ** DONE methods for 'mag' consulting rounding mode, conditionally giving lower bound

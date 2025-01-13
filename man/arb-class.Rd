@@ -40,6 +40,19 @@
   bounds.  Elements are specified by a pair of mixed format
   floating-point numbers: an \code{\linkS4class{arf}} midpoint and a
   \code{\linkS4class{mag}} radius.
+
+  Arithmetic on \code{arb} vectors is midpoint-radius interval
+  arithmetic, also known as ball arithmetic, enabling computation with
+  rigorous propagation of errors.  Logic and comparison involving
+  \code{arb} vectors are defined as follows: unary \code{op(x)} is true
+  if and only if \code{op} is true for all elements of the interval
+  \code{x}, and binary \code{op(x, y)} is true if and only if \code{op}
+  is true for all elements of the Cartesian product of the intervals
+  \code{x} and \code{y}.  A corollary is that the operator \code{<=}
+  does not define a \emph{total order} on the range of \code{arb} (that
+  is, the set of intervals \eqn{[m-r,m+r]}), and a consequence is that
+  methods for generic functions that necessitate a total order tend to
+  signal an error.
 }
 \usage{
 ## The class generator function:
