@@ -96,6 +96,7 @@ use the same package manager to install FLINT:
 $ pacman -S flint
 $ apt install libflint-dev
 $ dnf install flint-devel
+$ pkg install flint
 $ port install flint
 $ brew install flint
 ```
