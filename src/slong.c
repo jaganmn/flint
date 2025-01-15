@@ -143,11 +143,11 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				mpz_clear(r);
 				Rf_error(_("invalid input in string conversion"));
 			}
-			if (!__local_mpz_fits_slong_p(&r[0])) {
+			if (!__local_mpz_fits_slong_p(r)) {
 				mpz_clear(r);
 				Rf_error(_("converted string not in range of '%s'"), "slong");
 			}
-			y[j] = __local_mpz_get_si(&r[0]);
+			y[j] = __local_mpz_get_si(r);
 		}
 		mpz_clear(r);
 		break;
@@ -317,18 +317,18 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 	}
 	size_t ns, nc, ncmax;
 	mpz_t z;
-	mpz_init(z);
-	__local_mpz_set_si(&z[0], (xmin < -xmax) ? xmin : xmax);
+	mpz_init2(z, 64);
+	__local_mpz_set_si(z, (xmin < -xmax) ? xmin : xmax);
 	ncmax = mpz_sizeinbase(z, abase);
 	char *buffer = R_alloc(ncmax + 2, 1);
 	mpz_get_str(buffer, base, z);
 	ncmax = strlen(buffer);
-	__local_mpz_set_si(&z[0], (xmin < -xmax) ? xmax : xmin);
+	__local_mpz_set_si(z, (xmin < -xmax) ? xmax : xmin);
 	mpz_get_str(buffer, base, z);
 	if (buffer[ncmax] != '\0')
 		ncmax = strlen(buffer);
 	for (j = 0; j < n; ++j) {
-		__local_mpz_set_si(&z[0], x[j]);
+		__local_mpz_set_si(z, x[j]);
 		nc = mpz_sizeinbase(z, abase) + (mpz_sgn(z) < 0);
 		if (nc > ncmax)
 			nc = ncmax;

@@ -132,11 +132,11 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				mpz_clear(r);
 				Rf_error(_("invalid input in string conversion"));
 			}
-			if (!__local_mpz_fits_ulong_p(&r[0])) {
+			if (!__local_mpz_fits_ulong_p(r)) {
 				mpz_clear(r);
 				Rf_error(_("converted string not in range of '%s'"), "ulong");
 			}
-			y[j] = __local_mpz_get_ui(&r[0]);
+			y[j] = __local_mpz_get_ui(r);
 		}
 		mpz_clear(r);
 		break;
@@ -303,14 +303,14 @@ SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 			xmax = x[j];
 	size_t ns, nc, ncmax;
 	mpz_t z;
-	mpz_init(z);
-	__local_mpz_set_ui(&z[0], xmax);
+	mpz_init2(z, 64);
+	__local_mpz_set_ui(z, xmax);
 	ncmax = mpz_sizeinbase(z, abase);
 	char *buffer = R_alloc(ncmax + 2, 1);
 	mpz_get_str(buffer, base, z);
 	ncmax = strlen(buffer);
 	for (j = 0; j < n; ++j) {
-		__local_mpz_set_ui(&z[0], x[j]);
+		__local_mpz_set_ui(z, x[j]);
 		nc = mpz_sizeinbase(z, abase);
 		if (nc > ncmax)
 			nc = ncmax;
