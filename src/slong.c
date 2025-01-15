@@ -16,7 +16,7 @@
 # define __local_mpz_fits_slong_p(op) \
 	(((op)->_mp_size ==  0) || \
 	 ((op)->_mp_size ==  1 && (op)->_mp_d[0] <= WORD_MAX) || \
-	 ((op)->_mp_size == -1 && (op)->-mp_d[0] <= (mp_limb_t) -1 - (mp_limb_t) WORD_MIN + 1))
+	 ((op)->_mp_size == -1 && (op)->_mp_d[0] <= (mp_limb_t) -1 - (mp_limb_t) WORD_MIN + 1))
 # define __local_mpz_get_si(op) \
 	(((op)->_mp_size == 0) ? 0 : \
 	 ((op)->_mp_size >  0) ? (op)->_mp_d[0] & WORD_MAX : \
