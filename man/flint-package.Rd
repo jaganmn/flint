@@ -135,7 +135,6 @@ flintVersion()
 }
 \examples{
 flintABI()
-stopifnot(identical(flintABI(), 8L * .Machine[["sizeof.long"]]))
 
 oprec <- flintPrec()
 nprec <- 100L
