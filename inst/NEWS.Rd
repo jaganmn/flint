@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2025-01-12)}{
+\section{Changes in version 0.0.1 (2025-01-15)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -22,9 +22,9 @@
       \item \code{SystemRequirements: gmp, mpfr (>= 3.1), flint (>= 3)}
       as \pkg{flint} links \acronym{GNU} \acronym{MP},
       \acronym{GNU} \acronym{MPFR}, and \acronym{FLINT}.  The version
-      requirements are purely informational: on Unix, \file{configure}
-      checks that features used by the package are available; on
-      Windows, \samp{Rtools} provides sufficiently new versions.
+      requirements are purely informational, as \file{configure} and
+      \file{configure.win} scripts check that features used by the
+      package are available.
     }
   }
   \subsection{Installation}{
@@ -156,7 +156,7 @@
       and recycled internally.
 
       \item \R{} function \code{flintABI} returning the size in bits of
-      \proglang{C} type \code{long int}, either 32 or 64.  The value is
+      \proglang{C} type \code{mp_limb_t}, either 32 or 64.  The value is
       determined at configure time.
 
       \item \R{} function \code{flintIdentical} for testing whether

@@ -4284,7 +4284,6 @@ case ${ac_cv_sizeof_int} in
 	4) : ;;
 	*) as_fn_error $? "package requires 32-bit int" "$LINENO" 5 ;;
 esac
-
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
@@ -4320,25 +4319,214 @@ printf "%s\n" "$ac_cv_sizeof_long_int" >&6; }
 printf "%s\n" "#define SIZEOF_LONG_INT $ac_cv_sizeof_long_int" >>confdefs.h
 
 
-case ${ac_cv_sizeof_long_int} in
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of long long int" >&5
+printf %s "checking size of long long int... " >&6; }
+if test ${ac_cv_sizeof_long_long_int+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (long long int))" "ac_cv_sizeof_long_long_int"        "$ac_includes_default"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_long_long_int" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (long long int)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_long_long_int=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_long_long_int" >&5
+printf "%s\n" "$ac_cv_sizeof_long_long_int" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_LONG_LONG_INT $ac_cv_sizeof_long_long_int" >>confdefs.h
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of size_t" >&5
+printf %s "checking size of size_t... " >&6; }
+if test ${ac_cv_sizeof_size_t+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (size_t))" "ac_cv_sizeof_size_t"        "#include <stddef.h>
+"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_size_t" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (size_t)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_size_t=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_size_t" >&5
+printf "%s\n" "$ac_cv_sizeof_size_t" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t" >>confdefs.h
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of mp_limb_t" >&5
+printf %s "checking size of mp_limb_t... " >&6; }
+if test ${ac_cv_sizeof_mp_limb_t+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (mp_limb_t))" "ac_cv_sizeof_mp_limb_t"        "#include <gmp.h>
+"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_mp_limb_t" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (mp_limb_t)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_mp_limb_t=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_mp_limb_t" >&5
+printf "%s\n" "$ac_cv_sizeof_mp_limb_t" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_MP_LIMB_T $ac_cv_sizeof_mp_limb_t" >>confdefs.h
+
+
+case ${ac_cv_sizeof_mp_limb_t} in
 	4) : ;;
 	8)
 printf "%s\n" "#define R_FLINT_ABI_64 1" >>confdefs.h
  ;;
-	*) as_fn_error $? "package requires 32-bit or 64-bit long int" "$LINENO" 5 ;;
+	*) as_fn_error $? "package requires 32-bit or 64-bit limbs" "$LINENO" 5 ;;
 esac
+case ${ac_cv_sizeof_mp_limb_t} in
+	${ac_cv_sizeof_long_int})
+	   : ;;
+	${ac_cv_sizeof_long_long_int})
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for R_XLEN_T_MAX in range of unsigned long int" >&5
-printf %s "checking for R_XLEN_T_MAX in range of unsigned long int... " >&6; }
+printf "%s\n" "#define R_FLINT_ABI_LL 1" >>confdefs.h
+ ;;
+	*) as_fn_error $? "package requires long or long long limbs" "$LINENO" 5 ;;
+esac
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of mpfr_prec_t" >&5
+printf %s "checking size of mpfr_prec_t... " >&6; }
+if test ${ac_cv_sizeof_mpfr_prec_t+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (mpfr_prec_t))" "ac_cv_sizeof_mpfr_prec_t"        "#include <mpfr.h>
+"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_mpfr_prec_t" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (mpfr_prec_t)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_mpfr_prec_t=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_mpfr_prec_t" >&5
+printf "%s\n" "$ac_cv_sizeof_mpfr_prec_t" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_MPFR_PREC_T $ac_cv_sizeof_mpfr_prec_t" >>confdefs.h
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like 'int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of mpfr_exp_t" >&5
+printf %s "checking size of mpfr_exp_t... " >&6; }
+if test ${ac_cv_sizeof_mpfr_exp_t+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (mpfr_exp_t))" "ac_cv_sizeof_mpfr_exp_t"        "#include <mpfr.h>
+"
+then :
+
+else case e in #(
+  e) if test "$ac_cv_type_mpfr_exp_t" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (mpfr_exp_t)
+See 'config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_mpfr_exp_t=0
+   fi ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_mpfr_exp_t" >&5
+printf "%s\n" "$ac_cv_sizeof_mpfr_exp_t" >&6; }
+
+
+
+printf "%s\n" "#define SIZEOF_MPFR_EXP_T $ac_cv_sizeof_mpfr_exp_t" >>confdefs.h
+
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for R_XLEN_T_MAX in range of mp_limb_t" >&5
+printf %s "checking for R_XLEN_T_MAX in range of mp_limb_t... " >&6; }
 save_CPPFLAGS="${CPPFLAGS}"
 CPPFLAGS="${CPPFLAGS} -I${R_HOME}/include"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
+#include <gmp.h>
 #include <Rinternals.h>
 int main()
 {
-	return R_XLEN_T_MAX > (unsigned long int) -1;
+	return R_XLEN_T_MAX > (mp_limb_t) -1;
 }
 
 _ACEOF
@@ -4350,22 +4538,75 @@ else case e in #(
   e)
                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-                   as_fn_error $? "basic vector length can overflow unsigned long int" "$LINENO" 5
+                   as_fn_error $? "basic vector length can overflow mp_limb_t" "$LINENO" 5
                    ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 CPPFLAGS="${save_CPPFLAGS}"
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for unsigned long int in range of size_t" >&5
-printf %s "checking for unsigned long int in range of size_t... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_uprec_t in range of mp_limb_t" >&5
+printf %s "checking for mpfr_uprec_t in range of mp_limb_t... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_uprec_t) > sizeof(mp_limb_t);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "GNU MPFR precision can overflow mp_limb_t" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_uexp_t in range of mp_limb_t" >&5
+printf %s "checking for mpfr_uexp_t in range of mp_limb_t... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_uexp_t) > sizeof(mp_limb_t);
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   as_fn_error $? "GNU MPFR exponent can overflow mp_limb_t" "$LINENO" 5
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mp_limb_t in range of size_t" >&5
+printf %s "checking for mp_limb_t in range of size_t... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 #include <stddef.h>
+#include <gmp.h>
 int main()
 {
-	return sizeof(unsigned long int) > sizeof(size_t);
+	return sizeof(mp_limb_t) > sizeof(size_t);
 }
 
 _ACEOF
@@ -4378,58 +4619,6 @@ else case e in #(
                    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
                    as_fn_error $? "flint vector length can overflow size_t" "$LINENO" 5
-                   ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_exp_t in range of long int" >&5
-printf %s "checking for mpfr_exp_t in range of long int... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <mpfr.h>
-int main()
-{
-	return sizeof(mpfr_exp_t) > sizeof(long int);
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else case e in #(
-  e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                   as_fn_error $? "GNU MPFR exponent can overflow long int" "$LINENO" 5
-                   ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for unsigned long int and mp_limb_t of equal size" >&5
-printf %s "checking for unsigned long int and mp_limb_t of equal size... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <gmp.h>
-int main()
-{
-	return sizeof(unsigned long int) != sizeof(mp_limb_t);
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else case e in #(
-  e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                   as_fn_error $? "package requires GNU MP with matching integer, limb types" "$LINENO" 5
                    ;;
 esac
 fi
@@ -4463,10 +4652,10 @@ then :
   printf "%s\n" "#define HAVE_ACF_CONJ 1" >>confdefs.h
 
 fi
-ac_fn_c_check_func "$LINENO" "acf_div_fmpz" "ac_cv_func_acf_div_fmpz"
-if test "x$ac_cv_func_acf_div_fmpz" = xyes
+ac_fn_c_check_func "$LINENO" "acf_div_ui" "ac_cv_func_acf_div_ui"
+if test "x$ac_cv_func_acf_div_ui" = xyes
 then :
-  printf "%s\n" "#define HAVE_ACF_DIV_FMPZ 1" >>confdefs.h
+  printf "%s\n" "#define HAVE_ACF_DIV_UI 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "acf_is_finite" "ac_cv_func_acf_is_finite"
@@ -4517,10 +4706,10 @@ then :
   printf "%s\n" "#define HAVE_FMPQ_CLOG_UI 1" >>confdefs.h
 
 fi
-ac_fn_c_check_func "$LINENO" "mag_div_fmpz_lower" "ac_cv_func_mag_div_fmpz_lower"
-if test "x$ac_cv_func_mag_div_fmpz_lower" = xyes
+ac_fn_c_check_func "$LINENO" "mag_div_ui_lower" "ac_cv_func_mag_div_ui_lower"
+if test "x$ac_cv_func_mag_div_ui_lower" = xyes
 then :
-  printf "%s\n" "#define HAVE_MAG_DIV_FMPZ_LOWER 1" >>confdefs.h
+  printf "%s\n" "#define HAVE_MAG_DIV_UI_LOWER 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "mag_expm1_lower" "ac_cv_func_mag_expm1_lower"

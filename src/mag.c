@@ -30,13 +30,13 @@ double mag_get_d_lower(const mag_t z)
 }
 #endif
 
-#ifndef HAVE_MAG_DIV_FMPZ_LOWER
+#ifndef HAVE_MAG_DIV_UI_LOWER
 static R_INLINE
-void mag_div_fmpz_lower(mag_t z, const mag_t x, const fmpz_t y)
+void mag_div_ui_lower(mag_t z, const mag_t x, ulong y)
 {
 	mag_t t;
 	mag_init(t);
-	mag_set_fmpz(t, y);
+	mag_set_ui(t, y);
 	mag_div_lower(z, x, t);
 	mag_clear(t);
 	return;
@@ -78,24 +78,25 @@ void mag_expm1_lower(mag_t z, const mag_t x)
 #define WRAP(op, lower, ...) \
 	(lower) ? op##_lower(__VA_ARGS__) : op(__VA_ARGS__)
 
-int isRndZ(SEXP rnd, const char *where)
+int isRndZ(mpfr_rnd_t rnd)
 {
-	switch ((arf_rnd_t) asRnd(rnd, 0, where)) {
-	case ARF_RND_DOWN:
-	case ARF_RND_FLOOR:
+	switch (rnd) {
+	case MPFR_RNDZ:
+	case MPFR_RNDD:
 		return 1;
-	case ARF_RND_NEAR:
-	case ARF_RND_CEIL:
-	case ARF_RND_UP:
+	case MPFR_RNDN:
+	case MPFR_RNDU:
+	case MPFR_RNDA:
 		return 0;
 	default:
+		Rf_error(_("should never happen ..."));
 		return -1;
 	}
 }
 
 void R_flint_mag_finalize(SEXP x)
 {
-	unsigned long int j, n;
+	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	mag_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
@@ -106,13 +107,13 @@ void R_flint_mag_finalize(SEXP x)
 
 SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long int j, nx = 0, ny = 0;
+	mp_limb_t j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
-	int lower = isRndZ(R_NilValue, __func__);
+	int lower = isRndZ(asRnd(R_NilValue, __func__));
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long int) XLENGTH(s_x);
+			nx = (mp_limb_t) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -303,9 +304,9 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_mag_atomic(SEXP object)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	int lower = isRndZ(R_NilValue, __func__);
+	int lower = isRndZ(asRnd(R_NilValue, __func__));
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	mag_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
@@ -329,12 +330,12 @@ SEXP R_flint_mag_atomic(SEXP object)
 SEXP R_flint_mag_format(SEXP object, SEXP s_base,
                         SEXP s_digits, SEXP s_sep, SEXP s_rnd)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
-	int lower = isRndZ(s_rnd, __func__);
+	int lower = isRndZ(asRnd(s_rnd, __func__));
 	mpfr_rnd_t rnd = (lower) ? MPFR_RNDZ : MPFR_RNDA;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	mag_srcptr x = R_flint_get_pointer(object);
@@ -464,7 +465,7 @@ SEXP R_flint_mag_format(SEXP object, SEXP s_base,
 SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	mag_srcptr
@@ -472,8 +473,8 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long int j, n = RECYCLE2(nx, ny);
-	int lower = isRndZ(R_NilValue, __func__);
+	mp_limb_t j, n = RECYCLE2(nx, ny);
+	int lower = isRndZ(asRnd(R_NilValue, __func__));
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -615,9 +616,9 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long int j, n = R_flint_get_length(s_x);
+	mp_limb_t j, n = R_flint_get_length(s_x);
 	mag_srcptr x = R_flint_get_pointer(s_x);
-	int lower = isRndZ(R_NilValue, __func__);
+	int lower = isRndZ(asRnd(R_NilValue, __func__));
 #define COMMON \
 	do { \
 	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
@@ -952,7 +953,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("mag");
-		unsigned long int s = (op == 52) ? 2 : 1;
+		mp_limb_t s = (op == 52) ? 2 : 1;
 		mag_ptr z = flint_calloc(s, sizeof(mag_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_mag_finalize);
 		switch (op) {
@@ -992,13 +993,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			mag_zero(z);
 			for (j = 0; j < n; ++j)
 				WRAP(mag_add, lower, z, z, x + j);
-			fmpz_t p;
-			fmpz_init(p);
-			unsigned int uu[2];
-			ucopy(uu, &n);
-			fmpz_set_uiui(p, uu[1], uu[0]);
-			WRAP(mag_div_fmpz, lower, z, z, p);
-			fmpz_clear(p);
+			WRAP(mag_div_ui, lower, z, z, n);
 			break;
 		}
 		}

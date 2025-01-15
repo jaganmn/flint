@@ -9,6 +9,8 @@
 #include <flint/arb.h>
 #include "flint.h"
 
+arf_rnd_t remapRnd(mpfr_rnd_t);
+
 #ifndef HAVE_ACF_IS_ZERO
 static R_INLINE
 int acf_is_zero(const acf_t x)
@@ -111,17 +113,17 @@ int acf_abs(arf_t res, const acf_t x, slong prec, arf_rnd_t rnd)
 
 #ifndef HAVE_ACF_DIV_FMPZ
 static R_INLINE
-int acf_div_fmpz(acf_t res, const acf_t x, const fmpz_t y, slong prec, arf_rnd_t rnd)
+int acf_div_ui(acf_t res, const acf_t x, ulong y, slong prec, arf_rnd_t rnd)
 {
 	int a, b;
-	a = arf_div_fmpz(acf_realref(res), acf_realref(x), y, prec, rnd);
-	b = arf_div_fmpz(acf_imagref(res), acf_imagref(x), y, prec, rnd);
+	a = arf_div_ui(acf_realref(res), acf_realref(x), y, prec, rnd);
+	b = arf_div_ui(acf_imagref(res), acf_imagref(x), y, prec, rnd);
 	return a | (b << 1);
 }
 #endif
 
 static R_INLINE
-int R_flint_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int __local_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
 	int a, b;
 	arf_t t, u, v, w;
@@ -144,7 +146,7 @@ int R_flint_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 
 #if 0
 static R_INLINE
-int R_flint_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int __local_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
 	/* FIXME: the result is not correctly rounded here ... */
 	int a, b;
@@ -174,7 +176,7 @@ int R_flint_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 
 void R_flint_acf_finalize(SEXP x)
 {
-	unsigned long int j, n;
+	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	acf_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
@@ -186,7 +188,7 @@ void R_flint_acf_finalize(SEXP x)
 SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_real, SEXP s_imag)
 {
-	unsigned long int j, nr = 1, ni = 1, nx = 0, ny = 0;
+	mp_limb_t j, nr = 1, ni = 1, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_real != R_NilValue || s_imag != R_NilValue) {
 		if (s_x != R_NilValue)
@@ -208,7 +210,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long int) XLENGTH(s_x);
+			nx = (mp_limb_t) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -316,7 +318,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case STRSXP:
 		{
 			mpfr_prec_t prec = asPrec(R_NilValue, __func__);
-			mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(R_NilValue, 1, __func__);
+			mpfr_rnd_t rnd = asRnd(R_NilValue, __func__);
 			mpfr_t m;
 			mpfr_init2(m, prec);
 			const char *s;
@@ -395,7 +397,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			{
 				const fmpq *x = R_flint_get_pointer(s_x);
 				slong prec = asPrec(R_NilValue, __func__);
-				arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+				arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 				for (j = 0; j < ny; ++j) {
 					arf_fmpz_div_fmpz(acf_realref(y + j), fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec, rnd);
 					arf_zero(acf_imagref(y + j));
@@ -457,7 +459,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 
 SEXP R_flint_acf_part(SEXP object, SEXP s_op)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	acf_srcptr x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("arf"));
@@ -481,9 +483,9 @@ SEXP R_flint_acf_part(SEXP object, SEXP s_op)
 
 SEXP R_flint_acf_atomic(SEXP object)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acf_srcptr x = R_flint_get_pointer(object);
 	Rcomplex *y = COMPLEX(ans);
@@ -523,7 +525,7 @@ SEXP R_flint_acf_atomic(SEXP object)
 SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	acf_srcptr
@@ -531,9 +533,9 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long int j, n = RECYCLE2(nx, ny);
-	slong prec = (slong) asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+	mp_limb_t j, n = RECYCLE2(nx, ny);
+	slong prec = asPrec(R_NilValue, __func__);
+	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -566,12 +568,12 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 3: /*   "*" */
 			for (j = 0; j < n; ++j)
-				R_flint_acf_mul(z + j, x + j % nx, y + j % ny, prec, rnd);
+				__local_acf_mul(z + j, x + j % nx, y + j % ny, prec, rnd);
 			break;
 #if 0
 		case 6: /*   "/" */
 			for (j = 0; j < n; ++j)
-				R_flint_acf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
+				__local_acf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
 			break;
 #endif
 		}
@@ -637,10 +639,10 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long int j, n = R_flint_get_length(s_x);
+	mp_limb_t j, n = R_flint_get_length(s_x);
 	acf_srcptr x = R_flint_get_pointer(s_x);
-	slong prec = (slong) asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+	slong prec = asPrec(R_NilValue, __func__);
+	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 #define COMMON \
 	do { \
 	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
@@ -704,7 +706,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (n)
 			acf_set(z, x);
 			for (j = 1; j < n; ++j)
-				R_flint_acf_mul(z + j, z + j - 1, x + j, prec, rnd);
+				__local_acf_mul(z + j, z + j - 1, x + j, prec, rnd);
 			break;
 		case 48: /*   "round" */
 		{
@@ -848,7 +850,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("acf");
-		unsigned long int s = (op == 52) ? 2 : 1;
+		mp_limb_t s = (op == 52) ? 2 : 1;
 		acf_ptr z = flint_calloc(s, sizeof(acf_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acf_finalize);
 		switch (op) {
@@ -866,7 +868,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 55: /*    "mean" */
 		{
-			unsigned long int c = n;
+			mp_limb_t c = n;
 			acf_zero(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && acf_is_nan(x + j)))
@@ -875,15 +877,8 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				--c;
 			if (c == 0)
 			acf_nan(z);
-			else {
-			fmpz_t p;
-			fmpz_init(p);
-			unsigned int uu[2];
-			ucopy(uu, &c);
-			fmpz_set_uiui(p, uu[1], uu[0]);
-			acf_div_fmpz(z, z, p, prec, rnd);
-			fmpz_clear(p);
-			}
+			else
+			acf_div_ui(z, z, c, prec, rnd);
 			break;
 		}
 		}

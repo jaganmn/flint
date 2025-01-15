@@ -9,6 +9,29 @@
 #include <flint/ulong_extras.h>
 #include "flint.h"
 
+#ifdef R_FLINT_ABI_LL
+# define __local_mpz_fits_ulong_p(op) \
+	((op)->_mp_size <= 1)
+# define __local_mpz_get_ui(op) \
+	(((op)->_mp_size == 0) ? 0 : (op)->_mp_d[0])
+# define __local_mpz_set_ui(rop, op) \
+	do { \
+		if ((op) == 0) \
+			(rop)->_mp_size = 0; \
+		else { \
+			(rop)->_mp_size = 1; \
+			(rop)->_mp_d[0] = (mp_limb_t) (op); \
+		} \
+	} while (0)
+#else
+# define __local_mpz_fits_ulong_p(op) \
+	mpz_fits_ulong_p(op)
+# define __local_mpz_get_ui(op) \
+	mpz_get_ui(op)
+# define __local_mpz_set_ui(rop, op) \
+	mpz_set_ui(rop, op)
+#endif
+
 void R_flint_ulong_finalize(SEXP x)
 {
 	ulong *p = R_ExternalPtrAddr(x);
@@ -18,12 +41,12 @@ void R_flint_ulong_finalize(SEXP x)
 
 SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long int j, nx = 0, ny = 0;
+	mp_limb_t j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long int) XLENGTH(s_x);
+			nx = (mp_limb_t) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -109,11 +132,11 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				mpz_clear(r);
 				Rf_error(_("invalid input in string conversion"));
 			}
-			if (!mpz_fits_ulong_p(r)) {
+			if (!__local_mpz_fits_ulong_p(r)) {
 				mpz_clear(r);
 				Rf_error(_("converted string not in range of '%s'"), "ulong");
 			}
-			y[j] = mpz_get_ui(r);
+			y[j] = __local_mpz_get_ui(r);
 		}
 		mpz_clear(r);
 		break;
@@ -246,12 +269,12 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_ulong_atomic(SEXP object)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const ulong *x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
-#if R_FLINT_ABI_64
+#ifdef R_FLINT_ABI_64
 	fmpz_t tmp;
 	fmpz_init(tmp);
 	for (j = 0; j < n; ++j) {
@@ -269,7 +292,7 @@ SEXP R_flint_ulong_atomic(SEXP object)
 
 SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
@@ -281,13 +304,13 @@ SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 	size_t ns, nc, ncmax;
 	mpz_t z;
 	mpz_init(z);
-	mpz_set_ui(z, xmax);
+	__local_mpz_set_ui(z, xmax);
 	ncmax = mpz_sizeinbase(z, abase);
 	char *buffer = R_alloc(ncmax + 2, 1);
 	mpz_get_str(buffer, base, z);
 	ncmax = strlen(buffer);
 	for (j = 0; j < n; ++j) {
-		mpz_set_ui(z, x[j]);
+		__local_mpz_set_ui(z, x[j]);
 		nc = mpz_sizeinbase(z, abase);
 		if (nc > ncmax)
 			nc = ncmax;
@@ -315,7 +338,7 @@ SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	const ulong
@@ -323,7 +346,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		*y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long int j, n = RECYCLE2(nx, ny);
+	mp_limb_t j, n = RECYCLE2(nx, ny);
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -344,7 +367,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	{
 		SEXP ans;
 		ulong *z = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
-#ifndef __GNUC__
+#if !defined(__GNUC__)
 		ulong a;
 #endif
 		ulong b;
@@ -352,12 +375,15 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		switch (op) {
 		case 1: /*   "+" */
 			for (j = 0; j < n; ++j) {
-#ifndef __GNUC__
+#if !defined(__GNUC__)
 				a = x[j % nx];
 				b = y[j % ny];
-				if (b > ULONG_MAX - a)
+				if (b > UWORD_MAX - a)
 					break;
 				z[j] = a + b;
+#elif defined(R_FLINT_ABI_LL)
+				if (__builtin_uaddll_overflow(x[j % nx], y[j % ny], &z[j]))
+					break;
 #else
 				if (__builtin_uaddl_overflow(x[j % nx], y[j % ny], &z[j]))
 					break;
@@ -375,12 +401,15 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 2: /*   "-" */
 			for (j = 0; j < n; ++j) {
-#ifndef __GNUC__
+#if !defined(__GNUC__)
 				a = x[j % nx];
 				b = y[j % ny];
 				if (b > a)
 					break;
 				z[j] = b - a;
+#elif defined(R_FLINT_ABI_LL)
+				if (__builtin_usubll_overflow(x[j % nx], y[j % ny], &z[j]))
+					break;
 #else
 				if (__builtin_usubl_overflow(x[j % nx], y[j % ny], &z[j]))
 					break;
@@ -398,12 +427,15 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		case 3: /*   "*" */
 			for (j = 0; j < n; ++j) {
-#ifndef __GNUC__
+#if !defined(__GNUC__)
 				a = x[j % nx];
 				b = y[j % ny];
-				if (a > 0 && b > ULONG_MAX / a)
+				if (a > 0 && b > UWORD_MAX / a)
 					break;
 				z[j] = a * b;
+#elif defined(R_FLINT_ABI_LL)
+				if (__builtin_umulll_overflow(x[j % nx], y[j % ny], &z[j]))
+					break;
 #else
 				if (__builtin_umull_overflow(x[j % nx], y[j % ny], &z[j]))
 					break;
@@ -449,7 +481,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				e = y[j % ny];
 				if (b <= 1)
 					z[j] = b;
-				else if (e <= 1)   
+				else if (e <= 1)
 					z[j] = (e == 0) ? 1 : b;
 #ifdef R_FLINT_ABI_64
 				else if (e <= 64 && (int) e * (64 - flint_clz(b)) <= 64)
@@ -555,7 +587,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long int j, n = R_flint_get_length(s_x);
+	mp_limb_t j, n = R_flint_get_length(s_x);
 	const ulong *x = R_flint_get_pointer(s_x);
 #define COMMON \
 	do { \
@@ -656,10 +688,13 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (n) {
 			z[0] = x[0];
 			for (j = 1; j < n; ++j) {
-#ifndef __GNUC__
-				if (x[j] > ULONG_MAX - z[j - 1])
+#if !defined(__GNUC__)
+				if (x[j] > UWORD_MAX - z[j - 1])
 					break;
 				z[j] = z[j - 1] + x[j];
+#elif defined(R_FLINT_ABI_LL)
+				if (__builtin_uaddll_overflow(z[j - 1], x[j], z + j))
+					break;
 #else
 				if (__builtin_uaddl_overflow(z[j - 1], x[j], z + j))
 					break;
@@ -680,8 +715,11 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			z[0] = x[0];
 			for (j = 1; j < n; ++j) {
 				if (x[j]) {
-#ifndef __GNUC__
-				if (x[j] > ULONG_MAX / z[j - 1])
+#if !defined(__GNUC__)
+				if (x[j] > UWORD_MAX / z[j - 1])
+					break;
+#elif defined(R_FLINT_ABI_LL)
+				if (__builtin_umulll_overflow(z[j - 1], x[j], z + j))
 					break;
 #else
 				if (__builtin_umull_overflow(z[j - 1], x[j], z + j))
@@ -728,7 +766,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			ulong h, p, q, r, qmax;
 			for (i = digits, p = 1; i < 0; ++i)
 				p *= 10;
-			h = p / 2; qmax = ULONG_MAX / p;
+			h = p / 2; qmax = UWORD_MAX / p;
 			for (j = 0; j < n; ++j) {
 				q = x[j] / p;
 				r = x[j] % p;
@@ -786,7 +824,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (r >= h) {
 					if (r > h || q % 2)
 						q += 1;
-					if (q > ULONG_MAX / p)
+					if (q > UWORD_MAX / p)
 						break;
 				}
 				z[j] = q * p;
@@ -840,7 +878,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans;
-		unsigned long int s = (op == 52) ? 2 : 1;
+		mp_limb_t s = (op == 52) ? 2 : 1;
 		ulong *z = flint_calloc(s, sizeof(ulong));
 		int over = 0;
 		switch (op) {
@@ -1005,7 +1043,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 
 SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 {
-	unsigned long int
+	mp_limb_t
 		j = ((ulong *) R_flint_get_pointer(s_from))[0],
 		n = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
 	int reverse = LOGICAL_RO(s_reverse)[0];
@@ -1013,7 +1051,7 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 	ulong *p = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 	R_flint_set(ans, p, n, (R_CFinalizer_t) &R_flint_ulong_finalize);
 	if (n) {
-	if (j > ULONG_MAX - (n - 1))
+	if (j > UWORD_MAX - (n - 1))
 		Rf_error(_("should never happen ..."));
 	if (reverse) {
 		p += n;
@@ -1029,11 +1067,11 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 
 SEXP R_flint_ulong_complement(SEXP s_x, SEXP s_length, SEXP s_nozero)
 {
-	unsigned long int n = ((ulong *) R_flint_get_pointer(s_length))[0];
-	if (n == ULONG_MAX)
-		Rf_error(_("cardinality exceeds maximum %lu"),
-		         ULONG_MAX - 1);
-	unsigned long int j, jx, jy,
+	mp_limb_t n = ((ulong *) R_flint_get_pointer(s_length))[0];
+	if (n == UWORD_MAX)
+		Rf_error(_("cardinality exceeds maximum %llu"),
+		         (unsigned long long int) (UWORD_MAX - 1));
+	mp_limb_t j, jx, jy,
 		nx = R_flint_get_length(s_x),
 		ny = 0;
 	const ulong *x = R_flint_get_pointer(s_x);

@@ -37,7 +37,7 @@ slong fmpq_clog_ui(const fmpq_t x, ulong b)
 
 void R_flint_fmpq_finalize(SEXP x)
 {
-	unsigned long int j, n;
+	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	fmpq *p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
@@ -49,7 +49,7 @@ void R_flint_fmpq_finalize(SEXP x)
 SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
                              SEXP s_num, SEXP s_den)
 {
-	unsigned long int j, np = 1, nq = 1, nx = 0, ny = 0;
+	mp_limb_t j, np = 1, nq = 1, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_num != R_NilValue || s_den != R_NilValue) {
 		if (s_x != R_NilValue)
@@ -71,7 +71,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long int) XLENGTH(s_x);
+			nx = (mp_limb_t) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -306,7 +306,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_length, SEXP s_x,
 
 SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	const fmpq *x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject("fmpz"));
@@ -330,7 +330,7 @@ SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 
 SEXP R_flint_fmpq_atomic(SEXP object)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const fmpq *x = R_flint_get_pointer(object);
@@ -358,7 +358,7 @@ SEXP R_flint_fmpq_atomic(SEXP object)
 SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	const fmpq
@@ -366,7 +366,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		*y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long int j, n = RECYCLE2(nx, ny);
+	mp_limb_t j, n = RECYCLE2(nx, ny);
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -453,14 +453,14 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				if (!fmpz_abs_fits_ui(fmpq_numref(e))) {
 				fmpz_clear(a);
 				fmpz_clear(p);
-				Rf_error(_("<%s> %s <%s>: exponent numerator exceeds maximum %lu in absolute value"),
-				         "fmpq", "^", "fmpq", (unsigned long int) -1);
+				Rf_error(_("<%s> %s <%s>: exponent numerator exceeds maximum %llu in absolute value"),
+				         "fmpq", "^", "fmpq", (unsigned long long int) UWORD_MAX);
 				}
 				if (!fmpz_fits_si(fmpq_denref(e))) {
 				fmpz_clear(a);
 				fmpz_clear(p);
-				Rf_error(_("<%s> %s <%s>: exponent denominator exceeds maximum %lu"),
-				         "fmpq", "^", "fmpq", (unsigned long int) -1 >> 1);
+				Rf_error(_("<%s> %s <%s>: exponent denominator exceeds maximum %lld"),
+				         "fmpq", "^", "fmpq", (long long int) WORD_MAX);
 				}
 				s = fmpz_get_si(fmpq_denref(e));
 				if (fmpz_sgn(fmpq_numref(e)) >= 0) {
@@ -558,7 +558,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long int j, n = R_flint_get_length(s_x);
+	mp_limb_t j, n = R_flint_get_length(s_x);
 	const fmpq *x = R_flint_get_pointer(s_x);
 #define COMMON \
 	do { \
@@ -797,7 +797,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("fmpq");
-		unsigned long int s = (op == 52) ? 2 : 1;
+		mp_limb_t s = (op == 52) ? 2 : 1;
 		fmpq *z = flint_calloc(s, sizeof(fmpq));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
@@ -837,14 +837,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpq_zero(z);
 			for (j = 0; j < n; ++j)
 				fmpq_add(z, z, x + j);
-			fmpz_t p;
-			fmpz_init(p);
-			unsigned int uu[2];
-			ucopy(uu, &n);
-			fmpz_set_uiui(p, uu[1], uu[0]);
-			fmpz_mul(fmpq_denref(z), fmpq_denref(z), p);
+			fmpz_mul_ui(fmpq_denref(z), fmpq_denref(z), n);
 			fmpq_canonicalise(z);
-			fmpz_clear(p);
 			break;
 		}
 		}

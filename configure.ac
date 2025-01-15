@@ -169,38 +169,80 @@ case ${ac_cv_sizeof_int} in
 	4) : ;;
 	*) AC_MSG_ERROR([package requires 32-bit int]) ;;
 esac
-
 AC_CHECK_SIZEOF([long int])
-case ${ac_cv_sizeof_long_int} in
+AC_CHECK_SIZEOF([long long int])
+AC_CHECK_SIZEOF([size_t], [], [[#include <stddef.h>]])
+AC_CHECK_SIZEOF([mp_limb_t], [], [[#include <gmp.h>]])
+case ${ac_cv_sizeof_mp_limb_t} in
 	4) : ;;
 	8) AC_DEFINE([R_FLINT_ABI_64], [1],
-	             [Define if and only if SIZEOF_LONG_INT is 8.]) ;;
-	*) AC_MSG_ERROR([package requires 32-bit or 64-bit long int]) ;;
+	             [Define if and only if SIZEOF_MP_LIMB_T is 8.]) ;;
+	*) AC_MSG_ERROR([package requires 32-bit or 64-bit limbs]) ;;
 esac
+case ${ac_cv_sizeof_mp_limb_t} in
+	${ac_cv_sizeof_long_int})
+	   : ;;
+	${ac_cv_sizeof_long_long_int})
+	   AC_DEFINE([R_FLINT_ABI_LL], [1],
+	             [Define if and only if SIZEOF_MP_LIMB_T is equal to SIZEOF_LONG_LONG_INT and not equal to SIZEOF_LONG_INT.]) ;;
+	*) AC_MSG_ERROR([package requires long or long long limbs]) ;;
+esac
+AC_CHECK_SIZEOF([mpfr_prec_t], [], [[#include <mpfr.h>]])
+AC_CHECK_SIZEOF([mpfr_exp_t], [], [[#include <mpfr.h>]])
 
-AC_MSG_CHECKING([for R_XLEN_T_MAX in range of unsigned long int])
+AC_MSG_CHECKING([for R_XLEN_T_MAX in range of mp_limb_t])
 save_CPPFLAGS="${CPPFLAGS}"
 CPPFLAGS="${CPPFLAGS} -I${R_HOME}/include"
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <gmp.h>
 #include <Rinternals.h>
 int main()
 {
-	return R_XLEN_T_MAX > (unsigned long int) -1;
+	return R_XLEN_T_MAX > (mp_limb_t) -1;
 }
                   ]])],
                   [AC_MSG_RESULT([yes])],
                   [
                    AC_MSG_RESULT([no])
-                   AC_MSG_ERROR([basic vector length can overflow unsigned long int])
+                   AC_MSG_ERROR([basic vector length can overflow mp_limb_t])
                   ])
 CPPFLAGS="${save_CPPFLAGS}"
 
-AC_MSG_CHECKING([for unsigned long int in range of size_t])
+AC_MSG_CHECKING([for mpfr_uprec_t in range of mp_limb_t])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include <stddef.h>
+#include <mpfr.h>
 int main()
 {
-	return sizeof(unsigned long int) > sizeof(size_t);
+	return sizeof(mpfr_uprec_t) > sizeof(mp_limb_t);
+}
+                  ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [
+                   AC_MSG_RESULT([no])
+                   AC_MSG_ERROR([GNU MPFR precision can overflow mp_limb_t])
+                  ])
+
+AC_MSG_CHECKING([for mpfr_uexp_t in range of mp_limb_t])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <mpfr.h>
+int main()
+{
+	return sizeof(mpfr_uexp_t) > sizeof(mp_limb_t);
+}
+                  ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [
+                   AC_MSG_RESULT([no])
+                   AC_MSG_ERROR([GNU MPFR exponent can overflow mp_limb_t])
+                  ])
+
+AC_MSG_CHECKING([for mp_limb_t in range of size_t])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <stddef.h>
+#include <gmp.h>
+int main()
+{
+	return sizeof(mp_limb_t) > sizeof(size_t);
 }
                   ]])],
                   [AC_MSG_RESULT([yes])],
@@ -209,38 +251,10 @@ int main()
                    AC_MSG_ERROR([flint vector length can overflow size_t])
                   ])
 
-AC_MSG_CHECKING([for mpfr_exp_t in range of long int])
-AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include <mpfr.h>
-int main()
-{
-	return sizeof(mpfr_exp_t) > sizeof(long int);
-}
-                  ]])],
-                  [AC_MSG_RESULT([yes])],
-                  [
-                   AC_MSG_RESULT([no])
-                   AC_MSG_ERROR([GNU MPFR exponent can overflow long int])
-                  ])
-
-AC_MSG_CHECKING([for unsigned long int and mp_limb_t of equal size])
-AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include <gmp.h>
-int main()
-{
-	return sizeof(unsigned long int) != sizeof(mp_limb_t);
-}
-                  ]])],
-                  [AC_MSG_RESULT([yes])],
-                  [
-                   AC_MSG_RESULT([no])
-                   AC_MSG_ERROR([package requires GNU MP with matching integer, limb types])
-                  ])
-
 AC_CHECK_FUNC([arb_init], [],
               [AC_MSG_ERROR([FLINT missing Arb sublibrary])])
 
-AC_CHECK_FUNCS([acf_abs acf_arg acf_conj acf_div_fmpz acf_is_finite acf_is_inf acf_is_nan acf_is_zero acf_nan acf_one acf_zero fmpq_clog_ui mag_div_fmpz_lower mag_expm1_lower mag_get_d_lower mag_log1p_lower], [], [])
+AC_CHECK_FUNCS([acf_abs acf_arg acf_conj acf_div_ui acf_is_finite acf_is_inf acf_is_nan acf_is_zero acf_nan acf_one acf_zero fmpq_clog_ui mag_div_ui_lower mag_expm1_lower mag_get_d_lower mag_log1p_lower], [], [])
 
 AC_SUBST(R_FLINT_CPPFLAGS)
 AC_SUBST(R_FLINT_CFLAGS)

@@ -10,9 +10,11 @@
 #include <flint/acb.h>
 #include "flint.h"
 
+arf_rnd_t remapRnd(mpfr_rnd_t);
+
 void R_flint_arb_finalize(SEXP x)
 {
-	unsigned long int j, n;
+	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	arb_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
@@ -24,7 +26,7 @@ void R_flint_arb_finalize(SEXP x)
 SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
                             SEXP s_mid, SEXP s_rad)
 {
-	unsigned long int j, nm = 1, nr = 1, nx = 0, ny = 0;
+	mp_limb_t j, nm = 1, nr = 1, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_mid != R_NilValue || s_rad != R_NilValue) {
 		if (s_x != R_NilValue)
@@ -46,7 +48,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 	else if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long int) XLENGTH(s_x);
+			nx = (mp_limb_t) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -137,7 +139,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		case STRSXP:
 		{
 			mpfr_prec_t prec = asPrec(R_NilValue, __func__);
-			mpfr_rnd_t rnd = (mpfr_rnd_t) asRnd(R_NilValue, 1, __func__);
+			mpfr_rnd_t rnd = asRnd(R_NilValue, __func__);
 			mpfr_t m, r;
 			arf_t tmp;
 			mpfr_init2(m, prec);
@@ -284,7 +286,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_length, SEXP s_x,
 
 SEXP R_flint_arb_part(SEXP object, SEXP s_op)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	arb_srcptr x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
 	SEXP ans = PROTECT(newObject((op == 0) ? "arf" : "mag"));
@@ -311,9 +313,9 @@ SEXP R_flint_arb_part(SEXP object, SEXP s_op)
 
 SEXP R_flint_arb_atomic(SEXP object)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arb_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
@@ -344,7 +346,7 @@ SEXP R_flint_arb_atomic(SEXP object)
 SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	arb_srcptr
@@ -352,8 +354,8 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long int j, n = RECYCLE2(nx, ny);
-	slong prec = (slong) asPrec(R_NilValue, __func__);
+	mp_limb_t j, n = RECYCLE2(nx, ny);
+	slong prec = asPrec(R_NilValue, __func__);
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -499,10 +501,10 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long int j, n = R_flint_get_length(s_x);
+	mp_limb_t j, n = R_flint_get_length(s_x);
 	arb_srcptr x = R_flint_get_pointer(s_x);
-	slong prec = (slong) asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = (arf_rnd_t) asRnd(R_NilValue, 0, __func__);
+	slong prec = asPrec(R_NilValue, __func__);
+	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 #define COMMON \
 	do { \
 	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
@@ -954,7 +956,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = newObject("arb");
-		unsigned long int s = (op == 52) ? 2 : 1;
+		mp_limb_t s = (op == 52) ? 2 : 1;
 		arb_ptr z = flint_calloc(s, sizeof(arb_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
@@ -1005,7 +1007,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 55: /*    "mean" */
 		{
-			unsigned long int c = n;
+			mp_limb_t c = n;
 			arb_zero(z);
 			for (j = 0; j < n; ++j)
 				if (!(narm && ARB_CONTAINS_NAN(x + j)))
@@ -1014,15 +1016,8 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				--c;
 			if (c == 0)
 			arb_indeterminate(z);
-			else {
-			fmpz_t p;
-			fmpz_init(p);
-			unsigned int uu[2];
-			ucopy(uu, &c);
-			fmpz_set_uiui(p, uu[1], uu[0]);
-			arb_div_fmpz(z, z, p, prec);
-			fmpz_clear(p);
-			}
+			else
+			arb_div_ui(z, z, c, prec);
 			break;
 		}
 		}

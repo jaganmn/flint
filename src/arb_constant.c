@@ -1,4 +1,4 @@
-#include <flint/flint.h>
+#include <gmp.h>
 #include <flint/arb.h>
 #include "flint.h"
 #include "arb_template.h"

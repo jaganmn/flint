@@ -72,6 +72,10 @@ function (object, exact = TRUE) {
     else flintLength(object, exact = exact)
 }
 
+flintLongLongLimb <-
+function ()
+    .Call(R_flint_long_long_limb)
+
 flintNew <-
 function (class)
     .Call(R_flint_new, class)

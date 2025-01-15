@@ -9,8 +9,8 @@
 /* Define to 1 if you have the 'acf_conj' function. */
 #undef HAVE_ACF_CONJ
 
-/* Define to 1 if you have the 'acf_div_fmpz' function. */
-#undef HAVE_ACF_DIV_FMPZ
+/* Define to 1 if you have the 'acf_div_ui' function. */
+#undef HAVE_ACF_DIV_UI
 
 /* Define to 1 if you have the 'acf_is_finite' function. */
 #undef HAVE_ACF_IS_FINITE
@@ -39,8 +39,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the 'mag_div_fmpz_lower' function. */
-#undef HAVE_MAG_DIV_FMPZ_LOWER
+/* Define to 1 if you have the 'mag_div_ui_lower' function. */
+#undef HAVE_MAG_DIV_UI_LOWER
 
 /* Define to 1 if you have the 'mag_expm1_lower' function. */
 #undef HAVE_MAG_EXPM1_LOWER
@@ -102,14 +102,33 @@
 /* Define to the third field of the version string. */
 #undef PACKAGE_VERSION_PATCHLEVEL
 
-/* Define if and only if SIZEOF_LONG_INT is 8. */
+/* Define if and only if SIZEOF_MP_LIMB_T is 8. */
 #undef R_FLINT_ABI_64
+
+/* Define if and only if SIZEOF_MP_LIMB_T is equal to SIZEOF_LONG_LONG_INT and
+   not equal to SIZEOF_LONG_INT. */
+#undef R_FLINT_ABI_LL
 
 /* The size of 'int', as computed by sizeof. */
 #undef SIZEOF_INT
 
 /* The size of 'long int', as computed by sizeof. */
 #undef SIZEOF_LONG_INT
+
+/* The size of 'long long int', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG_INT
+
+/* The size of 'mpfr_exp_t', as computed by sizeof. */
+#undef SIZEOF_MPFR_EXP_T
+
+/* The size of 'mpfr_prec_t', as computed by sizeof. */
+#undef SIZEOF_MPFR_PREC_T
+
+/* The size of 'mp_limb_t', as computed by sizeof. */
+#undef SIZEOF_MP_LIMB_T
+
+/* The size of 'size_t', as computed by sizeof. */
+#undef SIZEOF_SIZE_T
 
 /* Define to 1 if all of the C89 standard headers exist (not just the ones
    required in a freestanding environment). This macro is provided for

@@ -10,6 +10,9 @@
 #include <stdio.h> /* vsnprintf */
 #include <string.h> /* strlen, memset, memcpy, memmove */
 
+#include <gmp.h> /* mp_limb_t */
+#include <mpfr.h> /* mpfr_uprec_t, mpfr_uexp_t */
+
 #include <Rconfig.h> /* R_INLINE, ENABLE_NLS */
 
 #ifdef ENABLE_NLS
@@ -179,22 +182,22 @@ SEXP newObject(const char *);
 SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
-unsigned long int asLength(SEXP, const char *);
-int asPrec(SEXP, const char *);
+mp_limb_t asLength(SEXP, const char *);
+mpfr_prec_t asPrec(SEXP, const char *);
+mpfr_rnd_t asRnd(SEXP, const char *);
 int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
 const char *asSep(SEXP, const char *);
-int asRnd(SEXP, int, const char *);
 
-void  ucopy(unsigned int *, const unsigned long int *);
-void uucopy(unsigned long int *, const unsigned int *);
+void  ucopy(unsigned int *, const mp_limb_t *);
+void uucopy(mp_limb_t *, const unsigned int *);
 
 size_t strmatch(const char *, const char **);
 
 void *R_flint_get_pointer(SEXP);
-unsigned long int R_flint_get_length(SEXP);
+mp_limb_t R_flint_get_length(SEXP);
 R_flint_class_t R_flint_get_class(SEXP);
-void R_flint_set(SEXP, void *, unsigned long int, R_CFinalizer_t);
+void R_flint_set(SEXP, void *, mp_limb_t, R_CFinalizer_t);
 
 void R_flint_slong_finalize(SEXP);
 void R_flint_ulong_finalize(SEXP);

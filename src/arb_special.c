@@ -1,3 +1,4 @@
+#include <gmp.h>
 #include <flint/flint.h>
 #include <flint/arb.h>
 #include <flint/arb_hypgeom.h>
@@ -6,15 +7,15 @@
 
 SEXP R_flint_arb_lambertw(SEXP s_res, SEXP s_x, SEXP s_flags, SEXP s_prec)
 {
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
-		nflags = (unsigned long int) XLENGTH(s_flags),
+		nflags = (mp_limb_t) XLENGTH(s_flags),
 		nprec = R_flint_get_length(s_prec);
 	arb_srcptr x = R_flint_get_pointer(s_x);
 	const int *flags = INTEGER_RO(s_flags);
 	const slong *prec = R_flint_get_pointer(s_prec);
 
-	unsigned long int j, n = RECYCLE3(nx, nflags, nprec);
+	mp_limb_t j, n = RECYCLE3(nx, nflags, nprec);
 	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 
@@ -50,12 +51,12 @@ SEXP R_flint_arb_hypgeom_lgamma(SEXP s_res, SEXP s_x, SEXP s_prec)
 
 SEXP R_flint_arb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_x, SEXP s_flags, SEXP s_prec)
 {
-	unsigned long int
+	mp_limb_t
 		na = R_flint_get_length(s_a),
 		nb = R_flint_get_length(s_b),
 		nc = R_flint_get_length(s_c),
 		nx = R_flint_get_length(s_x),
-		nflags = (unsigned long int) XLENGTH(s_flags),
+		nflags = (mp_limb_t) XLENGTH(s_flags),
 		nprec = R_flint_get_length(s_prec);
 	arb_srcptr
 		a = R_flint_get_pointer(s_a),
@@ -65,7 +66,7 @@ SEXP R_flint_arb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_x,
 	const int *flags = INTEGER_RO(s_flags);
 	const slong *prec = R_flint_get_pointer(s_prec);
 
-	unsigned long int j, n = RECYCLE6(na, nb, nc, nx, nflags, nprec);
+	mp_limb_t j, n = RECYCLE6(na, nb, nc, nx, nflags, nprec);
 	arb_ptr res = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 

@@ -3,9 +3,9 @@
 #if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP x)
 {
-    SET_ATTRIB(x, R_NilValue);
-    SET_OBJECT(x, 0);
-    UNSET_S4_OBJECT(x);
+	SET_ATTRIB(x, R_NilValue);
+	SET_OBJECT(x, 0);
+	UNSET_S4_OBJECT(x);
 	return;
 }
 #endif /* < 4.5.0 */
@@ -46,14 +46,14 @@ const char *checkClass(SEXP object, const char **valid, const char *where)
 	return valid[i];
 }
 
-unsigned long int asLength(SEXP length, const char *where)
+mp_limb_t asLength(SEXP length, const char *where)
 {
 	switch (TYPEOF(length)) {
 	case INTSXP:
 	{
 		const int *s = INTEGER_RO(length);
 		if (XLENGTH(length) >= 1 && s[0] != NA_INTEGER && s[0] > -1)
-			return (unsigned long int) s[0];
+			return (mp_limb_t) s[0];
 		break;
 	}
 	case REALSXP:
@@ -65,7 +65,7 @@ unsigned long int asLength(SEXP length, const char *where)
 #else
 		    s[0] < 0x1.0p+32)
 #endif
-			return (unsigned long int) s[0];
+			return (mp_limb_t) s[0];
 		break;
 	}
 	}
@@ -73,7 +73,7 @@ unsigned long int asLength(SEXP length, const char *where)
 	return 0ull;
 }
 
-int asPrec(SEXP prec, const char *where)
+mpfr_prec_t asPrec(SEXP prec, const char *where)
 {
 	if (prec == R_NilValue) {
 		static SEXP tag = NULL;
@@ -94,13 +94,47 @@ int asPrec(SEXP prec, const char *where)
 	case REALSXP:
 	{
 		const double *s = REAL_RO(prec);
-		if (XLENGTH(prec) >= 1 && !ISNAN(s[0]) && s[0] >= 1.0 && s[0] < 0x1.0p+31)
-			return (int) s[0];
+		if (XLENGTH(prec) >= 1 && !ISNAN(s[0]) && s[0] >= 1.0 &&
+#if SIZEOF_MPFR_PREC_T == 8
+		    s[0] < 0x1.0p+63)
+#else
+		    s[0] < 0x1.0p+31)
+#endif
+			return (mpfr_prec_t) s[0];
 		break;
 	}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "prec", where);
 	return 0;
+}
+
+mpfr_rnd_t asRnd(SEXP rnd, const char *where)
+{
+	if (rnd == R_NilValue) {
+		static SEXP tag = NULL;
+		if (!tag)
+			tag = Rf_install("flint.rnd");
+		rnd = Rf_GetOption1(tag);
+		if (rnd == R_NilValue)
+			return MPFR_RNDN;
+	}
+	if (TYPEOF(rnd) == STRSXP && XLENGTH(rnd) > 0 &&
+	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING) {
+		switch (CHAR(rnd)[0]) {
+		case 'N': case 'n':
+			return MPFR_RNDN;
+		case 'Z': case 'z':
+			return MPFR_RNDZ;
+		case 'U': case 'u':
+			return MPFR_RNDU;
+		case 'D': case 'd':
+			return MPFR_RNDD;
+		case 'A': case 'a':
+			return MPFR_RNDA;
+		}
+	}
+	Rf_error(_("invalid '%s' in '%s'"), "rnd", where);
+	return -1;
 }
 
 int asBase(SEXP base, const char *where)
@@ -162,24 +196,23 @@ const char *asSep(SEXP sep, const char *where)
 	return (const char *) 0;
 }
 
-void  ucopy(unsigned int *uu, const unsigned long int *u)
+void  ucopy(unsigned int *uu, const mp_limb_t *u)
 {
 #ifdef R_FLINT_ABI_64
 	uu[0] = (unsigned int) (u[0] & 0x00000000FFFFFFFFu);
-	uu[1] = (unsigned int) (u[0] >> (sizeof(int) * CHAR_BIT));
+	uu[1] = (unsigned int) (u[0] >> 32);
 #else
 	uu[0] = (unsigned int) u[0];
 #endif
 	return;
 }
 
-void uucopy(unsigned long int *u, const unsigned int *uu)
+void uucopy(mp_limb_t *u, const unsigned int *uu)
 {
 #ifdef R_FLINT_ABI_64
-	u[0] = (unsigned long int) uu[1] << (sizeof(int) * CHAR_BIT) |
-		(unsigned long int) uu[0];
+	u[0] = (mp_limb_t) uu[1] << 32 | (mp_limb_t) uu[0];
 #else
-	u[0] = (unsigned long int) uu[0];
+	u[0] = (mp_limb_t) uu[0];
 #endif
 	return;
 }

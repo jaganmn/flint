@@ -9,7 +9,7 @@
 
 void R_flint_fmpz_finalize(SEXP x)
 {
-	unsigned long int j, n;
+	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
 	fmpz *p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
@@ -20,12 +20,12 @@ void R_flint_fmpz_finalize(SEXP x)
 
 SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 {
-	unsigned long int j, nx = 0, ny = 0;
+	mp_limb_t j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
-			nx = (unsigned long int) XLENGTH(s_x);
+			nx = (mp_limb_t) XLENGTH(s_x);
 		else {
 			class = R_flint_get_class(s_x);
 			if (class == R_FLINT_CLASS_INVALID)
@@ -200,7 +200,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 
 SEXP R_flint_fmpz_atomic(SEXP object)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const fmpz *x = R_flint_get_pointer(object);
@@ -225,48 +225,34 @@ SEXP R_flint_fmpz_atomic(SEXP object)
 	return ans;
 }
 
-static R_INLINE mpz_ptr as_mpz_ptr(fmpz x, mpz_ptr work)
-{
-	if (COEFF_IS_MPZ(x))
-		return COEFF_TO_PTR(x);
-	else {
-		mpz_set_si(work, x);
-		return work;
-	}
-}
-
-#define AMIN2(a, b) ((fmpz_cmpabs(a, b) <= 0) ? a : b)
-#define AMAX2(a, b) ((fmpz_cmpabs(a, b) >= 0) ? a : b)
-
 SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 {
-	unsigned long int j, n = R_flint_get_length(object);
+	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	const fmpz *x = R_flint_get_pointer(object);
-	fmpz xmin = 0, xmax = 0;
+	mp_limb_t jmax = 0, jmin = 0;
 	for (j = 0; j < n; ++j) {
-		if (fmpz_cmp(x + j, &xmax) > 0)
-			xmax = x[j];
-		else if (fmpz_cmp(x + j, &xmin) < 0)
-			xmin = x[j];
+		if (fmpz_cmp(x + j, x + jmax) > 0)
+			jmax = j;
+		else if (fmpz_cmp(x + j, x + jmin) < 0)
+			jmin = j;
 	}
 	size_t ns, nc, ncmax;
-	mpz_ptr z;
-	mpz_t work;
-	mpz_init(work);
-	z = as_mpz_ptr(AMAX2(&xmin, &xmax)[0], work);
+	mpz_t z;
+	mpz_init(z);
+	fmpz_get_mpz(z, x + ((fmpz_cmpabs(x + jmin, x + jmax) >= 0) ? jmin : jmax));
 	ncmax = mpz_sizeinbase(z, abase);
 	char *buffer = R_alloc(ncmax + 2, 1);
 	mpz_get_str(buffer, base, z);
 	ncmax = strlen(buffer);
-	z = as_mpz_ptr(AMIN2(&xmin, &xmax)[0], work);
+	fmpz_get_mpz(z, x + ((fmpz_cmpabs(x + jmin, x + jmax) <= 0) ? jmin : jmax));
 	mpz_get_str(buffer, base, z);
 	if (buffer[ncmax] != '\0')
 		ncmax = strlen(buffer);
 	for (j = 0; j < n; ++j) {
-		z = as_mpz_ptr(x[j], work);
+		fmpz_get_mpz(z, x + j);
 		nc = mpz_sizeinbase(z, abase) + (mpz_sgn(z) < 0);
 		if (nc > ncmax)
 			nc = ncmax;
@@ -280,7 +266,6 @@ SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 		}
 		SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
-	mpz_clear(work);
 	SEXP nms = R_do_slot(object, R_flint_symbol_names);
 	if (XLENGTH(nms) > 0) {
 		PROTECT(nms);
@@ -294,7 +279,7 @@ SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	unsigned long int
+	mp_limb_t
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y);
 	const fmpz
@@ -302,7 +287,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		*y = R_flint_get_pointer(s_y);
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer object length is not a multiple of shorter object length"));
-	unsigned long int j, n = RECYCLE2(nx, ny);
+	mp_limb_t j, n = RECYCLE2(nx, ny);
 #define COMMON \
 	do { \
 	SEXP nms; \
@@ -387,8 +372,8 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				}
 				if (!fmpz_abs_fits_ui(e)) {
 				fmpz_clear(a);
-				Rf_error(_("<%s> %s <%s>: exponent exceeds maximum %lu in absolute value"),
-				         "fmpz", "^", "fmpz", (unsigned long int) -1);
+				Rf_error(_("<%s> %s <%s>: exponent exceeds maximum %llu in absolute value"),
+				         "fmpz", "^", "fmpz", (unsigned long long int) UWORD_MAX);
 				}
 				if (fmpz_sgn(e) >= 0) {
 				u = fmpz_get_ui(e);
@@ -469,7 +454,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	unsigned long int j, n = R_flint_get_length(s_x);
+	mp_limb_t j, n = R_flint_get_length(s_x);
 	const fmpz *x = R_flint_get_pointer(s_x);
 #define COMMON \
 	do { \
@@ -654,7 +639,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		SEXP ans = newObject("fmpz");
-		unsigned long int s = (op == 52) ? 2 : 1;
+		mp_limb_t s = (op == 52) ? 2 : 1;
 		fmpz *z = flint_calloc(s, sizeof(fmpz));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
@@ -706,14 +691,8 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpq_zero(z);
 			for (j = 0; j < n; ++j)
 				fmpz_add(fmpq_numref(z), fmpq_numref(z), x + j);
-			fmpz_t p;
-			fmpz_init(p);
-			unsigned int uu[2];
-			ucopy(uu, &n);
-			fmpz_set_uiui(p, uu[1], uu[0]);
-			fmpz_set(fmpq_denref(z), p);
+			fmpz_set_ui(fmpq_denref(z), n);
 			fmpq_canonicalise(z);
-			fmpz_clear(p);
 			break;
 		}
 		}

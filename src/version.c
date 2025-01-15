@@ -22,6 +22,15 @@ SEXP R_flint_bits_per_limb(void)
 	return Rf_ScalarInteger(mp_bits_per_limb);
 }
 
+SEXP R_flint_long_long_limb(void)
+{
+#ifdef R_FLINT_ABI_LL
+	return Rf_ScalarLogical(1);
+#else
+	return Rf_ScalarLogical(0);
+#endif
+}
+
 SEXP R_flint_version(void)
 {
 	int libflint[3], libmpfr[3], libgmp[3];
