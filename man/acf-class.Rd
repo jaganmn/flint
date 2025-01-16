@@ -194,7 +194,9 @@
       \code{signature(x = "acf")}:\cr
       returns a numeric vector that sorts in the same order as \code{x}.
       The permutation \code{order(xtfrm(x), \dots)} orders \code{x}
-      first by its real part then by its imaginary part.}
+      first by its real part then by its imaginary part, with the caveat
+      that all \code{a+NaNi} and \code{NaN+bi} have equal precedence
+      (for compatibility with \pkg{base}).}
   }
 }
 \seealso{
