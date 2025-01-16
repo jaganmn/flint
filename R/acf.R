@@ -208,9 +208,13 @@ setMethod("mean",
 setMethod("xtfrm",
           c(x = "acf"),
           function (x) {
-              r <- xtfrm(Real(x))
-              i <- xtfrm(Imag(x))
-              o <- order(r, i)
-              o[o] <- seq_along(o)
-              o
+              if (!anyNA(x))
+                  xtfrm(flintLength(x) * .ulong(x = xtfrm(Real(x)) - 1L) + .ulong(x = xtfrm(Imag(x))))
+              else {
+                  n <- length(w <- which(k <- !is.na(x)))
+                  x <- x[w]
+                  ans <- rep(if (is.integer(n)) NA_integer_ else NA_real_, length(k))
+                  ans[w] <- xtfrm(.ulong(x = n) * .ulong(x = xtfrm(Real(x)) - 1L) + .ulong(x = xtfrm(Imag(x))))
+                  ans
+              }
           })
