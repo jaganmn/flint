@@ -969,6 +969,34 @@ setMethod("length<-",
           function (x, value)
               .Call(R_flint_realloc, x, as(value, "ulong")))
 
+.match <-
+function (x, table, nomatch = NA_integer_, incomparables = NULL) {
+    m4 <- !is.null(incomparables) ||
+        !is.logical(incomparables) || length(incomparables) != 1L ||
+        is.na(incomparables) || incomparables
+    common <- flintClassCommon(c(flintClassAny(x),
+                                 flintClassAny(table),
+                                 if (m4) flintClassAny(incomparables)))
+    match(mtfrm(as(x, common)),
+          mtfrm(as(table, common)),
+          nomatch,
+          if (m4) mtfrm(as(incomparables, common)))
+}
+
+setMethod("match",
+          c(x =   "ANY", table = "flint"),
+          .match)
+
+setMethod("match",
+          c(x = "flint", table =   "ANY"),
+          .match)
+
+setMethod("match",
+          c(x = "flint", table = "flint"),
+          .match)
+
+rm(.match)
+
 setMethod("mtfrm",
           c(x = "flint"),
           function (x)

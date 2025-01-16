@@ -36,6 +36,9 @@
 \alias{is.na<-,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
+\alias{match,ANY,flint-method}
+\alias{match,flint,ANY-method}
+\alias{match,flint,flint-method}
 \alias{mtfrm,flint-method}
 \alias{names,flint-method}
 \alias{names<-,flint,NULL-method}
@@ -213,6 +216,14 @@
       argument \code{value}.  The first \code{min(length(x), value)}
       elements are copied from \code{x} and the remaining elements are
       initialized to zero.}
+    \item{\code{match}}{
+      \code{signature(x = "ANY", table = "flint")}:\cr
+      \code{signature(x = "flint", table = "ANY")}:\cr
+      \code{signature(x = "flint", table = "flint")}:\cr
+      returns an integer vector matching \code{x} to \code{table} after
+      coercing to a common class then \dQuote{match transforming} with
+      \code{\link{mtfrm}}.  The behaviour is parallel to that of the
+      default method, hence see \code{\link{match}}.}
     \item{\code{mtfrm}}{
       \code{signature(x = "flint")}:\cr
       returns \code{format(x, base = 62L, digits = 0L)}, a character
