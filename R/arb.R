@@ -200,9 +200,7 @@ setMethod("is.nan",
 setMethod("is.unsorted",
           c(x = "arb"),
           function (x, na.rm = FALSE, strictly = FALSE)
-              stop(gettextf("'%s' is not a total order on the range of '%s'",
-                            "<=", "arb"),
-                   domain = NA))
+              stop(.error.notTotalOrder()))
 
 setMethod("log",
           c(x = "arb"),
@@ -221,6 +219,4 @@ setMethod("mean",
 setMethod("xtfrm",
           c(x = "arb"),
           function (x)
-              stop(gettextf("'%s' is not a total order on the range of '%s'",
-                            "<=", "arb"),
-                   domain = NA))
+              stop(.error.notTotalOrder()))
