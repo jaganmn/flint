@@ -925,7 +925,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				else if (arf_cmp(last, x + j) >  0)
 					break;
 			}
-			z[0] = (j < n) ? 0 : (!narm && anyna && n > 1) ? NA_LOGICAL : 1;
+			z[0] = (j < n) ? 1 : (!narm && anyna && n > 1) ? NA_LOGICAL : 0;
 			break;
 		}
 		}
