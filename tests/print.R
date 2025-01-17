@@ -1,7 +1,13 @@
 library(flint)
 options(flint.Rdiff = TRUE)
 
-(p <- cumprod(rep(.ulong(x = c(1L, 2L)), c(1L, 30L))))
+p <- cumprod(rep(.ulong(x = c(1L, 2L)), c(1L, 30L)))
+
+vv <- withVisible(print(p))
+stopifnot(identical(vv$value,    p), identical(vv$visible, FALSE))
+vv <- withVisible( show(p))
+stopifnot(identical(vv$value, NULL), identical(vv$visible, FALSE))
+
 x <- c(-rev(p), 0L, p)
 as(x, "slong")
 as(x,  "fmpz")
