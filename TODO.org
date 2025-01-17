@@ -8,6 +8,8 @@
 ** TODO work around missing 'arf', 'acf' functionality
 ** TODO write a vignette
 ** TODO serialization
+** TODO formatting of floating-point types suppressing trailing zeros
+** TODO formatting of 'arb' with two 'digits' for midpoint, radius
 
 * TODO flint 0.0.1
 
