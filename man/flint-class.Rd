@@ -247,8 +247,17 @@
       if its length is greater.}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
-      prints \code{\link{format}(x)} and returns \code{x} invisibly.
-      For more options, consider \code{print(format(x, \dots), \dots)}
+      prints \code{\link{format}(x)} without quotes and returns \code{x}
+      invisibly.  The output has a header listing the class and length
+      of \code{x} and the address stored by its \code{.xData} slot.  If
+      the output might be differenced by \code{\link[tools]{Rdiff}},
+      then one can set optional argument \code{Rdiff} to \code{TRUE} to
+      indicate that the address should be formatted as
+      \code{<pointer: 0x...>} rather than as \code{0x...}, as the longer
+      format is recognized and ignored by \code{\link[tools]{Rdiff}}.
+      The default value \code{NULL} is equivalent to
+      \code{getOption("flint.Rdiff", FALSE)}.  For greater control over
+      output, consider doing \code{print(format(x, \dots), \dots)}
       instead of \code{print(x, \dots)}.}
     \item{\code{quantile}}{
       \code{signature(x = "flint")}:\cr

@@ -1051,21 +1051,28 @@ setMethod("names<-",
 
 setMethod("print",
           c(x = "flint"),
-          function (x, digits = NULL, quote = FALSE, max = NULL, ...) {
+          function (x, digits = NULL, max = NULL, Rdiff = NULL, ...) {
               s <- flintTriple(x)
-              cat(gettextf("class '%s', length %s, address %s",
+              if (is.null(Rdiff))
+                  Rdiff <- getOption("flint.Rdiff", FALSE)
+              Rdiff <- as.logical(Rdiff)
+              if (Rdiff)
+              cat(gettextf("class \"%s\", length %s, address <pointer: %s>",
+                           s[1L], s[2L], s[3L]),
+                  "\n", sep = "")
+              else
+              cat(gettextf("class \"%s\", length %s, address %s",
                            s[1L], s[2L], s[3L]),
                   "\n", sep = "")
               len <- length(x)
               if (len > 0L) {
-                  max <-
                   if (is.null(max))
-                      getOption("max.print", 99999L)
-                  else as.integer(max)
+                      max <- getOption("max.print", 99999L)
+                  max <- as.integer(max)
                   if (len <= max)
-                      print.default(format(x, digits = digits), quote = quote, max = max, ...)
+                      print.default(format(x, digits = digits), quote = FALSE, max = max, ...)
                   else {
-                      print.default(format(x[seq_len(max)], digits = digits), quote = quote, max = max, ...)
+                      print.default(format(x[seq_len(max)], digits = digits), quote = FALSE, max = max, ...)
                       cat(gettextf(" [ reached '%s' / getOption(\"%s\") -- omitted %.0f entries ]",
                                    "max", "max.print", len - max),
                           "\n", sep = "")
@@ -1319,7 +1326,7 @@ setMethod("sequence",
 setMethod("show",
           c(object = "flint"),
           function (object) {
-              print(object, quote = FALSE)
+              print(object)
               invisible(NULL)
           })
 

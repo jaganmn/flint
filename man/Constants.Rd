@@ -31,6 +31,7 @@ arb_const_e(prec = flintPrec())
   functions: \url{https://flintlib.org/doc/arb.html}
 }
 \examples{
-arb_const_pi(2^(0:15))
+prec <- cumprod(rep(c(1, 2), c(1L, 15L)))
+arb_const_pi(prec)
 }
 \keyword{math}

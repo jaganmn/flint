@@ -45,7 +45,7 @@
     Value 0 is equivalent to the minimum integer \code{d} such that all
     elements of \code{x} are represented exactly by \code{d} digits in
     the specified base.  The default value \code{NULL} is equivalent to
-    \code{getOption("digits")}.}
+    \code{getOption("digits", 99999L)}.}
   \item{sep}{
     a nonempty character string used to separate the significand from
     the exponent.  The default value \code{NULL} is a equivalent to
