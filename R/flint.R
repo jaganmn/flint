@@ -814,8 +814,14 @@ rm(.all.equal)
 
 setMethod("anyDuplicated",
           c(x = "flint"),
-          function (x, incomparables = FALSE, ...)
-              anyDuplicated(mtfrm(x), incomparables = incomparables, ...))
+          function (x, incomparables = FALSE, ...) {
+              if (!(missing(incomparables) ||
+                    (is.logical(incomparables) &&
+                     length(incomparables) == 1L &&
+                     !(is.na(incomparables) || incomparables))))
+                  incomparables <- mtfrm(as(incomparables, flintClass(x)))
+              anyDuplicated(mtfrm(x), incomparables = incomparables, ...)
+          })
 
 setMethod("as.raw",
           c(x = "flint"),
@@ -918,8 +924,14 @@ setAs("ANY", "flint",
 
 setMethod("duplicated",
           c(x = "flint"),
-          function (x, incomparables = FALSE, ...)
-              duplicated(mtfrm(x), incomparables = incomparables, ...))
+          function (x, incomparables = FALSE, ...) {
+              if (!(missing(incomparables) ||
+                    (is.logical(incomparables) &&
+                     length(incomparables) == 1L &&
+                     !(is.na(incomparables) || incomparables))))
+                  incomparables <- mtfrm(as(incomparables, flintClass(x)))
+              duplicated(mtfrm(x), incomparables = incomparables, ...)
+          })
 
 setMethod("findInterval",
           c(x = "flint"),
@@ -971,16 +983,14 @@ setMethod("length<-",
 
 .match <-
 function (x, table, nomatch = NA_integer_, incomparables = NULL) {
-    m4 <- !(is.null(incomparables) ||
-            (is.logical(incomparables) && length(incomparables) == 1L &&
-             !(is.na(incomparables) || incomparables)))
-    common <- flintClassCommon(c(flintClassAny(x),
-                                 flintClassAny(table),
-                                 if (m4) flintClassAny(incomparables)))
-    match(mtfrm(as(x, common)),
-          mtfrm(as(table, common)),
-          nomatch,
-          if (m4) mtfrm(as(incomparables, common)))
+    common <- flintClassCommon(c(flintClassAny(x), flintClassAny(table)))
+    if (!(is.null(incomparables) ||
+          (is.logical(incomparables) &&
+           length(incomparables) == 1L &&
+           !(is.na(incomparables) || incomparables))))
+        incomparables <- mtfrm(as(incomparables, common))
+    match(mtfrm(as(x, common)), mtfrm(as(table, common)),
+          nomatch = nomatch, incomparables = incomparables)
 }
 
 setMethod("match",
