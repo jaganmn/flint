@@ -306,7 +306,9 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
-	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	SEXP ans = Rf_allocVector(STRSXP, (R_xlen_t) n);
+	if (n) {
+	PROTECT(ans);
 	const slong *x = R_flint_get_pointer(object);
 	slong xmin = 0, xmax = 0;
 	for (j = 0; j < n; ++j) {
@@ -350,6 +352,7 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 		UNPROTECT(1);
 	}
 	UNPROTECT(1);
+	}
 	return ans;
 }
 

@@ -337,7 +337,9 @@ SEXP R_flint_mag_format(SEXP object, SEXP s_base,
 	const char *sep = asSep(s_sep, __func__);
 	int lower = isRndZ(asRnd(s_rnd, __func__));
 	mpfr_rnd_t rnd = (lower) ? MPFR_RNDZ : MPFR_RNDA;
-	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
+	SEXP ans = Rf_allocVector(STRSXP, (R_xlen_t) n);
+	if (n) {
+	PROTECT(ans);
 	mag_srcptr x = R_flint_get_pointer(object);
 	mpfr_exp_t e__;
 	slong p__;
@@ -459,6 +461,7 @@ SEXP R_flint_mag_format(SEXP object, SEXP s_base,
 		UNPROTECT(1);
 	}
 	UNPROTECT(1);
+	}
 	return ans;
 }
 
