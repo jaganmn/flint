@@ -1058,14 +1058,16 @@ setMethod("print",
                   "\n", sep = "")
               len <- length(x)
               if (len > 0L) {
+                  max <-
                   if (is.null(max))
-                      max <- getOption("max.print", 99999L)
+                      getOption("max.print", 99999L)
+                  else as.integer(max)
                   if (len <= max)
                       print.default(format(x, digits = digits), quote = quote, max = max, ...)
                   else {
                       print.default(format(x[seq_len(max)], digits = digits), quote = quote, max = max, ...)
-                      cat(gettextf(" [ reached '%s' / getOption(\"%s\") -- omitted %f entries ]",
-                                   "max", "max.print", len - trunc(max)),
+                      cat(gettextf(" [ reached '%s' / getOption(\"%s\") -- omitted %.0f entries ]",
+                                   "max", "max.print", len - max),
                           "\n", sep = "")
                   }
               }
