@@ -971,9 +971,9 @@ setMethod("length<-",
 
 .match <-
 function (x, table, nomatch = NA_integer_, incomparables = NULL) {
-    m4 <- !is.null(incomparables) ||
-        !is.logical(incomparables) || length(incomparables) != 1L ||
-        is.na(incomparables) || incomparables
+    m4 <- !(is.null(incomparables) ||
+            (is.logical(incomparables) && length(incomparables) == 1L &&
+             !(is.na(incomparables) || incomparables)))
     common <- flintClassCommon(c(flintClassAny(x),
                                  flintClassAny(table),
                                  if (m4) flintClassAny(incomparables)))
