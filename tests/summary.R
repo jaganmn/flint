@@ -16,7 +16,7 @@ for (.cl in c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
     ## quantile
     if (any(.cl == c("arb", "acb")))
     stopifnot(tryCatch(as.null(quantile(x)),
-                       notTotalOrderError = function(e) TRUE))
+                       notTotalOrderError = function (e) TRUE))
     else
     for (.qt in 1:9)
     stopifnot(all.equal(quantile(x , type = .qt),
