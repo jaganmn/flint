@@ -280,7 +280,7 @@
       \code{rep(x, length.out=)} not preserving names, faster than
       \code{rep} when \code{x} has names.}
     \item{\code{seq}}{
-      \code{signature(... = "flint")}:\cr
+      \code{signature(\dots = "flint")}:\cr
       generates \code{flint} vectors whose elements are equally spaced.
       This method is dispatched by calls to \code{seq} or \code{seq.int}
       in which the first positional argument is a \code{flint} vector.

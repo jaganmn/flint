@@ -1279,7 +1279,7 @@ setMethod("seq",
                },
                {
                    if (missing(length.out)) {
-                       d <- if (from == to) 0L else if (from < to) (to - from)/by else (from - to)/by
+                       d <- if (from == to) 0L else (to - from)/by
                        d. <- as(d, "fmpz")
                        if (d. == d)
                            d. <- d. + unit
@@ -1320,7 +1320,7 @@ setMethod("sequence",
               l <- vector("list", n)
               for (i in seq_len(n))
                   l[[i]] <- seq(from = from[i], by = by[i], length.out = nvec[i])
-              do.call(c, l)
+              do.call(c.flint, l)
           })
 
 setMethod("show",
