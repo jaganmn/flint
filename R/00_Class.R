@@ -3,8 +3,8 @@ setClass("flint",
          slots = c(names = "character"),
          validity = function (object) .Call(R_flint_valid, object))
 
-.slong <- setClass("slong", contains = "flint")
 .ulong <- setClass("ulong", contains = "flint")
+.slong <- setClass("slong", contains = "flint")
  .fmpz <- setClass( "fmpz", contains = "flint")
  .fmpq <- setClass( "fmpq", contains = "flint")
   .mag <- setClass(  "mag", contains = "flint")

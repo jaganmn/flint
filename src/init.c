@@ -23,7 +23,7 @@ SEXPTYPE R_flint_sexptypes[] =
 
 const char *R_flint_classes[] =
 {
-	"slong", "ulong", "fmpz", "fmpq",
+	"ulong", "slong", "fmpz", "fmpq",
 	"mag", "arf", "acf", "arb", "acb", "",
 	NULL
 };
@@ -88,12 +88,6 @@ SEXP R_flint_triple(SEXP);
 SEXP R_flint_valid(SEXP);
 SEXP R_flint_version(void);
 
-SEXP R_flint_slong_initialize(SEXP, SEXP, SEXP);
-SEXP R_flint_slong_atomic(SEXP);
-SEXP R_flint_slong_format(SEXP, SEXP);
-SEXP R_flint_slong_ops2(SEXP, SEXP, SEXP);
-SEXP R_flint_slong_ops1(SEXP, SEXP, SEXP);
-
 SEXP R_flint_ulong_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_ulong_atomic(SEXP);
 SEXP R_flint_ulong_format(SEXP, SEXP);
@@ -101,6 +95,12 @@ SEXP R_flint_ulong_ops2(SEXP, SEXP, SEXP);
 SEXP R_flint_ulong_ops1(SEXP, SEXP, SEXP);
 SEXP R_flint_ulong_seq(SEXP, SEXP, SEXP);
 SEXP R_flint_ulong_complement(SEXP, SEXP, SEXP);
+
+SEXP R_flint_slong_initialize(SEXP, SEXP, SEXP);
+SEXP R_flint_slong_atomic(SEXP);
+SEXP R_flint_slong_format(SEXP, SEXP);
+SEXP R_flint_slong_ops2(SEXP, SEXP, SEXP);
+SEXP R_flint_slong_ops1(SEXP, SEXP, SEXP);
 
 SEXP R_flint_fmpz_initialize(SEXP, SEXP, SEXP);
 SEXP R_flint_fmpz_atomic(SEXP);
@@ -197,11 +197,6 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_triple, 1),
 	CALL_ENTRY(R_flint_valid, 1),
 	CALL_ENTRY(R_flint_version, 0),
-	CALL_ENTRY(R_flint_slong_initialize, 3),
-	CALL_ENTRY(R_flint_slong_atomic, 1),
-	CALL_ENTRY(R_flint_slong_format, 2),
-	CALL_ENTRY(R_flint_slong_ops2, 3),
-	CALL_ENTRY(R_flint_slong_ops1, 3),
 	CALL_ENTRY(R_flint_ulong_initialize, 3),
 	CALL_ENTRY(R_flint_ulong_atomic, 1),
 	CALL_ENTRY(R_flint_ulong_format, 2),
@@ -209,6 +204,11 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_ulong_ops1, 3),
 	CALL_ENTRY(R_flint_ulong_seq, 3),
 	CALL_ENTRY(R_flint_ulong_complement, 3),
+	CALL_ENTRY(R_flint_slong_initialize, 3),
+	CALL_ENTRY(R_flint_slong_atomic, 1),
+	CALL_ENTRY(R_flint_slong_format, 2),
+	CALL_ENTRY(R_flint_slong_ops2, 3),
+	CALL_ENTRY(R_flint_slong_ops1, 3),
 	CALL_ENTRY(R_flint_fmpz_initialize, 3),
 	CALL_ENTRY(R_flint_fmpz_atomic, 1),
 	CALL_ENTRY(R_flint_fmpz_format, 2),

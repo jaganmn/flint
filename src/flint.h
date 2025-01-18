@@ -147,8 +147,8 @@ SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_off;
 
 typedef enum {
-	R_FLINT_CLASS_SLONG = 0,
-	R_FLINT_CLASS_ULONG,
+	R_FLINT_CLASS_ULONG = 0,
+	R_FLINT_CLASS_SLONG,
 	R_FLINT_CLASS_FMPZ,
 	R_FLINT_CLASS_FMPQ,
 	R_FLINT_CLASS_MAG,
@@ -199,8 +199,8 @@ mp_limb_t R_flint_get_length(SEXP);
 R_flint_class_t R_flint_get_class(SEXP);
 void R_flint_set(SEXP, void *, mp_limb_t, R_CFinalizer_t);
 
-void R_flint_slong_finalize(SEXP);
 void R_flint_ulong_finalize(SEXP);
+void R_flint_slong_finalize(SEXP);
 void R_flint_fmpz_finalize(SEXP);
 void R_flint_fmpq_finalize(SEXP);
 void R_flint_mag_finalize(SEXP);

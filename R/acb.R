@@ -70,12 +70,12 @@ setMethod("Ops",
           })
 
 setMethod("Ops",
-          c(e1 = "acb", e2 = "slong"),
+          c(e1 = "acb", e2 = "ulong"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, .acb(x = e2)))
 
 setMethod("Ops",
-          c(e1 = "acb", e2 = "ulong"),
+          c(e1 = "acb", e2 = "slong"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, .acb(x = e2)))
 

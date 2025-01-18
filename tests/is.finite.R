@@ -8,7 +8,7 @@ x..[[4L]] <- complex(imaginary = x..[[3L]])
 y.. <- lapply(x.., `names<-`, letters[seq_len(n)])
 
 k.. <- rep(seq_along(x..), c(4L, 1L, 2L, 2L))
-names(k..) <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "arb",
+names(k..) <- c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "arb",
                 "acf", "acb")
 
 for (.cl in names(k..)) {

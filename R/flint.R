@@ -7,7 +7,7 @@ function (i)
                else type.,
            "S4" =
                switch(class. <- flintClass(i),
-                      "slong" =, "ulong" =, "fmpz" =, "fmpq" =
+                      "ulong" =, "slong" =, "fmpz" =, "fmpq" =
                           class.,
                       stop(.error.invalidSubscriptClass(i))),
            stop(.error.invalidSubscriptType(i)))
@@ -967,7 +967,7 @@ setMethod("findInterval",
 setMethod("is.na<-",
           c(x = "flint"),
           function (x, value) {
-              x[value] <- switch(flintClass(x), "slong" =, "ulong" =, "fmpz" =, "fmpq" = NA_integer_, "mag" =, "arf" =, "arb" = NA_real_, "acf" =, "acb" = NA_complex_)
+              x[value] <- switch(flintClass(x), "ulong" =, "slong" =, "fmpz" =, "fmpq" = NA_integer_, "mag" =, "arf" =, "arb" = NA_real_, "acf" =, "acb" = NA_complex_)
               x
           })
 
@@ -1087,7 +1087,7 @@ setMethod("quantile",
                     ...) {
               class. <-
               switch(flintClass(x),
-                     "slong" =, "ulong" =, "fmpz" =, "fmpq" = "fmpq",
+                     "ulong" =, "slong" =, "fmpz" =, "fmpq" = "fmpq",
                      "mag" =, "arf" = "arf",
                      "acf" = "acf",
                      stop(.error.notTotalOrder()))

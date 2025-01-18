@@ -4,7 +4,7 @@ n <- 4L
 x. <- seq_len(n)
 names(x.) <- letters[seq_len(n)]
 
-for (.cl in c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
     x <- new(.cl, x = x.)
     stopifnot(identical(names(x), names(x.)),

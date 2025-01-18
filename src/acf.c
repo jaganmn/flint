@@ -366,20 +366,20 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		}
 		case OBJSXP:
 			switch (class) {
-			case R_FLINT_CLASS_SLONG:
-			{
-				const slong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set_si(acf_realref(y + j), x[j % nx]);
-					arf_zero(acf_imagref(y + j));
-				}
-				break;
-			}
 			case R_FLINT_CLASS_ULONG:
 			{
 				const ulong *x = R_flint_get_pointer(s_x);
 				for (j = 0; j < ny; ++j) {
 					arf_set_ui(acf_realref(y + j), x[j % nx]);
+					arf_zero(acf_imagref(y + j));
+				}
+				break;
+			}
+			case R_FLINT_CLASS_SLONG:
+			{
+				const slong *x = R_flint_get_pointer(s_x);
+				for (j = 0; j < ny; ++j) {
+					arf_set_si(acf_realref(y + j), x[j % nx]);
 					arf_zero(acf_imagref(y + j));
 				}
 				break;

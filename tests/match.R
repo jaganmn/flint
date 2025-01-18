@@ -2,7 +2,7 @@ library(flint)
 
 n <- 10L
 x. <- seq_len(n); y. <- rev(x.); z. <- integer(length(x.))
-for (.cl in c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
     x <- new(.cl, x = x.); y <- new(.cl, x = y.); z <- new(.cl, x = z.)
     stopifnot(identical(mtfrm(x), format(x, base = 62L, digits = 0L)),

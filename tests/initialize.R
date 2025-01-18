@@ -4,7 +4,7 @@ library(flint)
 ## Test that length(new(., length = value)) ==        value
 ##           length(new(.,      x = value)) == length(value).
 
-cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+cl <- c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
         "arb", "acb")
 n <- length(cl):1L
 a <- .mapply(new, list(cl, length = n), NULL)
@@ -114,12 +114,12 @@ wl <- flintABI()
 wd <- .Machine[["double.digits"]]
 a <- 2^wl
 b <- 2^max(0L, wl - wd)
-stopifnot(testError(new("slong", x = .),
-                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf,
-                         -a/2 - b*2, a/2)),
-          testError(new("ulong", x = .),
+stopifnot(testError(new("ulong", x = .),
                     list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf,
                          -1, a)),
+          testError(new("slong", x = .),
+                    list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf,
+                         -a/2 - b*2, a/2)),
           testError(new("fmpz", x = .),
                     list(NA, NA_integer_, NA_real_, NaN, -Inf, Inf)),
           testError(new("fmpq", x = .),

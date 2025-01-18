@@ -92,8 +92,8 @@
       return a traditional vector or a \code{flint} vector containing
       the elements of \code{x} indexed by \code{i} (the
       \dQuote{subscript}).  The subscript can be missing, \code{NULL},
-      logical, integer, double, character, \code{\linkS4class{slong}},
-      \code{\linkS4class{ulong}}, \code{\linkS4class{fmpz}}, or
+      logical, integer, double, character, \code{\linkS4class{ulong}},
+      \code{\linkS4class{slong}}, \code{\linkS4class{fmpz}}, or
       \code{\linkS4class{fmpq}}.  Methods for signatures with
       \code{x = "flint"} signal an error for \code{NA} and out of bounds
       subscripts, as the \proglang{C} types interfaced by \code{flint}
@@ -113,8 +113,8 @@
       replacing the elements of \code{x} indexed by \code{i} (the
       \dQuote{subscript}) with elements of \code{value}, which are
       recycled as necessary.  The subscript can be missing, \code{NULL},
-      logical, integer, double, character, \code{\linkS4class{slong}},
-      \code{\linkS4class{ulong}}, \code{\linkS4class{fmpz}}, or
+      logical, integer, double, character, \code{\linkS4class{ulong}},
+      \code{\linkS4class{slong}}, \code{\linkS4class{fmpz}}, or
       \code{\linkS4class{fmpq}}.   The class of
       the return value is determined following strict rules from the
       classes of \code{x} and \code{value}, which are promoted to the
@@ -327,7 +327,7 @@ seq(to=, by=, length.out=)}
 }
 \seealso{
   The nonvirtual subclasses:
-  \code{\linkS4class{slong}}, \code{\linkS4class{ulong}},
+  \code{\linkS4class{ulong}}, \code{\linkS4class{slong}},
   \code{\linkS4class{fmpz}}, \code{\linkS4class{fmpq}},
   \code{\linkS4class{mag}},
   \code{\linkS4class{arf}}, \code{\linkS4class{acf}},

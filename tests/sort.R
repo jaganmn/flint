@@ -3,7 +3,7 @@ library(flint)
 set.seed(0x021936L)
 n <- 32L
 i <- sample(n)
-for (.cl in c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf"))
+for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf"))
     stopifnot(identical(xtfrm(new(.cl, x = i)), i))
 what <- c("notTotalOrderError", "error", "condition")
 for (.cl in c("arb", "acb")) {

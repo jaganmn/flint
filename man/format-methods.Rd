@@ -1,7 +1,7 @@
 \name{format-methods}
 \alias{format-methods}
-\alias{format,slong-method}
 \alias{format,ulong-method}
+\alias{format,slong-method}
 \alias{format,fmpz-method}
 \alias{format,fmpq-method}
 \alias{format,mag-method}
@@ -15,8 +15,8 @@
   Format a \code{\linkS4class{flint}} vector for pretty printing.
 }
 \usage{
-\S4method{format}{slong}(x, base = 10L, \dots)
 \S4method{format}{ulong}(x, base = 10L, \dots)
+\S4method{format}{slong}(x, base = 10L, \dots)
 \S4method{format}{fmpz}(x, base = 10L, \dots)
 \S4method{format}{fmpq}(x, base = 10L, \dots)
 \S4method{format}{mag}(x, base = 10L, digits = NULL, sep = NULL,

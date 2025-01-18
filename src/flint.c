@@ -12,11 +12,11 @@
 #define R_FLINT_SWITCH(class, template) \
 do { \
 	switch (class) { \
-	case R_FLINT_CLASS_SLONG: \
-		template(slong, slong, const slong *, slong *); \
-		break; \
 	case R_FLINT_CLASS_ULONG: \
 		template(ulong, ulong, const ulong *, ulong *); \
+		break; \
+	case R_FLINT_CLASS_SLONG: \
+		template(slong, slong, const slong *, slong *); \
 		break; \
 	case R_FLINT_CLASS_FMPZ: \
 		template(fmpz, fmpz, const fmpz *, fmpz *); \
@@ -44,12 +44,12 @@ do { \
 	} \
 } while (0)
 
-#define slong_zero(rop) *(rop) = 0
 #define ulong_zero(rop) *(rop) = 0
-#define slong_set(rop, op) *(rop) = *(op)
+#define slong_zero(rop) *(rop) = 0
 #define ulong_set(rop, op) *(rop) = *(op)
-#define slong_equal(rop, op) (*(rop) == *(op))
+#define slong_set(rop, op) *(rop) = *(op)
 #define ulong_equal(rop, op) (*(rop) == *(op))
+#define slong_equal(rop, op) (*(rop) == *(op))
 
 #ifndef HAVE_ACF_ZERO
 static R_INLINE
@@ -210,15 +210,15 @@ SEXP R_flint_findinterval(SEXP object, SEXP breaks,
 	ulong *y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
 	R_flint_set(ans, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
 
-#define slong_cmp_l(x, jx, b, jb)                x[jx] < b[jb]
 #define ulong_cmp_l(x, jx, b, jb)                x[jx] < b[jb]
+#define slong_cmp_l(x, jx, b, jb)                x[jx] < b[jb]
 #define  fmpz_cmp_l(x, jx, b, jb) fmpz_cmp(x + jx, b + jb) < 0
 #define  fmpq_cmp_l(x, jx, b, jb) fmpq_cmp(x + jx, b + jb) < 0
 #define   mag_cmp_l(x, jx, b, jb)  mag_cmp(x + jx, b + jb) < 0
 #define   arf_cmp_l(x, jx, b, jb)  arf_cmp(x + jx, b + jb) < 0
 
-#define slong_cmp_le(x, jx, b, jb)                x[jx] <= b[jb]
 #define ulong_cmp_le(x, jx, b, jb)                x[jx] <= b[jb]
+#define slong_cmp_le(x, jx, b, jb)                x[jx] <= b[jb]
 #define  fmpz_cmp_le(x, jx, b, jb) fmpz_cmp(x + jx, b + jb) <= 0
 #define  fmpq_cmp_le(x, jx, b, jb) fmpq_cmp(x + jx, b + jb) <= 0
 #define   mag_cmp_le(x, jx, b, jb)  mag_cmp(x + jx, b + jb) <= 0
@@ -385,11 +385,11 @@ SEXP R_flint_findinterval(SEXP object, SEXP breaks,
 	} while (0)
 
 	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		TEMPLATE(slong, const slong *);
-		break;
 	case R_FLINT_CLASS_ULONG:
 		TEMPLATE(ulong, const ulong *);
+		break;
+	case R_FLINT_CLASS_SLONG:
+		TEMPLATE(slong, const slong *);
 		break;
 	case R_FLINT_CLASS_FMPZ:
 		TEMPLATE(fmpz, const fmpz *);
@@ -409,15 +409,15 @@ SEXP R_flint_findinterval(SEXP object, SEXP breaks,
 
 #undef TEMPLATE
 
-#undef slong_cmp_l
 #undef ulong_cmp_l
+#undef slong_cmp_l
 #undef  fmpz_cmp_l
 #undef  fmpq_cmp_l
 #undef   mag_cmp_l
 #undef   arf_cmp_l
 
-#undef slong_cmp_le
 #undef ulong_cmp_le
+#undef slong_cmp_le
 #undef  fmpz_cmp_le
 #undef  fmpq_cmp_le
 #undef   mag_cmp_le
@@ -901,11 +901,11 @@ SEXP R_flint_size(SEXP object)
 	} while (0)
 
 	switch (class) {
-	case R_FLINT_CLASS_SLONG:
-		count += n * sizeof(slong);
-		break;
 	case R_FLINT_CLASS_ULONG:
 		count += n * sizeof(ulong);
+		break;
+	case R_FLINT_CLASS_SLONG:
+		count += n * sizeof(slong);
 		break;
 	case R_FLINT_CLASS_FMPZ:
 		SIZE_CASE(fmpz, fmpz, const fmpz *);

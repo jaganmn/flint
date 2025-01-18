@@ -7,7 +7,7 @@ library(flint)
 ## Allow for imprecision in "mag" conversions which are not exact even
 ## in exactly representable cases.
 
-cl <- c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+cl <- c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
         "arb", "acb")
 cl.complexlike <- cl == "acf" | cl == "acb"
 basic <- c("raw", "logical", "integer", "double", "numeric", "complex",

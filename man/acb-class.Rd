@@ -10,8 +10,8 @@
 \alias{Math2,acb-method}
 \alias{Ops,ANY,acb-method}
 \alias{Ops,acb,ANY-method}
-\alias{Ops,acb,slong-method}
 \alias{Ops,acb,ulong-method}
+\alias{Ops,acb,slong-method}
 \alias{Ops,acb,fmpz-method}
 \alias{Ops,acb,fmpq-method}
 \alias{Ops,acb,mag-method}

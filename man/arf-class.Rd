@@ -10,8 +10,8 @@
 \alias{Math2,arf-method}
 \alias{Ops,ANY,arf-method}
 \alias{Ops,arf,ANY-method}
-\alias{Ops,arf,slong-method}
 \alias{Ops,arf,ulong-method}
+\alias{Ops,arf,slong-method}
 \alias{Ops,arf,fmpz-method}
 \alias{Ops,arf,fmpq-method}
 \alias{Ops,arf,mag-method}

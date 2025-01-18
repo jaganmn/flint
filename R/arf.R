@@ -60,12 +60,12 @@ setMethod("Ops",
           })
 
 setMethod("Ops",
-          c(e1 = "arf", e2 = "slong"),
+          c(e1 = "arf", e2 = "ulong"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, .arf(x = e2)))
 
 setMethod("Ops",
-          c(e1 = "arf", e2 = "ulong"),
+          c(e1 = "arf", e2 = "slong"),
           function (e1, e2)
               get(.Generic, mode = "function")(e1, .arf(x = e2)))
 

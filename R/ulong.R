@@ -68,14 +68,14 @@ setMethod("Ops",
           })
 
 setMethod("Ops",
-          c(e1 = "ulong", e2 = "slong"),
-          function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(x = e1), .fmpz(x = e2)))
-
-setMethod("Ops",
           c(e1 = "ulong", e2 = "ulong"),
           function (e1, e2)
               .Call(R_flint_ulong_ops2, .Generic, e1, e2))
+
+setMethod("Ops",
+          c(e1 = "ulong", e2 = "slong"),
+          function (e1, e2)
+              get(.Generic, mode = "function")(.fmpz(x = e1), .fmpz(x = e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpz"),

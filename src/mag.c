@@ -215,6 +215,13 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	}
 	case OBJSXP:
 		switch (class) {
+		case R_FLINT_CLASS_ULONG:
+		{
+			const ulong *x = R_flint_get_pointer(s_x);
+			for (j = 0; j < ny; ++j)
+				WRAP(mag_set_ui, lower, y + j, x[j % nx]);
+			break;
+		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
@@ -224,13 +231,6 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				else
 				WRAP(mag_set_ui, lower, y + j, (ulong) -1 - (ulong) x[j % nx] + 1);
 			}
-			break;
-		}
-		case R_FLINT_CLASS_ULONG:
-		{
-			const ulong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				WRAP(mag_set_ui, lower, y + j, x[j % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:

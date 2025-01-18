@@ -1,7 +1,7 @@
 library(flint)
 
 x. <- as.integer(cumprod(1:11))
-for (.cl in c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
+for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
     x <- new(.cl, x = x.)
     s <- structure(flintTriple(x),
