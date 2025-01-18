@@ -452,6 +452,22 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 
 #undef TEMPLATE
 
+	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
+		sy = PROTECT(R_do_slot(reference, R_flint_symbol_names));
+	UNPROTECT(2);
+	if (XLENGTH(sx) != XLENGTH(sy))
+		return Rf_ScalarLogical(0);
+	if (XLENGTH(sx) > 0) {
+		SEXP cx, cy;
+		for (j = 0; j < n; ++j) {
+			cx = STRING_ELT(sx, (R_xlen_t) j);
+			cy = STRING_ELT(sy, (R_xlen_t) j);
+			if ((cx == NA_STRING) != (cy == NA_STRING) ||
+			    strcmp(CHAR(cx), CHAR(cy)) != 0)
+				return Rf_ScalarLogical(0);
+		}
+	}
+
 	return Rf_ScalarLogical(1);
 }
 
@@ -797,7 +813,7 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 		} else { \
 			if (usenames) \
 			for (jx = 0; jx < nx; ++jx) { \
-				nm = STRING_ELT(sx, (R_xlen_t) nx); \
+				nm = STRING_ELT(sx, (R_xlen_t) jx); \
 				t = times[jx]; \
 				for (i = 0; i < t; ++i, ++jy) { \
 					name##_set(y__ + jy, x__ + jx); \
