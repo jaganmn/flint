@@ -1,7 +1,8 @@
 library(flint)
 
-x. <- seq_len(4L)
-names(x.) <- letters[x.]
+n <- 4L
+x. <- seq_len(n)
+names(x.) <- letters[seq_len(n)]
 
 for (.cl in c("slong", "ulong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
