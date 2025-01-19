@@ -1,0 +1,255 @@
+
+R Under development (unstable) (2025-01-15 r87580) -- "Unsuffered Consequences"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin23.6.0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(flint)
+> options(flint.Rdiff = TRUE)
+> 
+> (L <- sapply(c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
++               "arb", "acb"),
++              new, x = seq_len(6L), simplify = FALSE))
+$ulong
+class "ulong", length 6, address <pointer: 0x6000010bc1e0>
+[1] 1 2 3 4 5 6
+
+$slong
+class "slong", length 6, address <pointer: 0x6000010bc1b0>
+[1] 1 2 3 4 5 6
+
+$fmpz
+class "fmpz", length 6, address <pointer: 0x6000010bc180>
+[1] 1 2 3 4 5 6
+
+$fmpq
+class "fmpq", length 6, address <pointer: 0x600003abc120>
+[1] 1/1 2/1 3/1 4/1 5/1 6/1
+
+$mag
+class "mag", length 6, address <pointer: 0x600003abc180>
+[1] 1.000000e+0 2.000000e+0 3.000000e+0 4.000000e+0 5.000000e+0 6.000000e+0
+
+$arf
+class "arf", length 6, address <pointer: 0x600002baa7c0>
+[1] 1.000000e+0 2.000000e+0 3.000000e+0 4.000000e+0 5.000000e+0 6.000000e+0
+
+$acf
+class "acf", length 6, address <pointer: 0x132e80370>
+[1] 1.000000e+0+0.000000e+0i 2.000000e+0+0.000000e+0i 3.000000e+0+0.000000e+0i
+[4] 4.000000e+0+0.000000e+0i 5.000000e+0+0.000000e+0i 6.000000e+0+0.000000e+0i
+
+$arb
+class "arb", length 6, address <pointer: 0x132e804f0>
+[1] (1.000000e+0 +/- 0.000000e+0) (2.000000e+0 +/- 0.000000e+0)
+[3] (3.000000e+0 +/- 0.000000e+0) (4.000000e+0 +/- 0.000000e+0)
+[5] (5.000000e+0 +/- 0.000000e+0) (6.000000e+0 +/- 0.000000e+0)
+
+$acb
+class "acb", length 6, address <pointer: 0x132e80610>
+[1] (1.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+[2] (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+[3] (3.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+[4] (4.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+[5] (5.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+[6] (6.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+
+> (D <- as.data.frame(L))
+  ulong slong fmpz fmpq         mag         arf                      acf
+1     1     1    1  1/1 1.000000e+0 1.000000e+0 1.000000e+0+0.000000e+0i
+2     2     2    2  2/1 2.000000e+0 2.000000e+0 2.000000e+0+0.000000e+0i
+3     3     3    3  3/1 3.000000e+0 3.000000e+0 3.000000e+0+0.000000e+0i
+4     4     4    4  4/1 4.000000e+0 4.000000e+0 4.000000e+0+0.000000e+0i
+5     5     5    5  5/1 5.000000e+0 5.000000e+0 5.000000e+0+0.000000e+0i
+6     6     6    6  6/1 6.000000e+0 6.000000e+0 6.000000e+0+0.000000e+0i
+                            arb
+1 (1.000000e+0 +/- 0.000000e+0)
+2 (2.000000e+0 +/- 0.000000e+0)
+3 (3.000000e+0 +/- 0.000000e+0)
+4 (4.000000e+0 +/- 0.000000e+0)
+5 (5.000000e+0 +/- 0.000000e+0)
+6 (6.000000e+0 +/- 0.000000e+0)
+                                                           acb
+1 (1.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+2 (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+3 (3.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+4 (4.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+5 (5.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+6 (6.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+> stopifnot(identical(as.list(D), L),
++           identical(do.call(data.frame, L), D))
+> 
+> (L. <- lapply(L, as.data.frame, nm = "?"))
+$ulong
+  ?
+1 1
+2 2
+3 3
+4 4
+5 5
+6 6
+
+$slong
+  ?
+1 1
+2 2
+3 3
+4 4
+5 5
+6 6
+
+$fmpz
+  ?
+1 1
+2 2
+3 3
+4 4
+5 5
+6 6
+
+$fmpq
+    ?
+1 1/1
+2 2/1
+3 3/1
+4 4/1
+5 5/1
+6 6/1
+
+$mag
+            ?
+1 1.000000e+0
+2 2.000000e+0
+3 3.000000e+0
+4 4.000000e+0
+5 5.000000e+0
+6 6.000000e+0
+
+$arf
+            ?
+1 1.000000e+0
+2 2.000000e+0
+3 3.000000e+0
+4 4.000000e+0
+5 5.000000e+0
+6 6.000000e+0
+
+$acf
+                         ?
+1 1.000000e+0+0.000000e+0i
+2 2.000000e+0+0.000000e+0i
+3 3.000000e+0+0.000000e+0i
+4 4.000000e+0+0.000000e+0i
+5 5.000000e+0+0.000000e+0i
+6 6.000000e+0+0.000000e+0i
+
+$arb
+                              ?
+1 (1.000000e+0 +/- 0.000000e+0)
+2 (2.000000e+0 +/- 0.000000e+0)
+3 (3.000000e+0 +/- 0.000000e+0)
+4 (4.000000e+0 +/- 0.000000e+0)
+5 (5.000000e+0 +/- 0.000000e+0)
+6 (6.000000e+0 +/- 0.000000e+0)
+
+$acb
+                                                             ?
+1 (1.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+2 (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+3 (3.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+4 (4.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+5 (5.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+6 (6.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+
+> (D. <- do.call(cbind, L.))
+  ? ? ?   ?           ?           ?                        ?
+1 1 1 1 1/1 1.000000e+0 1.000000e+0 1.000000e+0+0.000000e+0i
+2 2 2 2 2/1 2.000000e+0 2.000000e+0 2.000000e+0+0.000000e+0i
+3 3 3 3 3/1 3.000000e+0 3.000000e+0 3.000000e+0+0.000000e+0i
+4 4 4 4 4/1 4.000000e+0 4.000000e+0 4.000000e+0+0.000000e+0i
+5 5 5 5 5/1 5.000000e+0 5.000000e+0 5.000000e+0+0.000000e+0i
+6 6 6 6 6/1 6.000000e+0 6.000000e+0 6.000000e+0+0.000000e+0i
+                              ?
+1 (1.000000e+0 +/- 0.000000e+0)
+2 (2.000000e+0 +/- 0.000000e+0)
+3 (3.000000e+0 +/- 0.000000e+0)
+4 (4.000000e+0 +/- 0.000000e+0)
+5 (5.000000e+0 +/- 0.000000e+0)
+6 (6.000000e+0 +/- 0.000000e+0)
+                                                             ?
+1 (1.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+2 (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+3 (3.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+4 (4.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+5 (5.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+6 (6.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+> stopifnot(identical(D., `names<-`(D, rep("?", length(D)))))
+> 
+> ## Complex.data.frame does not exist
+> try(Conj(D))
+Error in Conj(D) : non-numeric argument to function
+> 
+> ## Math.data.frame is not sufficiently generic
+> try(abs(D))
+Error in Math.data.frame(D) : 
+  non-numeric-alike variable(s) in data frame: ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb
+> 
+> ## Ops.data.frame seems to work
+> D  + D
+  ulong slong fmpz fmpq         mag         arf                      acf
+1     2     2    2  2/1 2.000000e+0 2.000000e+0 2.000000e+0+0.000000e+0i
+2     4     4    4  4/1 4.000000e+0 4.000000e+0 4.000000e+0+0.000000e+0i
+3     6     6    6  6/1 6.000000e+0 6.000000e+0 6.000000e+0+0.000000e+0i
+4     8     8    8  8/1 8.000000e+0 8.000000e+0 8.000000e+0+0.000000e+0i
+5    10    10   10 10/1 1.000000e+1 1.000000e+1 1.000000e+1+0.000000e+0i
+6    12    12   12 12/1 1.200000e+1 1.200000e+1 1.200000e+1+0.000000e+0i
+                            arb
+1 (2.000000e+0 +/- 0.000000e+0)
+2 (4.000000e+0 +/- 0.000000e+0)
+3 (6.000000e+0 +/- 0.000000e+0)
+4 (8.000000e+0 +/- 0.000000e+0)
+5 (1.000000e+1 +/- 0.000000e+0)
+6 (1.200000e+1 +/- 0.000000e+0)
+                                                           acb
+1 (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+2 (4.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+3 (6.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+4 (8.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+5 (1.000000e+1 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+6 (1.200000e+1 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
+> D  & D
+     ulong slong fmpz fmpq  mag  arf  acf  arb  acb
+[1,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[2,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[3,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[4,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[5,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[6,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+> D == D
+     ulong slong fmpz fmpq  mag  arf  acf  arb  acb
+[1,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[2,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[3,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[4,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[5,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[6,]  TRUE  TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+> 
+> ## Summary.data.frame is not sufficiently generic
+> try(sum(D))
+Error in FUN(X[[i]], ...) : 
+  only defined on a data frame with all numeric-alike variables
+> 
+> proc.time()
+   user  system elapsed 
+  0.222   0.017   0.237 
