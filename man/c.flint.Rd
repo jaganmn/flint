@@ -12,24 +12,32 @@
   an alternative to \code{c(as(x, "flint"), \dots)}.
 }
 \usage{
-\method{c}{flint}(\dots, use.names = TRUE)
+\method{c}{flint}(\dots, recursive = FALSE, use.names = TRUE)
 }
 \arguments{
   \item{\dots}{
     objects inheriting from virtual class \code{\linkS4class{flint}},
     atomic (except character) vectors, and \code{NULL}.}
+  \item{recursive}{
+    a logical indicating if pairlists, lists, and expressions should be
+    handled recursively.  If \code{TRUE}, then the function behaves as
+    if such arguments were replaced by their terminal nodes.}
   \item{use.names}{
     a logical indicating if names should be preserved.}
 }
 \value{
-  If at least one argument is a \code{flint} vector, then the return
-  value is a \code{flint} vector.  The length is the sum of the lengths
-  of the arguments.  The class is the most specific subclass of
-  \code{flint} whose range contains the ranges of the classes of the
-  arguments.
+  If none of the arguments is a \code{flint} vector, then the internal
+  default method for \code{\link{c}} is dispatched.
 
-  If none of the arguments is a \code{flint} vector, then the return
-  value is \code{c(\dots, use.names = use.names)}.
+  If at least one argument is a \code{flint} vector, then the return
+  value is a \code{flint} vector, unless \code{recursive = FALSE} and
+  at least one argument is a symbol, pairlist, list, or expression,
+  in which case the return value is a list or expression.  The length
+  is the sum of the lengths of the arguments.
+
+  If the return value is a \code{flint} vector, then its class is the
+  most specific subclass of \code{flint} whose range contains the ranges
+  of the classes of the arguments.
 }
 \seealso{
   Virtual class \code{\linkS4class{flint}}.

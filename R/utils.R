@@ -46,7 +46,7 @@ function (classes, strict = TRUE) {
     }
     else if (m[["fmpq"]])
         "fmpq"
-    else if (m[["fmpz"]] || (m[["ulong"]] && m[["slong"]]))
+    else if (m[["fmpz"]] || (m[["ulong"]] && (m[["slong"]] || m[["integer"]] || m[["logical"]])))
         "fmpz"
     else if (m[["slong"]] || m[["integer"]] || m[["logical"]])
         "slong"

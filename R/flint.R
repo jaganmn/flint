@@ -878,7 +878,7 @@ setMethod("as.POSIXlt",
 .c.class <-
 function (x)
     switch(type. <- typeof(x),
-           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "symbol" =, "pairlist" =, "list" =, "expression" =
                                                                                        type.,
            "S4" =
                if (is.na(class. <- flintClass(x)))
@@ -886,25 +886,31 @@ function (x)
                else class.,
            stop(.error.invalidArgumentType(x)))
 
-## MJ: we export this function and curse the author of DispatchAnyOrEval
 c.flint <-
-function (..., use.names = TRUE) {
-    n <- nargs()
-    if (n == 0L)
+function (..., recursive = FALSE, use.names = TRUE) {
+    if (nargs() == 0L)
         return(NULL)
-    args <- list(...)
+    if (recursive) {
+        args <- c(NULL, ..., recursive = TRUE, use.names = use.names)
+        if (!is.recursive(args))
+            return(args)
+    }
+    else
+        args <- list(...)
     classes <- vapply(args, .c.class, "")
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
-        return(c(..., use.names = use.names))
+        return(c(NULL, ..., recursive = FALSE, use.names = use.names))
     args <- lapply(args, as, common)
-    .Call(R_flint_bind, args, as.logical(use.names))
+    if (any(common == c("list", "expression")))
+        unlist(args, recursive = FALSE, use.names = use.names)
+    else .Call(R_flint_bind, args, as.logical(use.names))
 }
 
 setMethod("c",
           c(x = "flint"),
-          function (x, ..., use.names = TRUE)
-              c.flint(x, ..., use.names = use.names))
+          function (x, ...)
+              c.flint(x, ...))
 
 setMethod("cut",
           c(x = "flint"),
