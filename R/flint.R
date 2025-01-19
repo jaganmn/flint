@@ -848,6 +848,18 @@ setMethod("as.complex",
           c(x = "flint"),
           function (x, ...) as.vector(x, "complex"))
 
+setMethod("as.matrix",
+          c(x = "flint"),
+          function (x, ...) as.matrix(as.vector(x), ...))
+
+setMethod("as.array",
+          c(x = "flint"),
+          function (x, ...) as.array (as.vector(x), ...))
+
+setMethod("as.data.frame",
+          c(x = "flint"),
+          as.data.frame.vector)
+
 setMethod("as.Date",
           c(x = "flint"),
           function (x, ...)
@@ -862,10 +874,6 @@ setMethod("as.POSIXlt",
           c(x = "flint"),
           function (x, tz = "", ...)
               as.POSIXlt(`names<-`(as.vector(x), names(x)), tz = tz, ...))
-
-setMethod("as.data.frame",
-          c(x = "flint"),
-          as.data.frame.vector)
 
 .c.class <-
 function (x)

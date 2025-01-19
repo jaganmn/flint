@@ -21,10 +21,12 @@
 \alias{as.double,flint-method} % stub
 \alias{as.numeric,flint-method}
 \alias{as.complex,flint-method}
+\alias{as.matrix,flint-method}
+\alias{as.array,flint-method}
+\alias{as.data.frame,flint-method}
 \alias{as.Date,flint-method}
 \alias{as.POSIXct,flint-method}
 \alias{as.POSIXlt,flint-method}
-\alias{as.data.frame,flint-method}
 \alias{all.equal,ANY,flint-method}
 \alias{all.equal,flint,ANY-method}
 \alias{all.equal,flint,flint-method}
@@ -168,12 +170,15 @@
       Note that \code{as.double} dispatches internally the method for
       \code{as.numeric}, so there is no method for \code{as.double};
       see also \code{\link{as.numeric}}, section \sQuote{S4 Methods}.}
-    \item{\code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt}}{
+    \item{\code{as.matrix}, \code{as.array}, \code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt}}{
       \code{signature(x = "flint")}:\cr
       coerces the argument with \code{as.vector} and dispatches.}
     \item{\code{as.data.frame}}{
       \code{signature(x = "flint")}:\cr
-      this method is a copy of \code{\link{as.data.frame.vector}}.}
+      this method is a copy of \code{\link{as.data.frame.vector}}.  It
+      enables the construction of data frames containing \code{flint}
+      vectors using \code{as.data.frame} and functions that call it such
+      as \code{\link{data.frame}} and \code{\link{cbind.data.frame}}.}
     \item{\code{c}}{
       \code{signature(x = "flint")}:\cr
       returns \code{\link{c.flint}(x, \dots)}, the concatenation of the

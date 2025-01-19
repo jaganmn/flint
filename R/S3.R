@@ -6,6 +6,18 @@ function (target, current, ...)
 function (x, incomparables = FALSE, ...)
     anyDuplicated(x, incomparables = incomparables, ...)
 
+.S3.as.matrix.flint <-
+function (x, ...)
+    as.matrix(x, ...)
+
+.S3.as.array.flint <-
+function (x, ...)
+    as.array(x, ...)
+
+.S3.as.data.frame.flint <-
+function (x, row.names = NULL, optional = FALSE, ...)
+    as.data.frame(x, row.names = row.names, optional = optional, ...)
+
 .S3.as.Date.flint <-
 function (x, ...)
     as.Date(x, ...)
@@ -17,10 +29,6 @@ function (x, tz = "", ...)
 .S3.as.POSIXlt.flint <-
 function (x, tz = "", ...)
     as.POSIXlt(x, tz = tz, ...)
-
-.S3.as.data.frame.flint <-
-function (x, row.names = NULL, optional = FALSE, ...)
-    as.data.frame(x, row.names = row.names, optional = optional, ...)
 
 .S3.duplicated.flint <-
 function (x, incomparables = FALSE, ...)

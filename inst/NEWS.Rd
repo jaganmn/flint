@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.1 (2025-01-17)}{
+\section{Changes in version 0.0.1 (2025-01-19)}{
   \subsection{Description}{
     \itemize{
       \item The package is titled \dQuote{Fast Library for Number
@@ -115,16 +115,16 @@
       \code{Summary}, \code{all.equal}, \code{anyDuplicated},
       \code{anyNA}, \code{as.raw}, \code{as.logical}, \code{as.integer},
       \code{as.numeric}, \code{as.complex}, \code{as.vector},
+      \code{as.matrix}, \code{as.array}, \code{as.data.frame},
       \code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt},
-      \code{as.data.frame}, \code{coerce}, \code{cut},
-      \code{duplicated}, \code{findInterval}, \code{format},
-      \code{initialize}, \code{is.finite}, \code{is.infinite},
-      \code{is.na}, \code{is.na<-}, \code{is.nan}, \code{is.unsorted},
-      \code{length}, \code{length<-}, \code{match}, \code{mean},
-      \code{mtfrm}, \code{names}, \code{names<-}, \code{print},
-      \code{quantile}, \code{rep}, \code{rep.int}, \code{rep_len},
-      \code{show}, \code{seq}, \code{sequence}, \code{summary},
-      \code{unique}, and \code{xtfrm}.
+      \code{coerce}, \code{cut}, \code{duplicated}, \code{findInterval},
+      \code{format}, \code{initialize}, \code{is.finite},
+      \code{is.infinite}, \code{is.na}, \code{is.na<-}, \code{is.nan},
+      \code{is.unsorted}, \code{length}, \code{length<-}, \code{match},
+      \code{mean}, \code{mtfrm}, \code{names}, \code{names<-},
+      \code{print}, \code{quantile}, \code{rep}, \code{rep.int},
+      \code{rep_len}, \code{show}, \code{seq}, \code{sequence},
+      \code{summary}, \code{unique}, and \code{xtfrm}.
 
       \item S3 methods are defined for S3-turned-S4 generic functions.
       These methods call the S4 generic function so that S4 dispatch

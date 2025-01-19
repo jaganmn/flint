@@ -7,12 +7,12 @@ exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
 exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               anyDuplicated, anyNA, as.raw, as.logical, as.integer,
-              as.numeric, as.complex, as.vector, as.Date, as.POSIXct,
-              as.POSIXlt, as.data.frame, c, cut, duplicated,
-              findInterval, format, is.finite, is.infinite, is.na,
-              "is.na<-", is.nan, is.unsorted, length, "length<-", log,
-              match, mean, mtfrm, names, "names<-", print, rep, rep.int,
-              rep_len, seq, sequence, summary, unique, xtfrm)
+              as.numeric, as.complex, as.vector, as.matrix, as.array,
+              as.data.frame, as.Date, as.POSIXct, as.POSIXlt, c, cut,
+              duplicated, findInterval, format, is.finite, is.infinite,
+              is.na, "is.na<-", is.nan, is.unsorted, length, "length<-",
+              log, match, mean, mtfrm, names, "names<-", print, rep,
+              rep.int, rep_len, seq, sequence, summary, unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
 exportMethods(quantile)
@@ -48,6 +48,8 @@ export(c.flint,
        acb_hypgeom_2f1)
 S3method(all.equal, flint, .S3.all.equal.flint)
 S3method(anyDuplicated, flint, .S3.anyDuplicated.flint)
+S3method(as.matrix, flint, .S3.as.matrix.flint)
+S3method(as.array, flint, .S3.as.array.flint)
 S3method(as.Date, flint, .S3.as.Date.flint)
 S3method(as.POSIXct, flint, .S3.as.POSIXct.flint)
 S3method(as.POSIXlt, flint, .S3.as.POSIXlt.flint)
