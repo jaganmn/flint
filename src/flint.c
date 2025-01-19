@@ -179,10 +179,10 @@ SEXP R_flint_class(SEXP object)
 	return ans;
 }
 
-SEXP R_flint_findinterval(SEXP object, SEXP breaks,
-                          SEXP s_left_open,
-                          SEXP s_rightmost_closed,
-                          SEXP s_all_inside)
+SEXP R_flint_find_interval(SEXP object, SEXP breaks,
+                           SEXP s_left_open,
+                           SEXP s_rightmost_closed,
+                           SEXP s_all_inside)
 {
 	if (XLENGTH(s_left_open) == 0)
 		Rf_error(_("'%s' of length zero in '%s'"),

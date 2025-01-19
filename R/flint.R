@@ -958,7 +958,7 @@ setMethod("findInterval",
                        domain = NA)
               x <- as(x, common)
               vec <- as(vec, common)
-              .Call(R_flint_findinterval, x, vec,
+              .Call(R_flint_find_interval, x, vec,
                     as.logical(left.open),
                     as.logical(rightmost.closed),
                     as.logical(all.inside))

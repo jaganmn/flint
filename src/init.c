@@ -72,7 +72,7 @@ SEXP R_flint_bind(SEXP, SEXP);
 SEXP R_flint_bits_per_limb(void);
 SEXP R_flint_class(SEXP);
 SEXP R_flint_identical(SEXP, SEXP);
-SEXP R_flint_findinterval(SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_find_interval(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_length(SEXP, SEXP);
 SEXP R_flint_list(SEXP, SEXP);
 SEXP R_flint_long_long_limb(void);
@@ -181,7 +181,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_bind, 2),
 	CALL_ENTRY(R_flint_bits_per_limb, 0),
 	CALL_ENTRY(R_flint_class, 1),
-	CALL_ENTRY(R_flint_findinterval, 5),
+	CALL_ENTRY(R_flint_find_interval, 5),
 	CALL_ENTRY(R_flint_identical, 2),
 	CALL_ENTRY(R_flint_length, 2),
 	CALL_ENTRY(R_flint_list, 2),
