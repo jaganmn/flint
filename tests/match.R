@@ -2,6 +2,20 @@ library(flint)
 
 n <- 10L
 x. <- seq_len(n); y. <- rev(x.); z. <- integer(length(x.))
+b. <- c(2L, 5L, 8L)
+
+g1 <- expand.grid(rightmost.closed = c(FALSE, TRUE),
+                  all.inside = c(FALSE, TRUE),
+                  left.open = c(FALSE, TRUE))
+g2 <- g1 |>
+    transform(include.lowest = rightmost.closed,
+              right = left.open) |>
+    subset(!all.inside, c(include.lowest, right))
+
+f1 <- lapply(.mapply(findInterval, g1, list(x = x., vec = b.)),
+             as, "ulong")
+f2 <- f1[!g1$all.inside]
+
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
     x <- new(.cl, x = x.); y <- new(.cl, x = y.); z <- new(.cl, x = z.)
@@ -22,4 +36,11 @@ for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               flintIdentical(unique(x), x),
               flintIdentical(unique(z), z[1L]),
               flintIdentical(unique(z, incomparables = 0L), z))
+    switch(.cl,
+           "acf" =, "arb" =, "acb" = NULL,
+           {
+               b <- new(.cl, x = b.)
+               stopifnot(all(mapply(flintIdentical, f1, .mapply(findInterval, g1, list(x = x,    vec = b)))),
+                         all(mapply(flintIdentical, f2, .mapply(         cut, g2, list(x = x, breaks = b)))))
+           })
 }
