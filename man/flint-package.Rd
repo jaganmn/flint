@@ -27,7 +27,8 @@ flintVersion()
 }
 \arguments{
   \item{object, reference}{
-    objects inheriting from virtual class \code{\linkS4class{flint}}.}
+    objects inheriting from virtual class \code{\linkS4class{flint}}.
+    Otherwise, the behaviour is undefined.}
   \item{exact}{
     a logical indicating if the length should be represented exactly as
     an object of class \code{\linkS4class{ulong}}.}
