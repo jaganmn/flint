@@ -947,8 +947,8 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case 55: /*    "mean" */
 		if (n == 0)
-			Rf_error(_("argument of length zero in '%s'"),
-			         CHAR(STRING_ELT(s_op, 0)));
+			Rf_error(_("'%s' of length zero in '%s'"),
+			         "x", CHAR(STRING_ELT(s_op, 0)));
 	case 50: /*     "min" */
 	case 51: /*     "max" */
 	case 52: /*   "range" */

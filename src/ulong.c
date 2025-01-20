@@ -875,8 +875,8 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 51: /*     "max" */
 	case 52: /*   "range" */
 		if (n == 0)
-			Rf_error(_("argument of length zero in '%s'"),
-			         CHAR(STRING_ELT(s_op, 0)));
+			Rf_error(_("'%s' of length zero in '%s'"),
+			         "x", CHAR(STRING_ELT(s_op, 0)));
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
 	{
@@ -954,8 +954,8 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 55: /*    "mean" */
 	{
 		if (n == 0)
-			Rf_error(_("argument of length zero in '%s'"),
-			         CHAR(STRING_ELT(s_op, 0)));
+			Rf_error(_("'%s' of length zero in '%s'"),
+			         "x", CHAR(STRING_ELT(s_op, 0)));
 		SEXP ans = newObject("fmpq");
 		fmpq *z = flint_calloc(1, sizeof(fmpq));
 		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
