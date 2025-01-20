@@ -6,6 +6,15 @@ function () {
                    class = "notTotalOrderError", call = call)
 }
 
+.error.notSubsettable <-
+function (object) {
+    call <- sys.call(-1L)
+    errorCondition(gettextf("object of type '%s' is not subsettable",
+                            typeof(object)),
+                   object = object,
+                   class = "notSubsettableError", call = call)
+}
+
 .error.missingSubscript <-
 function () {
     call <- sys.call(-1L)

@@ -5,15 +5,21 @@
 \alias{[,flint,flint,missing,missing-method}
 \alias{[<-,ANY,ANY,missing,flint-method}
 \alias{[<-,ANY,flint,missing,ANY-method}
+\alias{[<-,ANY,flint,missing,flint-method}
 \alias{[<-,flint,ANY,missing,ANY-method}
+\alias{[<-,flint,ANY,missing,flint-method}
 \alias{[<-,flint,flint,missing,ANY-method}
+\alias{[<-,flint,flint,missing,flint-method}
 \alias{[[,ANY,flint,missing-method}
 \alias{[[,flint,ANY,missing-method}
 \alias{[[,flint,flint,missing-method}
 \alias{[[<-,ANY,ANY,missing,flint-method}
 \alias{[[<-,ANY,flint,missing,ANY-method}
+\alias{[[<-,ANY,flint,missing,flint-method}
 \alias{[[<-,flint,ANY,missing,ANY-method}
+\alias{[[<-,flint,ANY,missing,flint-method}
 \alias{[[<-,flint,flint,missing,ANY-method}
+\alias{[[<-,flint,flint,missing,flint-method}
 \alias{anyDuplicated,flint-method}
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
@@ -109,41 +115,41 @@
     \item{\code{[<-}}{
       \code{signature(x = "ANY", i = "ANY", j = "missing", value = "flint")}:\cr
       \code{signature(x = "ANY", i = "flint", j = "missing", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "flint", j = "missing", value = "flint")}:\cr
       \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
+      \code{signature(x = "flint", i = "ANY", j = "missing", value = "flint")}:\cr
       \code{signature(x = "flint", i = "flint", j = "missing", value = "ANY")}:\cr
+      \code{signature(x = "flint", i = "flint", j = "missing", value = "flint")}:\cr
       return the traditional vector or \code{flint} vector obtained by
       replacing the elements of \code{x} indexed by \code{i} (the
       \dQuote{subscript}) with elements of \code{value}, which are
       recycled as necessary.  The subscript can be missing, \code{NULL},
       logical, integer, double, character, \code{\linkS4class{ulong}},
       \code{\linkS4class{slong}}, \code{\linkS4class{fmpz}}, or
-      \code{\linkS4class{fmpq}}.   The class of
-      the return value is determined following strict rules from the
-      classes of \code{x} and \code{value}, which are promoted to the
-      value class as necessary.  Methods for signatures with
-      \code{x = "flint"} signal an error for \code{NA} and out of bounds
-      subscripts, as the \proglang{C} types interfaced by \code{flint}
-      vectors have no representation for missing values.  Note that
-      \code{\link{[<-}} does not perform S4 dispatch if its first
-      positional argument is not an S4 object.  If it is known that
-      \code{i} is a \code{flint} vector and not known whether \code{x}
-      is a \code{flint} vector, then consider calling \code{\link{[<-}}
-      as \code{`[`(i = i, x = x) <- value} rather than as
+      \code{\linkS4class{fmpq}}.  The class of the return value is
+      determined following strict rules from the classes of \code{x} and
+      \code{value}, which are promoted to the value class as necessary.
+      If the value class is a subclass of \code{flint}, then an error is
+      signaled for \code{NA} and out of bounds subscripts, as the
+      \proglang{C} types interfaced by \code{flint} vectors have no
+      representation for missing values.  Note that \code{\link{[<-}}
+      does not perform S4 dispatch if its first positional argument is
+      not an S4 object.  If it is known that \code{i} is a \code{flint}
+      vector and not known whether \code{x} is a \code{flint} vector,
+      then consider calling \code{\link{[<-}} as
+      \code{`[`(i = i, x = x) <- value} rather than as
       \code{x[i] <- value}.  If it known that \code{value} is a
       \code{flint} vector and not known whether \code{x} or \code{i} is
-      a \code{flint} vector, then (I'm sorry) consider doing something
-      like \code{x <- `[<-`(value = value, x = x, i = i)}.}
+      a \code{flint} vector, then consider doing something like
+      \code{x <- `[<-`(value = value, x = x, i = i)}.}
     \item{\code{[[}}{
-      \code{signature(x = "ANY", i = "flint", j = "missing")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing")}:\cr
-      similar to \code{[}, with differences as documented in
-      \code{\link{Extract}}.}
-    \item{\code{[[<-}}{
       \code{signature(x = "ANY", i = "ANY", j = "missing", value = "flint")}:\cr
       \code{signature(x = "ANY", i = "flint", j = "missing", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "flint", j = "missing", value = "flint")}:\cr
       \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
+      \code{signature(x = "flint", i = "ANY", j = "missing", value = "flint")}:\cr
       \code{signature(x = "flint", i = "flint", j = "missing", value = "ANY")}:\cr
+      \code{signature(x = "flint", i = "flint", j = "missing", value = "flint")}:\cr
       similar to \code{[<-}, with differences as documented in
       \code{\link{Extract}}.}
     \item{\code{all.equal}}{
