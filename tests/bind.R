@@ -2,10 +2,12 @@ library(flint)
 
 if (is.null(getClassDef("pairlist")))
     setClass("pairlist")
-if (is.null(selectMethod(coerce, c(from = "ANY", to = "pairlist"), optional = TRUE)))
+if (is.null(selectMethod(coerce, c(from = "ANY", to = "pairlist"),
+                         optional = TRUE,
+                         useInherited = c(from = TRUE, to = FALSE))))
     setAs("ANY", "pairlist", function (from) as.pairlist(from))
 
-## Temporary hack:
+## Hack:
 flintIdenticalRecursive <-
 function (object, reference) {
     stopifnot(any(typeof(object) == c("list", "expression")))
@@ -27,8 +29,8 @@ L <- list(c("NULL"),
           c("logical", "integer", "slong", "fmpz"),
           c("fmpq"),
           c("double", "mag", "arf"),
-          c("complex", "acf"),
-          c("arb", "acb"),
+          c("arb"),
+          c("complex", "acf", "acb"),
           c("name", "pairlist", "list"),
           c("expression"))
 l <- unlist(L)

@@ -69,9 +69,9 @@ flintVersion()
   were configured for the same ABI.
 
   \code{flintIdentical} tests whether its arguments inherit from the
-  same nonvirtual subclass of \code{\linkS4class{flint}} and have equal
-  length and equal (in the bitwise sense) elements.  If the elements
-  are recursive structures, then they are compared recursively.
+  same nonvirtual subclass of \code{\linkS4class{flint}} and have
+  identical length, elements, and names.  If the elements are recursive
+  structures, then they are compared recursively.
 
   \code{flintLength} returns a representation of the length of
   \code{object}.  If \code{exact = TRUE}, then the return value is an
