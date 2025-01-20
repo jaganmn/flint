@@ -3,7 +3,7 @@ function (object, mode)
     switch(mode,
            ## x
            switch(type. <- typeof(object),
-                  "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "pairlist" =, "list" =, "expression" =
+                  "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "pairlist" =, "list" =, "expression" =
                                                                                               type.,
                   "S4" =
                       if (is.na(class. <- flintClass(object)))
@@ -24,7 +24,7 @@ function (object, mode)
                   stop(.error.invalidSubscriptType(object))),
            ## value
            switch(type. <- typeof(object),
-                  "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "list" =, "expression" =
+                  "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "list" =, "expression" =
                       type.,
                   "S4" =
                       if (is.na(class. <- flintClass(object)))
@@ -962,7 +962,7 @@ setMethod("as.POSIXlt",
 .c.class <-
 function (x)
     switch(type. <- typeof(x),
-           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "symbol" =, "pairlist" =, "list" =, "expression" =
+           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "symbol" =, "pairlist" =, "list" =, "expression" =
                                                                                        type.,
            "S4" =
                if (is.na(class. <- flintClass(x)))
@@ -986,7 +986,7 @@ function (..., recursive = FALSE, use.names = TRUE) {
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(c(NULL, ..., recursive = FALSE, use.names = use.names))
     args <- lapply(args, as, common)
-    if (any(common == c("list", "expression")))
+    if (any(common == c("character", "list", "expression")))
         unlist(args, recursive = FALSE, use.names = use.names)
     else .Call(R_flint_bind, args, as.logical(use.names))
 }

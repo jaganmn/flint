@@ -21,7 +21,7 @@ flintClassCommon <-
 function (classes, strict = TRUE) {
     classes. <-
     c("NULL", "raw", "logical", "integer", "double", "complex",
-      "symbol", "pairlist", "list", "expression",
+      "character", "symbol", "pairlist", "list", "expression",
       "ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
       "arb", "acb")
     m <- match(classes., classes, 0L) > 0L
@@ -32,6 +32,8 @@ function (classes, strict = TRUE) {
         "expression"
     else if (m[["symbol"]] || m[["pairlist"]] || m[["list"]])
         "list"
+    else if (m[["character"]])
+        "character"
     else if (m[["acb"]] || m[["arb"]]) {
         if (m[["acb"]] || m[["acf"]] || m[["complex"]])
             "acb"

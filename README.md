@@ -27,11 +27,10 @@ with nonvirtual subclasses named after a corresponding C type:
   `arb` | real balls with `arf` midpoint and `mag` radius, of the form `(a +/- b)`.
   `acb` | complex balls with `arb` real and imaginary parts, of the form `(a +/- b)+(c +/- d)i`.
 
-S4 methods are defined for most generic functions in **base**, partly
-by way of group generic functions in **methods**, so that, typically,
-one can handle `flint` vectors just as one would handle traditional
-numeric and complex vectors.  By design, `flint` vectors and atomic
-vectors are interoperable, and methods promote arguments as needed.
+S4 and S3 methods are defined with the aim of complete interoperability
+of `flint` vectors and traditional (atomic or recursive) vectors.  To 
+this end, methods employ rigorously defined and consistent rules for 
+argument promotion, extending R's basic hierarchy.
 
 ```
 > library(flint)

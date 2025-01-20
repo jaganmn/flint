@@ -31,6 +31,7 @@ L <- list(c("NULL"),
           c("double", "mag", "arf"),
           c("arb"),
           c("complex", "acf", "acb"),
+          c("character"),
           c("name", "pairlist", "list"),
           c("expression"))
 l <- unlist(L)
@@ -41,13 +42,13 @@ for (i in seq_along(u)) {
     class. <- l[[p[[i]]]]
     identical. <-
     switch(class.,
-           "NULL" =, "raw" = identical,
+           "NULL" =, "raw" =, "character" = identical,
            "list" =, "expression" = flintIdenticalRecursive,
            flintIdentical)
     a <- do.call(c.flint, u[seq_len(i)], quote = TRUE)
     b <-
     switch(class.,
-           "list" =, "expression" = unlist(lapply(u[seq_len(i)], as, class.), recursive = FALSE),
+           "character" =, "list" =, "expression" = unlist(lapply(u[seq_len(i)], as, class.), recursive = FALSE),
            rep(u[[p[[i]]]], times = i - 1L))
     stopifnot(identical.(a, b))
 }
