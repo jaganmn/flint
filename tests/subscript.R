@@ -1,6 +1,78 @@
 library(flint)
 
+ok0 <-
+function (...)
+    tryCatch({ x[ ... ]; x.[ ... ]; FALSE }, error = function (e) TRUE) &&
+    tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
+ok1 <-
+function (...)
+    flintIdentical(x[ ... ], new(.cl, x = x.[ ... ])) &&
+    tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
+ok2 <-
+function (...)
+    tryCatch({ x[ ... ]; x.[ ... ]; FALSE }, error = function (e) TRUE) &&
+    flintIdentical(x[[...]], new(.cl, x = x.[[...]]))
+ok3 <-
+function (...)
+    flintIdentical(x[ ... ], new(.cl, x = x.[ ... ])) &&
+    flintIdentical(x[[...]], new(.cl, x = x.[[...]])) &&
 
-x0 <- .slong(0L)[0L] # signaled wrong OOB error
-stopifnot(flintIdentical(x0, .slong(0L)),
-          is(x0, "slong"), length(x0) == 0L)
+for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
+              "arb", "acb")) {
+    for (.n in 0L:2L) {
+        x. <- seq_len(.n)
+        names(x.) <- letters[seq_len(.n)]
+        x <- new(.cl, x = x.)
+        stopifnot(ok0("?"),
+                  ok0(NULL, NULL),
+                  ok0(NA),
+                  ok0(NA_integer_),
+                  ok0(NA_real_),
+                  ok0(complex(0L)),
+                  ok1(),
+                  ok1(NULL),
+                  ok1(logical(0L)),
+                  ok1(logical(.n)),
+                  ok1(logical(.n + 2L)),
+                  ok1(integer(0L)),
+                  ok1(integer(.n + 2L)),
+                  ok1(double(0L)),
+                  ok1(double(.n + 2L)),
+                  ok1(rep(-0.9, .n + 2L)),
+                  ok1(rep( 0.9, .n + 2L)),
+                  ok1(character(0L)))
+        if (.n >= 1L)
+        stopifnot(ok0(c(-1L, 1L)),
+                  ok1(c( 1L, 1L)),
+                  ok1(TRUE),
+                  ok1(c(TRUE, logical(.n + 1L))),
+                  ok3(1L),
+                  ok1(c(1L, integer(.n + 1L))),
+                  ok3(1),
+                  ok1(c(1, double(.n + 1L))),
+                  ok3(1.9),
+                  ok1(c(1.9, rep(-0.9, .n + 1L))),
+                  ok1(c(1.9, rep( 0.9, .n + 1L))),
+                  ok3(names(x.)[1L]),
+                  ok1(-.n))
+        else
+        stopifnot(ok0(TRUE),
+                  ok0(1L),
+                  ok0(1),
+                  ok0(-1L))
+        if (.n >= 2L)
+        stopifnot(ok1(c(TRUE, TRUE, logical(.n))),
+                  ok1(c(1L, 2L, integer(.n))),
+                  ok1(c(1, 2, double(.n))),
+                  ok1(c(1.9, 2.9, rep(-0.9, .n))),
+                  ok1(c(1.9, 2.9, rep( 0.9, .n))),
+                  ok1(names(x.)[c(1L, 2L)]),
+                  ok1(-c(.n, .n - 1L)),
+                  ok3(-seq_len(.n)[-1L]))
+        else
+        stopifnot(ok0(c(FALSE, TRUE)),
+                  ok0(2L),
+                  ok0(2),
+                  ok0(-2L))
+    }
+}
