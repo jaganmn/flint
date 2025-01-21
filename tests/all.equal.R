@@ -43,4 +43,9 @@ stopifnot( all.equal(x, x),
           !all.equal(x, .acf(1L),
                      check.attributes = FALSE),
            all.equal(x, .acf(1L),
-                     check.class      = FALSE))
+                     check.class      = FALSE),
+          !all.equal(x, y, scale = 1),
+           all.equal(x, y, scale = 1, tolerance =   1),
+          !all.equal(x, y, scale = 1, tolerance = 0.9),
+           all.equal(x, y, scale = 2, tolerance = 0.5),
+          !all.equal(x, y, scale = 2, tolerance = 0.4))
