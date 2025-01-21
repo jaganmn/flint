@@ -780,7 +780,7 @@ function (target, current,
         ac[[".xData"]] <- NULL
         if (length(at) || length(ac)) {
             at <- if (length(nt <- names(at))) at[order(nt)]
-            ac <- if (length(nc <- names(ac))) at[order(nc)]
+            ac <- if (length(nc <- names(ac))) ac[order(nc)]
             if (is.character(ae <- all.equal(at, ac, tolerance = tolerance, scale = scale, ...)))
                 msg <- c(msg, paste0("Attributes: < ", ae, " >"))
         }
@@ -799,22 +799,15 @@ function (target, current,
     } else {
         target <- as(target, "flint")
         current <- as(current, "flint")
-        common <- flintClassCommon(c(class(target), class(current)))
+        common <- flintClassCommon(c(flintClass(target), flintClass(current)))
         if (common == "mag")
             common <- "arf"
         target <- as(target, common)
         current <- as(target, common)
     }
-    if (!identical(nt <- length(target), nc <- length(current))) {
-        if (is.null(nt.off <- attr(nt, "off")) &&
-            is.null(nc.off <- attr(nc, "off")))
-        return(c(msg, gettextf("target length is %.0f, current length is %.0f",
-                               nt, nc)))
-        else
-        return(c(msg, gettextf("target length is %.0f+%d, current length is %.0f+%d",
-                               nt, if (is.null(nt.off)) 0L else nt.off,
-                               nc, if (is.null(nc.off)) 0L else nc.off)))
-    }
+    if ((nt <- flintLengthAny(target)) != (nc <- flintLengthAny(current)))
+        return(c(msg, gettextf("target length is %s, current length is %s",
+                               format(nt), format(nc))))
     if (any(common == c("arf", "acf", "arb", "acb"))) {
         out <- is.na(target)
         if (any(d <- out != is.na(current)))
