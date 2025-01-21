@@ -1,0 +1,46 @@
+library(flint)
+
+x <- .arf(x = 0)
+y <- .arf(x = 1)
+z <- .arf(x = NaN)
+
+`!` <- is.character
+stopifnot( all.equal(x, x),
+          !all.equal(x, y),
+          !all.equal(x, z),
+          !all.equal(y, x),
+           all.equal(y, y),
+          !all.equal(y, z),
+          !all.equal(z, x),
+          !all.equal(z, y),
+           all.equal(z, z),
+           all.equal(x, .arf(x = 0)),
+          !all.equal(x, .arf(x = c(0, 0))),
+           all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "a", 0)),
+          !all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "a", 1)),
+           all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "a", 1),
+                     check.attributes = FALSE),
+          !all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "b", 0)),
+           all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "b", 0),
+                     check.attributes = FALSE),
+           all.equal(`names<-`(x, "a"), `names<-`(x, "a")),
+          !all.equal(`names<-`(x, "a"), `names<-`(x, "b")),
+           all.equal(`names<-`(x, "a"), `names<-`(x, "b"),
+                     check.attributes = FALSE),
+           all.equal(`names<-`(x, "a"), `names<-`(x, "b"),
+                     check.names      = FALSE),
+          !all.equal(x, "0"),
+          !all.equal(x, "0",
+                     check.attributes = FALSE),
+          !all.equal(x, "0",
+                     check.class      = FALSE),
+          !all.equal(x, 0),
+          !all.equal(x, 0,
+                     check.attributes = FALSE),
+           all.equal(x, 0,
+                     check.class      = FALSE),
+          !all.equal(x, .acf(1L)),
+          !all.equal(x, .acf(1L),
+                     check.attributes = FALSE),
+           all.equal(x, .acf(1L),
+                     check.class      = FALSE))
