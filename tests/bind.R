@@ -1,11 +1,5 @@
 library(flint)
-
-if (is.null(getClassDef("pairlist")))
-    setClass("pairlist")
-if (is.null(selectMethod(coerce, c(from = "ANY", to = "pairlist"),
-                         optional = TRUE,
-                         useInherited = c(from = TRUE, to = FALSE))))
-    setAs("ANY", "pairlist", function (from) as.pairlist(from))
+flint:::.initBasic()
 
 ## Hack:
 flintIdenticalRecursive <-

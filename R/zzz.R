@@ -26,3 +26,20 @@ function (libname, pkgname) {
 .onUnload <-
 function (libpath)
     library.dynam.unload("flint", libpath)
+
+.initBasic <-
+function (where = topenv(parent.frame())) {
+	if (is.null(getClassDef("pairlist")))
+        setClass("pairlist", where = where)
+    if (is.null(selectMethod(coerce, c(from = "ANY", to = "pairlist"),
+                             optional = TRUE,
+                             useInherited = c(from = TRUE, to = FALSE))))
+        setAs("ANY", "pairlist", function (from) as.pairlist(from),
+              where = where)
+    if (is.null(selectMethod(coerce, c(from = "ANY", to = "raw"),
+                             optional = TRUE,
+                             useInherited = c(from = TRUE, to = FALSE))))
+        setAs("ANY", "raw", function (from) as.raw(from),
+              where = where)
+    invisible(NULL)
+}

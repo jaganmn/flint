@@ -1,4 +1,5 @@
 library(flint)
+flint:::.initBasic()
 
 
 ## Test that as(<class>, "<type>") and as.<type>(<class>) work correctly
