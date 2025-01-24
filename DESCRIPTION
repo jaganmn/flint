@@ -1,7 +1,7 @@
 Package: flint
 Version: 0.0.1
 VersionNote: sync configure.ac
-Date: 2025-01-20
+Date: 2025-01-24
 Title: Fast Library for Number Theory
 Description:
 	An R interface to 'FLINT' <https://flintlib.org/>, a C library for
@@ -28,7 +28,8 @@ Authors@R:
 	c(person("Mikael", "Jagan",
 	         email = "jaganmn@mcmaster.ca",
 	         role = c("aut", "cre"),
-	         comment = c(ORCID = "0000-0002-3542-2938")))
+	         comment = c(ORCID = "0000-0002-3542-2938",
+	                     ROR = "02fa3aq29")))
 Depends: R (>= 4.3), methods
 Imports: stats
 SystemRequirements: gmp, mpfr (>= 3.1), flint (>= 3)
