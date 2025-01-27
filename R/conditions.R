@@ -104,15 +104,15 @@ function () {
 .error.subscriptTooFew <-
 function () {
     call <- sys.call(-1L)
-    warningCondition(gettext("attempt to select less than one element"),
-                     class = "simpleError", call = call)
+    errorCondition(gettext("attempt to select less than one element"),
+                   class = "simpleError", call = call)
 }
 
 .error.subscriptTooMany <-
 function () {
     call <- sys.call(-1L)
-    warningCondition(gettext("attempt to select more than one element"),
-                     class = "simpleError", call = call)
+    errorCondition(gettext("attempt to select more than one element"),
+                   class = "simpleError", call = call)
 }
 
 .error.emptyReplace <-

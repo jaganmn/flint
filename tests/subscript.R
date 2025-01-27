@@ -15,7 +15,7 @@ function (...)
 ok3 <-
 function (...)
     flintIdentical(x[ ... ], new(.cl, x = x.[ ... ])) &&
-    flintIdentical(x[[...]], new(.cl, x = x.[[...]])) &&
+    flintIdentical(x[[...]], new(.cl, x = x.[[...]]))
 
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
@@ -44,7 +44,7 @@ for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
         if (.n >= 1L)
         stopifnot(ok0(c(-1L, 1L)),
                   ok1(c( 1L, 1L)),
-                  ok1(TRUE),
+                  (if (.n == 1L) ok3 else ok1)(TRUE),
                   ok1(c(TRUE, logical(.n + 1L))),
                   ok3(1L),
                   ok1(c(1L, integer(.n + 1L))),
@@ -54,7 +54,7 @@ for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
                   ok1(c(1.9, rep(-0.9, .n + 1L))),
                   ok1(c(1.9, rep( 0.9, .n + 1L))),
                   ok3(names(x.)[1L]),
-                  ok1(-.n))
+                  (if (.n == 2L) ok3 else ok1)(-.n))
         else
         stopifnot(ok0(TRUE),
                   ok0(1L),
