@@ -28,8 +28,7 @@ Authors@R:
 	c(person("Mikael", "Jagan",
 	         email = "jaganmn@mcmaster.ca",
 	         role = c("aut", "cre"),
-	         comment = c(ORCID = "0000-0002-3542-2938",
-	                     ROR = "02fa3aq29")))
+	         comment = c(ORCID = "0000-0002-3542-2938")))
 Depends: R (>= 4.3), methods
 Imports: stats
 SystemRequirements: gmp, mpfr (>= 3.1), flint (>= 3)
