@@ -46,7 +46,7 @@
 	diff, labels, rev, seq.int, sort, sort_by, split, split<-, subset,
 	toString
 ** DONE document details of operations on real, complex balls
-** TODO check for memory bugs: Valgrind, ASan, UBSan, rchk
+** DONE check for memory bugs: Valgrind, ASan, UBSan, rchk
 	ideally after increasing test coverage
 ** DONE methods for 'mag' consulting rounding mode, conditionally giving lower bound
 ** DONE export, document class generator functions
