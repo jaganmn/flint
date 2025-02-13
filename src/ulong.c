@@ -1068,28 +1068,28 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 	return ans;
 }
 
-SEXP R_flint_ulong_complement(SEXP s_x, SEXP s_length, SEXP s_nozero)
+SEXP R_flint_ulong_complement(SEXP s_x, SEXP s_max, SEXP s_nozero)
 {
-	mp_limb_t n = ((ulong *) R_flint_get_pointer(s_length))[0];
-	if (n == UWORD_MAX)
+	mp_limb_t max = ((ulong *) R_flint_get_pointer(s_max))[0];
+	if (max == UWORD_MAX)
 		Rf_error(_("cardinality exceeds maximum %llu"),
-		         (unsigned long long int) (UWORD_MAX - 1));
+		         (unsigned long long int) UWORD_MAX);
 	mp_limb_t j, jx, jy,
 		nx = R_flint_get_length(s_x),
 		ny = 0;
 	const ulong *x = R_flint_get_pointer(s_x);
 	ulong *y;
-	unsigned char *work = flint_calloc(n, 1);
+	unsigned char *work = flint_calloc(1 + max, 1);
 	for (jx = 0; jx < nx; ++jx)
 		work[x[jx]] = 1;
 	if (LOGICAL_RO(s_nozero)[0])
 		work[0] = 1;
-	for (j = 0; j < n; ++j)
+	for (j = 0; j <= max; ++j)
 		ny += work[j];
 	jy = 0;
-	ny = n - ny;
+	ny = 1 + max - ny;
 	y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
-	for (j = 0; j < n; ++j)
+	for (j = 0; j <= max; ++j)
 		if (work[j] == 0)
 			y[jy++] = j;
 	flint_free(work);
