@@ -268,6 +268,7 @@ SEXP R_flint_fmpz_format(SEXP object, SEXP s_base)
 		}
 		SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
+	mpz_clear(z);
 	SEXP nms = R_do_slot(object, R_flint_symbol_names);
 	if (XLENGTH(nms) > 0) {
 		PROTECT(nms);
