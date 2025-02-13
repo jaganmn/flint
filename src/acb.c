@@ -459,7 +459,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 15: /*   "|" */
 	{
 		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
@@ -504,6 +504,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	default:
@@ -953,7 +954,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0], anyna = 0;
-		SEXP ans = Rf_allocVector(LGLSXP, 1);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, 1));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case 56: /*     "any" */
@@ -986,6 +987,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			z[0] = j < n;
 			break;
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case  3: /*       "is.na" */
@@ -995,7 +997,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  7: /*           "!" */
 	{
 		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  3: /*       "is.na" */
@@ -1035,6 +1037,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  9: /*       "Re" */

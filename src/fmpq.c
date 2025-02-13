@@ -532,7 +532,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 15: /*   "|" */
 	{
 		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
@@ -569,6 +569,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	default:
@@ -875,7 +876,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 58: /*       "anyNA" */
 	case 59: /* "is.unsorted" */
 	{
-		SEXP ans = Rf_allocVector(LGLSXP, 1);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, 1));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case 56: /*         "any" */
@@ -904,6 +905,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case  3: /*       "is.na" */
@@ -913,7 +915,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  7: /*           "!" */
 	{
 		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = Rf_allocVector(LGLSXP, (R_xlen_t) n);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  3: /*       "is.na" */
@@ -932,6 +934,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	default:
