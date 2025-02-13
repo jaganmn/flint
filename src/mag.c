@@ -973,14 +973,23 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					mag_set(z, x + j);
 			break;
 		case 52: /*   "range" */
+		{
+			/* FIXME: GCC 14 -Wstringop-overread with just */
+			/*        else if (mag_cmp(z + 1, x + j) < 0)  */
+			mag_t t;
+			mag_init(t);
+			mag_zero(t);
 			mag_inf(z);
 			mag_zero(z + 1);
 			for (j = 0; j < n; ++j)
 				if (mag_cmp(z, x + j) > 0)
 					mag_set(z, x + j);
-				else if (mag_cmp(z + 1, x + j) < 0)
-					mag_set(z + 1, x + j);
+				else if (mag_cmp(t, x + j) < 0)
+					mag_set(t, x + j);
+			mag_set(z + 1, t);
+			mag_clear(t);
 			break;
+		}
 		case 53: /*     "sum" */
 			mag_zero(z);
 			for (j = 0; j < n; ++j)
