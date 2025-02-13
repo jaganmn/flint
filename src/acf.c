@@ -442,6 +442,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 		if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
 		SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
 		if (sx != R_NilValue && XLENGTH(sx) > 0) {
+		PROTECT(sx);
 		if (nx == ny)
 		R_do_slot_assign(object, R_flint_symbol_names, sx);
 		else {
@@ -451,6 +452,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_length, SEXP s_x,
 			               STRING_ELT(sx, (R_xlen_t) (j % nx)));
 		R_do_slot_assign(object, R_flint_symbol_names, sy);
 		}
+		UNPROTECT(1);
 		}
 		}
 	}
@@ -554,7 +556,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  6: /*   "/" */
 #endif
 	{
-		SEXP ans = newObject("acf");
+		SEXP ans = PROTECT(newObject("acf"));
 		acf_ptr z = (n) ? flint_calloc(n, sizeof(acf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acf_finalize);
 		switch (op) {
@@ -578,6 +580,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 #endif
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -667,7 +670,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans = newObject("acf");
+		SEXP ans = PROTECT(newObject("acf"));
 		acf_ptr z = (n) ? flint_calloc(n, sizeof(acf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acf_finalize);
 		switch (op) {
@@ -838,6 +841,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case 53: /*     "sum" */
@@ -849,7 +853,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
-		SEXP ans = newObject("acf");
+		SEXP ans = PROTECT(newObject("acf"));
 		mp_limb_t s = (op == 52) ? 2 : 1;
 		acf_ptr z = flint_calloc(s, sizeof(acf_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acf_finalize);
@@ -882,6 +886,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case 56: /*         "any" */
@@ -995,7 +1000,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 #endif
 	case 13: /*      "abs" */
 	{
-		SEXP ans = newObject("arf");
+		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
@@ -1020,6 +1025,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 #endif
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	default:

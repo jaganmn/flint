@@ -174,8 +174,9 @@ SEXP R_flint_class(SEXP object)
 {
 	int i = (TYPEOF(object) == OBJSXP)
 		? R_check_class_etc(object, R_flint_classes) : -1;
-	SEXP ans = Rf_allocVector(STRSXP, 1);
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, 1));
 	SET_STRING_ELT(ans, 0, (i < 0) ? NA_STRING : Rf_mkChar(R_flint_classes[i]));
+	UNPROTECT(1);
 	return ans;
 }
 
@@ -206,7 +207,7 @@ SEXP R_flint_find_interval(SEXP object, SEXP breaks,
 		nb = R_flint_get_length(breaks),
 		ny = nx,
 		ilo = 0, ihi, iav, ist, iof = (all_inside) ? 1 : 0;
-	SEXP ans = newObject("ulong");
+	SEXP ans = PROTECT(newObject("ulong"));
 	ulong *y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
 	R_flint_set(ans, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
 
@@ -423,6 +424,7 @@ SEXP R_flint_find_interval(SEXP object, SEXP breaks,
 #undef   mag_cmp_le
 #undef   arf_cmp_le
 
+	UNPROTECT(1);
 	return ans;
 }
 
@@ -480,31 +482,30 @@ SEXP R_flint_length(SEXP object, SEXP s_exact)
 	mp_limb_t n = R_flint_get_length(object);
 	SEXP ans;
 	if (exact) {
-		ans = newObject("ulong");
+		PROTECT(ans = newObject("ulong"));
 		ulong *p = flint_calloc(1, sizeof(ulong));
 		R_flint_set(ans, p, 1, (R_CFinalizer_t) &R_flint_ulong_finalize);
 		p[0] = n;
 	} else if (n <= INT_MAX) {
-		ans = Rf_allocVector(INTSXP, 1);
+		PROTECT(ans = Rf_allocVector(INTSXP, 1));
 		INTEGER(ans)[0] = (int) n;
 	} else {
 		mp_limb_t n_ = (mp_limb_t) (double) n;
 		if (n_ >  n)
 			n_ = (mp_limb_t) nextafter((double) n, 0.0);
-		ans = Rf_allocVector(REALSXP, 1);
+		PROTECT(ans = Rf_allocVector(REALSXP, 1));
 		REAL(ans)[0] = (double) n_;
 		if (n_ != n) {
-			SEXP off;
-			PROTECT(ans);
-			PROTECT(off = Rf_allocVector(INTSXP, 1));
+			SEXP off = PROTECT(Rf_allocVector(INTSXP, 1));
 			INTEGER(off)[0] = (int) (n - n_);
 			Rf_setAttrib(ans, R_flint_symbol_off, off);
 #if 0
 			Rf_warning(_("true length %lu truncated to %lu"), n, n_);
 #endif
-			UNPROTECT(2);
+			UNPROTECT(1);
 		}
 	}
+	UNPROTECT(1);
 	return ans;
 }
 
@@ -516,7 +517,11 @@ SEXP R_flint_list(SEXP object, SEXP s_type)
 	const void *x = R_flint_get_pointer(object);
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, (type[0] == 'p') ? INT_MAX : R_XLEN_T_MAX);
-	SEXP tmp, ans = PROTECT((type[0] == 'p') ? Rf_allocList((int) n) : Rf_allocVector((type[0] == 'l') ? VECSXP : EXPRSXP, (R_xlen_t) n));
+	PROTECT_INDEX pid;
+	SEXP ans = (type[0] == 'p') ? Rf_allocList((int) n) : Rf_allocVector((type[0] == 'l') ? VECSXP : EXPRSXP, (R_xlen_t) n),
+		tmp = R_NilValue;
+	PROTECT(ans);
+	PROTECT_WITH_INDEX(tmp, &pid);
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 	do { \
@@ -527,7 +532,7 @@ SEXP R_flint_list(SEXP object, SEXP s_type)
 			for (j = 0; j < n; ++j) { \
 				y__ = flint_calloc(1, sizeof(elt_t)); \
 				name##_set(y__, x__ + j); \
-				tmp = newObject(#name); \
+				REPROTECT(tmp = newObject(#name), pid); \
 				R_flint_set(tmp, y__, 1, (R_CFinalizer_t) &R_flint_##name##_finalize); \
 				SETCAR(a, tmp); \
 				a = CDR(a); \
@@ -536,7 +541,7 @@ SEXP R_flint_list(SEXP object, SEXP s_type)
 			for (j = 0; j < n; ++j) { \
 				y__ = flint_calloc(1, sizeof(elt_t)); \
 				name##_set(y__, x__ + j); \
-				tmp = newObject(#name); \
+				REPROTECT(tmp = newObject(#name), pid); \
 				R_flint_set(tmp, y__, 1, (R_CFinalizer_t) &R_flint_##name##_finalize); \
 				SET_VECTOR_ELT(ans, (R_xlen_t) j, tmp); \
 			} \
@@ -547,7 +552,7 @@ SEXP R_flint_list(SEXP object, SEXP s_type)
 
 #undef TEMPLATE
 
-	UNPROTECT(1);
+	UNPROTECT(2);
 	return ans;
 }
 

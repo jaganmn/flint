@@ -79,16 +79,25 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	case CPLXSXP:
-		s_x = Rf_coerceVector(s_x, REALSXP);
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
 		for (j = 0; j < ny; ++j) {
-			if (!R_FINITE(x[j]))
+			if (!R_FINITE(x[j % nx]))
 			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
 			else
 			fmpz_set_d(y + j, (fabs(x[j % nx]) < DBL_MIN) ? 0.0 : x[j % nx]);
+		}
+		break;
+	}
+	case CPLXSXP:
+	{
+		const Rcomplex *x = COMPLEX_RO(s_x);
+		for (j = 0; j < ny; ++j) {
+			if (!R_FINITE(x[j % nx].r))
+			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+			else
+			fmpz_set_d(y + j, (fabs(x[j % nx].r) < DBL_MIN) ? 0.0 : x[j % nx].r);
 		}
 		break;
 	}
@@ -184,6 +193,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
 	SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
 	if (sx != R_NilValue && XLENGTH(sx) > 0) {
+	PROTECT(sx);
 	if (nx == ny)
 	R_do_slot_assign(object, R_flint_symbol_names, sx);
 	else {
@@ -193,6 +203,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		               STRING_ELT(sx, (R_xlen_t) (j % nx)));
 	R_do_slot_assign(object, R_flint_symbol_names, sy);
 	}
+	UNPROTECT(1);
 	}
 	}
 	return object;
@@ -309,7 +320,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  4: /*  "%%" */
 	case  5: /* "%/%" */
 	{
-		SEXP ans = newObject("fmpz");
+		SEXP ans = PROTECT(newObject("fmpz"));
 		fmpz *z = (n) ? flint_calloc(n, sizeof(fmpz)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
@@ -341,12 +352,13 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  6: /*   "/" */
 	case  7: /*   "^" */
 	{
-		SEXP ans = newObject("fmpq");
+		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
@@ -396,6 +408,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		}
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -489,7 +502,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans = newObject("fmpz");
+		SEXP ans = PROTECT(newObject("fmpz"));
 		fmpz *z = (n) ? flint_calloc(n, sizeof(fmpz)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
 		switch (op) {
@@ -631,6 +644,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case 50: /*     "min" */
@@ -642,7 +656,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
 	{
-		SEXP ans = newObject("fmpz");
+		SEXP ans = PROTECT(newObject("fmpz"));
 		mp_limb_t s = (op == 52) ? 2 : 1;
 		fmpz *z = flint_calloc(s, sizeof(fmpz));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_fmpz_finalize);
@@ -679,6 +693,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_mul(z, z, x + j);
 			break;
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case 55: /*    "mean" */
@@ -686,7 +701,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		if (n == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
-		SEXP ans = newObject("fmpq");
+		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = flint_calloc(1, sizeof(fmpq));
 		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
@@ -700,6 +715,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case 56: /*         "any" */

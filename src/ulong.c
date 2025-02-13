@@ -102,8 +102,6 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	case CPLXSXP:
-		s_x = Rf_coerceVector(s_x, REALSXP);
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
@@ -118,6 +116,23 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 			else
 			y[j] = (ulong) x[j % nx];
+		}
+		break;
+	}
+	case CPLXSXP:
+	{
+		const Rcomplex *x = COMPLEX_RO(s_x);
+		for (j = 0; j < ny; ++j) {
+			if (ISNAN(x[j % nx].r))
+			Rf_error(_("NaN is not representable by '%s'"), "ulong");
+#ifdef R_FLINT_ABI_64
+			else if (x[j % nx].r <= -1.0 || x[j % nx].r >= 0x1.0p+64)
+#else
+			else if (x[j % nx].r <= -1.0 || x[j % nx].r >= 0x1.0p+32)
+#endif
+			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+			else
+			y[j] = (ulong) x[j % nx].r;
 		}
 		break;
 	}
@@ -253,6 +268,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
 	SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
 	if (sx != R_NilValue && XLENGTH(sx) > 0) {
+	PROTECT(sx);
 	if (nx == ny)
 	R_do_slot_assign(object, R_flint_symbol_names, sx);
 	else {
@@ -262,6 +278,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		               STRING_ELT(sx, (R_xlen_t) (j % nx)));
 	R_do_slot_assign(object, R_flint_symbol_names, sy);
 	}
+	UNPROTECT(1);
 	}
 	}
 	return object;
@@ -368,7 +385,6 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  5: /* "%/%" */
 	case  7: /*   "^" */
 	{
-		SEXP ans;
 		ulong *z = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 #if !defined(__GNUC__)
 		ulong a;
@@ -505,14 +521,15 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
-		ans = newObject((over) ? "fmpz" : "ulong");
+		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "ulong"));
 		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_ulong_finalize));
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  6: /*   "/" */
 	{
-		SEXP ans = newObject("fmpq");
+		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
@@ -528,6 +545,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -621,7 +639,6 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans;
 		ulong *z = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 		int over = 0;
 		switch (op) {
@@ -866,9 +883,10 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
-		ans = newObject((over) ? "fmpz" : "ulong");
+		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "ulong"));
 		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_ulong_finalize));
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case 50: /*     "min" */
@@ -880,7 +898,6 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
 	{
-		SEXP ans;
 		mp_limb_t s = (op == 52) ? 2 : 1;
 		ulong *z = flint_calloc(s, sizeof(ulong));
 		int over = 0;
@@ -946,9 +963,10 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
-		ans = newObject((over) ? "fmpz" : "ulong");
+		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "ulong"));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_ulong_finalize));
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case 55: /*    "mean" */
@@ -956,7 +974,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		if (n == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
-		SEXP ans = newObject("fmpq");
+		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = flint_calloc(1, sizeof(fmpq));
 		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
@@ -970,6 +988,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case 56: /*         "any" */
@@ -1050,7 +1069,7 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 		j = ((ulong *) R_flint_get_pointer(s_from))[0],
 		n = ((ulong *) R_flint_get_pointer(s_lengthout))[0];
 	int reverse = LOGICAL_RO(s_reverse)[0];
-	SEXP ans = newObject("ulong");
+	SEXP ans = PROTECT(newObject("ulong"));
 	ulong *p = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 	R_flint_set(ans, p, n, (R_CFinalizer_t) &R_flint_ulong_finalize);
 	if (n) {
@@ -1065,6 +1084,7 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 			*(p++) = j++;
 	}
 	}
+	UNPROTECT(1);
 	return ans;
 }
 
@@ -1093,7 +1113,8 @@ SEXP R_flint_ulong_complement(SEXP s_x, SEXP s_max, SEXP s_nozero)
 		if (work[j] == 0)
 			y[jy++] = j;
 	flint_free(work);
-	SEXP ans = newObject("ulong");
+	SEXP ans = PROTECT(newObject("ulong"));
 	R_flint_set(ans, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
+	UNPROTECT(1);
 	return ans;
 }

@@ -102,13 +102,18 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	case CPLXSXP:
-		s_x = Rf_coerceVector(s_x, REALSXP);
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
 		for (j = 0; j < ny; ++j)
 			arf_set_d(y + j, x[j % nx]);
+		break;
+	}
+	case CPLXSXP:
+	{
+		const Rcomplex *x = COMPLEX_RO(s_x);
+		for (j = 0; j < ny; ++j)
+			arf_set_d(y + j, x[j % nx].r);
 		break;
 	}
 	case STRSXP:
@@ -202,6 +207,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 	if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
 	SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
 	if (sx != R_NilValue && XLENGTH(sx) > 0) {
+	PROTECT(sx);
 	if (nx == ny)
 	R_do_slot_assign(object, R_flint_symbol_names, sx);
 	else {
@@ -211,6 +217,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		               STRING_ELT(sx, (R_xlen_t) (j % nx)));
 	R_do_slot_assign(object, R_flint_symbol_names, sy);
 	}
+	UNPROTECT(1);
 	}
 	}
 	return object;
@@ -318,11 +325,11 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 
 	memset(buffer, ' ', ncmax - 4);
 	memcpy(bufnan, "-Inf", 4);
-	SEXP s_neg_inf = Rf_mkChar(buffer);
+	SEXP s_neg_inf = PROTECT(Rf_mkChar(buffer));
 	memcpy(bufnan, " Inf", 4);
-	SEXP s_pos_inf = Rf_mkChar(buffer);
+	SEXP s_pos_inf = PROTECT(Rf_mkChar(buffer));
 	memcpy(bufnan, " NaN", 4);
-	SEXP s_nan     = Rf_mkChar(buffer);
+	SEXP s_nan     = PROTECT(Rf_mkChar(buffer));
 	memset(buffer, '0', ncmax);
 	if (ncsgn)
 		buffer[0] = ' ';
@@ -330,7 +337,7 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 		bufman[0] = '.';
 	memcpy(bufsep, sep, ncsep);
 	bufexp[-1] = '+';
-	SEXP s_zero    = Rf_mkChar(buffer);
+	SEXP s_zero    = PROTECT(Rf_mkChar(buffer));
 
 	for (j = 0; j < n; ++j) {
 		arf_get_mpfr(f, x + j, rnd);
@@ -373,18 +380,23 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 		}
 	}
 
+	UNPROTECT(4);
+
 	} else {
 
 	SEXP
-		s_neg_inf = Rf_mkChar(              "-Inf"        ),
-		s_pos_inf = Rf_mkChar((flags & 4) ? " Inf" : "Inf"),
-		s_nan     = Rf_mkChar((flags & 4) ? " NaN" : "NaN");
+		s_neg_inf = PROTECT(Rf_mkChar(              "-Inf"        )),
+		s_pos_inf = PROTECT(Rf_mkChar((flags & 4) ? " Inf" : "Inf")),
+		s_nan     = PROTECT(Rf_mkChar((flags & 4) ? " NaN" : "NaN"));
+
 	for (j = 0; j < n; ++j) {
 		arf_get_mpfr(f, x + j, rnd);
 		SET_STRING_ELT(ans, (R_xlen_t) j,
 		               (mpfr_nan_p(f)) ? s_nan :
 		               (mpfr_sgn(f) < 0) ? s_neg_inf : s_pos_inf);
 	}
+
+	UNPROTECT(3);
 
 	}
 
@@ -432,7 +444,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  3: /*   "*" */
 	case  6: /*   "/" */
 	{
-		SEXP ans = newObject("arf");
+		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
@@ -454,6 +466,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case  8: /*  "==" */
@@ -581,7 +594,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans = newObject("arf");
+		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
@@ -778,6 +791,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		}
 		COMMON;
+		UNPROTECT(1);
 		return ans;
 	}
 	case 50: /*     "min" */
@@ -792,7 +806,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
-		SEXP ans = newObject("arf");
+		SEXP ans = PROTECT(newObject("arf"));
 		mp_limb_t s = (op == 52) ? 2 : 1;
 		arf_ptr z = flint_calloc(s, sizeof(arf_t));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_arf_finalize);
@@ -865,6 +879,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		UNPROTECT(1);
 		return ans;
 	}
 	case 56: /*         "any" */
