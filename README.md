@@ -17,8 +17,8 @@ with nonvirtual subclasses named after a corresponding C type:
 
   Class | Description
    ---: | :---
-`slong` | fixed precision (32-bit or 64-bit) signed integers.
 `ulong` | fixed precision (32-bit or 64-bit) unsigned integers.
+`slong` | fixed precision (32-bit or 64-bit) signed integers.
  `fmpz` | arbitrary precision signed integers.
  `fmpq` | rational numbers with `fmpz` numerator and denominator.
   `mag` | unsigned floating-point real numbers with fixed precision (30-bit) significand and `fmpz` exponent.
@@ -85,12 +85,31 @@ class 'acb', length 4, address 0x1177085a0
 
 ## Installation
 
-R package **flint** links C libraries FLINT, GNU MPFR, and GNU MP.
-Headers and libraries must be found on the preprocessor and linker
-search paths when installing **flint** from sources.
+R package **flint** is
+[published by CRAN](https://cran.r-project.org/package=flint).
+To install the latest release version, use `install.packages`.
 
-If you obtained R from your operating system's package manager, then
-use the same package manager to install FLINT:
+```
+> install.packages("flint")
+```
+
+To install the latest development version, clone the GitHub repository,
+change to the top level directory, build a source tarball, and install.
+
+```
+$ git clone https://github.com/jaganmn/flint.git
+$ cd flint
+$ VERSION=`sed -e '/^Version: /!d' -e 's/Version: //' DESCRIPTION`
+$ R CMD build .
+$ R CMD INSTALL flint_${VERSION}.tar.gz
+```
+
+Since **flint** links C libraries FLINT, GNU MPFR, and GNU MP, headers
+and libraries must be found on the preprocessor and linker search paths
+when installing **flint** from sources.
+
+If you obtained R from your operating system's package manager, then use
+the same package manager to install FLINT:
 
 ```
 $ pacman -S flint
@@ -111,21 +130,6 @@ architecture-specific binaries for packages `flint`, `mpfr`, and `gmp`.
 If you use Windows and you obtained R from a CRAN binary, then install
 [Rtools](https://cran.r-project.org/bin/windows/Rtools/).  The headers
 and libraries that you need are available as of Rtools44 (r6346).
-
-Once the system dependencies are satisfied, change to the top level
-directory of the R package sources and do:
-
-```
-$ R CMD build .
-$ R CMD INSTALL flint_0.0.1.tar.gz
-```
-
-Once the R package is published by CRAN (in early March, I expect),
-you can also do:
-
-```
-> install.packages("flint") # maybe passing type = "source"
-```
 
 ## Documentation
 
