@@ -106,7 +106,7 @@ $ R CMD INSTALL flint_${VERSION}.tar.gz
 
 Since **flint** links C libraries FLINT, GNU MPFR, and GNU MP, headers
 and libraries must be found on the preprocessor and linker search paths
-when installing **flint** from sources.
+when you install **flint** from sources.
 
 If you obtained R from your operating system's package manager, then use
 the same package manager to install FLINT:

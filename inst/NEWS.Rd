@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.2 (2025-02-17)}{
+\section{Changes in version 0.0.2 (2025-02-18)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -81,9 +81,9 @@
       \item \code{Imports: stats} as \pkg{flint} provides S3 and S4
       methods for \code{quantile}.
 
-      \item \code{SystemRequirements: gmp, mpfr (>= 3.1), flint (>= 3)}
-      as \pkg{flint} links \acronym{GNU} \acronym{MP},
-      \acronym{GNU} \acronym{MPFR}, and \acronym{FLINT}.  The version
+      \item \code{SystemRequirements: flint (>= 3), mpfr (>= 3.1), gmp}
+      as \pkg{flint} links \acronym{FLINT}, \acronym{GNU}
+      \acronym{MPFR}, and \acronym{GNU} \acronym{MP}.  The version
       requirements are purely informational, as \file{configure} and
       \file{configure.win} scripts check that features used by the
       package are available.
@@ -93,12 +93,12 @@
     \itemize{
       \item A \file{configure} script is provided for installation under
       Unix.  The script uses \command{pkg-config} where available to
-      determine options for linking \acronym{GNU} \acronym{MP},
-      \acronym{GNU} \acronym{MPFR}, and \acronym{FLINT}.  The user can
-      set environment variables \env{PKG_CONFIG} and
-      \env{PKG_CONFIG_PATH} to control how \command{pkg-config} is
-      invoked and where it searches for \file{*.pc} files.  The script
-      gives precedence to environment variables \env{R_FLINT_CPPFLAGS},
+      determine options for linking \acronym{FLINT}, \acronym{GNU}
+      \acronym{MPFR}, and \acronym{GNU} \acronym{MP}.  The user can set
+      environment variables \env{PKG_CONFIG} and \env{PKG_CONFIG_PATH}
+      to control how \command{pkg-config} is invoked and where it
+      searches for \file{*.pc} files.  The script gives precedence to
+      environment variables \env{R_FLINT_CPPFLAGS},
       \env{R_FLINT_CFLAGS}, \env{R_FLINT_LDFLAGS}, and
       \env{R_FLINT_LIBS}: if any of these is set, then the script does
       not use \command{pkg-config}.  In that case, \env{R_FLINT_LIBS}
@@ -243,8 +243,8 @@
       useful if details about a \code{flint} vector must be printed.
 
       \item \R{} function \code{flintVersion} returning a list
-      containing header and library versions for \acronym{GNU}
-      \acronym{MP}, \acronym{GNU} \acronym{MPFR}, and \acronym{FLINT}.
+      containing header and library versions for \acronym{FLINT},
+      \acronym{GNU} \acronym{MPFR}, and \acronym{GNU} \acronym{MP}.
       Header versions are determined at compile time.  Library versions
       are determined at run time.
     }
