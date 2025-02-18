@@ -14,7 +14,9 @@
   }
   \subsection{Installation}{
     \itemize{
-      \item .
+      \item An array declaration in \file{src/flint.h} specified an
+      incorrect (too small) array size, triggering \command{gcc}
+      \option{-Wlto-type-mismatch}.
     }
   }
   \subsection{Documentation}{
