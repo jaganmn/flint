@@ -16,7 +16,12 @@
     \itemize{
       \item An array declaration in \file{src/flint.h} specified an
       incorrect (too small) array size, triggering \command{gcc}
-      \option{-Wlto-type-mismatch}.
+      \option{-Wlto-type-mismatch}.  Thanks to Brian Ripley for the
+      report.
+
+      \item \file{configure} wrongly assumed that \file{Rinternals.h}
+      must be located in \file{`R RHOME`/include}.  Thanks to Dirk
+      Eddelbuettel for the report (\GH{3}).
     }
   }
   \subsection{Documentation}{

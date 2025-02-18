@@ -49,6 +49,8 @@ fi
 AC_PROG_CC([])
 AC_PROG_SED([])
 
+R_INCLUDE_DIR=`"${R_HOME}/bin/R" --no-echo --vanilla -e "cat(R.home(\"include\"))"`
+
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
@@ -192,7 +194,7 @@ AC_CHECK_SIZEOF([mpfr_exp_t], [], [[#include <mpfr.h>]])
 
 AC_MSG_CHECKING([for R_XLEN_T_MAX in range of mp_limb_t])
 save_CPPFLAGS="${CPPFLAGS}"
-CPPFLAGS="${CPPFLAGS} -I${R_HOME}/include"
+CPPFLAGS="${CPPFLAGS} -I${R_INCLUDE_DIR}"
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
 #include <gmp.h>
 #include <Rinternals.h>

@@ -3766,6 +3766,8 @@ printf "%s\n" "$ac_cv_path_SED" >&6; }
   rm -f conftest.sed
 
 
+R_INCLUDE_DIR=`"${R_HOME}/bin/R" --no-echo --vanilla -e "cat(R.home(\"include\"))"`
+
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
@@ -4518,7 +4520,7 @@ printf "%s\n" "#define SIZEOF_MPFR_EXP_T $ac_cv_sizeof_mpfr_exp_t" >>confdefs.h
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for R_XLEN_T_MAX in range of mp_limb_t" >&5
 printf %s "checking for R_XLEN_T_MAX in range of mp_limb_t... " >&6; }
 save_CPPFLAGS="${CPPFLAGS}"
-CPPFLAGS="${CPPFLAGS} -I${R_HOME}/include"
+CPPFLAGS="${CPPFLAGS} -I${R_INCLUDE_DIR}"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
