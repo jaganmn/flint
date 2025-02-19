@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <gmp.h>
 #include <mpfr.h>
+#include "noreturn.h"
 #include <flint/flint.h>
 #include <Rinternals.h>
 #include <Rversion.h>

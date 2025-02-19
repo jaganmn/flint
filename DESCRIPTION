@@ -1,7 +1,7 @@
 Package: flint
 Version: 0.0.2
 VersionNote: sync configure.ac
-Date: 2025-02-18
+Date: 2025-02-19
 Title: Fast Library for Number Theory
 Description:
 	An R interface to 'FLINT' <https://flintlib.org/>, a C library for

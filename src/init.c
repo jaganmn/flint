@@ -1,3 +1,4 @@
+#include "noreturn.h"
 #include <flint/flint.h> /* flint_set_abort */
 #include <R_ext/Rdynload.h> /* DL_FUNC, ... */
 #include <R_ext/Visibility.h> /* attribute_visible */

@@ -1,6 +1,7 @@
 #ifndef R_FLINT_ARB_TEMPLATE_H
 #define R_FLINT_ARB_TEMPLATE_H
 
+#include "noreturn.h"
 #include <flint/flint.h>
 #include <flint/arb.h>
 #include <Rinternals.h>

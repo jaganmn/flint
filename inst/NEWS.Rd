@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.2 (2025-02-18)}{
+\section{Changes in version 0.0.2 (2025-02-19)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -18,6 +18,11 @@
       incorrect (too small) array size, triggering \command{gcc}
       \option{-Wlto-type-mismatch}.  Thanks to Brian Ripley for the
       report.
+
+      \item \file{src/noreturn.h} is included before system header
+      \file{flint/flint.h}.  The latter is broken in \acronym{FLINT} 3.1
+      due to nonportable use of keyword \code{_Noreturn} and keyword
+      macro \code{noreturn}.  Thanks to Brian Ripley for the report.
 
       \item \file{configure} wrongly assumed that \file{Rinternals.h}
       must be located in \file{`R RHOME`/include}.  Thanks to Dirk

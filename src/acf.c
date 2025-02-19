@@ -1,5 +1,6 @@
 #include <gmp.h>
 #include <mpfr.h>
+#include "noreturn.h"
 #include <flint/flint.h>
 #include <flint/fmpz.h>
 #include <flint/fmpq.h>

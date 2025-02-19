@@ -1,4 +1,5 @@
-#include <gmp.h>
+#include "noreturn.h"
+#include <flint/flint.h>
 #include <flint/arb.h>
 #include "flint.h"
 #include "arb_template.h"
