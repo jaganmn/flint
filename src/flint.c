@@ -113,9 +113,9 @@ SEXP R_flint_bind(SEXP dots, SEXP s_usenames)
 	if (ndots == 0)
 		return R_NilValue;
 	R_flint_class_t class = R_flint_get_class(VECTOR_ELT(dots, 0));
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t jx, jy = 0, nx, ny = 0;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	SEXP elt;
@@ -567,12 +567,12 @@ SEXP R_flint_realloc(SEXP object, SEXP s_lengthout)
 	int usenames = 1;
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t j,
 		nx = R_flint_get_length(object),
 		ny = 0,
 		n0 = 0;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	if (R_flint_get_length(s_lengthout) != 1)
@@ -625,11 +625,11 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t jx, jy = 0,
 		nx = R_flint_get_length(object),
 		ny = 0;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	if (R_flint_get_length(s_each) != 1)
@@ -686,11 +686,11 @@ SEXP R_flint_rep_lengthout(SEXP object, SEXP s_lengthout, SEXP s_usenames)
 	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t q, r, i, jx, jy = 0,
 		nx = R_flint_get_length(object),
 		ny = 0;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	if (R_flint_get_length(s_lengthout) != 1)
@@ -759,11 +759,11 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t jx, jy = 0,
 		nx = R_flint_get_length(object),
 		ny = 0;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	mp_limb_t ntimes = R_flint_get_length(s_times);
@@ -950,13 +950,13 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP value)
 	const void
 		*v = R_flint_get_pointer(value),
 		*x = R_flint_get_pointer(object);
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t j,
 		ns = (TYPEOF(subscript) == OBJSXP) ? R_flint_get_length(subscript) : (mp_limb_t) XLENGTH(subscript),
 		nv = R_flint_get_length(value),
 		nx = R_flint_get_length(object),
 		ny = nx;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names));
@@ -1019,14 +1019,14 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 	int usenames = LOGICAL_RO(s_usenames)[0];
 	R_flint_class_t class = R_flint_get_class(object);
 	const void *x = R_flint_get_pointer(object);
-	void *y;
+	void *y = (void *) 0;
 	mp_limb_t jx, jy,
 		ns = (TYPEOF(subscript) == OBJSXP) ? R_flint_get_length(subscript) : (mp_limb_t) XLENGTH(subscript),
 #if 0
 		nx = R_flint_get_length(object),
 #endif
 		ny = ns;
-	R_CFinalizer_t f;
+	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
 	SEXP sx = PROTECT(R_do_slot(object, R_flint_symbol_names)),

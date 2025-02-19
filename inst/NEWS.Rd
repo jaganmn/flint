@@ -1,17 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.2 (2025-02-19)}{
-  \subsection{Description}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Compatibility}{
-    \itemize{
-      \item .
-    }
-  }
+\section{Changes in version 0.0.2 (2025-02-20)}{
   \subsection{Installation}{
     \itemize{
       \item An array declaration in \file{src/flint.h} specified an
@@ -27,51 +17,9 @@
       \item \file{configure} wrongly assumed that \file{Rinternals.h}
       must be located in \file{`R RHOME`/include}.  Thanks to Dirk
       Eddelbuettel for the report (\GH{3}).
-    }
-  }
-  \subsection{Documentation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Significant User-Visible Changes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Classes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Methods}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{New Features}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Bug Fixes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Internals}{
-    \itemize{
-      \item .
+
+      \item More pointers are zero-initialized to appease
+      \command{clang} \option{-Wsometimes-uninitialized}.
     }
   }
 }
