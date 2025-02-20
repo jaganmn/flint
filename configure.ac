@@ -158,7 +158,7 @@ AC_CHECK_HEADER([mpfr.h], [],
                 [AC_MSG_ERROR([failed to compile GNU MPFR header, see https://www.mpfr.org/])])
 AC_CHECK_HEADER([flint/flint.h], [],
                 [AC_MSG_ERROR([failed to compile FLINT header, see https://flintlib.org/])],
-                [
+                [[
 #if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
 # include <stdnoreturn.h>
 #else
@@ -167,7 +167,7 @@ AC_CHECK_HEADER([flint/flint.h], [],
 # undef noreturn
 # define noreturn
 #endif
-                ])
+                ]])
 
 AC_CHECK_TYPE([mpfr_uprec_t], [],
               [AC_MSG_ERROR([GNU MPFR missing unsigned precision type])],
