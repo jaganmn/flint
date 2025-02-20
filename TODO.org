@@ -1,4 +1,4 @@
-* TODO flint 0.0.2
+* TODO flint 0.0.3
 
 ** TODO increase coverage of standard mathematical constants
 ** TODO increase coverage of special mathematical functions
