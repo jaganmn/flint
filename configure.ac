@@ -159,7 +159,7 @@ AC_CHECK_HEADER([mpfr.h], [],
 AC_CHECK_HEADER([flint/flint.h], [],
                 [AC_MSG_ERROR([failed to compile FLINT header, see https://flintlib.org/])],
                 [
-#if __STDC_VERSION__ >= 201112L && __STDC_VERSION__ < 202311L
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
 # include <stdnoreturn.h>
 #else
 # undef _Noreturn

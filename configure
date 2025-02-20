@@ -4217,7 +4217,7 @@ esac
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "flint/flint.h" "ac_cv_header_flint_flint_h" "
-#if __STDC_VERSION__ >= 201112L && __STDC_VERSION__ < 202311L
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
 # include <stdnoreturn.h>
 #else
 # undef _Noreturn
