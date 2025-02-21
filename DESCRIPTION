@@ -19,7 +19,7 @@ Description:
 	Library of Mathematical Functions <https://dlmf.nist.gov/>.  The R
 	interface defines S4 classes, generic functions, and methods for
 	representation and basic operations as well as plain R functions
-	matching and vectorizing entry points in the C library.
+	mirroring and vectorizing entry points in the C library.
 License: GPL (>= 2)
 URL: https://github.com/jaganmn/flint
 BugReports: https://github.com/jaganmn/flint/issues
