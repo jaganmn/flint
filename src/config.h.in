@@ -33,6 +33,9 @@
 /* Define to 1 if you have the 'acf_zero' function. */
 #undef HAVE_ACF_ZERO
 
+/* Define to 1 if you have the 'd_mul_2exp' function. */
+#undef HAVE_D_MUL_2EXP
+
 /* Define to 1 if you have the 'fmpq_clog_ui' function. */
 #undef HAVE_FMPQ_CLOG_UI
 

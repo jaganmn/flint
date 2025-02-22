@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.3 (2025-02-20)}{
+\section{Changes in version 0.0.3 (2025-02-22)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -14,7 +14,9 @@
   }
   \subsection{Installation}{
     \itemize{
-      \item .
+      \item \file{configure} tests for function \code{d_mul_2exp} and
+      \file{src/mag.c} uses \code{d_mul_2exp} \emph{conditionally}, for
+      compatibility with \acronym{FLINT} 3.0.
     }
   }
   \subsection{Documentation}{

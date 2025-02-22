@@ -27,7 +27,13 @@ double mag_get_d_lower(const mag_t z)
 			return ldexp(1.0, 1000);
 	}
 	else
-		return d_mul_2exp(MAG_MAN(z), (int) MAG_EXP(z) - MAG_BITS);
+		return
+#ifdef HAVE_D_MUL_2EXP
+			d_mul_2exp
+#else
+			ldexp
+#endif
+			((double) MAG_MAN(z), (int) MAG_EXP(z) - MAG_BITS);
 }
 #endif
 

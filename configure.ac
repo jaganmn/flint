@@ -268,6 +268,26 @@ AC_CHECK_FUNC([arb_init], [],
 
 AC_CHECK_FUNCS([acf_abs acf_arg acf_conj acf_div_ui acf_is_finite acf_is_inf acf_is_nan acf_is_zero acf_nan acf_one acf_zero fmpq_clog_ui mag_div_ui_lower mag_expm1_lower mag_get_d_lower mag_log1p_lower], [], [])
 
+dnl 'd_mul_2exp' availability must be tested specially as it is declared
+dnl static in flint/double_extras.h
+AC_MSG_CHECKING([for d_mul_2exp])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <flint/double_extras.h>
+int main()
+{
+	d_mul_2exp(0.0, 0);
+	return 0;
+}
+                  ]])],
+                  [
+                   AC_MSG_RESULT([yes])
+                   AC_DEFINE([HAVE_D_MUL_2EXP], [1],
+                             [Define to 1 if you have the 'd_mul_2exp' function.])
+                  ],
+                  [
+                   AC_MSG_RESULT([no])
+                  ])
+
 AC_SUBST(R_FLINT_CPPFLAGS)
 AC_SUBST(R_FLINT_CFLAGS)
 AC_SUBST(R_FLINT_LDFLAGS)

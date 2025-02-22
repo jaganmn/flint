@@ -4744,6 +4744,37 @@ then :
 fi
 
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for d_mul_2exp" >&5
+printf %s "checking for d_mul_2exp... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include <flint/double_extras.h>
+int main()
+{
+	d_mul_2exp(0.0, 0);
+	return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+
+printf "%s\n" "#define HAVE_D_MUL_2EXP 1" >>confdefs.h
+
+
+else case e in #(
+  e)
+                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+                   ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
 
 
 
