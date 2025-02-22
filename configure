@@ -4224,14 +4224,10 @@ esac
 fi
 
 ac_fn_c_check_header_compile "$LINENO" "flint/flint.h" "ac_cv_header_flint_flint_h" "
-#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
-# include <stdnoreturn.h>
-#else
-# undef _Noreturn
-# define _Noreturn
-# undef noreturn
-# define noreturn
-#endif
+#undef _Noreturn
+#define _Noreturn
+#undef noreturn
+#define noreturn
 
 "
 if test "x$ac_cv_header_flint_flint_h" = xyes

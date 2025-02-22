@@ -20,6 +20,10 @@
 
       \item \file{configure} works around broken \file{flint.pc}
       installed by \acronym{FLINT} 3.0.
+
+      \item \file{configure} uses a simpler prerequisite code when
+      testing whether system header \file{flint/flint.h} can be
+      compiled.
     }
   }
   \subsection{Documentation}{
