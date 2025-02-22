@@ -1,13 +1,4 @@
-#include "noreturn.h"
-#include <flint/flint.h> /* flint_set_abort */
-#include <R_ext/Rdynload.h> /* DL_FUNC, ... */
-#include <R_ext/Visibility.h> /* attribute_visible */
-#include <Rinternals.h> /* SEXP, ... */
-#include <Rversion.h> /* R_VERSION */
-
-#if R_VERSION < R_Version(4, 4, 0)
-# define OBJSXP S4SXP
-#endif /* < 4.4.0 */
+#include "flint.h"
 
 SEXP R_flint_symbol_dot_xdata,
 	R_flint_symbol_names,

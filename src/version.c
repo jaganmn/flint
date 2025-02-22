@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include <gmp.h>
-#include <mpfr.h>
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <Rinternals.h>
-#include <Rversion.h>
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "flint.h"
 
 SEXP R_flint_abi(void)
 {

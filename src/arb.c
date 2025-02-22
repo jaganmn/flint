@@ -1,14 +1,3 @@
-#include <gmp.h>
-#include <mpfr.h>
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <flint/fmpz.h>
-#include <flint/fmpq.h>
-#include <flint/mag.h>
-#include <flint/arf.h>
-#include <flint/acf.h>
-#include <flint/arb.h>
-#include <flint/acb.h>
 #include "flint.h"
 
 arf_rnd_t remapRnd(mpfr_rnd_t);

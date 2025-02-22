@@ -1,11 +1,3 @@
-#include <gmp.h>
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <flint/fmpz.h>
-#include <flint/fmpq.h>
-#include <flint/mag.h>
-#include <flint/arf.h>
-#include <flint/acf.h>
 #include "flint.h"
 
 #ifndef HAVE_FMPQ_CLOG_UI

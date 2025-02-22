@@ -1,11 +1,7 @@
-#include <gmp.h>
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <flint/acb.h>
-#include <flint/acb_dirichlet.h>
-#include <flint/acb_hypgeom.h>
 #include "flint.h"
 #include "acb_template.h"
+#include <flint/acb_dirichlet.h>
+#include <flint/acb_hypgeom.h>
 
 SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_prec)
 {

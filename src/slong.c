@@ -1,16 +1,3 @@
-#include <gmp.h>
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <flint/fmpz.h>
-#include <flint/fmpq.h>
-#include <flint/mag.h>
-#include <flint/arf.h>
-#include <flint/acf.h>
-#include <flint/longlong.h>
-#include <flint/ulong_extras.h>
-#if !defined(__GNUC__)
-#include <flint/long_extras.h> /* z_mul_checked */
-#endif
 #include "flint.h"
 
 #ifdef R_FLINT_ABI_LL

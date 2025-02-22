@@ -1,10 +1,7 @@
 #ifndef R_FLINT_ACB_TEMPLATE_H
 #define R_FLINT_ACB_TEMPLATE_H
 
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <flint/acb.h>
-#include <Rinternals.h>
+#include "flint.h"
 
 SEXP R_flint_acb_1ary(void (*)(acb_t, const acb_t, slong),
                       SEXP, SEXP, SEXP);

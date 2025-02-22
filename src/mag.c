@@ -1,15 +1,3 @@
-#include <gmp.h>
-#include <mpfr.h>
-#include "noreturn.h"
-#include <flint/flint.h>
-#include <flint/fmpz.h>
-#include <flint/fmpq.h>
-#include <flint/mag.h>
-#include <flint/arf.h>
-#include <flint/acf.h>
-#ifndef HAVE_MAG_GET_D_LOWER
-#include <flint/double_extras.h>
-#endif
 #include "flint.h"
 
 #ifndef HAVE_MAG_GET_D_LOWER
