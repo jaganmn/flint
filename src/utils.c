@@ -1,15 +1,5 @@
 #include "flint.h"
 
-#if R_VERSION < R_Version(4, 5, 0)
-void CLEAR_ATTRIB(SEXP x)
-{
-	SET_ATTRIB(x, R_NilValue);
-	SET_OBJECT(x, 0);
-	UNSET_S4_OBJECT(x);
-	return;
-}
-#endif /* < 4.5.0 */
-
 char *R_alloc_snprintf(size_t n, const char *format, ...)
 {
 	char *buffer = R_alloc(n, sizeof(char));
