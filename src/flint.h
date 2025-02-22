@@ -14,11 +14,6 @@
 #include <mpfr.h> /* mpfr_uprec_t, mpfr_uexp_t */
 
 #include <Rconfig.h> /* R_INLINE, ENABLE_NLS */
-
-#ifdef ENABLE_NLS
-# include <libintl.h> /* dgettext, dngettext */
-#endif
-
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
 #include <R_ext/Complex.h> /* Rcomplex */
 #include <R_ext/Error.h> /* Rf_error, Rf_warning */
@@ -30,7 +25,9 @@
 # include "config.h"
 #endif
 
-#ifndef ENABLE_NLS
+#ifdef ENABLE_NLS
+# include <libintl.h> /* dgettext, dngettext */
+#else
 # define dgettext(Domain, String) (String)
 # define dngettext(Domain, String, StringP, N) (((N) == 1) ? String : StringP)
 #endif
