@@ -76,6 +76,13 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 				pkg_CPPFLAGS=`"${PKG_CONFIG}" --cflags ${pkg}`
 				pkg_LDFLAGS=`"${PKG_CONFIG}" --libs-only-L --libs-only-other ${pkg}`
 				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l ${pkg}`
+				pkg_LIBS_extra=
+				if test "x${pkg}" = "xflint" &&
+				   "${PKG_CONFIG}" --exists "${pkg} < 3.1.0"; then
+					dnl FLINT 3.0.x installs broken flint.pc
+					pkg_LIBS_extra=-lflint
+				fi
+				pkg_LIBS="${pkg_LIBS_extra} ${pkg_LIBS}"
 				CPPFLAGS="${pkg_CPPFLAGS} ${R_FLINT_CPPFLAGS} ${CPPFLAGS}"
 				LDFLAGS="${pkg_LDFLAGS} ${R_FLINT_CPPFLAGS} ${LDFLAGS}"
 				LIBS="${R_FLINT_LIBS} ${LIBS}"
@@ -90,6 +97,7 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 							 [${pkg_LIBS}])
 				if test "x${pkg_found}" = "xno"; then
 				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l --static flint`
+				pkg_LIBS="${pkg_LIBS_extra} ${pkg_LIBS}"
 				AC_MSG_NOTICE([checking whether --libs --static suffices for linking lib${pkg}])
 				AC_CHECK_LIB([${pkg}], [${pkg_fn}],
 							 [pkg_found=yes], [pkg_found=no],

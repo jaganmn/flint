@@ -17,6 +17,9 @@
       \item \file{configure} tests for function \code{d_mul_2exp} and
       \file{src/mag.c} uses \code{d_mul_2exp} \emph{conditionally}, for
       compatibility with \acronym{FLINT} 3.0.
+
+      \item \file{configure} works around broken \file{flint.pc}
+      installed by \acronym{FLINT} 3.0.
     }
   }
   \subsection{Documentation}{
