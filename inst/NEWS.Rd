@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.3 (2025-02-22)}{
+\section{Changes in version 0.0.3 (2025-02-23)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -24,6 +24,14 @@
       \item \file{configure} uses simpler prerequisite code when
       testing whether system header \file{flint/flint.h} can be
       compiled.
+
+      \item \file{src/noreturn.h} is much refined, for compatibility
+      with \acronym{FLINT} 3.0.  The original version triggered
+      \command{clang} \option{-Wunknown-attributes}.
+
+      \item \file{src/revertnoreturn.h} is included after the
+      \acronym{FLINT} headers so that definitions in
+      \file{src/noreturn.h} do not infect headers included later.
     }
   }
   \subsection{Documentation}{
@@ -80,10 +88,11 @@
       \option{-Wlto-type-mismatch}.  Thanks to Brian Ripley for the
       report.
 
-      \item \file{src/noreturn.h} is included before system header
-      \file{flint/flint.h}.  The latter is broken in \acronym{FLINT} 3.1
-      due to nonportable use of keyword \code{_Noreturn} and keyword
-      macro \code{noreturn}.  Thanks to Brian Ripley for the report.
+      \item \file{src/noreturn.h} is included before the \acronym{FLINT}
+      headers.  \acronym{FLINT} 3.1 installs a broken
+      \file{flint/flint.h} whose use of keyword \code{_Noreturn} and
+      keyword macro \code{noreturn} is not portable.  Thanks to Brian
+      Ripley for the report.
 
       \item \file{configure} wrongly assumed that \file{Rinternals.h}
       must be located in \file{`R RHOME`/include}.  Thanks to Dirk

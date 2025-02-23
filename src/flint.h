@@ -27,6 +27,7 @@
 #include <flint/acf.h>
 #include <flint/arb.h>
 #include <flint/acb.h>
+#include "revertnoreturn.h"
 #include <Rconfig.h> /* R_INLINE, ENABLE_NLS */
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
 #include <R_ext/Complex.h> /* Rcomplex */
