@@ -58,7 +58,9 @@ FLINT_NORETURN
 void R_flint_abort(void)
 {
 	Rf_error(_("caught exception in libflint"));
+#if __FLINT_RELEASE >= 30100
 	return;
+#endif
 }
 
 void *R_flint_get_pointer(SEXP object)
