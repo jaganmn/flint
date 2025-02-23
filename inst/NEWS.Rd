@@ -4,6 +4,10 @@
 \section{Changes in version 0.0.3 (2025-02-23)}{
   \subsection{Installation}{
     \itemize{
+      \item Function \code{R_flint_abort} is declared with keyword macro
+      \code{FLINT_NORETURN} \emph{conditionally}, for compatibility with
+      \acronym{FLINT} 3.0.
+
       \item \file{configure} tests for function \code{d_mul_2exp} and
       \file{src/mag.c} uses \code{d_mul_2exp} \emph{conditionally}, for
       compatibility with \acronym{FLINT} 3.0.

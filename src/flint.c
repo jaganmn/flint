@@ -52,6 +52,9 @@ void acf_zero(acf_t res)
 }
 #endif
 
+#if __FLINT_RELEASE < 30100
+FLINT_NORETURN
+#endif
 void R_flint_abort(void)
 {
 	Rf_error(_("caught exception in libflint"));

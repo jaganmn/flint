@@ -273,6 +273,9 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_flint_symbol_real      = Rf_install("real");
 	R_flint_symbol_imag      = Rf_install("imag");
 	R_flint_symbol_off       = Rf_install("off");
+#if __FLINT_RELEASE < 30100
+	FLINT_NORETURN
+#endif
 	void R_flint_abort(void);
 	flint_set_abort(&R_flint_abort);
 	return;
