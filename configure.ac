@@ -276,6 +276,10 @@ dnl 'd_mul_2exp' availability must be tested specially as it is declared
 dnl static in flint/double_extras.h
 AC_MSG_CHECKING([for d_mul_2exp])
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#undef _Noreturn
+#define _Noreturn
+#undef noreturn
+#define noreturn
 #include <flint/double_extras.h>
 int main()
 {

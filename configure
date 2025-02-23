@@ -4752,6 +4752,10 @@ printf %s "checking for d_mul_2exp... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
+#undef _Noreturn
+#define _Noreturn
+#undef noreturn
+#define noreturn
 #include <flint/double_extras.h>
 int main()
 {
