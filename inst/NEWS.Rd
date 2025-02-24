@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.4 (2025-02-23)}{
+\section{Changes in version 0.0.4 (2025-02-24)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -19,7 +19,9 @@
   }
   \subsection{Documentation}{
     \itemize{
-      \item .
+      \item \file{man/flint-class.Rd} contained a cut-paste error
+      affecting section \sQuote{Methods}, items \code{[[} and
+      \code{[[<-}.
     }
   }
   \subsection{Significant User-Visible Changes}{

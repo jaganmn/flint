@@ -143,6 +143,12 @@
       a \code{flint} vector, then consider doing something like
       \code{x <- `[<-`(value = value, x = x, i = i)}.}
     \item{\code{[[}}{
+      \code{signature(x = "ANY", i = "flint", j = "missing")}:\cr
+      \code{signature(x = "flint", i = "ANY", j = "missing")}:\cr
+      \code{signature(x = "flint", i = "flint", j = "missing")}:\cr
+      similar to \code{[}, with differences as documented in
+      \code{\link{Extract}}.}
+    \item{\code{[[<-}}{
       \code{signature(x = "ANY", i = "ANY", j = "missing", value = "flint")}:\cr
       \code{signature(x = "ANY", i = "flint", j = "missing", value = "ANY")}:\cr
       \code{signature(x = "ANY", i = "flint", j = "missing", value = "flint")}:\cr
