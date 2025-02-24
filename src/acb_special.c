@@ -61,26 +61,5 @@ SEXP R_flint_acb_hypgeom_polygamma(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_prec)
 
 SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
-		na = R_flint_get_length(s_a),
-		nb = R_flint_get_length(s_b),
-		nc = R_flint_get_length(s_c),
-		nz = R_flint_get_length(s_z),
-		nflags = (mp_limb_t) XLENGTH(s_flags),
-		nprec = R_flint_get_length(s_prec);
-	acb_srcptr
-		a = R_flint_get_pointer(s_a),
-		b = R_flint_get_pointer(s_b),
-		c = R_flint_get_pointer(s_c),
-		z = R_flint_get_pointer(s_z);
-	const int *flags = INTEGER_RO(s_flags);
-	const slong *prec = R_flint_get_pointer(s_prec);
-
-	mp_limb_t j, n = RECYCLE6(na, nb, nc, nz, nflags, nprec);
-	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
-	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
-
-	for (j = 0; j < n; ++j)
-		acb_hypgeom_2f1(res + j, a + j % na, b + j % nb, c + j % nc, z + j % nz, flags[j % nflags], prec[j % nprec]);
-	return R_NilValue;
+	return R_flint_acb_4ary_flags(&acb_hypgeom_2f1, s_res, s_a, s_b, s_c, s_z, s_flags, s_prec);
 }
