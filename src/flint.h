@@ -51,26 +51,30 @@
 #endif /* < 4.4.0 */
 
 #define MAX2(a, b) \
-(((a) < (b)) ? (b)                 : (a))
+(((a) < (b)) ? (b)                    : (a))
 #define MAX3(a, b, c) \
-(((a) < (b)) ? MAX2(b, c)          : MAX2(a, c))
+(((a) < (b)) ? MAX2(b, c)             : MAX2(a, c))
 #define MAX4(a, b, c, d) \
-(((a) < (b)) ? MAX3(b, c, d)       : MAX3(a, c, d))
+(((a) < (b)) ? MAX3(b, c, d)          : MAX3(a, c, d))
 #define MAX5(a, b, c, d, e) \
-(((a) < (b)) ? MAX4(b, c, d, e)    : MAX4(a, c, d, e))
+(((a) < (b)) ? MAX4(b, c, d, e)       : MAX4(a, c, d, e))
 #define MAX6(a, b, c, d, e, f) \
-(((a) < (b)) ? MAX5(b, c, d, e, f) : MAX5(a, c, d, e, f))
+(((a) < (b)) ? MAX5(b, c, d, e, f)    : MAX5(a, c, d, e, f))
+#define MAX7(a, b, c, d, e, f, g) \
+(((a) < (b)) ? MAX6(b, c, d, e, f, g) : MAX6(a, c, d, e, f, g))
 
 #define RECYCLE2(a, b) \
-(((a) && (b))                             ? MAX2(a, b)             : 0)
+(((a) && (b))                                    ? MAX2(a, b)                : 0)
 #define RECYCLE3(a, b, c) \
-(((a) && (b) && (c))                      ? MAX3(a, b, c)          : 0)
+(((a) && (b) && (c))                             ? MAX3(a, b, c)             : 0)
 #define RECYCLE4(a, b, c, d) \
-(((a) && (b) && (c) && (d))               ? MAX4(a, b, c, d)       : 0)
+(((a) && (b) && (c) && (d))                      ? MAX4(a, b, c, d)          : 0)
 #define RECYCLE5(a, b, c, d, e) \
-(((a) && (b) && (c) && (d) && (e))        ? MAX5(a, b, c, d, e)    : 0)
+(((a) && (b) && (c) && (d) && (e))               ? MAX5(a, b, c, d, e)       : 0)
 #define RECYCLE6(a, b, c, d, e, f) \
-(((a) && (b) && (c) && (d) && (e) && (f)) ? MAX6(a, b, c, d, e, f) : 0)
+(((a) && (b) && (c) && (d) && (e) && (f))        ? MAX6(a, b, c, d, e, f)    : 0)
+#define RECYCLE7(a, b, c, d, e, f, g) \
+(((a) && (b) && (c) && (d) && (e) && (f) && (g)) ? MAX7(a, b, c, d, e, f, g) : 0)
 
 #define WARNING_OOB_INTEGER(w) \
 do { \
