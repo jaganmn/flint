@@ -42,6 +42,27 @@ function (x, prec = flintPrec()) {
     res
 }
 
+arb_hypgeom_gamma_lower <-
+function (s, x, flags = 0L, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_arb_hypgeom_gamma_lower, res, as(s, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
+    res
+}
+
+arb_hypgeom_gamma_upper <-
+function (s, x, flags = 0L, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_arb_hypgeom_gamma_upper, res, as(s, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
+    res
+}
+
+arb_hypgeom_beta_lower <-
+function (a, b, x, flags = 0L, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_arb_hypgeom_beta_lower, res, as(a, "arb"), as(b, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
+    res
+}
+
 arb_hypgeom_2f1 <-
 function (a, b, c, x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")

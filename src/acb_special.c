@@ -59,6 +59,21 @@ SEXP R_flint_acb_hypgeom_polygamma(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_prec)
 	return R_flint_acb_2ary(&acb_polygamma, s_res, s_s, s_z, s_prec);
 }
 
+SEXP R_flint_acb_hypgeom_gamma_lower(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_flags, SEXP s_prec)
+{
+	return R_flint_acb_2ary_flags(&acb_hypgeom_gamma_lower, s_res, s_s, s_z, s_flags, s_prec);
+}
+
+SEXP R_flint_acb_hypgeom_gamma_upper(SEXP s_res, SEXP s_s, SEXP s_z, SEXP s_flags, SEXP s_prec)
+{
+	return R_flint_acb_2ary_flags(&acb_hypgeom_gamma_upper, s_res, s_s, s_z, s_flags, s_prec);
+}
+
+SEXP R_flint_acb_hypgeom_beta_lower(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_z, SEXP s_flags, SEXP s_prec)
+{
+	return R_flint_acb_3ary_flags(&acb_hypgeom_beta_lower, s_res, s_a, s_b, s_z, s_flags, s_prec);
+}
+
 SEXP R_flint_acb_hypgeom_2f1(SEXP s_res, SEXP s_a, SEXP s_b, SEXP s_c, SEXP s_z, SEXP s_flags, SEXP s_prec)
 {
 	return R_flint_acb_4ary_flags(&acb_hypgeom_2f1, s_res, s_a, s_b, s_c, s_z, s_flags, s_prec);
