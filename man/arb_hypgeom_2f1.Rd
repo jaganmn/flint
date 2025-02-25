@@ -5,11 +5,11 @@
 \description{
   Computes the principal branch of the hypergeometric function
   \eqn{{}_{2}F_{1}(a, b, c, z)}{F(a, b, c, z)}, defined by
-  \deqn{\sum_{k = 0}^{\infty} \frac{(a)_{k} (b)_{k}}{(c)_{k}} \frac{z^{k}}{k!}}{sum_{k = 0, 1, \ldots} ((a)_k * (b)_k / (c)_k) * (z^k / k!)}
+  \deqn{\sum_{k = 0}^{\infty} \frac{(a)_{k} (b)_{k}}{(c)_{k}} \frac{z^{k}}{k!}}{sum_{k = 0, 1, \ldots} ((a)_k * (b)_k/(c)_k) * (z^k/k!)}
   for \eqn{|z| < 1}{Mod(z) < 1} and by analytic continuation elsewhere
   in the \eqn{z}-plane, or the principal branch of the
   \emph{regularized} hypergeometric function
-  \eqn{{}_{2}F_{1}(a, b, c, z) / \Gamma(c)}{F(a, b, c, z)/Gamma(c)}.
+  \eqn{{}_{2}F_{1}(a, b, c, z)/\Gamma(c)}{F(a, b, c, z)/Gamma(c)}.
 }
 \usage{
 arb_hypgeom_2f1(a, b, c, x, flags = 0L, prec = flintPrec())
@@ -46,7 +46,7 @@ acb_hypgeom_2f1(a, b, c, z, flags = 0L, prec = flintPrec())
   \url{https://dlmf.nist.gov/15}
 }
 \examples{
-h2f1 <- function(...) as.complex(acb_hypgeom_2f1(...))
+h2f1 <- acb_hypgeom_2f1
 
 set.seed(0xbcdeL)
 r <- 10L
@@ -55,7 +55,7 @@ z.l1 <- complex(modulus  = runif(r,     0, 1-tol),
                 argument = runif(r,     0,  2*pi))
 z.g1 <- complex(modulus  = runif(r, 1+tol, 1/tol),
                 argument = runif(r,     0,  2*pi))
-z <- c(z.l1, z.g1)
+z <- as(c(z.l1, z.g1), "acb")
 
 ## Elementary special cases from http://dlmf.nist.gov/15.4 :
 all.equal(h2f1(1.0, 1.0, 2.0,  z  ),

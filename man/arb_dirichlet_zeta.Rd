@@ -52,19 +52,19 @@ acb_dirichlet_hurwitz(s, a = 1, prec = flintPrec())
   \url{https://dlmf.nist.gov/25}
 }
 \examples{
-dzet <- function(...) as.complex(acb_dirichlet_zeta     (...))
-dhur <- function(...) as.complex(acb_dirichlet_hurwitz  (...))
-dler <- function(...) as.complex(acb_dirichlet_lerch_phi(...))
+dzet <- acb_dirichlet_zeta
+dhur <- acb_dirichlet_hurwitz
+dler <- acb_dirichlet_lerch_phi
 
 ## Somewhat famous particular values :
 debugging <- tolower(Sys.getenv("R_FLINT_CHECK_EXTRA")) == "true"
-     s <- as.complex(c(   -1,    0,      2,       4))
-zeta.s <- as.complex(c(-1/12, -1/2, pi^2/6, pi^4/90))
+     s <- as(c(   -1,    0,      2,       4), "acb")
+zeta.s <- as(c(-1/12, -1/2, pi^2/6, pi^4/90), "acb")
 stopifnot(all.equal(dzet(   s   ), zeta.s),
           all.equal(dhur(   s, 1), zeta.s),
           !debugging ||
           {
-          print(cbind(dler(1, s, 1), zeta.s, deparse.level = 0L))
+          print(cbind(as.complex(dler(1, s, 1)), as.complex(zeta.s)))
           all.equal(dler(1, s, 1), zeta.s) # FLINT bug, report this
           })
 
@@ -75,11 +75,11 @@ z.l1 <- complex(modulus  = runif(r,     0, 1-tol),
                 argument = runif(r,     0,  2*pi))
 z.g1 <- complex(modulus  = runif(r, 1+tol, 1/tol),
                 argument = runif(r,     0,  2*pi))
-z <- c(z.l1, z.g1)
+z <- as(c(z.l1, z.g1), "acb")
 
 ## A relation with the hypergeometric function from
 ##   http://dlmf.nist.gov/25.14.E3_3 :
-h2f1 <- function(...) as.complex(acb_hypgeom_2f1(...))
+h2f1 <- acb_hypgeom_2f1
 a <- complex(real = -2:2, imaginary = (-1)^(-2:2))
 stopifnot(all.equal(dler(z.l1, 1, a), h2f1(a, 1, a + 1, z.l1)/a))
 
