@@ -7,15 +7,22 @@
 \alias{acb_hypgeom_lgamma}
 \alias{arb_hypgeom_polygamma}
 \alias{acb_hypgeom_polygamma}
+\alias{arb_hypgeom_beta}
+\alias{acb_hypgeom_beta}
 \title{Gamma and Related Functions}
 \description{
   Compute the gamma function, the reciprocal gamma function, the
-  logarithm of the absolute value of the gamma function, or the
-  polygamma function.  The gamma function \eqn{\Gamma(z)} is defined by
+  logarithm of the absolute value of the gamma function, the polygamma
+  function, or the beta function.  The gamma function \eqn{\Gamma(z)}
+  is defined by
   \deqn{\int_{0}^{\infty} t^{z - 1} e^{-t} \text{d}t}{integral_0^Inf t^(z - 1) exp(-t) dt}
   for \eqn{\Re(z) > 0}{Re(z) > 0} and by analytic continuation
   elsewhere in the \eqn{z}-plane, excluding poles at
-  \eqn{z = 0, -1, \ldots}.
+  \eqn{z = 0, -1, \ldots}.  The beta function \eqn{B(a, b)} is defined
+  by
+  \deqn{\int_{0}^{1} t^{a - 1} (1 - t)^{b - 1} \text{d}t}{integral_0^1 t^(a - 1) (1 - t)^(b - 1) dt}
+  for \eqn{\Re(a), \Re(b) > 0}{Re(a), Re(b) > 0} and by analytic
+  continuation to all other \eqn{(a, b)}.
 }
 \usage{
 arb_hypgeom_gamma(x, prec = flintPrec())
@@ -29,9 +36,12 @@ acb_hypgeom_lgamma(z, prec = flintPrec())
 
 ## arb_hypgeom_polygamma(s = 0, z, prec = flintPrec())
    acb_hypgeom_polygamma(s = 0, z, prec = flintPrec())
+
+arb_hypgeom_beta(a, b, prec = flintPrec())
+acb_hypgeom_beta(a, b, prec = flintPrec())
 }
 \arguments{
-  \item{x, z, s}{
+  \item{x, z, s, a, b}{
     numeric, complex, \code{\linkS4class{arb}}, or
     \code{\linkS4class{acb}} vectors.}
   \item{prec}{
@@ -54,7 +64,10 @@ acb_hypgeom_lgamma(z, prec = flintPrec())
   \code{z}.
 }
 \seealso{
-  Classes \code{\linkS4class{arb}} and \code{\linkS4class{acb}}.
+  Classes \code{\linkS4class{arb}} and \code{\linkS4class{acb}};
+  \code{\link{arb_hypgeom_gamma_lower}} and
+  \code{\link{arb_hypgeom_beta_lower}} for the \dQuote{incomplete} gamma
+  and beta functions.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}

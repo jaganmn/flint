@@ -69,6 +69,13 @@ function (s, z, flags = 0L, prec = flintPrec()) {
     res
 }
 
+acb_hypgeom_beta <-
+function (a, b, prec = flintPrec()) {
+    res <- flintNew("acb")
+    .Call(R_flint_acb_hypgeom_beta_lower, res, as(a, "acb"), as(b, "acb"), as(1, "acb"), 0L, as(prec, "slong"))
+    res
+}
+
 acb_hypgeom_beta_lower <-
 function (a, b, z, flags = 0L, prec = flintPrec()) {
     res <- flintNew("acb")
