@@ -1,4 +1,4 @@
-\name{slong-class}
+\name{ulong-class}
 \alias{ulong-class}
 \alias{slong-class}
 \alias{ulong}
