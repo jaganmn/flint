@@ -2,7 +2,7 @@ useDynLib(flint, .registration = TRUE)
 importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
            getClassDef, initialize, new, selectMethod, setAs, setClass,
            setMethod, show)
-importFrom(stats, quantile)
+importFrom(stats, quantile, runif)
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb)
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")

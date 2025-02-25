@@ -1,32 +1,22 @@
 library(flint)
 
-h2f1 <-
-function (a, b, c, z)
-    acb_hypgeom_2f1(a, b, c, z)
-hgamma <-
-function (z)
-    acb_hypgeom_gamma(z)
+h2f1 <- acb_hypgeom_2f1
+hg <- acb_hypgeom_gamma
 
 incl.unit.circle <- FALSE # 'a', 'b', 'c' must meet convergence criteria
 debugging <- tolower(Sys.getenv("R_FLINT_CHECK_EXTRA")) == "true"
 
 r <- 10L
 n <- r * if (incl.unit.circle) 3L else 2L
-tol <- 0x1p-4
+eps <- 0x1p-4
 
 set.seed(0xabcdL)
-a    <- complex(modulus  = runif(n,     0, 1/tol),
-                argument = runif(n,     0,  2*pi))
-b    <- complex(modulus  = runif(n,     0, 1/tol),
-                argument = runif(n,     0,  2*pi))
-c    <- complex(modulus  = runif(n,     0, 1/tol),
-                argument = runif(n,     0,  2*pi))
-z.l1 <- complex(modulus  = runif(r,     0, 1-tol),
-                argument = runif(r,     0,  2*pi))
-z.e1 <- complex(modulus  = 1,
-                argument = runif(r,     0,  2*pi))
-z.g1 <- complex(modulus  = runif(r, 1+tol, 1/tol),
-                argument = runif(r,     0,  2*pi))
+a    <- flint:::complex.runif(n, modulus = c(    0, 1/eps))
+b    <- flint:::complex.runif(n, modulus = c(    0, 1/eps))
+c    <- flint:::complex.runif(n, modulus = c(    0, 1/eps))
+z.l1 <- flint:::complex.runif(r, modulus = c(    0, 1-eps))
+z.e1 <- flint:::complex.runif(r, modulus = c(    1,     1))
+z.g1 <- flint:::complex.runif(r, modulus = c(1+eps, 1/eps))
 z <- .acb(x = c(z.l1, if (incl.unit.circle) z.e1, z.g1))
 
 
@@ -122,5 +112,5 @@ stopifnot(all.equal(h2f1(1, 1, 2, z),
           i. <- Re(c - a - b) > 0
           a. <- a[i.]; b. <- b[i.]; c. <- c[i.]
           all.equal(h2f1(a., b., c., 1),
-                    hgamma(c.) * hgamma(c. - a. - b.)/hgamma(c. - a.)/hgamma(c. - b.))
+                    hg(c.) * hg(c. - a. - b.)/hg(c. - a.)/hg(c. - b.))
           })
