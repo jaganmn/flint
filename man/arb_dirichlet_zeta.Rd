@@ -68,7 +68,7 @@ stopifnot(all.equal(dzet(   s   ), zeta.s),
           all.equal(dler(1, s, 1), zeta.s) # FLINT bug, report this
           })
 
-set.seed(0xbadeL)
+set.seed(0xabcdL)
 r <- 10L
 tol <- 0x1p-4
 z.l1 <- complex(modulus  = runif(r,     0, 1-tol),

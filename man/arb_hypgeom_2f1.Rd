@@ -58,12 +58,12 @@ z.g1 <- complex(modulus  = runif(r, 1+tol, 1/tol),
 z <- as(c(z.l1, z.g1), "acb")
 
 ## Elementary special cases from http://dlmf.nist.gov/15.4 :
-all.equal(h2f1(1.0, 1.0, 2.0,  z  ),
-          -log(1 - z)/z)
-all.equal(h2f1(0.5, 1.0, 1.5,  z^2),
-          0.5 * (log(1 + z) - log(1 - z))/z)
-all.equal(h2f1(0.5, 1.0, 1.5, -z^2),
-          atan(z)/z)
-## [ see more in ../tests/acb_hypgeom_2f1.R ]
+stopifnot(all.equal(h2f1(1.0, 1.0, 2.0,  z  ),
+                    -log(1 - z)/z),
+          all.equal(h2f1(0.5, 1.0, 1.5,  z^2),
+                    0.5 * (log(1 + z) - log(1 - z))/z),
+          all.equal(h2f1(0.5, 1.0, 1.5, -z^2),
+                    atan(z)/z))
+## [ see more in ../tests/hypgeom.R ]
 }
 \keyword{math}
