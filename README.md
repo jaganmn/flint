@@ -1,5 +1,3 @@
-# R package **flint**
-
 R package **flint** is an R interface to FLINT (https://flintlib.org/),
 a C library for number theory.  FLINT implements arithmetic in rings,
 including midpoint-radius interval arithmetic, also known as ball
@@ -147,14 +145,16 @@ and libraries that you need are available as of Rtools44 (r6346).
 ## Bug reports and feature requests
 
 Please use the issue tracker to report bugs and request features:
-https://github.com/jaganmn/flint.
+https://github.com/jaganmn/flint/issues/.
 
-The focus of version 0.0.1 has been the implementation of S4 classes,
-generic functions, and methods, rather than extensive coverage of entry
-points in the FLINT C library.  Nevertheless, as a starting point,
-version 0.0.1 provides an R interface to certain entry points so that
-users can already compute (analytically continued) zeta, gamma, and
-hypergeometric functions as well as Lambert's W.
+The focus of versions 0.0.x has been the implementation of S4 classes,
+generic functions, and methods, rather than extensive coverage of C
+entry points provided by FLINT.  Nevertheless, as a starting point,
+versions 0.0.x provide an R interface to certain C entry points so that
+users can already compute several analytically continued special
+mathematical functions (as of this writing: zeta functions, complete and
+incomplete gamma and beta functions, hypergeometric functions, and
+Lambert's *W*).
 
 If there are entry points to which you need an R interface, then just
 let me know, ideally including in your request links to the online
