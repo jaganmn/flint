@@ -119,19 +119,19 @@ $ brew install flint
 ```
 
 GNU MPFR and GNU MP are dependencies of FLINT, so they should be
-installed (if not already) automatically when you install FLINT.
-Repositories for older systems may provide too old (< 3.0.0) versions of
-FLINT.  On such systems, one can download a recent source tarball from
-[here](https://github.com/flintlib/flint/releases) and build FLINT from
-the sources.
+installed (if not already) automatically when you install FLINT.  On
+older systems, repositories may provide too old (< 3.0.0) versions of
+FLINT.  In that case, one can download a recent (>= 3.0.0) source
+tarball from [here](https://github.com/flintlib/flint/releases) and
+build FLINT locally from the sources.
 
-If you use macOS and you obtained R from a CRAN binary, then follow the
+If you use macOS and obtained R from a CRAN binary, then follow the
 instructions [here](https://mac.r-project.org/bin/) to install
 architecture-specific binaries for packages `flint`, `mpfr`, and `gmp`.
 
-If you use Windows and you obtained R from a CRAN binary, then install
+If you use Windows and obtained R from a CRAN binary, then install
 [Rtools](https://cran.r-project.org/bin/windows/Rtools/).  The headers
-and libraries that you need are available as of Rtools44 (r6346).
+and libraries that you need are available as of Rtools44 (r6414).
 
 ## Documentation
 
