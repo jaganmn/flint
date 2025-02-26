@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.4 (2025-02-24)}{
+\section{Changes in version 0.0.4 (2025-02-26)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -51,7 +51,18 @@
   }
   \subsection{New Features}{
     \itemize{
-      \item .
+      \item \proglang{C} library functions
+      \code{arb_hypgeom_gamma_lower}, \code{acb_hypgeom_gamma_lower},
+      \code{arb_hypgeom_gamma_upper}, \code{acb_hypgeom_gamma_upper},
+      \code{arb_hypgeom_beta_lower}, and \code{acb_hypgeom_beta_lower},
+      which implement the incomplete gamma and beta functions, are
+      interfaced as \R{} functions with identical names and prototypes.
+      Requested by Martin Maechler (\GH{5}).
+
+      \item \R{} functions \code{arb_hypgeom_beta} and
+      \code{acb_hypgeom_beta} wrapping \code{arb_hypgeom_gamma} and
+      \code{acb_hypgeom_gamma} are provided for completeness.
+      \acronym{FLINT} provides no such entry points as of this writing.
     }
   }
   \subsection{Bug Fixes}{
@@ -61,7 +72,8 @@
   }
   \subsection{Internals}{
     \itemize{
-      \item .
+      \item \R{} function \code{complex.runif} facilitating
+      complex-valued RNG in examples and tests.
     }
   }
 }
