@@ -64,8 +64,9 @@ function (a, b, prec = flintPrec()) {
     .Call(R_flint_arb_hypgeom_beta_lower, res, as(a, "arb"), as(b, "arb"), as(1, "arb"), 0L, as(prec, "slong"))
     res
     }
-    arb_hypgeom_gamma(a, prec) * arb_hypgeom_gamma(b, prec) *
-        arb_hypgeom_rgamma(a + b, prec)
+    prec. <- flintPrec(prec)
+    on.exit(flintPrec(prec.))
+    arb_hypgeom_gamma(a) * arb_hypgeom_gamma(b) * arb_hypgeom_rgamma(a + b)
 }
 
 arb_hypgeom_beta_lower <-
