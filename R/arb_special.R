@@ -58,9 +58,14 @@ function (s, x, flags = 0L, prec = flintPrec()) {
 
 arb_hypgeom_beta <-
 function (a, b, prec = flintPrec()) {
+    if (FALSE) {
+    ## FLINT bug, report this
     res <- flintNew("arb")
     .Call(R_flint_arb_hypgeom_beta_lower, res, as(a, "arb"), as(b, "arb"), as(1, "arb"), 0L, as(prec, "slong"))
     res
+    }
+    arb_hypgeom_gamma(a, prec) * arb_hypgeom_gamma(b, prec) *
+        arb_hypgeom_rgamma(a + b, prec)
 }
 
 arb_hypgeom_beta_lower <-
