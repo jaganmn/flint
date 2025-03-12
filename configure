@@ -3845,7 +3845,7 @@ printf "%s\n" "yes" >&6; }
 				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l ${pkg}`
 				pkg_LIBS_extra=
 				if test "x${pkg}" = "xflint" &&
-				   "${PKG_CONFIG}" --exists "${pkg} < 3.1.0"; then
+				   "${PKG_CONFIG}" --exists "flint < 3.1.0"; then
 										pkg_LIBS_extra=-lflint
 				fi
 				pkg_LIBS="${pkg_LIBS_extra} ${pkg_LIBS}"
@@ -3991,7 +3991,7 @@ printf "%s\n" "no" >&6; }
 		done
 				printf "Name: config\n"                                   > config.pc
 		printf "Description: The config library\n"               >> config.pc
-		printf "URL: https://www.config.org/\n"                  >> config.pc
+		printf "URL: https://config.org/\n"                      >> config.pc
 		printf "Version: %s\n" "${PACKAGE_VERSION}"              >> config.pc
 		printf "Cflags: %s\n" "${R_FLINT_CPPFLAGS}"              >> config.pc
 		printf "Libs: %s\n" "${R_FLINT_LDFLAGS} ${R_FLINT_LIBS}" >> config.pc

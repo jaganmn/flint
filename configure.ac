@@ -78,7 +78,7 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l ${pkg}`
 				pkg_LIBS_extra=
 				if test "x${pkg}" = "xflint" &&
-				   "${PKG_CONFIG}" --exists "${pkg} < 3.1.0"; then
+				   "${PKG_CONFIG}" --exists "flint < 3.1.0"; then
 					dnl FLINT 3.0.x installs broken flint.pc
 					pkg_LIBS_extra=-lflint
 				fi
@@ -93,15 +93,15 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 					flint ) pkg_fn=fmpz_init ;;
 				esac
 				AC_CHECK_LIB([${pkg}], [${pkg_fn}],
-							 [pkg_found=yes], [pkg_found=no],
-							 [${pkg_LIBS}])
+				             [pkg_found=yes], [pkg_found=no],
+				             [${pkg_LIBS}])
 				if test "x${pkg_found}" = "xno"; then
 				pkg_LIBS=`"${PKG_CONFIG}" --libs-only-l --static flint`
 				pkg_LIBS="${pkg_LIBS_extra} ${pkg_LIBS}"
 				AC_MSG_NOTICE([checking whether --libs --static suffices for linking lib${pkg}])
 				AC_CHECK_LIB([${pkg}], [${pkg_fn}],
-							 [pkg_found=yes], [pkg_found=no],
-							 [${pkg_LIBS}])
+				             [pkg_found=yes], [pkg_found=no],
+				             [${pkg_LIBS}])
 				if test "x${pkg_found}" = "xno"; then
 				pkg_CPPFLAGS=
 				pkg_LDFLAGS=
@@ -122,7 +122,7 @@ if test "x${R_FLINT_CPPFLAGS+x}" = "x" &&
 		dnl Use pkg-config machinery to deduplicate options.
 		printf "Name: config\n"                                   > config.pc
 		printf "Description: The config library\n"               >> config.pc
-		printf "URL: https://www.config.org/\n"                  >> config.pc
+		printf "URL: https://config.org/\n"                      >> config.pc
 		printf "Version: %s\n" "${PACKAGE_VERSION}"              >> config.pc
 		printf "Cflags: %s\n" "${R_FLINT_CPPFLAGS}"              >> config.pc
 		printf "Libs: %s\n" "${R_FLINT_LDFLAGS} ${R_FLINT_LIBS}" >> config.pc
