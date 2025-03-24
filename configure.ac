@@ -1,6 +1,6 @@
 AC_PREREQ([2.72])
 AC_INIT([flint],
-        [0.0.4],
+        [0.0.5],
         [https://github.com/jaganmn/flint/issues],
         [],
         [https://github.com/jaganmn/flint])
