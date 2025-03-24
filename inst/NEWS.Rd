@@ -1,52 +1,12 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.4 (2025-03-09)}{
-  \subsection{Description}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Compatibility}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Installation}{
-    \itemize{
-      \item .
-    }
-  }
+\section{Changes in version 0.0.4 (2025-03-23)}{
   \subsection{Documentation}{
     \itemize{
       \item \file{man/flint-class.Rd} contained a cut-paste error
       affecting section \sQuote{Methods}, items \code{[[} and
       \code{[[<-}.
-    }
-  }
-  \subsection{Significant User-Visible Changes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Classes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Methods}{
-    \itemize{
-      \item .
     }
   }
   \subsection{New Features}{
@@ -63,11 +23,6 @@
       \code{acb_hypgeom_beta} wrapping \code{arb_hypgeom_gamma} and
       \code{acb_hypgeom_gamma} are provided for completeness.
       \acronym{FLINT} provides no such entry points as of this writing.
-    }
-  }
-  \subsection{Bug Fixes}{
-    \itemize{
-      \item .
     }
   }
   \subsection{Internals}{
