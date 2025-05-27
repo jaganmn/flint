@@ -7,6 +7,10 @@
       \item \file{configure} tests for \file{flint/flint.h} from FLINT
       3.1 more explicitly, and \file{src/noreturn.h} uses the result of
       this test.  Thanks to Brian Ripley for checks linking FLINT 3.2.
+
+      \item \file{configure.ac} calls macro \code{AC_RUN_IFELSE} instead
+      of macro \code{AC_COMPILE_IFELSE} where the former was always
+      intended.
     }
   }
 }

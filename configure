@@ -4577,7 +4577,14 @@ printf "%s\n" "#define SIZEOF_MPFR_EXP_T $ac_cv_sizeof_mpfr_exp_t" >>confdefs.h
 printf %s "checking for R_XLEN_T_MAX in range of mp_limb_t... " >&6; }
 save_CPPFLAGS="${CPPFLAGS}"
 CPPFLAGS="${CPPFLAGS} -I${R_INCLUDE_DIR}"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See 'config.log' for more details" "$LINENO" 5; }
+else case e in #(
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 #include <gmp.h>
@@ -4588,24 +4595,35 @@ int main()
 }
 
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"
+if ac_fn_c_try_run "$LINENO"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
   e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+               { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-                   as_fn_error $? "basic vector length can overflow mp_limb_t" "$LINENO" 5
-                   ;;
+               as_fn_error $? "basic vector length can overflow mp_limb_t" "$LINENO" 5
+               ;;
 esac
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
+esac
+fi
+
 CPPFLAGS="${save_CPPFLAGS}"
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_uprec_t in range of mp_limb_t" >&5
 printf %s "checking for mpfr_uprec_t in range of mp_limb_t... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See 'config.log' for more details" "$LINENO" 5; }
+else case e in #(
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 #include <mpfr.h>
@@ -4615,23 +4633,34 @@ int main()
 }
 
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"
+if ac_fn_c_try_run "$LINENO"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
   e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+               { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-                   as_fn_error $? "GNU MPFR precision can overflow mp_limb_t" "$LINENO" 5
-                   ;;
+               as_fn_error $? "GNU MPFR precision can overflow mp_limb_t" "$LINENO" 5
+               ;;
 esac
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
+esac
+fi
+
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mpfr_uexp_t in range of mp_limb_t" >&5
 printf %s "checking for mpfr_uexp_t in range of mp_limb_t... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See 'config.log' for more details" "$LINENO" 5; }
+else case e in #(
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 #include <mpfr.h>
@@ -4641,23 +4670,34 @@ int main()
 }
 
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"
+if ac_fn_c_try_run "$LINENO"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
   e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+               { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-                   as_fn_error $? "GNU MPFR exponent can overflow mp_limb_t" "$LINENO" 5
-                   ;;
+               as_fn_error $? "GNU MPFR exponent can overflow mp_limb_t" "$LINENO" 5
+               ;;
 esac
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
+esac
+fi
+
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mp_limb_t in range of size_t" >&5
 printf %s "checking for mp_limb_t in range of size_t... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See 'config.log' for more details" "$LINENO" 5; }
+else case e in #(
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 #include <stddef.h>
@@ -4668,19 +4708,23 @@ int main()
 }
 
 _ACEOF
-if ac_fn_c_try_compile "$LINENO"
+if ac_fn_c_try_run "$LINENO"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
   e)
-                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+               { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-                   as_fn_error $? "flint vector length can overflow size_t" "$LINENO" 5
-                   ;;
+               as_fn_error $? "flint vector length can overflow size_t" "$LINENO" 5
+               ;;
 esac
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
+esac
+fi
+
 
 ac_fn_c_check_func "$LINENO" "arb_init" "ac_cv_func_arb_init"
 if test "x$ac_cv_func_arb_init" = xyes
@@ -4817,10 +4861,8 @@ printf "%s\n" "#define HAVE_D_MUL_2EXP 1" >>confdefs.h
 
 
 else case e in #(
-  e)
-                { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-                ;;
+  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; } ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
