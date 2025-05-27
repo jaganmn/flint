@@ -173,6 +173,25 @@ AC_CHECK_HEADER([flint/flint.h], [],
 #define noreturn
                 ]])
 
+AC_MSG_CHECKING([for flint/flint.h from FLINT 3.1])
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#undef _Noreturn
+#define _Noreturn
+#undef noreturn
+#define noreturn
+#include <flint/flint.h>
+int main()
+{
+	return __FLINT_VERSION != 3 || __FLINT_VERSION_MINOR != 1;
+}
+              ]])],
+              [
+               AC_MSG_RESULT([yes])
+               AC_DEFINE([HAVE_FLINT_H_3_1], [1],
+                         [Define to 1 if you have the <flint/flint.h> header file from FLINT 3.1.])
+              ],
+              [AC_MSG_RESULT([no])])
+
 AC_CHECK_TYPE([mpfr_uprec_t], [],
               [AC_MSG_ERROR([GNU MPFR missing unsigned precision type])],
               [[#include <mpfr.h>]])

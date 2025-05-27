@@ -2,7 +2,7 @@
 /* use of keyword '_Noreturn' and keyword macro 'noreturn' */
 
 #undef noreturn
-#ifdef HAVE_D_MUL_2EXP
+#ifdef HAVE_FLINT_H_3_1
 # define noreturn _Noreturn
 #endif
 #undef _Noreturn
