@@ -1,4 +1,9 @@
-* TODO flint 0.0.5
+* TODO flint 0.0.6
+
+** TODO arrays and methods for generic functions designed for arrays
+** TODO function for numerical solution of systems of ODE using 'arb'
+
+* TODO flint 0.0.x
 
 ** TODO increase coverage of standard mathematical constants
 ** TODO increase coverage of special mathematical functions
@@ -10,49 +15,3 @@
 ** TODO serialization
 ** TODO formatting of floating-point types suppressing trailing zeros
 ** TODO formatting of 'arb' with two 'digits' for midpoint, radius
-
-* TODO flint 0.0.1
-
-** DONE 'names' slot for the virtual class
-** DONE flintSize for getting the size of an allocated array
-** DONE flintIdentical testing for identical-modulo-address
-** DONE export, document flintIdentical
-** DONE abandon 'nflint' and subclasses
-** DONE methods for !, is.na, is.nan, is.finite, is.infinite
-** DONE export, document Num, Den, Mid, Rad, Real, Imag
-** DONE methods for as.character using format
-** DONE initialization with character vectors
-** DONE methods for all.equal
-** DONE coercion to the virtual class
-** DONE methods for c
-** DONE methods for length<-
-** DONE methods for rep
-** DONE methods for mean
-** DONE methods for xtfrm
-** DONE methods for mtfrm
-** DONE methods for unique, duplicated, anyDuplicated using mtfrm
-** DONE x[i] <- value should conditionally promote 'x' to class(value)
-** DONE methods for Summary, mean not ignoring '...'
-** DONE methods for as.POSIXlt, as.POSIXct, as.Date
-** DONE methods for cut, findInterval
-** DONE methods for is.na<-
-** DONE methods for is.unsorted
-** DONE methods for seq, sequence
-** DONE methods for summary, quantile
-** DONE methods for as.data.frame
-** DONE register an S3 method format.flint for use by format.data.frame
-** DONE document generic functions whose default methods seem to work for us
-	as.character, as.symbol, as.pairlist, as.list, as.expression,
-	diff, labels, rev, seq.int, sort, sort_by, split, split<-, subset,
-	toString
-** DONE document details of operations on real, complex balls
-** DONE check for memory bugs: Valgrind, ASan, UBSan, rchk
-	ideally after increasing test coverage
-** DONE methods for 'mag' consulting rounding mode, conditionally giving lower bound
-** DONE export, document class generator functions
-** DONE configure tests for many missing acf_*, mag_*
-** DONE abandon 64-bit lengths on 32-bit builds
-** DONE support 'flint' subscripts of 'flint' vectors
-** DONE support 'flint' subscripts of traditional vectors
-** DONE fix all.equal(check.attributes=TRUE)
-** DONE fix coercions to character, symbol, pairlist, list, expression
