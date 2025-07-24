@@ -1,6 +1,8 @@
 #include "flint.h"
 
 SEXP R_flint_symbol_dot_xdata,
+	R_flint_symbol_dim,
+	R_flint_symbol_dimnames,
 	R_flint_symbol_names,
 	R_flint_symbol_num,
 	R_flint_symbol_den,
@@ -280,6 +282,8 @@ void attribute_visible R_init_flint(DllInfo *info)
 	R_useDynamicSymbols(info, FALSE);
 	R_forceSymbols(info, TRUE);
 	R_flint_symbol_dot_xdata = Rf_install(".xData");
+	R_flint_symbol_dim       = Rf_install("dim");
+	R_flint_symbol_dimnames  = Rf_install("dimnames");
 	R_flint_symbol_names     = Rf_install("names");
 	R_flint_symbol_num       = Rf_install("num");
 	R_flint_symbol_den       = Rf_install("den");
