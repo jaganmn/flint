@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.6 (2025-05-28)}{
+\section{Changes in version 0.0.6 (2025-07-24)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -34,7 +34,9 @@
   }
   \subsection{Classes}{
     \itemize{
-      \item .
+      \item New classes \code{OptionalInteger}, \code{OptionalList}, and
+      \code{OptionalCharacter}, for the \code{dim}, \code{dimnames}, and
+      \code{names} slots of virtual class \code{flint}.
     }
   }
   \subsection{Generic Functions}{

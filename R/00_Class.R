@@ -1,3 +1,7 @@
+setClassUnion("OptionalInteger"  , c("NULL", "integer"  ))
+setClassUnion("OptionalList"     , c("NULL", "list"     ))
+setClassUnion("OptionalCharacter", c("NULL", "character"))
+
 setClass("flint",
          contains = c("VIRTUAL", "externalptr"),
          slots = c(names = "character"),
