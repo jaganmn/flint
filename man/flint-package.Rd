@@ -102,7 +102,7 @@ flintVersion()
   the recursive structure share memory, then the upper bound is exact.
   Recursion starts at the address stored by the \R{} object, not at the
   address of the object itself.  A corollary is that
-  \code{flintSize(object)} is zero for \code{object} of zero length.
+  \code{flintSize(object)} is zero for \code{object} of length zero.
   Another corollary is that the bytes counted by \code{flintSize} and
   the bytes counted by \code{\link{object.size}} are disjoint.
 

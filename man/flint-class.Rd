@@ -250,7 +250,7 @@
     \item{\code{names}}{
       \code{signature(x = "flint")}:\cr
       returns the value of the \code{names} slot or \code{NULL},
-      \code{NULL} if the \code{names} slot has zero length.}
+      \code{NULL} if the \code{names} slot has length zero.}
     \item{\code{names<-}}{
       \code{signature(x = "flint", value = "NULL")}:\cr
       returns \code{x} with \code{names} slot set to a character vector
