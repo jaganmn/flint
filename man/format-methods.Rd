@@ -62,7 +62,9 @@
     further optional arguments, though these are currently unused.}
 }
 \value{
-  A character vector containing \acronym{ASCII} strings of equal length.
+  A character vector containing \acronym{ASCII} strings of equal length,
+  preserving the length, dimensions, dimension names, and names of
+  \code{x}.
 }
 \examples{
 q <- .fmpq(num = c(-1L, 1L) * 0:5, den = 1:6)

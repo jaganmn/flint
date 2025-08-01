@@ -8,6 +8,7 @@
 \alias{flintRnd}
 \alias{flintSize}
 \alias{flintTriple}
+\alias{flintUnclass}
 \alias{flintVersion}
 \docType{package}
 \title{\R{} Package \pkg{flint}}
@@ -23,6 +24,7 @@ flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
 flintSize(object)
 flintTriple(object)
+flintUnclass(object)
 flintVersion()
 }
 \arguments{
@@ -71,8 +73,9 @@ flintVersion()
 
   \code{flintIdentical} tests whether its arguments inherit from the
   same nonvirtual subclass of \code{\linkS4class{flint}} and have
-  identical length, elements, and names.  If the elements are recursive
-  structures, then they are compared recursively.
+  identical length, elements, dimensions, dimension names, and names.
+  If the elements are recursive structures, then they are compared
+  recursively.
 
   \code{flintLength} returns a representation of the length of
   \code{object}.  If \code{exact = TRUE}, then the return value is an
@@ -109,6 +112,9 @@ flintVersion()
   \code{flintTriple} returns a character vector of length 3 containing
   the class of \code{object}, the length of \code{object}, and the
   address stored by \code{object}.
+
+  \code{flintUnclass} returns the value of \code{as.vector(object)} with
+  dimensions, dimension names, and names copied from \code{object}.
 
   \code{flintVersion} returns a named list of numeric versions with
   elements:

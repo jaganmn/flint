@@ -2,6 +2,7 @@
 \alias{arf-class}
 \alias{arf}
 \alias{.arf}
+\alias{.arf.array}
 \alias{!,arf-method}
 \alias{+,arf,missing-method}
 \alias{-,arf,missing-method}
@@ -23,7 +24,6 @@
 \alias{anyNA,arf-method}
 \alias{as.vector,arf-method}
 \alias{coerce,ANY,arf-method}
-\alias{initialize,arf-method}
 \alias{is.finite,arf-method}
 \alias{is.infinite,arf-method}
 \alias{is.na,arf-method}
@@ -40,25 +40,30 @@
   and \code{Inf}.
 }
 \usage{
-## The class generator function:
-.arf(\dots)
+## Class generator functions
 
-## Mode 1: initialize with zeros
-## .arf(length = 0L)
-##
-## Mode 2: initialize with vector
-## .arf(length = length(x), x)
+.arf(x = 0, length = 0L, names = NULL)
+
+.arf.array(x = 0, dim = length(x), dimnames = NULL)
 }
 \arguments{
-  \item{\dots}{
-    arguments passed to methods for \code{\link{initialize}}.}
+  \item{x}{
+    .}
+  \item{length}{
+    .}
+  \item{names}{
+    .}
+  \item{dim}{
+    .}
+  \item{dimnames}{
+    .}
 }
 \value{
-  The class generator function returns \code{\link{new}("arf", \dots)}.
+.
 }
 \section{Slots}{
   \describe{
-    \item{\code{.xData}, \code{names}}{
+    \item{\code{.xData}, \code{dim}, \code{dimnames}, \code{names}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
 }
@@ -129,25 +134,19 @@
       handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
-      returns \code{.arf(x = from)}.  An error is signaled if the class
-      or type of \code{from} is not supported by the method for
-      \code{\link{initialize}}.}
+      returns the value of \code{.arf(from)} without dimensions,
+      dimension names, or names.}
     \item{\code{format}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific
       format.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arf", length = "\var{numeric}")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot.  The
-      new slot value is an external pointer to an array of the
-      corresponding \proglang{C} type, which is newly allocated and
-      initialized entirely with zeros.  \code{.Object} is not copied, so
-      all references are affected.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "arf", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array
-      initialized with values from \code{x}.}
+      \code{signature(.Object = "arf")}:\cr
+      returns \code{.Object} after setting its \code{.xData} slot and
+      (conditionally depending on arguments other than \code{.Object})
+      its \code{dim}, \code{dimnames}, and \code{names} slots; see
+      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "arf")}:\cr
       returns a logical vector indicating which elements of \code{x}

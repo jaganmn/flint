@@ -4,7 +4,9 @@
 \alias{ulong}
 \alias{slong}
 \alias{.ulong}
+\alias{.ulong.array}
 \alias{.slong}
+\alias{.slong.array}
 \alias{!,ulong-method}
 \alias{!,slong-method}
 \alias{+,ulong,missing-method}
@@ -47,8 +49,6 @@
 \alias{as.vector,slong-method}
 \alias{coerce,ANY,ulong-method}
 \alias{coerce,ANY,slong-method}
-\alias{initialize,ulong-method}
-\alias{initialize,slong-method}
 \alias{is.finite,ulong-method}
 \alias{is.finite,slong-method}
 \alias{is.infinite,ulong-method}
@@ -71,30 +71,32 @@
   no representation for \R{}'s missing value \code{\link{NA_integer_}}.
 }
 \usage{
-## The class generator functions:
-.ulong(\dots)
-.slong(\dots)
+## Class generator functions
 
-## Mode 1: initialize with zeros
-## .ulong(length = 0L)
-## .slong(length = 0L)
-##
-## Mode 2: initialize with vector
-## .ulong(length = length(x), x)
-## .slong(length = length(x), x)
+.ulong(x = 0L, length = 0L, names = NULL)
+.slong(x = 0L, length = 0L, names = NULL)
+
+.ulong.array(x = 0L, dim = length(x), dimnames = NULL)
+.slong.array(x = 0L, dim = length(x), dimnames = NULL)
 }
 \arguments{
-  \item{\dots}{
-    arguments passed to methods for \code{\link{initialize}}.}
+  \item{x}{
+    .}
+  \item{length}{
+    .}
+  \item{names}{
+    .}
+  \item{dim}{
+    .}
+  \item{dimnames}{
+    .}
 }
 \value{
-  The class generator functions return
-  \code{\link{new}("ulong", \dots)} and
-  \code{\link{new}("slong", \dots)}.
+.
 }
 \section{Slots}{
   \describe{
-    \item{\code{.xData}, \code{names}}{
+    \item{\code{.xData}, \code{dim}, \code{dimnames}, \code{names}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
 }
@@ -169,32 +171,20 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "ulong")}:\cr
       \code{signature(from = "ANY", to = "slong")}:\cr
-      returns \code{.ulong(x = from)} or \code{.slong(x = from)}.  An
-      error is signaled if the class or type of \code{from} is not
-      supported by the methods for \code{\link{initialize}}.}
+      returns the value of \code{.ulong(from)} or \code{.slong(from)}
+      without dimensions, dimension names, or names.}
     \item{\code{format}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr
       returns a character vector suitable for printing.  Optional
       arguments control the output; see \code{\link{format-methods}}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "ulong", length = "\var{numeric}")}:\cr
-      \code{signature(.Object = "slong", length = "\var{numeric}")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot.  The
-      new slot value is an external pointer to an array of the
-      corresponding \proglang{C} type, which is newly allocated and
-      initialized entirely with zeros.  \code{.Object} is not copied, so
-      all references are affected.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "ulong", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
-      \code{signature(.Object = "slong", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array
-      initialized with values from \code{x} truncated towards zero.  An
-      error is signaled if elements of \code{x} are not in the range of
-      the \proglang{C} type, in particular if elements are \code{NaN}.
-      The range is \eqn{(-1, 2^{n})} for \code{ulong} and
-      \eqn{(-2^{n-1}-1, 2^{n-1})} for \code{slong}, where \eqn{n} is the
-      value of \code{\link{flintABI}()}.}
+      \code{signature(.Object = "ulong")}:\cr
+      \code{signature(.Object = "slong")}:\cr
+      returns \code{.Object} after setting its \code{.xData} slot and
+      (conditionally depending on arguments other than \code{.Object})
+      its \code{dim}, \code{dimnames}, and \code{names} slots; see
+      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr

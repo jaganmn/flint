@@ -37,13 +37,13 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "logical" =, "integer" =
-                         g(.slong(x = e1), e2),
+                         g(.slong(e1), e2),
                      "raw" =
-                         g(.fmpz(x = e1), .fmpz(x = e2)),
+                         g(.fmpz(e1), .fmpz(e2)),
                      "double" =
-                         g(.arf(x = e1), .arf(x = e2)),
+                         g(.arf(e1), .arf(e2)),
                      "complex" =
-                         g(.acf(x = e1), .acf(x = e2)),
+                         g(.acf(e1), .acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "slong"),
                           domain = NA))
@@ -55,13 +55,13 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "logical" =, "integer" =
-                         g(e1, .slong(x = e2)),
+                         g(e1, .slong(e2)),
                      "raw" =
-                         g(.fmpz(x = e1), .fmpz(x = e2)),
+                         g(.fmpz(e1), .fmpz(e2)),
                      "double" =
-                         g(.arf(x = e1), .arf(x = e2)),
+                         g(.arf(e1), .arf(e2)),
                      "complex" =
-                         g(.acf(x = e1), .acf(x = e2)),
+                         g(.acf(e1), .acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "slong", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -70,7 +70,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "slong", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(x = e1), .fmpz(x = e2)))
+              get(.Generic, mode = "function")(.fmpz(e1), .fmpz(e2)))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "slong"),
@@ -80,37 +80,37 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "slong", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(x = e1), e2))
+              get(.Generic, mode = "function")(.fmpz(e1), e2))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpq(x = e1), e2))
+              get(.Generic, mode = "function")(.fmpq(e1), e2))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(x = e1), e2))
+              get(.Generic, mode = "function")(.arf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acf(x = e1), e2))
+              get(.Generic, mode = "function")(.acf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arb(x = e1), e2))
+              get(.Generic, mode = "function")(.arb(e1), e2))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(e1), e2))
 
 setMethod("Summary",
           c(x = "slong"),
@@ -137,7 +137,8 @@ setMethod("as.vector",
 
 setAs("ANY", "slong",
       function (from)
-          .slong(x = from))
+          new("slong", x = from, length = NULL,
+              dim = NULL, dimnames = NULL, names = NULL))
 
 setMethod("format",
           c(x = "slong"),
@@ -146,8 +147,9 @@ setMethod("format",
 
 setMethod("initialize",
           c(.Object = "slong"),
-          function (.Object, length = NULL, x = NULL, ...)
-              .Call(R_flint_slong_initialize, .Object, length, x))
+          function (.Object, x, length, dim, dimnames, names, ...)
+              .Call(R_flint_slong_initialize,
+                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "slong"),

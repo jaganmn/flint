@@ -187,6 +187,10 @@ const char *R_flint_ops2[16];
 extern
 const char *R_flint_ops1[60];
 
+#if R_VERSION < R_Version(4, 5, 0)
+void CLEAR_ATTRIB(SEXP x);
+#endif
+
 char *R_alloc_snprintf(size_t, const char *, ...);
 
 SEXP newObject(const char *);
@@ -194,7 +198,19 @@ SEXP newObject(const char *);
 SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);
 
-mp_limb_t asLength(SEXP, const char *);
+SEXP copyVector(SEXP);
+
+mp_limb_t validLength(SEXP, SEXP, mp_limb_t);
+SEXP validDim(SEXP);
+SEXP validDimNames(SEXP, SEXP);
+SEXP validNames(SEXP, mp_limb_t);
+
+void setDDNN(SEXP, SEXP, SEXP, SEXP);
+void setDDNN2(SEXP, SEXP, SEXP, mp_limb_t, mp_limb_t, mp_limb_t);
+void setDDNN1(SEXP, SEXP);
+
+void checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t);
+
 mpfr_prec_t asPrec(SEXP, const char *);
 mpfr_rnd_t asRnd(SEXP, const char *);
 int asBase(SEXP, const char *);

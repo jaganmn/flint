@@ -26,9 +26,16 @@ setMethod("Imag",
 setMethod("Imag<-",
           c(z = "acb"),
           function (z, value) {
+              nz <- length(z)
+              nv <- length(value)
+              if (nv != 1L && nv != nz)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nz),
+                       domain = NA)
               ans <- .acb(real = Real(z), imag = value)
-              if (!is.null(nms <- names(z)) && (n <- length(ans)) <= 0x1p+52)
-                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans@dim <- q@dim
+              ans@dimnames <- q@dimnames
+              ans@names <- q@names
               ans
           })
 
@@ -51,7 +58,7 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(.acb(x = e1), e2),
+                         g(.acb(e1), e2),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "acb"),
                           domain = NA))
@@ -63,7 +70,7 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(e1, .acb(x = e2)),
+                         g(e1, .acb(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "acb", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -72,42 +79,42 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "acb", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(x = e2)))
+              get(.Generic, mode = "function")(e1, .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "acb"),
@@ -122,9 +129,16 @@ setMethod("Real",
 setMethod("Real<-",
           c(z = "acb"),
           function (z, value) {
+              nz <- length(z)
+              nv <- length(value)
+              if (nv != 1L && nv != nz)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nz),
+                       domain = NA)
               ans <- .acb(real = value, imag = Imag(z))
-              if (!is.null(nms <- names(z)) && (n <- length(ans)) <= 0x1p+52)
-                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans@dim <- z@dim
+              ans@dimnames <- z@dimnames
+              ans@names <- z@names
               ans
           })
 
@@ -153,24 +167,27 @@ setMethod("as.vector",
 
 setAs("ANY", "acb",
       function (from)
-          .acb(x = from))
+          new("acb", x = from, length = NULL,
+              dim = NULL, dimnames = NULL, names = NULL,
+              real = NULL, imag = NULL))
 
 setMethod("format",
           c(x = "acb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...)
-              `names<-`(paste0(format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...),
-                               "+",
-                               format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...),
-                               "i"),
-                        names(x)))
+                    rnd = flintRnd(), ...) {
+              r <- format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
+              i <- format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
+              r[] <- paste0(r, "+", i, "i")
+              r
+          })
 
 setMethod("initialize",
           c(.Object = "acb"),
-          function (.Object, length = NULL, x = NULL, real, imag, ...)
-              .Call(R_flint_acb_initialize, .Object, length, x,
-                    if (!missing(real)) as(real, "arb"),
-                    if (!missing(imag)) as(imag, "arb")))
+          function (.Object, x, length, dim, dimnames, names,
+                    real, imag, ...)
+              .Call(R_flint_acb_initialize,
+                    .Object, x, length, dim, dimnames, names,
+                    real, imag))
 
 setMethod("is.finite",
           c(x = "acb"),

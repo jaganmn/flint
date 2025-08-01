@@ -2,6 +2,7 @@
 \alias{arb-class}
 \alias{arb}
 \alias{.arb}
+\alias{.arb.array}
 \alias{!,arb-method}
 \alias{+,arb,missing-method}
 \alias{-,arb,missing-method}
@@ -23,7 +24,6 @@
 \alias{anyNA,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}
-\alias{initialize,arb-method}
 \alias{is.finite,arb-method}
 \alias{is.infinite,arb-method}
 \alias{is.na,arb-method}
@@ -55,30 +55,32 @@
   signal an error.
 }
 \usage{
-## The class generator function:
-.arb(\dots)
+## Class generator functions
 
-## Mode 1: initialize with zeros
-## .arb(length = 0L)
-##
-## Mode 2: initialize with vector
-## .arb(length = length(x), x)
-##
-## Mode 3: initialize by parts
-## .arb(length = max0(length(mid), length(rad)), mid, rad)
-##
-## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
+.arb(x = 0, length = 0L, names = NULL, mid = 0, rad = 0)
+
+.arb.array(x = 0, dim = length(x), dimnames = NULL, mid = 0, rad = 0)
 }
 \arguments{
-  \item{\dots}{
-    arguments passed to methods for \code{\link{initialize}}.}
+  \item{x}{
+    .}
+  \item{length}{
+    .}
+  \item{names}{
+    .}
+  \item{dim}{
+    .}
+  \item{dimnames}{
+    .}
+  \item{mid, rad}{
+    .}
 }
 \value{
-  The class generator function returns \code{\link{new}("arb", \dots)}.
+.
 }
 \section{Slots}{
   \describe{
-    \item{\code{.xData}, \code{names}}{
+    \item{\code{.xData}, \code{dim}, \code{dimnames}, \code{names}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
 }
@@ -145,9 +147,8 @@
       handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arb")}:\cr
-      returns \code{.arb(x = from)}.  An error is signaled if the class
-      or type of \code{from} is not supported by the method for
-      \code{\link{initialize}}.}
+      returns the value of \code{.arb(from)} without dimensions,
+      dimension names, or names.}
     \item{\code{format}}{
       \code{signature(x = "arb")}:\cr
       returns a character vector suitable for printing, using string
@@ -155,23 +156,11 @@
       \code{r}.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "arb", length = "\var{numeric}")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot.  The
-      new slot value is an external pointer to an array of the
-      corresponding \proglang{C} type, which is newly allocated and
-      initialized entirely with zeros (zero midpoint, zero radius).
-      \code{.Object} is not copied, so all references are affected.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "arb", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array
-      initialized by the elements of \code{x}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "arb", length = "\var{numeric}", mid = "\var{atomic|flint}", rad = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array whose
-      midpoints and radii are initialized separately with values from
-      \code{mid} and \code{rad}, which are coerced to classes
-      \code{\linkS4class{arf}} and \code{\linkS4class{mag}} and recycled
-      as necessary.}
+      \code{signature(.Object = "arb")}:\cr
+      returns \code{.Object} after setting its \code{.xData} slot and
+      (conditionally depending on arguments other than \code{.Object})
+      its \code{dim}, \code{dimnames}, and \code{names} slots; see
+      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "arb")}:\cr
       returns a logical vector indicating which elements of \code{x}

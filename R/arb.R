@@ -39,9 +39,16 @@ setMethod("Mid",
 setMethod("Mid<-",
           c(x = "arb"),
           function (x, value) {
+              nx <- length(x)
+              nv <- length(value)
+              if (nv != 1L && nv != nx)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nx),
+                       domain = NA)
               ans <- .arb(mid = value, rad = Rad(x))
-              if (!is.null(nms <- names(x)) && (n <- length(ans)) <= 0x1p+52)
-                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans@dim <- q@dim
+              ans@dimnames <- q@dimnames
+              ans@names <- q@names
               ans
           })
 
@@ -51,9 +58,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(.arb(x = e1), e2),
+                         g(.arb(e1), e2),
                      "complex" =
-                         g(.acb(x = e1), .acb(x = e2)),
+                         g(.acb(e1), .acb(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "arb"),
                           domain = NA))
@@ -65,9 +72,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(e1, .arb(x = e2)),
+                         g(e1, .arb(e2)),
                      "complex" =
-                         g(.acb(x = e1), .acb(x = e2)),
+                         g(.acb(e1), .acb(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "arb", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -76,37 +83,37 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arb", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .arb(x = e2)))
+              get(.Generic, mode = "function")(e1, .arb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(x = e1), .acb(x = e2)))
+              get(.Generic, mode = "function")(.acb(e1), .acb(e2)))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "arb"),
@@ -116,7 +123,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arb", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(e1), e2))
 
 setMethod("Summary",
           c(x = "arb"),
@@ -134,9 +141,16 @@ setMethod("Rad",
 setMethod("Rad<-",
           c(x = "arb"),
           function (x, value) {
+              nx <- length(x)
+              nv <- length(value)
+              if (nv != 1L && nv != nx)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nx),
+                       domain = NA)
               ans <- .arb(mid = Mid(x), rad = value)
-              if (!is.null(nms <- names(x)) && (n <- length(ans)) <= 0x1p+52)
-                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
               ans
           })
 
@@ -157,25 +171,26 @@ setMethod("as.vector",
 
 setAs("ANY", "arb",
       function (from)
-          .arb(x = from))
+          new("arb", x = from, length = NULL,
+              dim = NULL, dimnames = NULL, names = NULL,
+              mid = NULL, rad = NULL))
 
 setMethod("format",
           c(x = "arb"),
           function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...)
-              `names<-`(paste0("(",
-                               format(Mid(x), base = base, digits = digits, sep = sep, rnd = rnd, ...),
-                               " +/- ",
-                               format(Rad(x), base = base, digits = digits, sep = sep, rnd = "A", ...),
-                               ")"),
-                        names(x)))
+                    rnd = flintRnd(), ...) {
+              m <- format(Mid(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
+              r <- format(Rad(x), base = base, digits = digits, sep = sep, rnd = "A", ...)
+              m[] <- paste0("(", m, " +/- ", r, ")")
+          })
 
 setMethod("initialize",
           c(.Object = "arb"),
-          function (.Object, length = NULL, x = NULL, mid, rad, ...)
-              .Call(R_flint_arb_initialize, .Object, length, x,
-                    if (!missing(mid)) as(mid, "arf"),
-                    if (!missing(rad)) as(rad, "mag")))
+          function (.Object, x, length, dim, dimnames, names,
+                    mid, rad, ...)
+              .Call(R_flint_arb_initialize,
+                    .Object, x, length, dim, dimnames, names,
+                    mid, rad))
 
 setMethod("is.finite",
           c(x = "arb"),

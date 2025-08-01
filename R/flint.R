@@ -59,7 +59,7 @@ setMethod("[",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               i <-
               if (is.double(nx))
@@ -92,13 +92,13 @@ setMethod("[",
                              else if (w[[nw]] > nx)
                                  stop(.error.subscriptOutOfBounds(x, 0L, i))
                              else {
-                                 ni <- .ulong(x = ni)
+                                 ni <- .ulong(ni)
                                  if (ni < nx) {
                                      q <- nx %/% ni
                                      r <- nx %% ni
-                                     w <- w. <- .ulong(x = w)
+                                     w <- w. <- .ulong(w)
                                      if (q >= 1L)
-                                         w <- w + rep(seq(from = .ulong(x = 0L), by = ni, length.out = q), each = flintLength(w))
+                                         w <- w + rep(seq(from = .ulong(0L), by = ni, length.out = q), each = flintLength(w))
                                      if (r >= w[1L])
                                          w <- c(w, flintLength(w) + w.[w. <= r])
                                  }
@@ -120,11 +120,11 @@ setMethod("[",
                                  stop(.error.subscriptNegativePositive())
                              else if (nx <= .Machine[["integer.max"]])
                                  seq_len(as.integer(nx))[as.integer(i)]
-                             else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                             else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
                          },
                      "character" =
                          {
-                             if (is.null(nms <- names(x)) ||
+                             if (is.null(nms <- x@names) ||
                                  anyNA(m <- match(i, nms)))
                                  stop(.error.subscriptOutOfBounds(x, 0L, i))
                              m
@@ -157,7 +157,7 @@ setMethod("[",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               }
               .Call(R_flint_subscript, x, i, TRUE)
@@ -208,7 +208,7 @@ setMethod("[<-",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               i <-
               if (is.double(nx))
@@ -278,13 +278,13 @@ setMethod("[<-",
                              else if (w[[nw]] > nx)
                                  stop(.error.subscriptOutOfBounds(x, 0L, i))
                              else {
-                                 ni <- .ulong(x = ni)
+                                 ni <- .ulong(ni)
                                  if (ni < nx) {
                                      q <- nx %/% ni
                                      r <- nx %% ni
-                                     w <- w. <- .ulong(x = w)
+                                     w <- w. <- .ulong(w)
                                      if (q >= 1L)
-                                         w <- w + rep(seq(from = .ulong(x = 0L), by = ni, length.out = q), each = flintLength(w))
+                                         w <- w + rep(seq(from = .ulong(0L), by = ni, length.out = q), each = flintLength(w))
                                      if (r >= w[1L])
                                          w <- c(w, flintLength(w) + w.[w. <= r])
                                  }
@@ -307,12 +307,12 @@ setMethod("[<-",
                                      stop(.error.subscriptNegativePositive())
                                  else if (a + 1L <= -nx)
                                      stop(.error.subscriptOutOfBounds(x, 0L, i))
-                                 else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                                 else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
                              }
                          },
                      "character" =
                          {
-                             if (is.null(nms <- names(x)) ||
+                             if (is.null(nms <- x@names) ||
                                  anyNA(m <- match(i, nms)))
                                  stop(.error.subscriptOutOfBounds(x, 0L, i))
                              m
@@ -376,7 +376,7 @@ setMethod("[<-",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               ni <- flintLength(i)
               }
@@ -420,7 +420,7 @@ setMethod("[[",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               i <-
               if (is.double(nx))
@@ -470,12 +470,12 @@ setMethod("[[",
                                      stop(.error.subscriptNegativePositive())
                                  else if (a + 1L <= -nx)
                                      stop(.error.subscriptOutOfBounds(x, 0L, i))
-                                 else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                                 else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
                              }
                          },
                      "character" =
                          {
-                             if (is.null(nms <- names(x)) ||
+                             if (is.null(nms <- x@names) ||
                                  anyNA(m <- match(i, nms)))
                                  stop(.error.subscriptOutOfBounds(x, 0L, i))
                              m
@@ -512,7 +512,7 @@ setMethod("[[",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               ni <- flintLength(i)
               }
@@ -568,7 +568,7 @@ setMethod("[[<-",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               i <-
               if (is.double(nx))
@@ -653,12 +653,12 @@ setMethod("[[<-",
                                      stop(.error.subscriptNegativePositive())
                                  else if (a + 1L <= -nx)
                                      stop(.error.subscriptOutOfBounds(x, 0L, i))
-                                 else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                                 else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
                              }
                          },
                      "character" =
                          {
-                             if (is.null(nms <- names(x)) ||
+                             if (is.null(nms <- x@names) ||
                                  anyNA(m <- match(i, nms)))
                                  stop(.error.subscriptOutOfBounds(x, 0L, i))
                              m
@@ -725,7 +725,7 @@ setMethod("[[<-",
                       stop(.error.subscriptNegativePositive())
                   else if (a + 1L <= -nx)
                       stop(.error.subscriptOutOfBounds(x, 0L, i))
-                  else .Call(R_flint_ulong_complement, .ulong(x = -i), nx, TRUE)
+                  else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
               }
               ni <- flintLength(i)
               }
@@ -927,30 +927,103 @@ setMethod("as.complex",
 
 setMethod("as.matrix",
           c(x = "flint"),
-          function (x, ...) as.matrix(as.vector(x), ...))
+          function (x, ...) {
+              d <- x@dim
+              dn <- x@dimnames
+              n <- x@names
+              if (length(d) != 2L) {
+                  m <- length(x)
+                  if (!is.integer(m))
+                      stop(gettextf("%s[[%d]] would exceed maximum %d",
+                                    "dim", 1L, .Machine[["integer.max"]]),
+                           domain = NA)
+                  d <- c(m, 1L)
+                  dn <- if (!is.null(n)) list(n, NULL)
+                  n <- NULL
+              }
+              `names<-`(`dimnames<-`(`dim<-`(as.vector(x), d), dn), n)
+          })
 
 setMethod("as.array",
           c(x = "flint"),
-          function (x, ...) as.array (as.vector(x), ...))
+          function (x, ...) {
+              d <- x@dim
+              dn <- x@dimnames
+              n <- x@names
+              if (length(d) == 0L) {
+                  m <- length(x)
+                  if (!is.integer(m))
+                      stop(gettextf("%s[[%d]] would exceed maximum %d",
+                                    "dim", 1L, .Machine[["integer.max"]]),
+                           domain = NA)
+                  d <- m
+                  dn <- if (!is.null(n)) list(n)
+                  n <- NULL
+              }
+              `names<-`(`dimnames<-`(`dim<-`(as.vector(x), d), dn), n)
+          })
 
 setMethod("as.data.frame",
           c(x = "flint"),
-          as.data.frame.vector)
+          function (x, row.names = NULL, optional = FALSE,
+                    make.names = TRUE, ..., nm = deparse(substitute(x))) {
+              force(nm)
+              d <- x@dim
+              dn <- x@dimnames
+              n <- x@names
+              x@dim <- x@dimnames <- x@names <- NULL
+              if (is.null(d)) {
+                  ans <- list(x)
+                  r <- length(x)
+                  if (!is.integer(r))
+                      stop(gettext("number of rows would exceed maximum %d",
+                                   .Machine[["integer.max"]]),
+                           domain = NA)
+                  if (is.null(row.names))
+                      row.names <- n
+                  names <- if (!optional) nm[[1L]]
+              } else {
+                  ans <- vector("list", prod(d[-1L]))
+                  for (i in seq_along(ans))
+                      ans[[i]] <- x[seq.int(to = i * r, length.out = r)]
+                  r <- d[[1L]]
+                  if (is.null(row.names))
+                      row.names <- dn[[1L]]
+                  names <-
+                  if (!is.null(dn) && length(d) > 1L) {
+                      if (length(d) == 2L) {
+                          if (length(w <- which(!nzchar(dn[[2L]]))))
+                              dn[[2L]][w] <- paste0("V", w)
+                          dn[[2L]]
+                      } else {
+                          for (i in 2L:length(d))
+                              if (is.null(dn[[i]]))
+                                  dn[[i]] <- seq_len(d[[i]])
+                          interaction(expand.grid(dn[-1L]))
+                      }
+                  }
+                  else if (!optional) paste0("V", seq_along(ans))
+              }
+              oldClass(ans) <- "data.frame"
+              names(ans) <- names
+              .rowNamesDF(ans, make.names) <- row.names
+              ans
+          })
 
 setMethod("as.Date",
           c(x = "flint"),
           function (x, ...)
-              as.Date   (`names<-`(as.vector(x), names(x)),          ...))
+              as.Date   (flintUnclass(x),          ...))
 
 setMethod("as.POSIXct",
           c(x = "flint"),
           function (x, tz = "", ...)
-              as.POSIXct(`names<-`(as.vector(x), names(x)), tz = tz, ...))
+              as.POSIXct(flintUnclass(x), tz = tz, ...))
 
 setMethod("as.POSIXlt",
           c(x = "flint"),
           function (x, tz = "", ...)
-              as.POSIXlt(`names<-`(as.vector(x), names(x)), tz = tz, ...))
+              as.POSIXlt(flintUnclass(x), tz = tz, ...))
 
 .c.class <-
 function (x)
@@ -1001,10 +1074,10 @@ setMethod("cut",
 setAs("ANY", "flint",
       function (from)
           switch(type. <- typeof(from),
-                 "raw" = .ulong(x = from),
-                 "logical" =, "integer" = .slong(x = from),
-                 "double" = .arf(x = from),
-                 "complex" = .acf(x = from),
+                 "raw" = .ulong(from),
+                 "logical" =, "integer" = .slong(from),
+                 "double" = .arf(from),
+                 "complex" = .acf(from),
                  "character" =
                  stop(gettextf("coercion from '%s' to '%s' is not yet implemented; consider coercing to a nonvirtual subclass of '%s'",
                                type., "flint", "flint"),
@@ -1012,6 +1085,107 @@ setAs("ANY", "flint",
                  stop(gettextf("coercion from '%s' to '%s' is not yet implemented",
                                type., "flint"),
                       domain = NA)))
+
+setMethod("dim",
+          c(x = "flint"),
+          function (x)
+              x@dim)
+
+setMethod("dim<-",
+          c(x = "flint", value = "NULL"),
+          function (x, value) {
+              if (!is.null(x@dim)) {
+                  x@dim <- NULL
+                  if (!is.null(x@dimnames))
+                      x@dimnames <- NULL
+              }
+              x
+          })
+
+setMethod("dim<-",
+          c(x = "flint", value = "numeric"),
+          function (x, value) {
+              if (length(value) == 0L)
+                  stop(gettextf("length of '%s' is %d",
+                                "value", 0L),
+                       domain = NA)
+              if (is.double(length(value)))
+                  stop(gettextf("length of '%s' exceeds maximum %d",
+                                "value", .Machine[["integer.max"]]),
+                       domain = NA)
+              if (anyNA(value))
+                  stop(gettextf("%s[[%d]] is NA",
+                                "value", which.max(is.na(value))),
+                       domain = NA)
+              if (min(value) < 0L)
+                  stop(gettextf("%s[[%d]] is negative",
+                                "value", which.max(value < 0)),
+                       domain = NA)
+              if (is.double(value) &&
+                  max(value) - 1 > .Machine[["integer.max"]])
+                  stop(gettextf("%s[[%d]] exceeds maximum %d",
+                                "value", which.max(value - 1 > .Machine[["integer.max"]]), .Machine[["integer.max"]]),
+                       domain = NA)
+              if ((nv <- prod(as(value, "ulong"))) != (nx <- flintLength(x)))
+                  stop(gettextf("product of '%s' [%s] is not equal to length of '%s' [%s]",
+                                "value", format(nv), "x", format(nx)),
+                       domain = NA)
+              x@dim <- as.integer(value)
+              if (!is.null(x@dimnames))
+                  x@dimnames <- NULL
+              x
+          })
+
+setMethod("dimnames",
+          c(x = "flint"),
+          function (x)
+              x@dimnames)
+
+setMethod("dimnames<-",
+          c(x = "flint", value = "NULL"),
+          function (x, value) {
+              if (!is.null(x@dimnames))
+                  x@dimnames <- NULL
+              x
+          })
+
+setMethod("dimnames<-",
+          c(x = "flint", value = "list"),
+          function (x, value) {
+              dim <- x@dim
+              if (length(dim) == 0L)
+                  stop(gettextf("attempt to assign '%s' to non-array",
+                                "dimnames"),
+                       domain = NA)
+              if (length(value) != length(dim))
+                  stop(gettextf("length of '%s' [%.0f] is not equal to length of '%s' [%.0f]",
+                                "value", length(value), "dim", length(dim)),
+                       domain = NA)
+              for (i in seq_along(dim))
+              switch(typeof(s <- value[[i]]),
+                     "NULL" = NULL,
+                     "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "list" =, "expression" =
+                         value[i] <-
+                         if (length(s) == 0L)
+                             list(NULL)
+                         else if (length(s) == dim[[i]])
+                             list(if (is.factor(s)) as.character.factor(s) else as.character.default(s))
+                         else
+                             stop(gettextf("length of %s[[%d]] [%.0f] is not equal to %s[[%d]] [%.0f]",
+                                           "value", i, length(s), "dim", i, dim[[i]]),
+                                  domain = NA),
+                     stop(gettextf("invalid type \"%s\" for %s[[%d]]",
+                                   typeof(s), "value", i),
+                          domain = NA))
+              a <- attributes(value)
+              if (!is.null(a) && (length(a) > 1L || names(a) != "names")) {
+                  tmp <- names(value)
+                  attributes(value) <- NULL
+                  names(value) <- tmp
+              }
+              x@dimnames <- value
+              x
+          })
 
 setMethod("duplicated",
           c(x = "flint"),
@@ -1106,13 +1280,13 @@ setMethod("mtfrm",
 setMethod("names",
           c(x = "flint"),
           function (x)
-              if (length(value <- x@names)) value)
+              x@names)
 
 setMethod("names<-",
           c(x = "flint", value = "NULL"),
           function (x, value) {
-              if (length(x@names))
-                  x@names <- character(0L)
+              if (!is.null(x@names))
+                  x@names <- NULL
               x
           })
 
@@ -1121,21 +1295,21 @@ setMethod("names<-",
           function (x, value) {
               nx <- length(x)
               if (nx > 0x1p+52) {
-                  warning(gettextf("length of '%s' exceeds maximum character vector length; ignoring non-NULL '%s'",
-                                   "x", "value"),
+                  warning(gettextf("length of '%s' [%s] exceeds maximum length of character vector [%.0f]; '%s' assignment is no-op",
+                                   "x", format(flintLength(x)), 0x1p+52, "names"),
                           domain = NA)
                   return(x)
               }
-              nv <- length(value <- as.character(value))
+              nv <- length(value)
               x@names <-
               if (nv == nx)
-                  value
+                  as.character(value)
               else {
                   if (nv > nx)
-                  stop(gettextf("length of '%s' exceeds length of '%s'",
-                                "value", "x"),
+                  stop(gettextf("length of '%s' [%.0f] exceeds length of '%s' [%.0f]",
+                                "value", nv, "x", nx),
                        domain = NA)
-                  c(value, character(nx - nv))
+                  c(as.character(value), character(nx - nv))
               }
               x
           })
@@ -1340,15 +1514,15 @@ setMethod("seq",
                .seq <-
                function (from, length.out, reverse = FALSE)
                    .Call(R_flint_ulong_seq, from, length.out, reverse)
-               zero <- .ulong(x = 0L)
-               unit <- .ulong(x = 1L)
+               zero <- .ulong(0L)
+               unit <- .ulong(1L)
                switch(nargs() - ...length(),
                {
                    if (missing(length.out))
                        stop(gettextf("usage seq(%s=) is not yet implemented",
                                      if (missing(from)) if (missing(to)) "by" else "to" else "from"),
                             domain = NA)
-                   .seq(.ulong(x = 1L), length.out)
+                   .seq(.ulong(1L), length.out)
                },
                {
                    if (missing(length.out) != missing(by))
@@ -1395,7 +1569,7 @@ setMethod("seq",
 
 setMethod("sequence",
           c(nvec = "flint"),
-          function (nvec, from = .ulong(x = 1L), by = .ulong(x = 1L), ...) {
+          function (nvec, from = .ulong(1L), by = .ulong(1L), ...) {
               n. <- c(flintLengthAny(nvec),
                       flintLengthAny(from),
                       flintLengthAny(by))
@@ -1430,13 +1604,13 @@ setMethod("summary",
                   object <- object[!(isna <- is.na(object))]
               qq <- quantile(object, type = quantile.type)
               qq <- c(qq[1L:3L], mean(object), qq[4L:5L])
-              names(qq) <- c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.")
+              qq@names <- c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.")
               if (anyna) c(qq, "NaN" = sum(isna)) else qq
           })
 
 setMethod("unique",
           c(x = "flint"),
           function (x, incomparables = FALSE, ...) {
-              names(x) <- NULL
+              x@names <- NULL
               x[!duplicated(x, incomparables = incomparables, ...)]
           })
