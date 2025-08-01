@@ -70,18 +70,15 @@ Imag(z) <- value
   \item{value}{
     a vector-like \R{} object; the replacement value.  Methods in
     package \pkg{flint} support atomic vectors and vectors inheriting
-    from virtual class \code{\linkS4class{flint}}.  They inherit
-    recycling behaviour from methods for \code{\link{initialize}}; see,
-    e.g., \code{\link[methods]{selectMethod}("Num<-", "fmpq")}.}
+    from virtual class \code{\linkS4class{flint}}, of length equal to
+    1 or the length of the argument.}
 }
 \value{
   \code{Num}, \code{Den}, \code{Mid}, \code{Rad}, \code{Real}, and
-  \code{Imag} return a vector-like \R{} object of length matching the
-  argument.  The replacement forms return a vector-like \R{} object of
-  length matching either the argument or the replacement value; the
-  class of the result is, if not the class of the argument, then a
-  superclass.  See \sQuote{Details} for behaviour specific to methods
-  in package \pkg{flint}.
+  \code{Imag} and their replacement forms return a vector-like \R{}
+  object preserving the length, dimensions, dimension names, and names
+  of the argument.  See \sQuote{Details} for behaviour specific to
+  methods in package \pkg{flint}.
 }
 \details{
   \code{Num} and \code{Den} extract \code{\linkS4class{fmpz}} numerators

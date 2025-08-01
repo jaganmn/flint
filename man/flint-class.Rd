@@ -39,6 +39,12 @@
 \alias{c,flint-method}
 \alias{coerce,ANY,flint-method}
 \alias{cut,flint-method}
+\alias{dim,flint-method}
+\alias{dim<-,flint,NULL-method}
+\alias{dim<-,flint,numeric-method}
+\alias{dimnames,flint-method}
+\alias{dimnames<-,flint,NULL-method}
+\alias{dimnames<-,flint,list-method}
 \alias{duplicated,flint-method}
 \alias{findInterval,flint-method}
 \alias{is.na<-,flint-method}
@@ -84,11 +90,24 @@
       \code{.xData} (see \code{\link{reg.finalizer}}) to ensure that
       allocated memory is freed before \code{.xData} is itself freed by
       the garbage collector.}
+    \item{\code{dim}}{
+      either \code{NULL}, indicating that the object is not an array, or
+      an integer vector of length \code{d} greater than 0 and with
+      product equal to the object length, indicating that the object is
+      a \code{d}-dimensional array with dimensions \code{dim}.  Array
+      entries are stored in colexicographic order, meaning that the
+      first subscript moves fastest.}
+    \item{\code{dimnames}}{
+      either \code{NULL}, indicating that the object is not an array or
+      is an array whose dimensions are not named, or a list of length
+      \code{d} equal to \code{length(dim)} such that
+      \code{dimnames[[i]]} is either \code{NULL} or a character vector
+      of length \code{dim[[i]]}, for all \code{i} in \code{1L:d}.}
     \item{\code{names}}{
-      a character vector of length 0, indicating that the object is
-      unnamed, or of length equal to the object length.  A corollary is
-      that objects whose length exceeds the maximum length of a
-      character vector cannot have names.}
+      either \code{NULL}, indicating that the object is not named, or a
+      character vector of length equal to the object length.  A
+      corollary is that objects whose length exceeds the maximum length
+      of a character vector cannot have names.}
   }
 }
 \section{Methods}{
@@ -184,13 +203,18 @@
       see also \code{\link{as.numeric}}, section \sQuote{S4 Methods}.}
     \item{\code{as.matrix}, \code{as.array}, \code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt}}{
       \code{signature(x = "flint")}:\cr
-      coerces the argument with \code{as.vector} and dispatches.}
+      coerces the argument with \code{as.vector}, restores dimensions,
+      dimension names, and names, and dispatches.  \code{as.matrix} and
+      \code{as.array} obtain the same result more efficiently.}
     \item{\code{as.data.frame}}{
       \code{signature(x = "flint")}:\cr
-      this method is a copy of \code{\link{as.data.frame.vector}}.  It
-      enables the construction of data frames containing \code{flint}
-      vectors using \code{as.data.frame} and functions that call it such
-      as \code{\link{data.frame}} and \code{\link{cbind.data.frame}}.}
+      behaves as \code{\link{as.data.frame.vector}},
+      \code{\link{as.data.frame.matrix}}, or
+      \code{\link{as.data.frame.array}}, depending on the length of the
+      \code{dim} slot.  It enables the construction of data frames
+      containing \code{flint} vectors using \code{as.data.frame} and
+      functions that call it such as \code{\link{data.frame}} and
+      \code{\link{cbind.data.frame}}.}
     \item{\code{c}}{
       \code{signature(x = "flint")}:\cr
       returns \code{\link{c.flint}(x, \dots)}, the concatenation of the
@@ -209,6 +233,30 @@
       method for \code{\link{cut}} with argument \code{labels} set to
       \code{FALSE}, provided that \code{breaks} is sorted and no element
       of \code{x} is out of bounds.}
+    \item{\code{dim}}{
+      \code{signature(x = "flint")}:\cr
+      returns the \code{dim} slot of \code{x}.}
+    \item{\code{dim<-}}{
+      \code{signature(x = "flint", value = "NULL")}:\cr
+      returns \code{x} with \code{dim} and \code{dimnames} slots set to
+      \code{NULL}.}
+    \item{\code{dim<-}}{
+      \code{signature(x = "flint", value = "numeric")}:\cr
+      returns \code{x} with \code{dim} slot set to \code{value} and
+      \code{dimnames} slot set to \code{NULL}.  \code{value} of double
+      type is coerced to integer.}
+    \item{\code{dimnames}}{
+      \code{signature(x = "flint")}:\cr
+      returns the \code{dimnames} slot of \code{x}.}
+    \item{\code{dimnames<-}}{
+      \code{signature(x = "flint", value = "NULL")}:\cr
+      returns \code{x} with \code{dimnames} slot set to \code{NULL}.}
+    \item{\code{dimnames<-}}{
+      \code{signature(x = "flint", value = "list")}:\cr
+      returns \code{x} with \code{dimnames} slot set to \code{value}.
+      Elements of \code{value} of a vector type are coerced to character
+      using \code{as.character.default}.  Exceptionally, factors are
+      coerced to character using \code{as.character.factor}.}
     \item{\code{duplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{duplicated(mtfrm(x), \dots)}.}
@@ -249,12 +297,10 @@
       the output); see also \code{\link{format-methods}}.}
     \item{\code{names}}{
       \code{signature(x = "flint")}:\cr
-      returns the value of the \code{names} slot or \code{NULL},
-      \code{NULL} if the \code{names} slot has length zero.}
+      returns the value of the \code{names} slot.}
     \item{\code{names<-}}{
       \code{signature(x = "flint", value = "NULL")}:\cr
-      returns \code{x} with \code{names} slot set to a character vector
-      of length zero.}
+      returns \code{x} with \code{names} slot set to \code{NULL}.}
     \item{\code{names<-}}{
       \code{signature(x = "flint", value = "character")}:\cr
       returns \code{x} with \code{names} slot set to \code{value}.

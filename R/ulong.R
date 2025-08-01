@@ -37,13 +37,13 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =
-                         g(.ulong(x = e1), e2),
+                         g(.ulong(e1), e2),
                      "logical" =, "integer" =
-                         g(.fmpz(x = e1), .fmpz(x = e2)),
+                         g(.fmpz(e1), .fmpz(e2)),
                      "double" =
-                         g(.arf(x = e1), .arf(x = e2)),
+                         g(.arf(e1), .arf(e2)),
                      "complex" =
-                         g(.acf(x = e1), .acf(x = e2)),
+                         g(.acf(e1), .acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "ulong"),
                           domain = NA))
@@ -55,13 +55,13 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =
-                         g(e1, .ulong(x = e2)),
+                         g(e1, .ulong(e2)),
                      "logical" =, "integer" =
-                         g(.fmpz(x = e1), .fmpz(x = e2)),
+                         g(.fmpz(e1), .fmpz(e2)),
                      "double" =
-                         g(.arf(x = e1), .arf(x = e2)),
+                         g(.arf(e1), .arf(e2)),
                      "complex" =
-                         g(.acf(x = e1), .acf(x = e2)),
+                         g(.acf(e1), .acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "ulong", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -75,42 +75,42 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "ulong", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(x = e1), .fmpz(x = e2)))
+              get(.Generic, mode = "function")(.fmpz(e1), .fmpz(e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(x = e1), e2))
+              get(.Generic, mode = "function")(.fmpz(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpq(x = e1), e2))
+              get(.Generic, mode = "function")(.fmpq(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(x = e1), e2))
+              get(.Generic, mode = "function")(.arf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acf(x = e1), e2))
+              get(.Generic, mode = "function")(.acf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arb(x = e1), e2))
+              get(.Generic, mode = "function")(.arb(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(e1), e2))
 
 setMethod("Summary",
           c(x = "ulong"),
@@ -137,7 +137,8 @@ setMethod("as.vector",
 
 setAs("ANY", "ulong",
       function (from)
-          .ulong(x = from))
+          new("ulong", x = from, length = NULL,
+              dim = NULL, dimnames = NULL, names = NULL))
 
 setMethod("format",
           c(x = "ulong"),
@@ -146,8 +147,9 @@ setMethod("format",
 
 setMethod("initialize",
           c(.Object = "ulong"),
-          function (.Object, length = NULL, x = NULL, ...)
-              .Call(R_flint_ulong_initialize, .Object, length, x))
+          function (.Object, x, length, dim, dimnames, names, ...)
+              .Call(R_flint_ulong_initialize,
+                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "ulong"),

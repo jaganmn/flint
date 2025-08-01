@@ -1,4 +1,5 @@
 useDynLib(flint, .registration = TRUE)
+importClassesFrom(methods, classGeneratorFunction)
 importFrom(methods, Complex, Math, Math2, Ops, Summary, as, coerce,
            getClassDef, initialize, new, selectMethod, setAs, setClass,
            setClassUnion, setMethod, show)
@@ -18,7 +19,15 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
 exportMethods(quantile)
-export(.ulong, .slong, .fmpz, .fmpq, .mag, .arf, .acf, .arb, .acb)
+export(.ulong, .ulong.array,
+       .slong, .slong.array,
+       .fmpz, .fmpz.array,
+       .fmpq, .fmpq.array,
+       .mag, .mag.array,
+       .arf, .arf.array,
+       .acf, .acf.array,
+       .arb, .arb.array,
+       .acb, .acb.array)
 export(c.flint,
        flintABI,
        flintIdentical,
@@ -27,6 +36,7 @@ export(c.flint,
        flintRnd,
        flintSize,
        flintTriple,
+       flintUnclass,
        flintVersion,
        arb_const_pi,
        arb_const_log2,

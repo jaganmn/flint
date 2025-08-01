@@ -2,6 +2,7 @@
 \alias{acf-class}
 \alias{acf}
 \alias{.acf}
+\alias{.acf.array}
 \alias{!,acf-method}
 \alias{+,acf,missing-method}
 \alias{-,acf,missing-method}
@@ -23,7 +24,6 @@
 \alias{anyNA,acf-method}
 \alias{as.vector,acf-method}
 \alias{coerce,ANY,acf-method}
-\alias{initialize,acf-method}
 \alias{is.finite,acf-method}
 \alias{is.infinite,acf-method}
 \alias{is.na,acf-method}
@@ -49,30 +49,32 @@
   and methods documented here are entirely unrelated.
 }
 \usage{
-## The class generator function:
-.acf(\dots)
+## Class generator functions
 
-## Mode 1: initialize with zeros
-## .acf(length = 0L)
-##
-## Mode 2: initialize with vector
-## .acf(length = length(x), x)
-##
-## Mode 3: initialize by parts
-## .acf(length = max0(length(real), length(imag)), real, imag)
-##
-## where max0 <- function(m, n) if (min(m, n)) max(m, n) else 0L
+.acf(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
+
+.acf.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
 }
 \arguments{
-  \item{\dots}{
-    arguments passed to methods for \code{\link{initialize}}.}
+  \item{x}{
+    .}
+  \item{length}{
+    .}
+  \item{names}{
+    .}
+  \item{dim}{
+    .}
+  \item{dimnames}{
+    .}
+  \item{real, imag}{
+    .}
 }
 \value{
-  The class generator function returns \code{\link{new}("acf", \dots)}.
+.
 }
 \section{Slots}{
   \describe{
-    \item{\code{.xData}, \code{names}}{
+    \item{\code{.xData}, \code{dim}, \code{dimnames}, \code{names}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
 }
@@ -142,9 +144,8 @@
       handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acf")}:\cr
-      returns \code{.acf(x = from)}.  An error is signaled if the class
-      or type of \code{from} is not supported by the method for
-      \code{\link{initialize}}.}
+      returns the value of \code{.acf(from)} without dimensions,
+      dimension names, or names.}
     \item{\code{format}}{
       \code{signature(x = "acf")}:\cr
       returns a character vector suitable for printing, using string
@@ -152,22 +153,11 @@
       \code{b}.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "acf", length = "\var{numeric}")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot.  The
-      new slot value is an external pointer to an array of the
-      corresponding \proglang{C} type, which is newly allocated and
-      initialized entirely with zeros.  \code{.Object} is not copied, so
-      all references are affected.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "acf", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array
-      initialized with values from \code{x}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "acf", length = "\var{numeric}", real = "\var{atomic|flint}", imag = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array whose
-      real and imaginary parts are initialized separately with values
-      from \code{real} and \code{imag}, which are coerced to class
-      \code{\linkS4class{arf}} and recycled as necessary.}
+      \code{signature(.Object = "arf")}:\cr
+      returns \code{.Object} after setting its \code{.xData} slot and
+      (conditionally depending on arguments other than \code{.Object})
+      its \code{dim}, \code{dimnames}, and \code{names} slots; see
+      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "acf")}:\cr
       returns a logical vector indicating which elements of \code{x}

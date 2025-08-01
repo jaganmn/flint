@@ -2,6 +2,7 @@
 \alias{mag-class}
 \alias{mag}
 \alias{.mag}
+\alias{.mag.array}
 \alias{!,mag-method}
 \alias{+,mag,missing-method}
 \alias{-,mag,missing-method}
@@ -23,7 +24,6 @@
 \alias{anyNA,mag-method}
 \alias{as.vector,mag-method}
 \alias{coerce,ANY,mag-method}
-\alias{initialize,mag-method}
 \alias{is.finite,mag-method}
 \alias{is.infinite,mag-method}
 \alias{is.na,mag-method}
@@ -41,25 +41,30 @@
   represent \code{Inf} but not \code{NaN}.
 }
 \usage{
-## The class generator function:
-.mag(\dots)
+## Class generator functions
 
-## Mode 1: initialize with zeros
-## .mag(length = 0L)
-##
-## Mode 2: initialize with vector
-## .mag(length = length(x), x)
+.mag(x = 0, length = 0L, names = NULL)
+
+.mag.array(x = 0, dim = length(x), dimnames = NULL)
 }
 \arguments{
-  \item{\dots}{
-    arguments passed to methods for \code{\link{initialize}}.}
+  \item{x}{
+    .}
+  \item{length}{
+    .}
+  \item{names}{
+    .}
+  \item{dim}{
+    .}
+  \item{dimnames}{
+    .}
 }
 \value{
-  The class generator function returns \code{\link{new}("mag", \dots)}.
+.
 }
 \section{Slots}{
   \describe{
-    \item{\code{.xData}, \code{names}}{
+    \item{\code{.xData}, \code{dim}, \code{dimnames}, \code{names}}{
       inherited from virtual class \code{\linkS4class{flint}}.}
   }
 }
@@ -133,26 +138,19 @@
       are not \dQuote{number-like}, is handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
-      returns \code{.mag(x = from)}.  An error is signaled if the class
-      or type of \code{from} is not supported by the method for
-      \code{\link{initialize}}.}
+      returns the value of \code{.mag(from)} without dimensions,
+      dimension names, or names.}
     \item{\code{format}}{
       \code{signature(x = "mag")}:\cr
       returns a character vector suitable for printing, using scientific
       format.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
     \item{\code{initialize}}{
-      \code{signature(.Object = "mag", length = "\var{numeric}")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot.  The
-      new slot value is an external pointer to an array of the
-      corresponding \proglang{C} type, which is newly allocated and
-      initialized entirely with zeros.  \code{.Object} is not copied, so
-      all references are affected.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "mag", length = "\var{numeric}", x = "\var{atomic|flint}")}:\cr
-      as above, except that the new slot value points to an array
-      initialized with upper bounds for \code{abs(x)}.  An error is
-      signaled if any \code{x[i]} is \code{NaN}.}
+      \code{signature(.Object = "mag")}:\cr
+      returns \code{.Object} after setting its \code{.xData} slot and
+      (conditionally depending on arguments other than \code{.Object})
+      its \code{dim}, \code{dimnames}, and \code{names} slots; see
+      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector indicating which elements of \code{x}

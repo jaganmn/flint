@@ -26,9 +26,16 @@ setMethod("Den",
 setMethod("Den<-",
           c(q = "fmpq"),
           function (q, value) {
+              nq <- length(q)
+              nv <- length(value)
+              if (nv != 1L && nv != nq)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "q", nq),
+                       domain = NA)
               ans <- .fmpq(num = Num(q), den = value)
-              if (!is.null(nms <- names(q)) && (n <- length(ans)) <= 0x1p+52)
-                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans@dim <- q@dim
+              ans@dimnames <- q@dimnames
+              ans@names <- q@names
               ans
           })
 
@@ -53,9 +60,16 @@ setMethod("Num",
 setMethod("Num<-",
           c(q = "fmpq"),
           function (q, value) {
+              nq <- length(q)
+              nv <- length(value)
+              if (nv != 1L && nv != nq)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "q", nq),
+                       domain = NA)
               ans <- .fmpq(num = value, den = Den(q))
-              if (!is.null(nms <- names(q)) && (n <- length(ans)) <= 0x1p+52)
-                  names(ans) <- if (length(nms) == n) nms else rep_len(nms, n)
+              ans@dim <- q@dim
+              ans@dimnames <- q@dimnames
+              ans@names <- q@names
               ans
           })
 
@@ -65,11 +79,11 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(.fmpq(x = e1), e2),
+                         g(.fmpq(e1), e2),
                      "double" =
-                         g(.arf(x = e1), .arf(x = e2)),
+                         g(.arf(e1), .arf(e2)),
                      "complex" =
-                         g(.acf(x = e1), .acf(x = e2)),
+                         g(.acf(e1), .acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "fmpq"),
                           domain = NA))
@@ -81,11 +95,11 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(e1, .fmpq(x = e2)),
+                         g(e1, .fmpq(e2)),
                      "double" =
-                         g(.arf(x = e1), .arf(x = e2)),
+                         g(.arf(e1), .arf(e2)),
                      "complex" =
-                         g(.acf(x = e1), .acf(x = e2)),
+                         g(.acf(e1), .acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "fmpq", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -94,17 +108,17 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .fmpq(x = e2)))
+              get(.Generic, mode = "function")(e1, .fmpq(e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .fmpq(x = e2)))
+              get(.Generic, mode = "function")(e1, .fmpq(e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .fmpq(x = e2)))
+              get(.Generic, mode = "function")(e1, .fmpq(e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "fmpq"),
@@ -114,27 +128,27 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(x = e1), .arf(x = e2)))
+              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(x = e1), e2))
+              get(.Generic, mode = "function")(.arf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acf(x = e1), e2))
+              get(.Generic, mode = "function")(.acf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arb(x = e1), e2))
+              get(.Generic, mode = "function")(.arb(e1), e2))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(x = e1), e2))
+              get(.Generic, mode = "function")(.acb(e1), e2))
 
 setMethod("Summary",
           c(x = "fmpq"),
@@ -161,22 +175,26 @@ setMethod("as.vector",
 
 setAs("ANY", "fmpq",
       function (from)
-          .fmpq(x = from))
+          new("fmpq", x = from, length = NULL,
+              dim = NULL, dimnames = NULL, names = NULL,
+              num = NULL, den = NULL))
 
 setMethod("format",
           c(x = "fmpq"),
-          function (x, base = 10L, ...)
-              `names<-`(paste0(format(Num(x), base = base, ...),
-                               "/",
-                               format(Den(x), base = base, ...)),
-                        names(x)))
+          function (x, base = 10L, ...) {
+              p <- format(Num(x), base = base, ...)
+              q <- format(Den(x), base = base, ...)
+              p[] <- paste0(p, "/", q)
+              p
+          })
 
 setMethod("initialize",
           c(.Object = "fmpq"),
-          function (.Object, length = NULL, x = NULL, num, den, ...)
-              .Call(R_flint_fmpq_initialize, .Object, length, x,
-                    if (!missing(num)) as(num, "fmpz"),
-                    if (!missing(den)) as(den, "fmpz")))
+          function (.Object, x, length, dim, dimnames, names,
+                    num, den, ...)
+              .Call(R_flint_fmpq_initialize,
+                    .Object, x, length, dim, dimnames, names,
+                    num, den))
 
 setMethod("is.finite",
           c(x = "fmpq"),

@@ -38,10 +38,13 @@ void R_flint_slong_finalize(SEXP x)
 	return;
 }
 
-SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
+SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
+                              SEXP s_dim, SEXP s_dimnames, SEXP s_names)
 {
 	mp_limb_t j, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
+	PROTECT(s_dim = validDim(s_dim));
+	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
 	if (s_x != R_NilValue) {
 		checkType(s_x, R_flint_sexptypes, __func__);
 		if (TYPEOF(s_x) != OBJSXP)
@@ -52,19 +55,14 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 				Rf_error(_("foreign external pointer"));
 			nx = R_flint_get_length(s_x);
 		}
-		if (s_length == R_NilValue)
-			ny = nx;
-		else {
-			ny = asLength(s_length, __func__);
-			if (ny > 0 && nx == 0)
-				Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
-				         "x");
-		}
+		ny = validLength(s_length, s_dim, nx);
+		if (ny > 0 && nx == 0)
+			Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
+			         "x");
 	}
-	else if (s_length != R_NilValue)
-		ny = asLength(s_length, __func__);
 	else
-		ny = 0;
+		ny = validLength(s_length, s_dim, nx);
+	PROTECT(s_names = validNames(s_names, ny));
 	slong *y = (ny) ? flint_calloc(ny, sizeof(slong)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_slong_finalize);
 	switch (TYPEOF(s_x)) {
@@ -266,22 +264,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_length, SEXP s_x)
 		}
 		break;
 	}
-	if (s_x != R_NilValue && ny > 0 && ny <= R_XLEN_T_MAX) {
-	SEXP sx = Rf_getAttrib(s_x, R_NamesSymbol);
-	if (sx != R_NilValue && XLENGTH(sx) > 0) {
-	PROTECT(sx);
-	if (nx == ny)
-	R_do_slot_assign(object, R_flint_symbol_names, sx);
-	else {
-	SEXP sy = Rf_allocVector(STRSXP, (R_xlen_t) ny);
-	for (j = 0; j < ny; ++j)
-		SET_STRING_ELT(sy, (R_xlen_t) j,
-		               STRING_ELT(sx, (R_xlen_t) (j % nx)));
-	R_do_slot_assign(object, R_flint_symbol_names, sy);
-	}
-	UNPROTECT(1);
-	}
-	}
+	setDDNN(object, s_dim, s_dimnames, s_names);
+	UNPROTECT(3);
 	return object;
 }
 
@@ -313,9 +297,8 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
-	SEXP ans = Rf_allocVector(STRSXP, (R_xlen_t) n);
+	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	if (n) {
-	PROTECT(ans);
 	const slong *x = R_flint_get_pointer(object);
 	slong xmin = 0, xmax = 0;
 	for (j = 0; j < n; ++j) {
@@ -352,14 +335,9 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 		SET_STRING_ELT(ans, (R_xlen_t) j, Rf_mkChar(buffer));
 	}
 	mpz_clear(z);
-	SEXP nms = R_do_slot(object, R_flint_symbol_names);
-	if (XLENGTH(nms) > 0) {
-		PROTECT(nms);
-		Rf_setAttrib(ans, R_NamesSymbol, nms);
-		UNPROTECT(1);
 	}
+	setDDNN1(ans, object);
 	UNPROTECT(1);
-	}
 	return ans;
 }
 
@@ -372,19 +350,8 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	const slong
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
-	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
-		Rf_warning(_("longer object length is not a multiple of shorter object length"));
 	mp_limb_t j, n = RECYCLE2(nx, ny);
-#define COMMON \
-	do { \
-	SEXP nms; \
-	if ((nx == n && XLENGTH(nms = R_do_slot(s_x, R_flint_symbol_names)) > 0) || \
-	    (ny == n && XLENGTH(nms = R_do_slot(s_y, R_flint_symbol_names)) > 0)) { \
-		PROTECT(nms); \
-		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
-		UNPROTECT(1); \
-	} \
-	} while (0)
+	checkConformable(s_x, s_y, nx, ny);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -533,7 +500,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
 		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
-		COMMON;
+		setDDNN2(ans, s_x, s_y, n, nx, ny);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -581,7 +548,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
-		COMMON;
+		setDDNN2(ans, s_x, s_y, n, nx, ny);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -631,7 +598,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				z[j] = x[j % nx] || y[j % ny];
 			break;
 		}
-		COMMON;
+		setDDNN2(ans, s_x, s_y, n, nx, ny);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -640,7 +607,6 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		         CHAR(STRING_ELT(s_op, 0)), "slong");
 		return R_NilValue;
 	}
-#undef COMMON
 }
 
 SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
@@ -648,15 +614,6 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
 	mp_limb_t j, n = R_flint_get_length(s_x);
 	const slong *x = R_flint_get_pointer(s_x);
-#define COMMON \
-	do { \
-	SEXP nms = R_do_slot(s_x, R_flint_symbol_names); \
-	if (XLENGTH(nms) > 0) { \
-		PROTECT(nms); \
-		R_do_slot_assign(ans, R_flint_symbol_names, nms); \
-		UNPROTECT(1); \
-	} \
-	} while (0)
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */
@@ -985,7 +942,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
 		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
-		COMMON;
+		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -1065,7 +1022,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
 		R_flint_set(ans, z, s, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
-		COMMON;
+		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -1153,7 +1110,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[j] = !x[j];
 			break;
 		}
-		COMMON;
+		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -1162,5 +1119,4 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		         CHAR(STRING_ELT(s_op, 0)), "slong");
 		return R_NilValue;
 	}
-#undef COMMON
 }
