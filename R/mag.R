@@ -130,7 +130,8 @@ setMethod("as.vector",
 setAs("ANY", "mag",
       function (from)
           new("mag", x = from, length = NULL,
-              dim = NULL, dimnames = NULL, names = NULL))
+              dim = dim(from), dimnames = dimnames(from),
+              names = names(from)))
 
 setMethod("format",
           c(x = "mag"),

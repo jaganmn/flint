@@ -172,8 +172,8 @@ setMethod("as.vector",
 setAs("ANY", "arb",
       function (from)
           new("arb", x = from, length = NULL,
-              dim = NULL, dimnames = NULL, names = NULL,
-              mid = NULL, rad = NULL))
+              dim = dim(from), dimnames = dimnames(from),
+              names = names(from), mid = NULL, rad = NULL))
 
 setMethod("format",
           c(x = "arb"),

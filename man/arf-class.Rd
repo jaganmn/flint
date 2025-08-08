@@ -48,18 +48,58 @@
 }
 \arguments{
   \item{x}{
-    .}
+    an atomic or \code{\linkS4class{flint}} vector containing data for
+    conversion to \code{arf}.}
   \item{length}{
-    .}
+    a numeric vector of length one giving the length of the return
+    value.  If that exceeds the length of \code{x}, then \code{x} is
+    recycled.  Non-integer values are rounded in the direction of zero.}
   \item{names}{
-    .}
+    the \code{names} slot of the return value, either \code{NULL} or a
+    character vector of equal length.  Non-character \code{names} are
+    coerced to character.}
   \item{dim}{
-    .}
+    the \code{dim} slot of the return value, an integer vector of
+    nonzero length.  If the product exceeds the length of \code{x}, then
+    \code{x} is recycled.  Non-integer numeric \code{dim} are coerced to
+    integer.}
   \item{dimnames}{
-    .}
+    the \code{dimnames} slot of the return value, either \code{NULL} or
+    a list of length equal to the length of \code{dim}.  The components
+    are either \code{NULL} or character vectors of length given by
+    \code{dim}.  Non-character vector components of \code{dimnames} are
+    coerced to character.}
 }
 \value{
-.
+  A \code{arf} vector, possibly an array; see \sQuote{Details}.
+}
+\details{
+  There are four usages of \code{.arf}:
+  \preformatted{.arf()
+	.arf(length=)
+	.arf(x)
+	.arf(x, length=)}
+  The first usage generates an empty vector.  The second usage generates
+  a zero vector of the indicated length.  The third usage converts
+  \code{x}, preserving dimensions, dimension names, and names.  The
+  fourth usage converts \code{x}, recycling its elements to the
+  indicated length and discarding its dimensions, dimension names, and
+  names.  Attempts to recycle \code{x} of length zero to nonzero length
+  are an error.
+
+  Usage of \code{.arf.array} is modelled after \code{\link{array}}.
+}
+\section{Conversion}{
+  Real numbers and real parts of complex numbers are rounded according
+  to the default precision and rounding mode set by
+  \code{\link{flintPrec}} and \code{\link{flintRnd}}.  Imaginary parts
+  of complex numbers are discarded.
+
+  Character strings are converted using function \code{mpfr_strtofr}
+  from the \acronym{GNU} \acronym{MPFR} library with argument
+  \code{base} set to 0 and argument \code{rnd} set according to the
+  default rounding mode; see
+  \url{https://www.mpfr.org/mpfr-current/mpfr.html#Assignment-Functions}.
 }
 \section{Slots}{
   \describe{
@@ -134,8 +174,7 @@
       handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
-      returns the value of \code{.arf(from)} without dimensions,
-      dimension names, or names.}
+      returns the value of \code{.arf(from)}.}
     \item{\code{format}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific

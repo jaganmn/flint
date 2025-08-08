@@ -63,20 +63,82 @@
 }
 \arguments{
   \item{x}{
-    .}
+    an atomic or \code{\linkS4class{flint}} vector containing data for
+    conversion to \code{arb}.}
   \item{length}{
-    .}
+    a numeric vector of length one giving the length of the return
+    value.  If that exceeds the length of \code{x}, then \code{x} is
+    recycled.  Non-integer values are rounded in the direction of zero.}
   \item{names}{
-    .}
+    the \code{names} slot of the return value, either \code{NULL} or a
+    character vector of equal length.  Non-character \code{names} are
+    coerced to character.}
   \item{dim}{
-    .}
+    the \code{dim} slot of the return value, an integer vector of
+    nonzero length.  If the product exceeds the length of \code{x}, then
+    \code{x} is recycled.  Non-integer numeric \code{dim} are coerced to
+    integer.}
   \item{dimnames}{
-    .}
+    the \code{dimnames} slot of the return value, either \code{NULL} or
+    a list of length equal to the length of \code{dim}.  The components
+    are either \code{NULL} or character vectors of length given by
+    \code{dim}.  Non-character vector components of \code{dimnames} are
+    coerced to character.}
   \item{mid, rad}{
-    .}
+    atomic or \code{\linkS4class{flint}} vectors containing data for
+    conversion to \code{\linkS4class{arf}} and \code{\linkS4class{mag}},
+    respectively.  Use these for initialization \dQuote{by parts}
+    (midpoint and radius).}
 }
 \value{
-.
+  An \code{arb} vector, possibly an array; see \sQuote{Details}.
+}
+\details{
+  There are six usages of \code{.arb}:
+  \preformatted{.arb()
+	.arb(length=)
+	.arb(x)
+	.arb(x, length=)
+	.arb(mid=, mid=)
+	.arb(mid=, mid=, length=)}
+  The first usage generates an empty vector.  The second usage generates
+  a zero vector of the indicated length.  The third usage converts
+  \code{x}, preserving dimensions, dimension names, and names.  The
+  fourth usage converts \code{x}, recycling its elements to the
+  indicated length and discarding its dimensions, dimension names, and
+  names.  The fifth and sixth usages, in which either of \code{mid} and
+  \code{rad} can be missing, use \code{\link{.arf}(mid)} and
+  \code{\link{.mag}(rad)} to separately initialize the midpoints and
+  radii of the \code{arb} return value.
+
+  Attempts to recycle \code{mid}, \code{rad}, or \code{x} of length
+  zero to nonzero length are an error.
+
+  Usage of \code{.arb.array} is modelled after \code{\link{array}}.
+}
+\section{Conversion}{
+  Real numbers and real parts of complex numbers are rounded according
+  to the default precision and rounding mode set by
+  \code{\link{flintPrec}} and \code{\link{flintRnd}}.  Ball midpoints
+  are the numbers obtained by rounding.  Ball radii are upper bounds on
+  the absolute errors incurred by rounding.  Imaginary parts of complex
+  numbers are discarded.
+
+  Character strings are scanned for format
+  \code{"\var{s}(\var{k}\var{m}+/-\var{r})"}, where \code{\var{k}} and
+  \code{\var{m}} define the sign and absolute value of the signed ball
+  midpoint, and \code{\var{r}} defines the unsigned ball radius.
+  \code{\var{k}} can be empty if the ball midpoint is \code{NaN} or
+  non-negative.  \code{\var{s}} is an optional unary plus or minus to be
+  reconciled with \code{\var{k}}.
+
+  The sequences \code{\var{k}\var{m}} and \code{\var{r}} are converted
+  using function \code{mpfr_strtofr} from the \acronym{GNU}
+  \acronym{MPFR} library with argument \code{base} set to 0 and argument
+  \code{rnd} set according to the default rounding mode (for the
+  midpoint, whereas the radius is always rounded towards \code{Inf});
+  see
+  \url{https://www.mpfr.org/mpfr-current/mpfr.html#Assignment-Functions}.
 }
 \section{Slots}{
   \describe{
@@ -147,8 +209,7 @@
       handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arb")}:\cr
-      returns the value of \code{.arb(from)} without dimensions,
-      dimension names, or names.}
+      returns the value of \code{.arb(from)}.}
     \item{\code{format}}{
       \code{signature(x = "arb")}:\cr
       returns a character vector suitable for printing, using string

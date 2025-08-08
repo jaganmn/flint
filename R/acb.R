@@ -168,8 +168,8 @@ setMethod("as.vector",
 setAs("ANY", "acb",
       function (from)
           new("acb", x = from, length = NULL,
-              dim = NULL, dimnames = NULL, names = NULL,
-              real = NULL, imag = NULL))
+              dim = dim(from), dimnames = dimnames(from),
+              names = names(from), real = NULL, imag = NULL))
 
 setMethod("format",
           c(x = "acb"),

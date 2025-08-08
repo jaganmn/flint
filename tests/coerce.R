@@ -13,7 +13,7 @@ cl <- c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
 cl.complexlike <- cl == "acf" | cl == "acb"
 basic <- c("raw", "logical", "integer", "double", "numeric", "complex",
            "vector")
-zu <- lapply(cl, function (s) new(s, x = c(0, 1)))
+zu <- lapply(cl, .flint, c(0, 1))
 for (t in basic) {
     as. <- match.fun(paste0("as.", t))
     as.01 <- list(as.(c(0, 1)), as.(c(0, 1)+0i))[1L + cl.complexlike]
@@ -35,8 +35,8 @@ stopifnot(identical(vapply(lapply(zu, as.vector), typeof, ""),
 ## nonzero imaginary parts are discarded and that no condition is
 ## signaled otherwise.
 
-zi <- .acb(x = 0i)
-ui <- .acb(x = 1i)
+zi <- .acb(0i)
+ui <- .acb(1i)
 tools::assertError(tools::assertCondition(zi.c <- as.complex(zi)))
 tools::assertError(tools::assertCondition(zi.d <- as.double (zi)))
 tools::assertError(tools::assertCondition(ui.c <- as.complex(ui)))

@@ -316,32 +316,35 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				if (t <= s) \
 					break; \
 				s = t; \
-				while (isspace(*s)) \
-					s++; \
 				} while (0)
 				COMMON;
+				if (*s != 'i')
+					while (isspace(*s))
+						s++;
 				if (*s == '\0') {
 					arf_set_mpfr(acf_realref(y + j), m);
 					arf_zero(acf_imagref(y + j));
-				} else if (*(s++) == 'i') {
+				} else if (*s == 'i') {
+					s++;
 					while (isspace(*s))
 						s++;
 					if (*s != '\0')
 						break;
 					arf_zero(acf_realref(y + j));
 					arf_set_mpfr(acf_imagref(y + j), m);
-				} else {
-					s--;
+				} else if (*s == '+' || *s == '-') {
 					arf_set_mpfr(acf_realref(y + j), m);
 					COMMON;
-					if (*(s++) != 'i')
+					if (*s != 'i')
 						break;
+					s++;
 					while (isspace(*s))
 						s++;
 					if (*s != '\0')
 						break;
 					arf_set_mpfr(acf_imagref(y + j), m);
-				}
+				} else
+					break;
 #undef COMMON
 			}
 			mpfr_clear(m);

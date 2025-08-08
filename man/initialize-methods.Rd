@@ -17,7 +17,7 @@
   \dQuote{by parts}.  These methods for \code{\link{initialize}} are
   used by corresponding methods for \code{\link{coerce}} (with signature
   \code{c(from = "ANY", to = class(.Object))}) as well as by the class
-  generator functions \code{\link{.ulong}}, \code{\link{.ulong.array}},
+  generator functions \code{\link{.flint}}, \code{\link{.flint.array}},
   etc.  Other interfaces, including
   \code{\link{new}(class(.Object), \dots)} and direct calls
   \code{\link{initialize}(.Object, \dots)}, are beyond the API of

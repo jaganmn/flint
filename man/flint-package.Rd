@@ -1,5 +1,4 @@
 \name{flint-package}
-\alias{flint}
 \alias{flint-package}
 \alias{flintABI}
 \alias{flintIdentical}

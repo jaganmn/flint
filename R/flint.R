@@ -770,8 +770,17 @@ function (target, current,
             else if (length(nc))
                 msg <- c(msg, "names for current but not for target")
         }
-        at <- attributes(target)
-        ac <- attributes(current)
+        attributes4 <-
+        function(x) {
+            a <- attributes(x)
+            if (!is.null(a) && isS4(x))
+                for (s in .slotNames(x))
+                    if (identical(a[[s]], quote(`\001NULL\001`)))
+                        a[[s]] <- NULL
+            a
+        }
+        at <- attributes4(target)
+        ac <- attributes4(current)
         at[["class"]] <- ac[["class"]] <- NULL
         at[["names"]] <- ac[["names"]] <- NULL
         if (!is.na(flintClass(target)))
@@ -1006,7 +1015,9 @@ setMethod("as.data.frame",
               }
               oldClass(ans) <- "data.frame"
               names(ans) <- names
-              .rowNamesDF(ans, make.names) <- row.names
+              if (is.null(row.names))
+                  attr(ans, "row.names") <- .set_row_names(r)
+              else .rowNamesDF(ans, make.names) <- row.names
               ans
           })
 

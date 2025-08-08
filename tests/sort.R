@@ -4,10 +4,10 @@ set.seed(0x021936L)
 n <- 32L
 i <- sample(n)
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf"))
-    stopifnot(identical(xtfrm(new(.cl, x = i)), i))
+    stopifnot(identical(xtfrm(.flint(.cl, i)), i))
 what <- c("notTotalOrderError", "error", "condition")
 for (.cl in c("arb", "acb")) {
-    e <- tryCatch(xtfrm(new(.cl, x = i)), condition = identity)
+    e <- tryCatch(xtfrm(.flint(.cl, i)), condition = identity)
     stopifnot(all(inherits(e, what, which = TRUE)))
 }
 
@@ -18,9 +18,9 @@ x[sample(n * 4L, n)] <- NA
 o <- order(x)
 xo <- x[o]
 xou <- unique(xo)
-y <- .arf(x = x)
-yo <- .arf(x = xo)
-you <- .arf(x = xou)
+y <- .arf(x)
+yo <- .arf(xo)
+you <- .arf(xou)
 stopifnot(identical(order(xtfrm(y)), o),
           identical(order(y), o),
           flintIdentical(sort(y, na.last = TRUE), yo),
@@ -40,5 +40,5 @@ stopifnot(identical(order(xtfrm(y)), o),
 s <- c(NaN, Inf, 1, 0)
 x <- complex(     real = rep(s,  each = 4L),
              imaginary = rep(s, times = 4L))
-y <- .acf(x = x)
+y <- .acf(x)
 stopifnot(identical(xtfrm(x), xtfrm(y)))

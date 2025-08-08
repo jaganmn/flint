@@ -341,44 +341,52 @@ SEXP validNames(SEXP names, mp_limb_t length)
 
 void setDDNN(SEXP s, SEXP dim, SEXP dimnames, SEXP names)
 {
+	SEXP (*sets)(SEXP, SEXP, SEXP) =
+		(TYPEOF(s) == OBJSXP) ? &R_do_slot_assign : &Rf_setAttrib;
 	if (dim != R_NilValue) {
-		Rf_setAttrib(s, R_DimSymbol, dim);
+		sets(s, R_DimSymbol, dim);
 		if (dimnames != R_NilValue)
-			Rf_setAttrib(s,  R_DimNamesSymbol, dimnames);
+			sets(s,  R_DimNamesSymbol, dimnames);
 	}
 	if (names != R_NilValue)
-		Rf_setAttrib(s, R_NamesSymbol, names);
+		sets(s, R_NamesSymbol, names);
 	return;
 }
 
 void setDDNN2(SEXP s, SEXP x, SEXP y,
               mp_limb_t ns, mp_limb_t nx, mp_limb_t ny)
 {
+	SEXP (*getx)(SEXP, SEXP) =
+		(TYPEOF(x) == OBJSXP) ? &R_do_slot        : &Rf_getAttrib;
+	SEXP (*gety)(SEXP, SEXP) =
+		(TYPEOF(y) == OBJSXP) ? &R_do_slot        : &Rf_getAttrib;
+	SEXP (*sets)(SEXP, SEXP, SEXP) =
+		(TYPEOF(s) == OBJSXP) ? &R_do_slot_assign : &Rf_setAttrib;
 	SEXP ax, ay;
-	PROTECT(ax = Rf_getAttrib(x, R_DimSymbol));
-	PROTECT(ay = Rf_getAttrib(y, R_DimSymbol));
+	PROTECT(ax = getx(x, R_DimSymbol));
+	PROTECT(ay = gety(y, R_DimSymbol));
 	if (ax != R_NilValue && (ny > 0 || ay != R_NilValue)) {
-		Rf_setAttrib(s, R_DimSymbol, ax);
-		if ((ax = Rf_getAttrib(x, R_DimNamesSymbol)) != R_NilValue) {
+		sets(s, R_DimSymbol, ax);
+		if ((ax = getx(x, R_DimNamesSymbol)) != R_NilValue) {
 			PROTECT(ax);
-			Rf_setAttrib(s, R_DimNamesSymbol, ax);
+			sets(s, R_DimNamesSymbol, ax);
 			UNPROTECT(1);
 		}
 	} else
 	if (ay != R_NilValue && (nx > 0 || ax != R_NilValue)) {
-		Rf_setAttrib(s, R_DimSymbol, ay);
-		if ((ay = Rf_getAttrib(y, R_DimNamesSymbol)) != R_NilValue) {
+		sets(s, R_DimSymbol, ay);
+		if ((ay = gety(y, R_DimNamesSymbol)) != R_NilValue) {
 			PROTECT(ay);
-			Rf_setAttrib(s, R_DimNamesSymbol, ay);
+			sets(s, R_DimNamesSymbol, ay);
 			UNPROTECT(1);
 		}
 	}
 	UNPROTECT(2);
 	ax = ay = NULL;
-	if ((ns == nx && (ax = Rf_getAttrib(x, R_NamesSymbol)) != R_NilValue) ||
-	    (ns == ny && (ay = Rf_getAttrib(y, R_NamesSymbol)) != R_NilValue)) {
+	if ((ns == nx && (ax = getx(x, R_NamesSymbol)) != R_NilValue) ||
+	    (ns == ny && (ay = gety(y, R_NamesSymbol)) != R_NilValue)) {
 		PROTECT((ax) ? ax : ay);
-		Rf_setAttrib(s, R_NamesSymbol, (ax) ? ax : ay);
+		sets(s, R_NamesSymbol, (ax) ? ax : ay);
 		UNPROTECT(1);
 	}
 	return;
@@ -386,20 +394,24 @@ void setDDNN2(SEXP s, SEXP x, SEXP y,
 
 void setDDNN1(SEXP s, SEXP x)
 {
+	SEXP (*getx)(SEXP, SEXP) =
+		(TYPEOF(x) == OBJSXP) ? &R_do_slot        : &Rf_getAttrib;
+	SEXP (*sets)(SEXP, SEXP, SEXP) =
+		(TYPEOF(s) == OBJSXP) ? &R_do_slot_assign : &Rf_setAttrib;
 	SEXP a;
-	if ((a = Rf_getAttrib(x, R_DimSymbol)) != R_NilValue) {
+	if ((a = getx(x, R_DimSymbol)) != R_NilValue) {
 		PROTECT(a);
-		Rf_setAttrib(s, R_DimSymbol, a);
+		sets(s, R_DimSymbol, a);
 		UNPROTECT(1);
-		if ((a = Rf_getAttrib(x, R_DimNamesSymbol)) != R_NilValue) {
+		if ((a = getx(x, R_DimNamesSymbol)) != R_NilValue) {
 			PROTECT(a);
-			Rf_setAttrib(s, R_DimNamesSymbol, a);
+			sets(s, R_DimNamesSymbol, a);
 			UNPROTECT(1);
 		}
 	}
-	if ((a = Rf_getAttrib(x, R_NamesSymbol)) != R_NilValue) {
+	if ((a = getx(x, R_NamesSymbol)) != R_NilValue) {
 		PROTECT(a);
-		Rf_setAttrib(s, R_NamesSymbol, a);
+		sets(s, R_NamesSymbol, a);
 		UNPROTECT(1);
 	}
 	return;
@@ -407,10 +419,14 @@ void setDDNN1(SEXP s, SEXP x)
 
 void checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny)
 {
+	SEXP (*getx)(SEXP, SEXP) =
+		(TYPEOF(x) == OBJSXP) ? &R_do_slot : &Rf_getAttrib;
+	SEXP (*gety)(SEXP, SEXP) =
+		(TYPEOF(y) == OBJSXP) ? &R_do_slot : &Rf_getAttrib;
 	SEXP ax, ay;
 	R_xlen_t n;
-	PROTECT(ax = Rf_getAttrib(x, R_DimSymbol));
-	PROTECT(ay = Rf_getAttrib(y, R_DimSymbol));
+	PROTECT(ax = getx(x, R_DimSymbol));
+	PROTECT(ay = gety(y, R_DimSymbol));
 	if (ax != R_NilValue && ay != R_NilValue &&
 	    (nx != ny || (n = XLENGTH(ax)) != XLENGTH(ay) ||
 	     (n > 0 && memcmp(INTEGER_RO(ax), INTEGER_RO(ay), sizeof(int) * (size_t) n) != 0)))

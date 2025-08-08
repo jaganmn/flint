@@ -176,8 +176,8 @@ setMethod("as.vector",
 setAs("ANY", "fmpq",
       function (from)
           new("fmpq", x = from, length = NULL,
-              dim = NULL, dimnames = NULL, names = NULL,
-              num = NULL, den = NULL))
+              dim = dim(from), dimnames = dimnames(from),
+              names = names(from), num = NULL, den = NULL))
 
 setMethod("format",
           c(x = "fmpq"),

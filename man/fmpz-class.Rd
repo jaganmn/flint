@@ -47,18 +47,57 @@
 }
 \arguments{
   \item{x}{
-    .}
+    an atomic or \code{\linkS4class{flint}} vector containing data for
+    conversion to \code{fmpz}.}
   \item{length}{
-    .}
+    a numeric vector of length one giving the length of the return
+    value.  If that exceeds the length of \code{x}, then \code{x} is
+    recycled.  Non-integer values are rounded in the direction of zero.}
   \item{names}{
-    .}
+    the \code{names} slot of the return value, either \code{NULL} or a
+    character vector of equal length.  Non-character \code{names} are
+    coerced to character.}
   \item{dim}{
-    .}
+    the \code{dim} slot of the return value, an integer vector of
+    nonzero length.  If the product exceeds the length of \code{x}, then
+    \code{x} is recycled.  Non-integer numeric \code{dim} are coerced to
+    integer.}
   \item{dimnames}{
-    .}
+    the \code{dimnames} slot of the return value, either \code{NULL} or
+    a list of length equal to the length of \code{dim}.  The components
+    are either \code{NULL} or character vectors of length given by
+    \code{dim}.  Non-character vector components of \code{dimnames} are
+    coerced to character.}
 }
 \value{
-.
+  An \code{fmpz} vector, possibly an array; see \sQuote{Details}.
+}
+\details{
+  There are four usages of \code{.fmpz}:
+  \preformatted{.fmpz()
+	.fmpz(length=)
+	.fmpz(x)
+	.fmpz(x, length=)}
+  The first usage generates an empty vector.  The second usage generates
+  a zero vector of the indicated length.  The third usage converts
+  \code{x}, preserving dimensions, dimension names, and names.  The
+  fourth usage converts \code{x}, recycling its elements to the
+  indicated length and discarding its dimensions, dimension names, and
+  names.  Attempts to recycle \code{x} of length zero to nonzero length
+  are an error.
+
+  Usage of \code{.fmpz.array} is modelled after \code{\link{array}}.
+}
+\section{Conversion}{
+  Real numbers and real parts of complex numbers are rounded in the
+  direction of 0.  Imaginary parts of complex numbers are discarded.
+
+  Character strings are converted using function \code{mpz_set_str} from
+  the \acronym{GNU} \acronym{MP} library with argument \code{base} set
+  to 0; see \url{https://gmplib.org/manual/Assigning-Integers}.
+
+  An error is signaled if elements of \code{x} are \code{NaN},
+  \code{-Inf}, or \code{Inf}.
 }
 \section{Slots}{
   \describe{
@@ -126,8 +165,7 @@
       \dQuote{number-like}, is handled specially.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
-      returns the value of \code{.fmpz(from)} without dimensions,
-      dimension names, or names.}
+      returns the value of \code{.fmpz(from)}.}
     \item{\code{format}}{
       \code{signature(x = "fmpz")}:\cr
       returns a character vector suitable for printing.  Optional

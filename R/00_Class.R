@@ -9,6 +9,42 @@ setClass("flint",
                    names = "OptionalCharacter"),
          validity = function (object) .Call(R_flint_valid, object))
 
+.flint <-
+new("classGeneratorFunction",
+    function (class, ...)
+        switch(class,
+               ulong = .ulong(...),
+               slong = .slong(...),
+               fmpz = .fmpz(...),
+               fmpq = .fmpq(...),
+               mag = .mag(...),
+               arf = .arf(...),
+               acf = .acf(...),
+               arb = .arb(...),
+               acb = .acb(...),
+               stop(gettextf("invalid class name \"%s\"", class),
+                    domain = NA)),
+    className = "flint",
+    package = "flint")
+
+.flint.array <-
+new("classGeneratorFunction",
+    function (class, ...)
+        switch(class,
+               ulong = .ulong.array(...),
+               slong = .slong.array(...),
+               fmpz = .fmpz.array(...),
+               fmpq = .fmpq.array(...),
+               mag = .mag.array(...),
+               arf = .arf.array(...),
+               acf = .acf.array(...),
+               arb = .arb.array(...),
+               acb = .acb.array(...),
+               stop(gettextf("invalid class name \"%s\"", class),
+                    domain = NA)),
+    className = "flint",
+    package = "flint")
+
 ## FIXME: do below in for loop
 
 setClass("ulong", contains = "flint")
@@ -251,7 +287,7 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            real = if (!missing(real)) .arf(real),
+            real = if (!missing(real)) .arb(real),
             imag = if (!missing(imag)) .arb(imag))
     },
     className = "acb",

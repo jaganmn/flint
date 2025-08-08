@@ -168,8 +168,8 @@ setMethod("as.vector",
 setAs("ANY", "acf",
       function (from)
           new("acf", x = from, length = NULL,
-              dim = NULL, dimnames = NULL, names = NULL,
-              real = NULL, imag = NULL))
+              dim = dim(from), dimnames = dimnames(from),
+              names = names(from), real = NULL, imag = NULL))
 
 setMethod("format",
           c(x = "acf"),
@@ -177,7 +177,12 @@ setMethod("format",
                     rnd = flintRnd(), ...) {
               r <- format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
               i <- format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
-              r[] <- paste0(r, "+", i, "i")
+              if (!any(s <- startsWith(i, "-")))
+                  r[] <- paste0(r, "+", i, "i")
+              else {
+                  substr(i[!s], 1L, 1L) <- "+"
+                  r[] <- paste0(r,      i, "i")
+              }
               r
           })
 

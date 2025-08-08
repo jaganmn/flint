@@ -136,10 +136,16 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_init(tmp);
 			const char *s;
 			char *t;
+			int negate;
 			for (j = 0; j < ny; ++j) {
 				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
 #define COMMON \
 				do { \
+				while (isspace(*s)) \
+					s++; \
+				negate = *s == '-'; \
+				if (*s == '+' || negate) \
+					s++; \
 				while (isspace(*s)) \
 					s++; \
 				if (*(s++) != '(') \
@@ -148,10 +154,14 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				if (t <= s) \
 					break; \
 				s = t; \
+				if (negate) \
+					mpfr_neg(m, m, MPFR_RNDZ); \
 				while (isspace(*s)) \
 					s++; \
 				if (*(s++) != '+' || *(s++) != '/' || *(s++) != '-') \
 					break; \
+				while (isspace(*s)) \
+					s++; \
 				mpfr_strtofr(r, s, &t, 0, MPFR_RNDA); \
 				if (t <= s) \
 					break; \
@@ -160,16 +170,18 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 					s++; \
 				if (*(s++) != ')') \
 					break; \
-				while (isspace(*s)) \
-					s++; \
 				} while (0)
 				COMMON;
+				if (*s != 'i')
+					while (isspace(*s))
+						s++;
 				if (*s == '\0') {
 					arf_set_mpfr(arb_midref(acb_realref(y + j)), m);
 					arf_set_mpfr(tmp, r);
 					arf_get_mag(arb_radref(acb_realref(y + j)), tmp);
 					arb_zero(acb_imagref(y + j));
-				} else if (*(s++) == 'i') {
+				} else if (*s == 'i') {
+					s++;
 					while (isspace(*s))
 						s++;
 					if (*s != '\0')
@@ -178,16 +190,14 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 					arf_set_mpfr(arb_midref(acb_imagref(y + j)), m);
 					arf_set_mpfr(tmp, r);
 					arf_get_mag(arb_radref(acb_imagref(y + j)), tmp);
-				} else {
-					s--;
-					if (*(s++) != '+')
-						break;
+				} else if (*s == '+' || *s == '-') {
 					arf_set_mpfr(arb_midref(acb_realref(y + j)), m);
 					arf_set_mpfr(tmp, r);
 					arf_get_mag(arb_radref(acb_realref(y + j)), tmp);
 					COMMON;
-					if (*(s++) != 'i')
+					if (*s != 'i')
 						break;
+					s++;
 					while (isspace(*s))
 						s++;
 					if (*s != '\0')
@@ -195,7 +205,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 					arf_set_mpfr(arb_midref(acb_imagref(y + j)), m);
 					arf_set_mpfr(tmp, r);
 					arf_get_mag(arb_radref(acb_imagref(y + j)), tmp);
-				}
+				} else
+					break;
 #undef COMMON
 			}
 			mpfr_clear(m);

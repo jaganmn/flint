@@ -16,7 +16,7 @@ value <- rep(c("ulong", "fmpz", "fmpq"), c(1L, 1L, 5L))
 for (i in seq_along(usage)) {
     u <- usage[[i]]
     v <- value[[i]]
-    s <- as(do.call(seq.int, args.[u]), v)
+    s <- .flint(v, do.call(seq.int, args.[u]))
     stopifnot(flintIdentical(do.call(seq.int, args[u]), s),
               flintIdentical(do.call(seq    , args[u]), s))
 }
@@ -24,8 +24,8 @@ for (i in seq_along(usage)) {
 d <- 4L
 nvec. <- d:1L
 from. <- seq.int(from = 1L, by = d + 1L, length.out = d)
-s <- as(sequence(nvec = nvec., from = from.), "ulong")
-stopifnot(flintIdentical(sequence(nvec = as(nvec., "ulong"),
-                                  from = as(from., "ulong")),
+s <- .ulong(sequence(nvec = nvec., from = from.))
+stopifnot(flintIdentical(sequence(nvec = .ulong(nvec.),
+                                  from = .ulong(from.)),
                          s),
           all(s == which(.row(c(d, d)) >= .col(c(d, d)))))

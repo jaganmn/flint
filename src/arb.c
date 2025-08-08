@@ -136,31 +136,36 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_init(tmp);
 			const char *s;
 			char *t;
+			int negate;
 			for (j = 0; j < ny; ++j) {
 				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
 				while (isspace(*s))
 					s++;
-				if (*(s++) != '(')
-					break;
+				negate = *s == '-';
+				if (*s == '+' || negate)
+					s++;
 				while (isspace(*s))
 					s++;
+				if (*(s++) != '(')
+					break;
 				mpfr_strtofr(m, s, &t, 0, rnd);
 				if (t <= s)
 					break;
 				s = t;
-				arf_set_mpfr(arb_midref(y + j), m);
+				if (negate)
+					mpfr_neg(m, m, MPFR_RNDZ);
 				while (isspace(*s))
 					s++;
 				if (*(s++) != '+' || *(s++) != '/' || *(s++) != '-')
 					break;
 				while (isspace(*s))
 					s++;
+				if (*s == '+' || *s == '-')
+					break;
 				mpfr_strtofr(r, s, &t, 0, MPFR_RNDA);
 				if (t <= s)
 					break;
 				s = t;
-				arf_set_mpfr(tmp, r);
-				arf_get_mag(arb_radref(y + j), tmp);
 				while (isspace(*s))
 					s++;
 				if (*(s++) != ')')
@@ -169,6 +174,9 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 					s++;
 				if (*s != '\0')
 					break;
+				arf_set_mpfr(arb_midref(y + j), m);
+				arf_set_mpfr(tmp, r);
+				arf_get_mag(arb_radref(y + j), tmp);
 			}
 			mpfr_clear(m);
 			mpfr_clear(r);
