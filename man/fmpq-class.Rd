@@ -79,13 +79,12 @@
   An \code{fmpq} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.fmpq}:
-  \preformatted{.fmpq()
-	.fmpq(length=)
-	.fmpq(x)
-	.fmpq(x, length=)
-	.fmpq(num=, den=)
-	.fmpq(num=, den=, length=)}
+  There are six usages of \code{.fmpq}: \preformatted{.fmpq()
+.fmpq(length=)
+.fmpq(x)
+.fmpq(x, length=)
+.fmpq(num=, den=)
+.fmpq(num=, den=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The

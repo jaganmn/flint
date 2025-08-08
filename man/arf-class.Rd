@@ -74,11 +74,10 @@
   A \code{arf} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.arf}:
-  \preformatted{.arf()
-	.arf(length=)
-	.arf(x)
-	.arf(x, length=)}
+  There are four usages of \code{.arf}: \preformatted{.arf()
+.arf(length=)
+.arf(x)
+.arf(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The

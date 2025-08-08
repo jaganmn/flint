@@ -75,11 +75,10 @@
   A \code{mag} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.mag}:
-  \preformatted{.mag()
-	.mag(length=)
-	.mag(x)
-	.mag(x, length=)}
+  There are four usages of \code{.mag}: \preformatted{.mag()
+.mag(length=)
+.mag(x)
+.mag(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The

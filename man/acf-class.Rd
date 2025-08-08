@@ -87,13 +87,12 @@
   An \code{acf} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.acf}:
-  \preformatted{.acf()
-	.acf(length=)
-	.acf(x)
-	.acf(x, length=)
-	.acf(real=, imag=)
-	.acf(real=, imag=, length=)}
+  There are six usages of \code{.acf}: \preformatted{.acf()
+.acf(length=)
+.acf(x)
+.acf(x, length=)
+.acf(real=, imag=)
+.acf(real=, imag=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The

@@ -73,11 +73,10 @@
   An \code{fmpz} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.fmpz}:
-  \preformatted{.fmpz()
-	.fmpz(length=)
-	.fmpz(x)
-	.fmpz(x, length=)}
+  There are four usages of \code{.fmpz}: \preformatted{.fmpz()
+.fmpz(length=)
+.fmpz(x)
+.fmpz(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The

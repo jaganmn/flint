@@ -110,14 +110,14 @@
 \details{
   There are four usages of \code{.ulong} and \code{.slong}:
   \preformatted{.ulong()
-	.ulong(length=)
-	.ulong(x)
-	.ulong(x, length=)
+.ulong(length=)
+.ulong(x)
+.ulong(x, length=)
 
-	.slong()
-	.slong(length=)
-	.slong(x)
-	.slong(x, length=)}
+.slong()
+.slong(length=)
+.slong(x)
+.slong(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The

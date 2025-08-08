@@ -94,13 +94,12 @@
   An \code{arb} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.arb}:
-  \preformatted{.arb()
-	.arb(length=)
-	.arb(x)
-	.arb(x, length=)
-	.arb(mid=, mid=)
-	.arb(mid=, mid=, length=)}
+  There are six usages of \code{.arb}: \preformatted{.arb()
+.arb(length=)
+.arb(x)
+.arb(x, length=)
+.arb(mid=, mid=)
+.arb(mid=, mid=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
