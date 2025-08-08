@@ -4,14 +4,14 @@
 
 *** TODO rbind, cbind, rbind2, cbind2
 *** TODO rowSums, colSums, rowMeans, colMeans
-*** TODO [, [<-, [[, [[<-
-*** TODO diag, diag<-
+*** TODO [, [<-, [[, [[<-, diag, diag<-
 *** TODO t
 *** TODO %*%, crossprod, tcrossprod, kronecker, scale
 *** TODO solve, backsolve, chol2inv
 *** TODO determinant, norm, rcond
 *** TODO chol, qr
-*** TODO is.array, is.matrix, isSymmetric
+*** DONE is.array, is.matrix, drop
+*** TODO isSymmetric
 
 ** TODO function for numerical solution of systems of ODE using 'arb'
 

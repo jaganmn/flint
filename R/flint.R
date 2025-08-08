@@ -1198,6 +1198,26 @@ setMethod("dimnames<-",
               x
           })
 
+setMethod("drop",
+          c(x = "flint"),
+          function (x) {
+              d <- x@dim
+              if (!all(k <- d != 1L)) {
+                  dn <- x@dimnames
+                  if (length(w <- which(k)) > 1L) {
+                      x@dim <- d[w]
+                      x@dimnames <- dn[w]
+                  } else {
+                      x@dim <- x@dimnames <- NULL
+                      x@names <-
+                      if (length(w) == 1L ||
+                          length(w <- which(!vapply(dn, is.null, FALSE))) == 1L)
+                          dn[[w]]
+                  }
+              }
+              x
+          })
+
 setMethod("duplicated",
           c(x = "flint"),
           function (x, incomparables = FALSE, ...) {
@@ -1239,6 +1259,16 @@ setMethod("findInterval",
                     as.logical(rightmost.closed),
                     as.logical(all.inside))
           })
+
+setMethod("is.array",
+          c(x = "flint"),
+          function (x)
+              length(x@dim) >= 1L)
+
+setMethod("is.matrix",
+          c(x = "flint"),
+          function (x)
+              length(x@dim) == 2L)
 
 setMethod("is.na<-",
           c(x = "flint"),

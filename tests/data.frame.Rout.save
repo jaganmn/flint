@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2025-01-15 r87580) -- "Unsuffered Consequences"
+R Under development (unstable) (2025-08-07 r88529) -- "Unsuffered Consequences"
 Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: aarch64-apple-darwin23.6.0
 
@@ -19,45 +19,45 @@ Type 'q()' to quit R.
 > options(flint.Rdiff = TRUE)
 > 
 > (L <- sapply(c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
-+               "arb", "acb"),
-+              new, x = seq_len(6L), simplify = FALSE))
++                "arb", "acb"),
++              .flint, seq_len(6L), simplify = FALSE))
 $ulong
-class "ulong", length 6, address <pointer: 0x6000010bc1e0>
+class "ulong", length 6, address <pointer: 0x600000550c90>
 [1] 1 2 3 4 5 6
 
 $slong
-class "slong", length 6, address <pointer: 0x6000010bc1b0>
+class "slong", length 6, address <pointer: 0x600000550c60>
 [1] 1 2 3 4 5 6
 
 $fmpz
-class "fmpz", length 6, address <pointer: 0x6000010bc180>
+class "fmpz", length 6, address <pointer: 0x600000550c30>
 [1] 1 2 3 4 5 6
 
 $fmpq
-class "fmpq", length 6, address <pointer: 0x600003abc120>
+class "fmpq", length 6, address <pointer: 0x600002f50540>
 [1] 1/1 2/1 3/1 4/1 5/1 6/1
 
 $mag
-class "mag", length 6, address <pointer: 0x600003abc180>
+class "mag", length 6, address <pointer: 0x600002f505a0>
 [1] 1.000000e+0 2.000000e+0 3.000000e+0 4.000000e+0 5.000000e+0 6.000000e+0
 
 $arf
-class "arf", length 6, address <pointer: 0x600002baa7c0>
+class "arf", length 6, address <pointer: 0x600003e42f40>
 [1] 1.000000e+0 2.000000e+0 3.000000e+0 4.000000e+0 5.000000e+0 6.000000e+0
 
 $acf
-class "acf", length 6, address <pointer: 0x132e80370>
+class "acf", length 6, address <pointer: 0x13d7573d0>
 [1] 1.000000e+0+0.000000e+0i 2.000000e+0+0.000000e+0i 3.000000e+0+0.000000e+0i
 [4] 4.000000e+0+0.000000e+0i 5.000000e+0+0.000000e+0i 6.000000e+0+0.000000e+0i
 
 $arb
-class "arb", length 6, address <pointer: 0x132e804f0>
+class "arb", length 6, address <pointer: 0x13d757f40>
 [1] (1.000000e+0 +/- 0.000000e+0) (2.000000e+0 +/- 0.000000e+0)
 [3] (3.000000e+0 +/- 0.000000e+0) (4.000000e+0 +/- 0.000000e+0)
 [5] (5.000000e+0 +/- 0.000000e+0) (6.000000e+0 +/- 0.000000e+0)
 
 $acb
-class "acb", length 6, address <pointer: 0x132e80610>
+class "acb", length 6, address <pointer: 0x13d758a50>
 [1] (1.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
 [2] (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
 [3] (3.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
@@ -252,4 +252,4 @@ Error in FUN(X[[i]], ...) :
 > 
 > proc.time()
    user  system elapsed 
-  0.222   0.017   0.237 
+  0.232   0.019   0.249 

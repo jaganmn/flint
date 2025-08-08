@@ -48,8 +48,11 @@
 \alias{dimnames,flint-method}
 \alias{dimnames<-,flint,NULL-method}
 \alias{dimnames<-,flint,list-method}
+\alias{drop,flint-method}
 \alias{duplicated,flint-method}
 \alias{findInterval,flint-method}
+\alias{is.array,flint-method}
+\alias{is.matrix,flint-method}
 \alias{is.na<-,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
@@ -288,6 +291,11 @@
       Elements of \code{value} of a vector type are coerced to character
       using \code{as.character.default}.  Exceptionally, factors are
       coerced to character using \code{as.character.factor}.}
+    \item{\code{drop}}{
+      \code{signature(x = "flint")}:\cr
+      returns \code{x} with \code{dim}, \code{dimnames}, and
+      \code{names} slots modified following the documented behaviour of
+      the \pkg{base} function, hence see \code{\link{drop}}.}
     \item{\code{duplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{duplicated(mtfrm(x), \dots)}.}
@@ -298,6 +306,14 @@
       caveat is that an error is signaled if \code{x} contains
       \code{NaN}, because \code{ulong} has no representation for \R{}'s
       missing value \code{\link{NA_integer_}}.}
+    \item{\code{is.array}}{
+      \code{signature(x = "flint")}:\cr
+      returns a logical indicating if \code{x} has a non-\code{NULL}
+      \code{dim} slot.}
+    \item{\code{is.matrix}}{
+      \code{signature(x = "flint")}:\cr
+      returns a logical indicating if \code{x} has a \code{dim} slot of
+      length 2.}
     \item{\code{is.na<-}}{
       \code{signature(x = "flint")}:\cr
       returns the value of \code{x} after \code{x[value] <- \var{na}},
