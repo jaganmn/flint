@@ -41,6 +41,13 @@ do { \
 #define slong_set(rop, op) *(rop) = *(op)
 #define ulong_equal(rop, op) (*(rop) == *(op))
 #define slong_equal(rop, op) (*(rop) == *(op))
+#define ulong_conj(rop, op) ulong_set(rop, op)
+#define slong_conj(rop, op) slong_set(rop, op)
+#define fmpz_conj(rop, op) fmpz_set(rop, op)
+#define fmpq_conj(rop, op) fmpq_set(rop, op)
+#define mag_conj(rop, op) mag_set(rop, op)
+#define arf_conj(rop, op) arf_set(rop, op)
+#define arb_conj(rop, op) arb_set(rop, op)
 
 #ifndef HAVE_ACF_ZERO
 static R_INLINE
@@ -48,6 +55,16 @@ void acf_zero(acf_t res)
 {
 	arf_zero(acf_realref(res));
 	arf_zero(acf_imagref(res));
+	return;
+}
+#endif
+
+#ifndef HAVE_ACF_CONJ
+static R_INLINE
+void acf_conj(acf_t res, const acf_t x)
+{
+	arf_set(acf_realref(res), acf_realref(x));
+	arf_neg(acf_imagref(res), acf_imagref(x));
 	return;
 }
 #endif
@@ -1089,6 +1106,77 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_usenames)
 	if (usenames)
 		R_do_slot_assign(ans, R_flint_symbol_names, sy);
 	UNPROTECT(3);
+	return ans;
+}
+
+SEXP R_flint_transpose(SEXP object, SEXP s_conjugate)
+{
+	SEXP a = R_do_slot(object, R_flint_symbol_dim);
+	if (a == R_NilValue || XLENGTH(a) != 2)
+		Rf_error(_("'%s' is not a matrix"), "x");
+	unsigned int i, j, d[2];
+	d[0] = (unsigned int) INTEGER_RO(a)[0];
+	d[1] = (unsigned int) INTEGER_RO(a)[1];
+	int conjugate = LOGICAL_RO(s_conjugate)[0];
+
+	R_flint_class_t class = R_flint_get_class(object);
+	const void *x = R_flint_get_pointer(object);
+	void *y = (void *) 0;
+	mp_limb_t jx = 0, jy = 0,
+		nx = R_flint_get_length(object),
+		ny = nx;
+	R_CFinalizer_t f = (void *) 0;
+	const char *what;
+
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		xptr_t x__ = x; \
+		yptr_t y__ = (ny) ? flint_calloc(ny, sizeof(elt_t)) : 0; \
+		y = y__; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+		if (conjugate) \
+		for (i = 0; i < d[0]; ++i, jx -= nx - 1) \
+			for (j = 0; j < d[1]; ++j, jx += d[0], ++jy) \
+				name##_set (y__ + jy, x__ + jx); \
+		else \
+		for (i = 0; i < d[0]; ++i, jx -= nx - 1) \
+			for (j = 0; j < d[1]; ++j, jx += d[0], ++jy) \
+				name##_conj(y__ + jy, x__ + jx); \
+	} while (0)
+
+	R_FLINT_SWITCH(class, TEMPLATE);
+
+#undef TEMPLATE
+
+	SEXP ans = PROTECT(newObject(what)), s, t;
+	R_flint_set(ans, y, ny, f);
+
+	PROTECT(s = Rf_allocVector(INTSXP, 2));
+	INTEGER(s)[0] = (int) d[1];
+	INTEGER(s)[1] = (int) d[0];
+	R_do_slot_assign(ans, R_flint_symbol_dim, s);
+	UNPROTECT(1);
+	a = R_do_slot(object, R_flint_symbol_dimnames);
+	if (a != R_NilValue) {
+	PROTECT(a);
+	PROTECT(s = Rf_allocVector(VECSXP, 2));
+	SET_VECTOR_ELT(s, 0, VECTOR_ELT(a, 1));
+	SET_VECTOR_ELT(s, 1, VECTOR_ELT(a, 0));
+	a = Rf_getAttrib(a, R_NamesSymbol);
+	if (a != R_NilValue) {
+	PROTECT(a);
+	PROTECT(t = Rf_allocVector(STRSXP, 2));
+	SET_STRING_ELT(t, 0, STRING_ELT(a, 1));
+	SET_STRING_ELT(t, 1, STRING_ELT(a, 0));
+	Rf_setAttrib(s, R_NamesSymbol, t);
+	UNPROTECT(2);
+	}
+	R_do_slot_assign(ans, R_flint_symbol_dimnames, s);
+	UNPROTECT(2);
+	}
+
+	UNPROTECT(1);
 	return ans;
 }
 

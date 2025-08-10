@@ -16,7 +16,7 @@ exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               findInterval, format, is.array, is.finite, is.infinite,
               is.matrix, is.na, "is.na<-", is.nan, is.unsorted, length,
               "length<-", log, match, mean, mtfrm, names, "names<-",
-              print, rep, rep.int, rep_len, seq, sequence, summary,
+              print, rep, rep.int, rep_len, seq, sequence, summary, t,
               unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
@@ -91,4 +91,5 @@ S3method(rep_len, flint, .S3.rep_len.flint)
 S3method(seq, flint, .S3.seq.flint)
 S3method(sequence, flint, .S3.sequence.flint)
 S3method(summary, flint, .S3.summary.flint)
+S3method(t, flint, .S3.t.flint)
 S3method(unique, flint, .S3.unique.flint)

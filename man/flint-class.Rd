@@ -72,6 +72,7 @@
 \alias{sequence,flint-method}
 \alias{show,flint-method}
 \alias{summary,flint-method}
+\alias{t,flint-method}
 \alias{unique,flint-method}
 \docType{class}
 \title{Class of FLINT-Type Vectors}
@@ -423,6 +424,11 @@ seq(to=, by=, length.out=)}
       from \code{\linkS4class{arb}} or \code{\linkS4class{acb}}) or
       optional argument \code{triple} is \code{TRUE}, in which case the
       value is just \code{\link{flintTriple}()} with names.}
+    \item{\code{t}}{
+      \code{signature(x = "flint")}:\cr
+      returns the transpose of \code{x} if \code{x} is a matrix and
+      a 1-by-\code{length(x)} matrix if \code{x} is a vector or
+      1-dimensional array.}
     \item{\code{unique}}{
       \code{signature(x = "flint")}:\cr
       returns \code{x[!duplicated(x, \dots)]}.}

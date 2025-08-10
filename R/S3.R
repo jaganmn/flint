@@ -82,6 +82,10 @@ function (nvec, ...)
 function (object, ...)
     summary(object, ...)
 
+.S3.t.flint <-
+function (x)
+    t(x)
+
 .S3.unique.flint <-
 function (x, incomparables = FALSE, ...)
     unique(x, incomparables = incomparables, ...)

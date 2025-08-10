@@ -1649,6 +1649,11 @@ setMethod("summary",
               if (anyna) c(qq, "NaN" = sum(isna)) else qq
           })
 
+setMethod("t",
+          c(x = "flint"),
+          function (x)
+              .Call(R_flint_transpose, x, FALSE))
+
 setMethod("unique",
           c(x = "flint"),
           function (x, incomparables = FALSE, ...) {
