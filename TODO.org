@@ -2,10 +2,10 @@
 
 ** TODO arrays and methods for generic functions designed for arrays
 
-*** TODO rbind, cbind, rbind2, cbind2
+*** DONE rbind, cbind, rbind2, cbind2
 *** TODO rowSums, colSums, rowMeans, colMeans
 *** TODO [, [<-, [[, [[<-
-*** TODO diag, diag<-
+*** DONE diag, diag<-
 *** DONE t
 *** TODO %*%, crossprod, tcrossprod, kronecker, scale
 *** TODO solve, backsolve, chol2inv

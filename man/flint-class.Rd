@@ -40,8 +40,13 @@
 \alias{all.equal,flint,ANY-method}
 \alias{all.equal,flint,flint-method}
 \alias{c,flint-method}
+\alias{cbind2,ANY,flint-method}
+\alias{cbind2,flint,ANY-method}
+\alias{cbind2,flint,flint-method}
 \alias{coerce,ANY,flint-method}
 \alias{cut,flint-method}
+\alias{diag,flint-method}
+\alias{diag<-,flint-method}
 \alias{dim,flint-method}
 \alias{dim<-,flint,NULL-method}
 \alias{dim<-,flint,numeric-method}
@@ -65,6 +70,9 @@
 \alias{names<-,flint,character-method}
 \alias{print,flint-method}
 \alias{quantile,flint-method}
+\alias{rbind2,ANY,flint-method}
+\alias{rbind2,flint,ANY-method}
+\alias{rbind2,flint,flint-method}
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
 \alias{rep_len,flint-method}
@@ -255,6 +263,14 @@
       returns \code{\link{c.flint}(x, \dots)}, the concatenation of the
       arguments.  Function \code{c.flint} is exported to work around the
       fact that \code{\link{c}(x, \dots)} dispatches only on \code{x}.}
+    \item{\code{cbind2}}{
+      \code{signature(x = "ANY", y = "flint")}:\cr
+      \code{signature(x = "flint", y = "ANY")}:\cr
+      \code{signature(x = "flint", y = "flint")}:\cr
+      returns \code{\link{cbind.flint}(x, y, \dots)}, the horizontal
+      concatenation of \code{x} and \code{y}.  These methods are
+      dispatched by \code{\link{cbind}} in case of S3 dispatch
+      ambiguities; see \code{\link{cbind2}}.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "flint")}:\cr
       coerces atomic (except character) vectors \code{from} to the most
@@ -268,6 +284,21 @@
       method for \code{\link{cut}} with argument \code{labels} set to
       \code{FALSE}, provided that \code{breaks} is sorted and no element
       of \code{x} is out of bounds.}
+    \item{\code{diag}}{
+      \code{signature(x = "flint")}:\cr
+      if \code{x} is a matrix, then returns a \code{flint} vector
+      containing the diagonal entries of \code{x}; otherwise, returns a
+      diagonal matrix with diagonal entries taken from \code{x}.
+      Optional arguments \code{nrow}, \code{ncol}, and \code{names} are
+      handled as by the \pkg{base} function, hence see
+      \code{\link{diag}}.}
+    \item{\code{diag<-}}{
+      \code{signature(x = "flint", value = "ANY")}:\cr
+      returns \code{x}, which must be a matrix, after setting its main
+      diagonal to \code{value}, whose length must be equal to 1 or the
+      length of \code{x}.  Arguments \code{x} and \code{value} are
+      coerced to a common class following the rules used for general
+      subassignment; see the methods for \code{[<-} and \code{[[<-}.}
     \item{\code{dim}}{
       \code{signature(x = "flint")}:\cr
       returns the \code{dim} slot of \code{x}.}
@@ -376,6 +407,14 @@
       according to additional arguments \code{probs} and \code{type};
       see \code{\link{quantile}}.  Currently, an error is is signaled
       for \code{x} of length zero and \code{x} containing \code{NaN}.}
+    \item{\code{rbind2}}{
+      \code{signature(x = "ANY", y = "flint")}:\cr
+      \code{signature(x = "flint", y = "ANY")}:\cr
+      \code{signature(x = "flint", y = "flint")}:\cr
+      returns \code{\link{rbind.flint}(x, y, \dots)}, the vertical
+      concatenation of \code{x} and \code{y}.  These methods are
+      dispatched by \code{\link{rbind}} in case of S3 dispatch
+      ambiguities; see \code{\link{rbind2}}.}
     \item{\code{rep}}{
       \code{signature(x = "flint")}:\cr
       repeats \code{x} (or elements of \code{x}) according to optional
@@ -426,9 +465,8 @@ seq(to=, by=, length.out=)}
       value is just \code{\link{flintTriple}()} with names.}
     \item{\code{t}}{
       \code{signature(x = "flint")}:\cr
-      returns the transpose of \code{x} if \code{x} is a matrix and
-      a 1-by-\code{length(x)} matrix if \code{x} is a vector or
-      1-dimensional array.}
+      returns the transpose of \code{x} if \code{x} is a matrix,
+      handling vectors \code{x} as \code{length(x)}-by-1 matrices.}
     \item{\code{unique}}{
       \code{signature(x = "flint")}:\cr
       returns \code{x[!duplicated(x, \dots)]}.}

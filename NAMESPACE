@@ -11,13 +11,13 @@ exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
 exportMethods("!", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               anyDuplicated, anyNA, as.raw, as.logical, as.integer,
               as.numeric, as.complex, as.vector, as.matrix, as.array,
-              as.data.frame, as.Date, as.POSIXct, as.POSIXlt, c, cut,
-              dim, "dim<-", dimnames, "dimnames<-", drop, duplicated,
-              findInterval, format, is.array, is.finite, is.infinite,
-              is.matrix, is.na, "is.na<-", is.nan, is.unsorted, length,
-              "length<-", log, match, mean, mtfrm, names, "names<-",
-              print, rep, rep.int, rep_len, seq, sequence, summary, t,
-              unique, xtfrm)
+              as.data.frame, as.Date, as.POSIXct, as.POSIXlt, c, cbind2,
+              cut, diag, "diag<-", dim, "dim<-", dimnames, "dimnames<-",
+              drop, duplicated, findInterval, format, is.array,
+              is.finite, is.infinite, is.matrix, is.na, "is.na<-",
+              is.nan, is.unsorted, length, "length<-", log, match, mean,
+              mtfrm, names, "names<-", print, rbind2, rep, rep.int,
+              rep_len, seq, sequence, summary, t, unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
 exportMethods(quantile)
@@ -32,6 +32,8 @@ export(.flint, .flint.array,
        .arb, .arb.array,
        .acb, .acb.array)
 export(c.flint,
+       cbind.flint,
+       rbind.flint,
        flintABI,
        flintIdentical,
        flintLength,
@@ -78,6 +80,7 @@ S3method(as.POSIXct, flint, .S3.as.POSIXct.flint)
 S3method(as.POSIXlt, flint, .S3.as.POSIXlt.flint)
 S3method(as.data.frame, flint, .S3.as.data.frame.flint)
 S3method(c, flint)
+S3method(cbind, flint)
 S3method(duplicated, flint, .S3.duplicated.flint)
 S3method(format, flint, .S3.format.flint)
 S3method("is.na<-", flint, ".S3.is.na<-.flint")
@@ -86,6 +89,7 @@ S3method(mean, flint, .S3.mean.flint)
 S3method(mtfrm, flint, .S3.mtfrm.flint)
 S3method(print, flint, .S3.print.flint)
 S3method(quantile, flint, .S3.quantile.flint)
+S3method(rbind, flint)
 S3method(rep.int, flint, .S3.rep.int.flint)
 S3method(rep_len, flint, .S3.rep_len.flint)
 S3method(seq, flint, .S3.seq.flint)

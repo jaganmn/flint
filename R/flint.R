@@ -3,7 +3,7 @@ function (object, mode)
     switch(mode,
            ## x
            switch(type. <- typeof(object),
-                  "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "pairlist" =, "list" =, "expression" =
+                  "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "NULL" =, "pairlist" =, "language" =, "list" =, "expression" =
                                                                                               type.,
                   "S4" =
                       if (is.na(class. <- flintClass(object)))
@@ -24,7 +24,7 @@ function (object, mode)
                   stop(.error.invalidSubscriptType(object))),
            ## value
            switch(type. <- typeof(object),
-                  "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "list" =, "expression" =
+                  "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "NULL" =, "pairlist" =, "language" =, "list" =, "expression" =
                       type.,
                   "S4" =
                       if (is.na(class. <- flintClass(object)))
@@ -1036,16 +1036,37 @@ setMethod("as.POSIXlt",
           function (x, tz = "", ...)
               as.POSIXlt(flintUnclass(x), tz = tz, ...))
 
-.c.class <-
+.bind.class <-
 function (x)
     switch(type. <- typeof(x),
-           "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "symbol" =, "pairlist" =, "list" =, "expression" =
+           "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "NULL" =, "pairlist" =, "symbol" =, "language" =, "list" =, "expression" =
                                                                                        type.,
            "S4" =
                if (is.na(class. <- flintClass(x)))
                    stop(.error.invalidArgumentClass(x))
                else class.,
            stop(.error.invalidArgumentType(x)))
+
+.bind.as <-
+function (x, class, keep.dim = FALSE) {
+    ans <- as(x, class)
+    if (keep.dim && is.null(dim(ans)) && !is.null(a <- dim(x))) {
+        if (isS4(ans))
+            ans@dim <- a
+        else dim(ans) <- a
+        if (!is.null(a <- dimnames(x))) {
+            if (isS4(ans))
+                ans@dimnames <- a
+            else dimnames(ans) <- a
+        }
+    }
+    if (is.null(names(ans)) && !is.null(a <- names(x))) {
+        if (isS4(ans))
+            ans@names <- a
+        else names(ans) <- a
+    }
+    ans
+}
 
 c.flint <-
 function (..., recursive = FALSE, use.names = TRUE) {
@@ -1058,20 +1079,56 @@ function (..., recursive = FALSE, use.names = TRUE) {
     }
     else
         args <- list(...)
-    classes <- vapply(args, .c.class, "")
+    classes <- vapply(args, .bind.class, "")
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(c(NULL, ..., recursive = FALSE, use.names = use.names))
-    args <- lapply(args, as, common)
+    args <- lapply(args, .bind.as, common)
     if (any(common == c("character", "list", "expression")))
         unlist(args, recursive = FALSE, use.names = use.names)
-    else .Call(R_flint_bind, args, as.logical(use.names))
+    else {
+        exps <- substitute(list(...))
+        .Call(R_flint_bind, 2L, as.logical(use.names), args, exps)
+    }
 }
 
 setMethod("c",
           c(x = "flint"),
           function (x, ...)
               c.flint(x, ...))
+
+cbind.flint <-
+function (..., deparse.level = 1) {
+    if (nargs() == 0L)
+        return(NULL)
+    args <- list(...)
+    classes <- vapply(args, .bind.class, "")
+    common <- flintClassCommon(classes, strict = FALSE)
+    if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
+        return(cbind(NULL, ..., deparse.level = deparse.level))
+    args <- lapply(args, .bind.as, common, keep.dim = TRUE)
+    if (any(common == c("character", "list", "expression")))
+        do.call(cbind, c(args, list(deparse.level = deparse.level)))
+    else {
+        exps <- substitute(list(...))
+        .Call(R_flint_bind, 1L, as.integer(deparse.level), args, exps)
+    }
+}
+
+setMethod("cbind2",
+          c(x =   "ANY", y = "flint"),
+          function (x, y, ...)
+              cbind.flint(x, y, deparse.level = 0L))
+
+setMethod("cbind2",
+          c(x = "flint", y =   "ANY"),
+          function (x, y, ...)
+              cbind.flint(x, y, deparse.level = 0L))
+
+setMethod("cbind2",
+          c(x = "flint", y = "flint"),
+          function (x, y, ...)
+              cbind.flint(x, y, deparse.level = 0L))
 
 setMethod("cut",
           c(x = "flint"),
@@ -1096,6 +1153,47 @@ setAs("ANY", "flint",
                  stop(gettextf("coercion from '%s' to '%s' is not yet implemented",
                                type., "flint"),
                       domain = NA)))
+
+setMethod("diag",
+          c(x = "flint"),
+          function (x = 1, nrow, ncol, names = TRUE) {
+              if (is.null(d <- x@dim)) {
+                  if (missing(nrow)) nrow <- length(x)
+                  if (missing(ncol)) ncol <- nrow
+                  .Call(R_flint_diag, x, as.integer(nrow), as.integer(ncol))
+              } else {
+                  if (length(d) != 2L)
+                      stop(gettextf("'%s' is an array but not a matrix",
+                                    "x"),
+                           domain = NA)
+                  if (!(missing(nrow) && missing(ncol)))
+                      stop(gettextf("attempt to set '%s' when '%s' is a matrix",
+                                    if (missing(nrow)) "ncol" else "nrow", "x"),
+                           domain = NA)
+                  ans <- .Call(R_flint_diag, x, NULL, NULL)
+                  if (names &&
+                      !(is.null(dn <- x@dimnames) ||
+                        is.null(rn <- dn[[1L]]) ||
+                        is.null(cn <- dn[[2L]])) &&
+                      {
+                          h <- seq_len(min(d))
+                          identical(an <- rn[h], cn[h])
+                      })
+                      ans@names <- an
+                  ans
+              }
+          })
+
+setMethod("diag<-",
+          c(x = "flint"),
+          function (x, value) {
+              if (length(d <- x@dim) != 2L)
+                  stop(gettextf("'%s' is not a matrix", "x"),
+                       domain = NA)
+              i <- .ulong(1L) + .ulong(d[1L]) * .Call(R_flint_ulong_seq, .ulong(0L), .ulong(min(d)), FALSE)
+              x[i] <- value
+              x
+          })
 
 setMethod("dim",
           c(x = "flint"),
@@ -1285,7 +1383,7 @@ setMethod("length",
 setMethod("length<-",
           c(x = "flint"),
           function (x, value)
-              .Call(R_flint_realloc, x, as(value, "ulong")))
+              .Call(R_flint_length_assign, x, as(value, "ulong")))
 
 .match <-
 function (x, table, nomatch = NA_integer_, incomparables = NULL) {
@@ -1469,6 +1567,39 @@ setMethod("quantile",
               }
               qs
           })
+
+rbind.flint <-
+function (..., deparse.level = 1) {
+    if (nargs() == 0L)
+        return(NULL)
+    args <- list(...)
+    classes <- vapply(args, .bind.class, "")
+    common <- flintClassCommon(classes, strict = FALSE)
+    if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
+        return(cbind(NULL, ..., deparse.level = deparse.level))
+    args <- lapply(args, .bind.as, common, keep.dim = TRUE)
+    if (any(common == c("character", "list", "expression")))
+        do.call(rbind, c(args, list(deparse.level = deparse.level)))
+    else {
+        exps <- substitute(list(...))
+        .Call(R_flint_bind, 0L, as.integer(deparse.level), args, exps)
+    }
+}
+
+setMethod("rbind2",
+          c(x =   "ANY", y = "flint"),
+          function (x, y, ...)
+              rbind.flint(x, y, deparse.level = 0L))
+
+setMethod("rbind2",
+          c(x = "flint", y =   "ANY"),
+          function (x, y, ...)
+              rbind.flint(x, y, deparse.level = 0L))
+
+setMethod("rbind2",
+          c(x = "flint", y = "flint"),
+          function (x, y, ...)
+              rbind.flint(x, y, deparse.level = 0L))
 
 setMethod("rep",
           c(x = "flint"),
