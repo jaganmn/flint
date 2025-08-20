@@ -133,6 +133,16 @@ setAs("ANY", "arf",
               dim = dim(from), dimnames = dimnames(from),
               names = names(from)))
 
+setMethod("colMeans",
+          c(x = "arf"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_arf_ops1, "colMeans", x, list(as.logical(na.rm), as.integer(dims))))
+
+setMethod("colSums",
+          c(x = "arf"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_arf_ops1, "colSums", x, list(as.logical(na.rm), as.integer(dims))))
+
 setMethod("format",
           c(x = "arf"),
           function (x, base = 10L, digits = NULL, sep = NULL,
@@ -182,3 +192,13 @@ setMethod("mean",
                   mean(c(x, ...), na.rm = FALSE)
               else .Call(R_flint_arf_ops1, "mean", x, list(as.logical(na.rm)))
           })
+
+setMethod("rowMeans",
+          c(x = "arf"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_arf_ops1, "rowMeans", x, list(as.logical(na.rm), as.integer(dims))))
+
+setMethod("rowSums",
+          c(x = "arf"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_arf_ops1, "rowSums", x, list(as.logical(na.rm), as.integer(dims))))

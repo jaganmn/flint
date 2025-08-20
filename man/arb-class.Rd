@@ -24,6 +24,8 @@
 \alias{anyNA,arb-method}
 \alias{as.vector,arb-method}
 \alias{coerce,ANY,arb-method}
+\alias{colMeans,arb-method}
+\alias{colSums,arb-method}
 \alias{is.finite,arb-method}
 \alias{is.infinite,arb-method}
 \alias{is.na,arb-method}
@@ -31,6 +33,8 @@
 \alias{is.unsorted,arb-method}
 \alias{log,arb-method}
 \alias{mean,arb-method}
+\alias{rowMeans,arb-method}
+\alias{rowSums,arb-method}
 \alias{xtfrm,arb-method}
 \docType{class}
 \title{Arbitrary Precision Floating-Point Real Numbers with Error Bounds}
@@ -209,6 +213,11 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arb")}:\cr
       returns the value of \code{.arb(from)}.}
+    \item{\code{colSums}, \code{colMeans}}{
+      \code{signature(x = "arb")}:\cr
+      returns an \code{arb} vector or array containing the column sums
+      or means of \code{x}, defined as sums or means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "arb")}:\cr
       returns a character vector suitable for printing, using string
@@ -246,6 +255,11 @@
     \item{\code{mean}}{
       \code{signature(x = "arb")}:\cr
       returns the arithmetic mean.}
+    \item{\code{rowSums}, \code{rowMeans}}{
+      \code{signature(x = "arb")}:\cr
+      returns an \code{arb} vector or array containing the row sums or
+      means of \code{x}, defined as sums or means over dimensions
+      \code{(dims+1):length(dim(x))}.}
     \item{\code{xtfrm}}{
       \code{signature(x = "arb")}:\cr
       signals an error indicating that \code{<=} is not a total order

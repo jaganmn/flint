@@ -865,9 +865,9 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
 		SEXP ans = PROTECT(newObject("acb"));
-		mp_limb_t s = (op == 52) ? 2 : 1;
-		acb_ptr z = flint_calloc(s, sizeof(acb_t));
-		R_flint_set(ans, z, s, (R_CFinalizer_t) &R_flint_acb_finalize);
+		mp_limb_t nz = (op == 52) ? 2 : 1;
+		acb_ptr z = flint_calloc(nz, sizeof(acb_t));
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
 		switch (op) {
 		case 53: /*     "sum" */
 			acb_zero(z);
@@ -1025,6 +1025,113 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
+		return ans;
+	}
+	case 60: /*     "colSums" */
+	case 61: /*     "rowSums" */
+	case 62: /*    "colMeans" */
+	case 63: /*    "rowMeans" */
+	{
+		int byrow = op == 61 || op == 63, domean = op == 62 || op == 63;
+
+		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
+		if (dimx == R_NilValue || XLENGTH(dimx) < 2)
+			Rf_error(_("'%s' is not a matrix or a higher dimensional array"),
+			         "x");
+		const int *dx = INTEGER_RO(dimx);
+		int ndx = LENGTH(dimx);
+
+		SEXP s_narm = VECTOR_ELT(s_dots, 0);
+		if (XLENGTH(s_narm) == 0)
+			Rf_error(_("'%s' of length zero in '%s'"),
+			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
+		int narm = LOGICAL_RO(s_narm)[0];
+
+		SEXP s_off = VECTOR_ELT(s_dots, 1);
+		if (XLENGTH(s_off) == 0)
+			Rf_error(_("'%s' of length zero in '%s'"),
+			         "dims", CHAR(STRING_ELT(s_op, 0)));
+		int off = INTEGER_RO(s_off)[0];
+		if (off < 1 || off >= ndx)
+			Rf_error(_("'%s' is not in 1:(length(dim(%s))-1)"),
+			         "dims", "x");
+
+		SEXP dimz = PROTECT(Rf_allocVector(INTSXP, (byrow) ? off : ndx - off));
+		int *dz = INTEGER(dimz), ndz = LENGTH(dimz), k;
+
+		mp_limb_t jx = 0, jz, nx = n, nz = 1;
+		for (k = 0; k < ndz; ++k)
+			nz *= (mp_limb_t) (dz[k] = dx[(byrow) ? k : off + k]);
+		mp_limb_t jt, nt = nx/nz;
+
+		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
+			dimnamesz = R_NilValue;
+		if (dimnamesx != R_NilValue) {
+			PROTECT(dimnamesx);
+			PROTECT(dimnamesz = Rf_allocVector(VECSXP, ndz));
+			for (k = 0; k < ndz; ++k)
+				SET_VECTOR_ELT(dimnamesz, k, VECTOR_ELT(dimnamesx, (byrow) ? k : off + k));
+			SEXP namesdimnamesx = Rf_getAttrib(dimnamesx, R_NamesSymbol),
+				namesdimnamesz = R_NilValue;
+			if (namesdimnamesx != R_NilValue) {
+				PROTECT(namesdimnamesx);
+				PROTECT(namesdimnamesz = Rf_allocVector(STRSXP, ndz));
+				for (k = 0; k < ndz; ++k)
+					SET_STRING_ELT(namesdimnamesz, k, STRING_ELT(namesdimnamesx, (byrow) ? k : off + k));
+				Rf_setAttrib(dimnamesz, R_NamesSymbol, namesdimnamesz);
+				UNPROTECT(2);
+			}
+			UNPROTECT(2);
+		}
+		PROTECT(dimnamesz);
+
+		SEXP ans = PROTECT(newObject("acb"));
+		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
+		if (byrow) {
+			mp_limb_t *c = 0;
+			if (domean && nz) {
+				c = (mp_limb_t *) R_alloc(nz, sizeof(mp_limb_t));
+				memset(c, 0, nz * sizeof(mp_limb_t));
+			}
+			for (jz = 0; jz < nz; ++jz)
+				acb_zero(z + jz);
+			for (jt = 0; jt < nt; ++jt)
+				for (jz = 0; jz < nz; ++jz, ++jx)
+					if (!(narm && ACB_CONTAINS_NAN(z + jz)))
+						acb_add(z + jz, z + jz, x + jx, prec);
+					else if (domean)
+						++c[jz];
+			if (domean) {
+			for (jz = 0; jz < nz; ++jz)
+				if (c[jz] == nt)
+					acb_indeterminate(z + jz);
+				else
+					acb_div_ui(z + jz, z + jz, nt - c[jz], prec);
+			}
+		} else {
+			mp_limb_t c = 0;
+			for (jz = 0; jz < nz; ++jz) {
+				acb_zero(z + jz);
+				for (jt = 0; jt < nt; ++jt, ++jx)
+					if (!(narm && ACB_CONTAINS_NAN(x + jx)))
+						acb_add(z + jz, z + jz, x + jx, prec);
+					else if (domean)
+						++c;
+				if (domean) {
+					if (c == nt)
+						acb_indeterminate(z + jz);
+					else
+						acb_div_ui(z + jz, z + jz, nt - c, prec);
+					c = 0;
+				}
+			}
+		}
+		if (ndz > 1)
+			setDDNN(ans, dimz, dimnamesz, R_NilValue);
+		else if (dimnamesz != R_NilValue)
+			setDDNN(ans, R_NilValue, R_NilValue, VECTOR_ELT(dimnamesz, 0));
+		UNPROTECT(4);
 		return ans;
 	}
 	default:

@@ -3,7 +3,7 @@
 ** TODO arrays and methods for generic functions designed for arrays
 
 *** DONE rbind, cbind, rbind2, cbind2
-*** TODO rowSums, colSums, rowMeans, colMeans
+*** DONE rowSums, colSums, rowMeans, colMeans
 *** TODO [, [<-, [[, [[<-
 *** DONE diag, diag<-
 *** DONE t

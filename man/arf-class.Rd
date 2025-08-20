@@ -24,12 +24,16 @@
 \alias{anyNA,arf-method}
 \alias{as.vector,arf-method}
 \alias{coerce,ANY,arf-method}
+\alias{colMeans,arf-method}
+\alias{colSums,arf-method}
 \alias{is.finite,arf-method}
 \alias{is.infinite,arf-method}
 \alias{is.na,arf-method}
 \alias{is.nan,arf-method}
 \alias{is.unsorted,arf-method}
 \alias{mean,arf-method}
+\alias{rowMeans,arf-method}
+\alias{rowSums,arf-method}
 \docType{class}
 \title{Arbitrary Precision Floating-Point Real Numbers}
 \description{
@@ -174,6 +178,11 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
       returns the value of \code{.arf(from)}.}
+    \item{\code{colSums}, \code{colMeans}}{
+      \code{signature(x = "arf")}:\cr
+      returns an \code{arf} vector or array containing the column sums
+      or means of \code{x}, defined as sums or means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific
@@ -205,6 +214,11 @@
     \item{\code{mean}}{
       \code{signature(x = "arf")}:\cr
       returns the arithmetic mean.}
+    \item{\code{rowSums}, \code{rowMeans}}{
+      \code{signature(x = "arf")}:\cr
+      returns an \code{arf} vector or array containing the row sums or
+      means of \code{x}, defined as sums or means over dimensions
+      \code{(dims+1):length(dim(x))}.}
   }
 }
 \seealso{

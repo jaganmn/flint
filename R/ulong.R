@@ -141,6 +141,16 @@ setAs("ANY", "ulong",
               dim = dim(from), dimnames = dimnames(from),
               names = names(from)))
 
+setMethod("colMeans",
+          c(x = "ulong"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_ulong_ops1, "colMeans", x, list(NULL, as.integer(dims))))
+
+setMethod("colSums",
+          c(x = "ulong"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_ulong_ops1, "colSums", x, list(NULL, as.integer(dims))))
+
 setMethod("format",
           c(x = "ulong"),
           function (x, base = 10L, ...)
@@ -184,3 +194,13 @@ setMethod("mean",
                   mean(c(x, ...), na.rm = na.rm)
               else .Call(R_flint_ulong_ops1, "mean", x, NULL)
           })
+
+setMethod("rowMeans",
+          c(x = "ulong"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_ulong_ops1, "rowMeans", x, list(NULL, as.integer(dims))))
+
+setMethod("rowSums",
+          c(x = "ulong"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_ulong_ops1, "rowSums", x, list(NULL, as.integer(dims))))

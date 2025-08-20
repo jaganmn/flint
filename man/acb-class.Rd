@@ -24,6 +24,8 @@
 \alias{anyNA,acb-method}
 \alias{as.vector,acb-method}
 \alias{coerce,ANY,acb-method}
+\alias{colMeans,acb-method}
+\alias{colSums,acb-method}
 \alias{is.finite,acb-method}
 \alias{is.infinite,acb-method}
 \alias{is.na,acb-method}
@@ -31,6 +33,8 @@
 \alias{is.unsorted,acb-method}
 \alias{log,acb-method}
 \alias{mean,acb-method}
+\alias{rowMeans,acb-method}
+\alias{rowSums,acb-method}
 \alias{xtfrm,acb-method}
 \docType{class}
 \title{Arbitrary Precision Floating-Point Complex Numbers with Error Bounds}
@@ -205,6 +209,11 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acb")}:\cr
       returns the value of \code{.acb(from)}.}
+    \item{\code{colSums}, \code{colMeans}}{
+      \code{signature(x = "acb")}:\cr
+      returns an \code{acb} vector or array containing the column sums
+      or means of \code{x}, defined as sums or means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "acb")}:\cr
       returns a character vector suitable for printing, using string
@@ -243,6 +252,11 @@
     \item{\code{mean}}{
       \code{signature(x = "acb")}:\cr
       returns the arithmetic mean.}
+    \item{\code{rowSums}, \code{rowMeans}}{
+      \code{signature(x = "acb")}:\cr
+      returns an \code{acb} vector or array containing the row sums or
+      means of \code{x}, defined as sums or means over dimensions
+      \code{(dims+1):length(dim(x))}.}
     \item{\code{xtfrm}}{
       \code{signature(x = "acb")}:\cr
       signals an error indicating that \code{<=} is not a total order

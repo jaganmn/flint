@@ -24,12 +24,16 @@
 \alias{anyNA,fmpq-method}
 \alias{as.vector,fmpq-method}
 \alias{coerce,ANY,fmpq-method}
+\alias{colMeans,fmpq-method}
+\alias{colSums,fmpq-method}
 \alias{is.finite,fmpq-method}
 \alias{is.infinite,fmpq-method}
 \alias{is.na,fmpq-method}
 \alias{is.nan,fmpq-method}
 \alias{is.unsorted,fmpq-method}
 \alias{mean,fmpq-method}
+\alias{rowMeans,fmpq-method}
+\alias{rowSums,fmpq-method}
 \docType{class}
 \title{Arbitrary Precision Rational Numbers}
 \description{
@@ -180,6 +184,20 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpq")}:\cr
       returns the value of \code{.fmpq(from)}.}
+    \item{\code{colSums}, \code{colMeans}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns an \code{fmpq} vector or array containing the column sums
+      or means of \code{x}, defined as sums or means over dimensions
+      \code{1:dims}.}
+    \item{\code{colSums}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns an \code{fmpq} vector or array containing the column sums
+      of \code{x}, defined as sums over dimensions \code{1:dims}.}
+    \item{\code{colMeans}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns an \code{\linkS4class{fmpq}} vector or array containing
+      the column means of \code{x}, defined as means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "fmpq")}:\cr
       returns a character vector suitable for printing, using string
@@ -211,6 +229,11 @@
       returns the arithmetic mean.  An error is signaled if the argument
       length is 0, because the return type is \code{fmpq} which cannot
       represent the result of division by 0.}
+    \item{\code{rowSums}, \code{rowMeans}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns an \code{fmpq} vector or array containing the row sums or
+      means of \code{x}, defined as sums or means over dimensions
+      \code{(dims+1):length(dim(x))}.}
   }
 }
 \seealso{

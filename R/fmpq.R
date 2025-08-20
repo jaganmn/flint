@@ -179,6 +179,16 @@ setAs("ANY", "fmpq",
               dim = dim(from), dimnames = dimnames(from),
               names = names(from), num = NULL, den = NULL))
 
+setMethod("colMeans",
+          c(x = "fmpq"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_fmpq_ops1, "colMeans", x, list(NULL, as.integer(dims))))
+
+setMethod("colSums",
+          c(x = "fmpq"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_fmpq_ops1, "colSums", x, list(NULL, as.integer(dims))))
+
 setMethod("format",
           c(x = "fmpq"),
           function (x, base = 10L, ...) {
@@ -228,3 +238,13 @@ setMethod("mean",
                   mean(c(x, ...), na.rm = na.rm)
               else .Call(R_flint_fmpq_ops1, "mean", x, NULL)
           })
+
+setMethod("rowMeans",
+          c(x = "fmpq"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_fmpq_ops1, "rowMeans", x, list(NULL, as.integer(dims))))
+
+setMethod("rowSums",
+          c(x = "fmpq"),
+          function (x, na.rm = FALSE, dims = 1, ...)
+              .Call(R_flint_fmpq_ops1, "rowSums", x, list(NULL, as.integer(dims))))

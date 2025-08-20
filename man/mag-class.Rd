@@ -24,6 +24,8 @@
 \alias{anyNA,mag-method}
 \alias{as.vector,mag-method}
 \alias{coerce,ANY,mag-method}
+\alias{colMeans,mag-method}
+\alias{colSums,mag-method}
 \alias{is.finite,mag-method}
 \alias{is.infinite,mag-method}
 \alias{is.na,mag-method}
@@ -31,6 +33,8 @@
 \alias{is.unsorted,mag-method}
 \alias{log,mag-method}
 \alias{mean,mag-method}
+\alias{rowMeans,mag-method}
+\alias{rowSums,mag-method}
 \docType{class}
 \title{Fixed Precision Magnitude (Error) Bounds}
 \description{
@@ -180,6 +184,11 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
       returns the value of \code{.mag(from)}.}
+    \item{\code{colSums}, \code{colMeans}}{
+      \code{signature(x = "mag")}:\cr
+      returns a \code{mag} vector or array containing upper bounds on
+      the column sums or means of \code{x}, defined as sums or means
+      over dimensions \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "mag")}:\cr
       returns a character vector suitable for printing, using scientific
@@ -216,6 +225,11 @@
     \item{\code{mean}}{
       \code{signature(x = "mag")}:\cr
       returns an upper bound for the arithmetic mean.}
+    \item{\code{rowSums}, \code{rowMeans}}{
+      \code{signature(x = "mag")}:\cr
+      returns a \code{mag} vector or array containing upper bounds on
+      the row sums or means of \code{x}, defined as sums or means over
+      dimensions \code{(dims+1):length(dim(x))}.}
   }
 }
 \seealso{

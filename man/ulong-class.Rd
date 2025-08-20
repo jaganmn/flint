@@ -49,6 +49,10 @@
 \alias{as.vector,slong-method}
 \alias{coerce,ANY,ulong-method}
 \alias{coerce,ANY,slong-method}
+\alias{colMeans,ulong-method}
+\alias{colMeans,slong-method}
+\alias{colSums,ulong-method}
+\alias{colSums,slong-method}
 \alias{is.finite,ulong-method}
 \alias{is.finite,slong-method}
 \alias{is.infinite,ulong-method}
@@ -61,6 +65,10 @@
 \alias{is.unsorted,slong-method}
 \alias{mean,ulong-method}
 \alias{mean,slong-method}
+\alias{rowMeans,ulong-method}
+\alias{rowMeans,slong-method}
+\alias{rowSums,ulong-method}
+\alias{rowSums,slong-method}
 \docType{class}
 \title{Fixed Precision Unsigned and Signed Integers}
 \description{
@@ -221,6 +229,18 @@
       \code{signature(from = "ANY", to = "ulong")}:\cr
       \code{signature(from = "ANY", to = "slong")}:\cr
       returns the value of \code{.ulong(from)} or \code{.slong(from)}.}
+    \item{\code{colSums}}{
+      \code{signature(x = "ulong")}:\cr
+      \code{signature(x = "slong")}:\cr
+      returns a \code{ulong} or (in case of overflow)
+      \code{\linkS4class{fmpz}} vector or array containing the column
+      sums of \code{x}, defined as sums over dimensions \code{1:dims}.}
+    \item{\code{colMeans}}{
+      \code{signature(x = "ulong")}:\cr
+      \code{signature(x = "slong")}:\cr
+      returns an \code{\linkS4class{fmpq}} vector or array containing
+      the column means of \code{x}, defined as means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr
@@ -257,6 +277,19 @@
       returns the arithmetic mean.  An error is signaled if the argument
       length is 0, because the return type is \code{\linkS4class{fmpq}}
       which cannot represent the result of division by 0.}
+    \item{\code{rowSums}}{
+      \code{signature(x = "ulong")}:\cr
+      \code{signature(x = "slong")}:\cr
+      returns a \code{ulong} or (in case of overflow)
+      \code{\linkS4class{fmpz}} vector or array containing the row sums
+      of \code{x}, defined as sums over dimensions
+      \code{(dims+1):length(dim(x))}.}
+    \item{\code{rowMeans}}{
+      \code{signature(x = "ulong")}:\cr
+      \code{signature(x = "slong")}:\cr
+      returns an \code{\linkS4class{fmpq}} vector or array containing
+      the row means of \code{x}, defined as means over dimensions
+      \code{(dims+1):length(dim(x))}.}
   }
 }
 \seealso{

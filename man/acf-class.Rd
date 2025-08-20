@@ -24,12 +24,16 @@
 \alias{anyNA,acf-method}
 \alias{as.vector,acf-method}
 \alias{coerce,ANY,acf-method}
+\alias{colMeans,acf-method}
+\alias{colSums,acf-method}
 \alias{is.finite,acf-method}
 \alias{is.infinite,acf-method}
 \alias{is.na,acf-method}
 \alias{is.nan,acf-method}
 \alias{is.unsorted,acf-method}
 \alias{mean,acf-method}
+\alias{rowMeans,acf-method}
+\alias{rowSums,acf-method}
 \alias{xtfrm,acf-method}
 \docType{class}
 \title{Arbitrary Precision Floating-Point Complex Numbers}
@@ -203,6 +207,11 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acf")}:\cr
       returns the value of \code{.acf(from)}.}
+    \item{\code{colSums}, \code{colMeans}}{
+      \code{signature(x = "acf")}:\cr
+      returns an \code{acf} vector or array containing the column sums
+      or means of \code{x}, defined as sums or means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "acf")}:\cr
       returns a character vector suitable for printing, using string
@@ -237,6 +246,11 @@
     \item{\code{mean}}{
       \code{signature(x = "acf")}:\cr
       returns the arithmetic mean.}
+    \item{\code{rowSums}, \code{rowMeans}}{
+      \code{signature(x = "acf")}:\cr
+      returns an \code{acf} vector or array containing the row sums or
+      means of \code{x}, defined as sums or means over dimensions
+      \code{(dims+1):length(dim(x))}.}
     \item{\code{xtfrm}}{
       \code{signature(x = "acf")}:\cr
       returns a numeric vector that sorts in the same order as \code{x}.

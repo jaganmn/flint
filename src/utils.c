@@ -247,7 +247,8 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 		         "dimnames", (long long int) XLENGTH(dimnames),
 		         "dim"     , (long long int) m);
 	const int *d = INTEGER_RO(dim);
-	int new = ATTRIB(dimnames) != R_NilValue;
+	SEXP a = ATTRIB(dimnames);
+	int new = a != R_NilValue && (CDR(a) != R_NilValue || TAG(a) != R_NamesSymbol);
 	for (i = 0; i < m; ++i) {
 		SEXP elt = VECTOR_ELT(dimnames, i);
 		t = (SEXPTYPE) TYPEOF(elt);
@@ -287,7 +288,7 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 			break;
 		case INTSXP:
 			if (Rf_inherits(elt, "factor")) {
-		    SET_VECTOR_ELT(ans, i, Rf_asCharacterFactor(elt));
+			SET_VECTOR_ELT(ans, i, Rf_asCharacterFactor(elt));
 			break;
 			}
 		default:
@@ -295,6 +296,18 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 			CLEAR_ATTRIB(elt);
 			SET_VECTOR_ELT(ans, i, elt);
 		}
+	}
+	SEXP namesdimnames = Rf_getAttrib(dimnames, R_NamesSymbol);
+	if (namesdimnames != R_NilValue) {
+		PROTECT(namesdimnames);
+		if (ATTRIB(namesdimnames) == R_NilValue)
+			Rf_setAttrib(ans, R_NamesSymbol, namesdimnames);
+		else {
+			PROTECT(namesdimnames = copyVector(namesdimnames));
+			Rf_setAttrib(ans, R_NamesSymbol, namesdimnames);
+			UNPROTECT(1);
+		}
+		UNPROTECT(1);
 	}
 	UNPROTECT(1);
 	return ans;
@@ -331,7 +344,7 @@ SEXP validNames(SEXP names, mp_limb_t length)
 		return (ATTRIB(names) != R_NilValue) ? copyVector(names) : names;
 	case INTSXP:
 		if (Rf_inherits(names, "factor"))
-	    return Rf_asCharacterFactor(names);
+		return Rf_asCharacterFactor(names);
 	default:
 		names = Rf_coerceVector(names, STRSXP);
 		CLEAR_ATTRIB(names);
@@ -346,7 +359,7 @@ void setDDNN(SEXP s, SEXP dim, SEXP dimnames, SEXP names)
 	if (dim != R_NilValue) {
 		sets(s, R_DimSymbol, dim);
 		if (dimnames != R_NilValue)
-			sets(s,  R_DimNamesSymbol, dimnames);
+			sets(s, R_DimNamesSymbol, dimnames);
 	}
 	if (names != R_NilValue)
 		sets(s, R_NamesSymbol, names);

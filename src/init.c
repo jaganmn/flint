@@ -54,10 +54,11 @@ const char *R_flint_ops1[] =
 	"gamma", "lgamma", "digamma", "trigamma",
 	/* Math2 (2) : */
 	"round", "signif",
-	/* Summary (10) : */
+	/* Summary (14) : */
 	"min", "max", "range",
 	"sum", "prod", "mean",
 	"any", "all", "anyNA", "is.unsorted",
+	"colSums", "rowSums", "colMeans", "rowMeans",
 	NULL
 };
 

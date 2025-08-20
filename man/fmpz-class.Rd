@@ -24,12 +24,16 @@
 \alias{anyNA,fmpz-method}
 \alias{as.vector,fmpz-method}
 \alias{coerce,ANY,fmpz-method}
+\alias{colMeans,fmpz-method}
+\alias{colSums,fmpz-method}
 \alias{is.finite,fmpz-method}
 \alias{is.infinite,fmpz-method}
 \alias{is.na,fmpz-method}
 \alias{is.nan,fmpz-method}
 \alias{is.unsorted,fmpz-method}
 \alias{mean,fmpz-method}
+\alias{rowMeans,fmpz-method}
+\alias{rowSums,fmpz-method}
 \docType{class}
 \title{Arbitrary Precision Signed Integers}
 \description{
@@ -165,6 +169,15 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
       returns the value of \code{.fmpz(from)}.}
+    \item{\code{colSums}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns an \code{fmpz} vector or array containing the column sums
+      of \code{x}, defined as sums over dimensions \code{1:dims}.}
+    \item{\code{colMeans}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns an \code{\linkS4class{fmpq}} vector or array containing
+      the column means of \code{x}, defined as means over dimensions
+      \code{1:dims}.}
     \item{\code{format}}{
       \code{signature(x = "fmpz")}:\cr
       returns a character vector suitable for printing.  Optional
@@ -194,6 +207,16 @@
       returns the arithmetic mean.  An error is signaled if the argument
       length is 0, because the return type is \code{\linkS4class{fmpq}}
       which cannot represent the result of division by 0.}
+    \item{\code{rowSums}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns an \code{fmpz} vector or array containing the row sums of
+      \code{x}, defined as sums over dimensions
+      \code{(dims+1):length(dim(x))}.}
+    \item{\code{rowMeans}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns an \code{\linkS4class{fmpq}} vector or array containing
+      the row means of \code{x}, defined as means over dimensions
+      \code{(dims+1):length(dim(x))}.}
   }
 }
 \seealso{

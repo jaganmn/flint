@@ -143,7 +143,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 		return R_NilValue;
 	exps = CDR(exps);
 
-	SEXP x, a, e;
+	SEXP x, e;
 	R_flint_class_t class = R_flint_get_class(VECTOR_ELT(args, 0));
 	void *y = (void *) 0;
 	mp_limb_t jx, jy = 0, nx, ny = 0;
@@ -152,20 +152,20 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 
 	if (op == 2) { /* c */
 
-		int anynamed = !usenames;
+		int anynames = !usenames;
 		for (jargs = 0, e = exps; jargs < nargs; ++jargs, e = CDR(e)) {
 			x = VECTOR_ELT(args, jargs);
 			nx = R_flint_get_length(x);
 			if (nx > UWORD_MAX - ny)
 				Rf_error(_("value length would exceed maximum %llu"),
 				         (unsigned long long int) UWORD_MAX);
-			if (!anynamed &&
+			if (!anynames &&
 			    (TAG(e) != R_NilValue ||
 			     R_do_slot(x, R_flint_symbol_names) != R_NilValue))
-				anynamed = 1;
+				anynames = 1;
 			ny += nx;
 		}
-		anynamed = usenames && anynamed && ny <= R_XLEN_T_MAX;
+		anynames = usenames && anynames && ny <= R_XLEN_T_MAX;
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 		do { \
@@ -190,9 +190,10 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 		SEXP ans = PROTECT(newObject(what));
 		R_flint_set(ans, y, ny, f);
 
-		if (anynamed) {
+		if (anynames) {
 
-		SEXP names = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) ny));
+		SEXP namesx,
+			namesy = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) ny));
 		char buf[8192];
 		const char *sa, *sb;
 		size_t la, lb;
@@ -201,38 +202,38 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 		for (jargs = 0, e = exps; jargs < nargs; ++jargs, e = CDR(e)) {
 			x = VECTOR_ELT(args, jargs);
 			nx = R_flint_get_length(x);
-			a = R_do_slot(x, R_flint_symbol_names);
+			namesx = R_do_slot(x, R_flint_symbol_names);
 			if (TAG(e) == R_NilValue) {
-				if (a == R_NilValue)
+				if (namesx == R_NilValue)
 					jy += nx;
 				else
 					for (jx = 0; jx < nx; ++jx, ++jy)
-						SET_STRING_ELT(names, (R_xlen_t) jy,
-						               STRING_ELT(a, (R_xlen_t) jx));
+						SET_STRING_ELT(namesy, (R_xlen_t) jy,
+						               STRING_ELT(namesx, (R_xlen_t) jx));
 			} else {
 				sa = Rf_translateCharUTF8(PRINTNAME(TAG(e)));
 				la = strlen(sa);
-				if (a == R_NilValue)
+				if (namesx == R_NilValue)
 					for (jx = 0; jx < nx; ++jx, ++jy) {
 						lb = (size_t) log10((double) (jx + 1)) + 1;
 						snprintf(buf, la + lb + 1, "%s%llu",
 						         sa, (unsigned long long int) (jx + 1));
-						SET_STRING_ELT(names, (R_xlen_t) jy,
+						SET_STRING_ELT(namesy, (R_xlen_t) jy,
 						               Rf_mkCharCE(buf, CE_UTF8));
 					}
 				else
 					for (jx = 0; jx < nx; ++jx, ++jy) {
-						sb = Rf_translateCharUTF8(STRING_ELT(a, (R_xlen_t) jx));
+						sb = Rf_translateCharUTF8(STRING_ELT(namesx, (R_xlen_t) jx));
 						lb = strlen(sb);
 						snprintf(buf, la + lb + 1, "%s.%s",
 						         sa, sb);
-						SET_STRING_ELT(names, (R_xlen_t) jy,
+						SET_STRING_ELT(namesy, (R_xlen_t) jy,
 						               Rf_mkCharCE(buf, CE_UTF8));
 					}
 			}
 		}
 
-		R_do_slot_assign(ans, R_flint_symbol_names, names);
+		R_do_slot_assign(ans, R_flint_symbol_names, namesy);
 		UNPROTECT(1);
 
 		}
@@ -242,18 +243,18 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 
 	} else { /* cbind, rbind */
 
-		SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
+		SEXP dimx, dimy = PROTECT(Rf_allocVector(INTSXP, 2));
 		const int *dx;
-		int *dy = INTEGER(dim), i, j;
+		int *dy = INTEGER(dimy), i, j;
 		dy[ op] =  0;
 		dy[!op] = -1;
 
 		R_xlen_t nnull = 0;
 		for (jargs = 0; jargs < nargs; ++jargs) {
 			x = VECTOR_ELT(args, jargs);
-			a = R_do_slot(x, R_flint_symbol_dim);
-			if (a != R_NilValue && XLENGTH(a) == 2) {
-				dx = INTEGER_RO(a);
+			dimx = R_do_slot(x, R_flint_symbol_dim);
+			if (dimx != R_NilValue && XLENGTH(dimx) == 2) {
+				dx = INTEGER_RO(dimx);
 				if (dx[op] > INT_MAX - dy[op])
 					Rf_error(_("dimensions would exceed maximum %d"),
 					         INT_MAX);
@@ -298,28 +299,28 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 			         (unsigned long long int) UWORD_MAX);
 		ny = (mp_limb_t) dy[0] * (mp_limb_t) dy[1];
 
-		int anynamed[] = { 0, 0 };
+		SEXP dimnamesx, namesx;
+		int anynames[] = { 0, 0 };
 		for (jargs = 0, e = exps; jargs < nargs; ++jargs, e = CDR(e)) {
 			x = VECTOR_ELT(args, jargs);
-			a = R_do_slot(x, R_flint_symbol_dim);
-			if (a != R_NilValue && XLENGTH(a) == 2) {
-				a = R_do_slot(x, R_flint_symbol_dimnames);
-				if (a != R_NilValue) {
-				if (!anynamed[ op] && VECTOR_ELT(a,  op) != R_NilValue)
-					anynamed[ op] = 1;
-				if (!anynamed[!op] && VECTOR_ELT(a, !op) != R_NilValue)
-					anynamed[!op] = 1;
+			dimx = R_do_slot(x, R_flint_symbol_dim);
+			if (dimx != R_NilValue && XLENGTH(dimx) == 2) {
+				dimnamesx = R_do_slot(x, R_flint_symbol_dimnames);
+				if (dimnamesx != R_NilValue) {
+				if (!anynames[ op] && VECTOR_ELT(dimnamesx,  op) != R_NilValue)
+					anynames[ op] = 1;
+				if (!anynames[!op] && VECTOR_ELT(dimnamesx, !op) != R_NilValue)
+					anynames[!op] = 1;
 				}
-			} else {
-				nx = R_flint_get_length(x);
-				if (!anynamed[ op] && (nx == dy[!op] || nx > 0) &&
+			} else if ((nx = R_flint_get_length(x)) == dy[!op] || nx > 0) {
+				if (!anynames[ op] &&
 				    (TAG(e) != R_NilValue || usenames == 2 || (usenames == 1 && TYPEOF(CAR(e)) == SYMSXP)))
-					anynamed[ op] = 1;
-				if (!anynamed[!op] && nx == dy[!op] &&
+					anynames[ op] = 1;
+				if (!anynames[!op] && nx == dy[!op] &&
 				    R_do_slot(x, R_flint_symbol_names) != R_NilValue)
-					anynamed[!op] = 1;
+					anynames[!op] = 1;
 			}
-			if (anynamed[0] && anynamed[1])
+			if (anynames[0] && anynames[1])
 				break;
 		}
 
@@ -333,9 +334,9 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 			for (jargs = 0; jargs < nargs; ++jargs) { \
 				x = VECTOR_ELT(args, jargs); \
 				x__ = R_flint_get_pointer(x); \
-				a = R_do_slot(x, R_flint_symbol_dim); \
-				if (a != R_NilValue && XLENGTH(a) == 2) { \
-					dx = INTEGER_RO(a); \
+				dimx = R_do_slot(x, R_flint_symbol_dim); \
+				if (dimx != R_NilValue && XLENGTH(dimx) == 2) { \
+					dx = INTEGER_RO(dimx); \
 					if (op == 1) { \
 						nx = (mp_limb_t) dx[0] * (mp_limb_t) dx[1]; \
 						for (jx = 0; jx < nx; ++jx, ++jy) \
@@ -346,39 +347,36 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 								name##_set(y__ + jy, x__ + jx); \
 						jy -= ny - dx[0]; \
 					} \
-				} else { \
-					nx = R_flint_get_length(x); \
-					if (nx == dy[!op]) { \
-						if (op == 1) \
-							for (jx = 0; jx < nx; ++jx, ++jy) \
-								name##_set(y__ + jy, x__ + jx); \
-						else { \
-							for (jx = 0; jx < nx; ++jx, jy += dy[op]) \
-								name##_set(y__ + jy, x__ + jx); \
-							jy -= ny - 1; \
-						} \
-					} else if (nx == 1) { \
-						if (op == 1) \
-							for (i = 0; i < dy[0]; ++i, ++jy) \
-								name##_set(y__ + jy, x__); \
-						else { \
-							for (j = 0; j < dy[1]; ++j, jy += dy[0]) \
-								name##_set(y__ + jy, x__); \
-							jy -= ny - 1; \
-						} \
-					} else if (nx > 0) { \
-						if (op == 1) { \
-							if (dy[0] % nx) \
-								Rf_warning(_("number of rows of return value is not a multiple of vector argument length")); \
-							for (i = 0, jx = 0; i < dy[0]; ++i, jx = (++jx == nx) ? 0 : jx, ++jy) \
-								name##_set(y__ + jy, x__ + jx); \
-						} else { \
-							if (dy[1] % nx) \
-								Rf_warning(_("number of columns of return value is not a multiple of vector argument length")); \
-							for (j = 0, jx = 0; j < dy[1]; ++j, jx = (++jx == nx) ? 0 : jx, jy += dy[0]) \
-								name##_set(y__ + jy, x__ + jx); \
-							jy -= ny - 1; \
-						} \
+				} else if ((nx = R_flint_get_length(x)) == dy[!op]) { \
+					if (op == 1) \
+						for (jx = 0; jx < nx; ++jx, ++jy) \
+							name##_set(y__ + jy, x__ + jx); \
+					else { \
+						for (jx = 0; jx < nx; ++jx, jy += dy[op]) \
+							name##_set(y__ + jy, x__ + jx); \
+						jy -= ny - 1; \
+					} \
+				} else if (nx == 1) { \
+					if (op == 1) \
+						for (i = 0; i < dy[0]; ++i, ++jy) \
+							name##_set(y__ + jy, x__); \
+					else { \
+						for (j = 0; j < dy[1]; ++j, jy += dy[0]) \
+							name##_set(y__ + jy, x__); \
+						jy -= ny - 1; \
+					} \
+				} else if (nx > 0) { \
+					if (op == 1) { \
+						if (dy[0] % nx) \
+							Rf_warning(_("number of rows of return value is not a multiple of vector argument length")); \
+						for (i = 0, jx = 0; i < dy[0]; ++i, jx = (++jx == nx) ? 0 : jx, ++jy) \
+							name##_set(y__ + jy, x__ + jx); \
+					} else { \
+						if (dy[1] % nx) \
+							Rf_warning(_("number of columns of return value is not a multiple of vector argument length")); \
+						for (j = 0, jx = 0; j < dy[1]; ++j, jx = (++jx == nx) ? 0 : jx, jy += dy[0]) \
+							name##_set(y__ + jy, x__ + jx); \
+						jy -= ny - 1; \
 					} \
 				} \
 			} \
@@ -390,65 +388,67 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 
 		SEXP ans = PROTECT(newObject(what));
 		R_flint_set(ans, y, ny, f);
-		R_do_slot_assign(ans, R_flint_symbol_dim, dim);
+		R_do_slot_assign(ans, R_flint_symbol_dim, dimy);
 
-		if (anynamed[0] || anynamed[1]) {
+		if (anynames[0] || anynames[1]) {
 
-			SEXP dimnames = PROTECT(Rf_allocVector(VECSXP, 2)),
-				marnames[] = { R_NilValue, R_NilValue },
+			SEXP dimnamesy = PROTECT(Rf_allocVector(VECSXP, 2)),
+				marnamesy[] = { R_NilValue, R_NilValue },
 				tag = PROTECT(Rf_allocVector(EXPRSXP, 1));
-			if (anynamed[op]) {
-				marnames[op] = Rf_allocVector(STRSXP, dy[op]);
-				SET_VECTOR_ELT(dimnames, op, marnames[op]);
+			if (anynames[op]) {
+				marnamesy[op] = Rf_allocVector(STRSXP, dy[op]);
+				SET_VECTOR_ELT(dimnamesy, op, marnamesy[op]);
 			}
-			PROTECT(marnames[op]);
+			PROTECT(marnamesy[op]);
 
 			SEXP t;
 			int pos = 0;
 			for (jargs = 0, e = exps; jargs < nargs; ++jargs, exps = CDR(exps)) {
 				x = VECTOR_ELT(args, jargs);
-				nx = R_flint_get_length(x);
-				a = R_do_slot(x, R_flint_symbol_dim);
-				if (a != R_NilValue && XLENGTH(a) == 2) {
-					PROTECT(a);
-					dx = INTEGER_RO(a);
-					a = R_do_slot(x, R_flint_symbol_dimnames);
-					if (a != R_NilValue) {
-					if (anynamed[ op]) {
-						t = VECTOR_ELT(a,  op);
+				dimx = R_do_slot(x, R_flint_symbol_dim);
+				if (dimx != R_NilValue && XLENGTH(dimx) == 2) {
+					PROTECT(dimx);
+					PROTECT(dimnamesx = R_do_slot(x, R_flint_symbol_dimnames));
+					dx = INTEGER_RO(dimx);
+					if (dimnamesx != R_NilValue) {
+					if (anynames[ op]) {
+						t = VECTOR_ELT(dimnamesx,  op);
 						if (t != R_NilValue)
 							for (i = 0; i < dx[op]; ++i)
-								SET_STRING_ELT(marnames[op], pos++, STRING_ELT(t, i));
+								SET_STRING_ELT(marnamesy[op], pos++, STRING_ELT(t, i));
 						else
 							pos += dx[op];
 					}
-					if (anynamed[!op] && marnames[!op] == R_NilValue) {
-						t = VECTOR_ELT(a, !op);
-						if (t != R_NilValue)
-							SET_VECTOR_ELT(dimnames, !op, marnames[!op] = t);
+					if (anynames[!op] && marnamesy[!op] == R_NilValue) {
+						t = VECTOR_ELT(dimnamesx, !op);
+						if (t != R_NilValue) {
+							marnamesy[!op] = t;
+							SET_VECTOR_ELT(dimnamesy, !op, marnamesy[!op]);
+						}
 					}
 					}
-					UNPROTECT(1);
-				} else if (nx == dy[!op] || nx > 0) {
-					if (anynamed[ op]) {
+					UNPROTECT(2);
+				} else if ((nx = R_flint_get_length(x)) == dy[!op] || nx > 0) {
+					if (anynames[ op]) {
 						if (TAG(e) != R_NilValue || usenames == 2 || (usenames == 1 && TYPEOF(CAR(e)) == SYMSXP)) {
 							SET_VECTOR_ELT(tag, 0, (TAG(e) != R_NilValue) ? TAG(e) : CAR(e));
-							t = Rf_coerceVector(tag, STRSXP);
-							SET_STRING_ELT(marnames[op], pos++, STRING_ELT(t, 0));
+							SET_STRING_ELT(marnamesy[op], pos++, STRING_ELT(Rf_coerceVector(tag, STRSXP), 0));
 						}
 						else
 							pos += 1;
 					}
-					if (anynamed[!op] && marnames[!op] == R_NilValue && \
-					    nx == dy[!op]) {
-						t = R_do_slot(x, R_flint_symbol_names);
-						if (t != R_NilValue)
-							SET_VECTOR_ELT(dimnames, !op, marnames[!op] = t);
+					if (anynames[!op] && nx == dy[!op] &&
+					    marnamesy[!op] == R_NilValue) {
+						namesx = R_do_slot(x, R_flint_symbol_names);
+						if (namesx != R_NilValue) {
+							marnamesy[!op] = namesx;
+							SET_VECTOR_ELT(dimnamesy, !op, marnamesy[!op]);
+						}
 					}
 				}
 			}
 
-			R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnames);
+			R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnamesy);
 			UNPROTECT(3);
 
 		}
@@ -482,8 +482,8 @@ SEXP R_flint_diag(SEXP object, SEXP s_nrow, SEXP s_ncol)
 
 	if (s_nrow != R_NilValue && s_ncol != R_NilValue) {
 
-		SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
-		int *dy = INTEGER(dim);
+		SEXP dimy = PROTECT(Rf_allocVector(INTSXP, 2));
+		int *dy = INTEGER(dimy);
 		if (XLENGTH(s_nrow) == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "nrow", "diag");
@@ -533,14 +533,14 @@ SEXP R_flint_diag(SEXP object, SEXP s_nrow, SEXP s_ncol)
 
 		SEXP ans = PROTECT(newObject(what));
 		R_flint_set(ans, y, ny, f);
-		R_do_slot_assign(ans, R_flint_symbol_dim, dim);
+		R_do_slot_assign(ans, R_flint_symbol_dim, dimy);
 		UNPROTECT(2);
 		return ans;
 
 	} else {
 
-		SEXP dim = R_do_slot(object, R_flint_symbol_dim);
-		const int *dx = INTEGER_RO(dim);
+		SEXP dimx = R_do_slot(object, R_flint_symbol_dim);
+		const int *dx = INTEGER_RO(dimx);
 		int j, k = (dx[0] < dx[1]) ? dx[0] : dx[1];
 		mp_limb_t off = (unsigned int) dx[0] + 1;
 		ny = (mp_limb_t) k;
@@ -1496,19 +1496,19 @@ SEXP R_flint_transpose(SEXP object, SEXP s_conjugate)
 	R_CFinalizer_t f = (void *) 0;
 	const char *what;
 
-	SEXP a = R_do_slot(object, R_flint_symbol_dim);
-	int i, j, d[2];
-	if (a == R_NilValue) {
+	SEXP dimx = R_do_slot(object, R_flint_symbol_dim);
+	int i, j, dx[2];
+	if (dimx == R_NilValue) {
 		if (nx > INT_MAX)
 			Rf_error(_("number of columns would exceed maximum %d"),
 			         INT_MAX);
-		d[0] = (int) nx;
-		d[1] = 1;
+		dx[0] = (int) nx;
+		dx[1] = 1;
 	} else {
-		if (XLENGTH(a) != 2)
+		if (XLENGTH(dimx) != 2)
 			Rf_error(_("'%s' is an array but not a matrix"), "x");
-		d[0] = INTEGER_RO(a)[0];
-		d[1] = INTEGER_RO(a)[1];
+		dx[0] = INTEGER_RO(dimx)[0];
+		dx[1] = INTEGER_RO(dimx)[1];
 	}
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
@@ -1519,12 +1519,12 @@ SEXP R_flint_transpose(SEXP object, SEXP s_conjugate)
 		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 		what = #name; \
 		if (conjugate) \
-		for (i = 0; i < d[0]; ++i, jx -= nx - 1) \
-			for (j = 0; j < d[1]; ++j, jx += d[0], ++jy) \
+		for (i = 0; i < dx[0]; ++i, jx -= nx - 1) \
+			for (j = 0; j < dx[1]; ++j, jx += dx[0], ++jy) \
 				name##_conj(y__ + jy, x__ + jx); \
 		else \
-		for (i = 0; i < d[0]; ++i, jx -= nx - 1) \
-			for (j = 0; j < d[1]; ++j, jx += d[0], ++jy) \
+		for (i = 0; i < dx[0]; ++i, jx -= nx - 1) \
+			for (j = 0; j < dx[1]; ++j, jx += dx[0], ++jy) \
 				name##_set (y__ + jy, x__ + jx); \
 	} while (0)
 
@@ -1532,41 +1532,42 @@ SEXP R_flint_transpose(SEXP object, SEXP s_conjugate)
 
 #undef TEMPLATE
 
-	SEXP ans = PROTECT(newObject(what)), s, t;
+	SEXP ans = PROTECT(newObject(what));
 	R_flint_set(ans, y, ny, f);
 
-	PROTECT(s = Rf_allocVector(INTSXP, 2));
-	INTEGER(s)[0] = (int) d[1];
-	INTEGER(s)[1] = (int) d[0];
-	R_do_slot_assign(ans, R_flint_symbol_dim, s);
+	SEXP dimy = PROTECT(Rf_allocVector(INTSXP, 2));
+	int *dy = INTEGER(dimy);
+	dy[0] = dx[1];
+	dy[1] = dx[0];
+	R_do_slot_assign(ans, R_flint_symbol_dim, dimy);
 	UNPROTECT(1);
 
-	if (a == R_NilValue) {
-		a = R_do_slot(object, R_flint_symbol_names);
-		if (a != R_NilValue) {
-		PROTECT(a);
-		PROTECT(s = Rf_allocVector(VECSXP, 2));
-		SET_VECTOR_ELT(s, 1, a);
-		R_do_slot_assign(ans, R_flint_symbol_dimnames, s);
+	if (dimx == R_NilValue) {
+		SEXP namesx = R_do_slot(object, R_flint_symbol_names);
+		if (namesx != R_NilValue) {
+		PROTECT(namesx);
+		SEXP dimnamesy = PROTECT(Rf_allocVector(VECSXP, 2));
+		SET_VECTOR_ELT(dimnamesy, 1, namesx);
+		R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnamesy);
 		UNPROTECT(2);
 		}
 	} else {
-		a = R_do_slot(object, R_flint_symbol_dimnames);
-		if (a != R_NilValue) {
-		PROTECT(a);
-		PROTECT(s = Rf_allocVector(VECSXP, 2));
-		SET_VECTOR_ELT(s, 0, VECTOR_ELT(a, 1));
-		SET_VECTOR_ELT(s, 1, VECTOR_ELT(a, 0));
-		a = Rf_getAttrib(a, R_NamesSymbol);
-		if (a != R_NilValue) {
-		PROTECT(a);
-		PROTECT(t = Rf_allocVector(STRSXP, 2));
-		SET_STRING_ELT(t, 0, STRING_ELT(a, 1));
-		SET_STRING_ELT(t, 1, STRING_ELT(a, 0));
-		Rf_setAttrib(s, R_NamesSymbol, t);
+		SEXP dimnamesx = R_do_slot(object, R_flint_symbol_dimnames);
+		if (dimnamesx != R_NilValue) {
+		PROTECT(dimnamesx);
+		SEXP dimnamesy = PROTECT(Rf_allocVector(VECSXP, 2));
+		SET_VECTOR_ELT(dimnamesy, 0, VECTOR_ELT(dimnamesx, 1));
+		SET_VECTOR_ELT(dimnamesy, 1, VECTOR_ELT(dimnamesx, 0));
+		SEXP namesdimnamesx = Rf_getAttrib(dimnamesx, R_NamesSymbol);
+		if (namesdimnamesx != R_NilValue) {
+		PROTECT(namesdimnamesx);
+		SEXP namesdimnamesy = PROTECT(Rf_allocVector(STRSXP, 2));
+		SET_STRING_ELT(namesdimnamesy, 0, STRING_ELT(namesdimnamesx, 1));
+		SET_STRING_ELT(namesdimnamesy, 1, STRING_ELT(namesdimnamesx, 0));
+		Rf_setAttrib(dimnamesy, R_NamesSymbol, namesdimnamesy);
 		UNPROTECT(2);
 		}
-		R_do_slot_assign(ans, R_flint_symbol_dimnames, s);
+		R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnamesy);
 		UNPROTECT(2);
 		}
 	}
