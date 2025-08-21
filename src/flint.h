@@ -182,7 +182,7 @@ extern
 const char *R_flint_classes[11];
 
 extern
-const char *R_flint_ops2[16];
+const char *R_flint_ops2[19];
 
 extern
 const char *R_flint_ops1[64];
@@ -206,10 +206,10 @@ SEXP validDimNames(SEXP, SEXP);
 SEXP validNames(SEXP, mp_limb_t);
 
 void setDDNN(SEXP, SEXP, SEXP, SEXP);
-void setDDNN2(SEXP, SEXP, SEXP, mp_limb_t, mp_limb_t, mp_limb_t);
+void setDDNN2(SEXP, SEXP, SEXP, mp_limb_t, mp_limb_t, mp_limb_t, int);
 void setDDNN1(SEXP, SEXP);
 
-void checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t);
+int checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t, int);
 
 mpfr_prec_t asPrec(SEXP, const char *);
 mpfr_rnd_t asRnd(SEXP, const char *);
@@ -221,6 +221,7 @@ void  ucopy(unsigned int *, const mp_limb_t *);
 void uucopy(mp_limb_t *, const unsigned int *);
 
 size_t strmatch(const char *, const char **);
+int matrixop(size_t);
 
 void *R_flint_get_pointer(SEXP);
 mp_limb_t R_flint_get_length(SEXP);

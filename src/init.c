@@ -30,6 +30,8 @@ const char *R_flint_ops2[] =
 	"==", "!=", "<", ">", "<=", ">=",
 	/* Logic (2) : */
 	"&", "|",
+	/* matrixOps (3) : */
+	"%*%", "crossprod", "tcrossprod",
 	NULL
 };
 

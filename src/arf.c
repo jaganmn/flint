@@ -395,7 +395,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	mp_limb_t j, n = RECYCLE2(nx, ny);
 	slong prec = asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
-	checkConformable(s_x, s_y, nx, ny);
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -423,7 +423,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				arf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny);
+		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -504,7 +504,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				: 0;
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny);
+		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}

@@ -355,7 +355,7 @@ SEXP validNames(SEXP names, mp_limb_t length)
 void setDDNN(SEXP s, SEXP dim, SEXP dimnames, SEXP names)
 {
 	SEXP (*sets)(SEXP, SEXP, SEXP) =
-		(TYPEOF(s) == OBJSXP) ? &R_do_slot_assign : &Rf_setAttrib;
+		(Rf_isS4(s)) ? &R_do_slot_assign : &Rf_setAttrib;
 	if (dim != R_NilValue) {
 		sets(s, R_DimSymbol, dim);
 		if (dimnames != R_NilValue)
@@ -367,17 +367,19 @@ void setDDNN(SEXP s, SEXP dim, SEXP dimnames, SEXP names)
 }
 
 void setDDNN2(SEXP s, SEXP x, SEXP y,
-              mp_limb_t ns, mp_limb_t nx, mp_limb_t ny)
+              mp_limb_t ns, mp_limb_t nx, mp_limb_t ny, int op)
 {
 	SEXP (*getx)(SEXP, SEXP) =
-		(TYPEOF(x) == OBJSXP) ? &R_do_slot        : &Rf_getAttrib;
+		(Rf_isS4(x)) ? &R_do_slot        : &Rf_getAttrib;
 	SEXP (*gety)(SEXP, SEXP) =
-		(TYPEOF(y) == OBJSXP) ? &R_do_slot        : &Rf_getAttrib;
+		(Rf_isS4(y)) ? &R_do_slot        : &Rf_getAttrib;
 	SEXP (*sets)(SEXP, SEXP, SEXP) =
-		(TYPEOF(s) == OBJSXP) ? &R_do_slot_assign : &Rf_setAttrib;
+		(Rf_isS4(s)) ? &R_do_slot_assign : &Rf_setAttrib;
 	SEXP ax, ay;
 	PROTECT(ax = getx(x, R_DimSymbol));
 	PROTECT(ay = gety(y, R_DimSymbol));
+	if (op < 0) {
+
 	if (ax != R_NilValue && (ny > 0 || ay != R_NilValue)) {
 		sets(s, R_DimSymbol, ax);
 		if ((ax = getx(x, R_DimNamesSymbol)) != R_NilValue) {
@@ -394,7 +396,6 @@ void setDDNN2(SEXP s, SEXP x, SEXP y,
 			UNPROTECT(1);
 		}
 	}
-	UNPROTECT(2);
 	ax = ay = NULL;
 	if ((ns == nx && (ax = getx(x, R_NamesSymbol)) != R_NilValue) ||
 	    (ns == ny && (ay = gety(y, R_NamesSymbol)) != R_NilValue)) {
@@ -402,15 +403,65 @@ void setDDNN2(SEXP s, SEXP x, SEXP y,
 		sets(s, R_NamesSymbol, (ax) ? ax : ay);
 		UNPROTECT(1);
 	}
+
+	} else {
+
+	int tx = (op & 1) != 0, ty = (op & 2) != 0;
+
+	SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
+	int *d = INTEGER(dim);
+	if (ax == R_NilValue)
+		d[0] = (tx) ? 1 : (int) nx;
+	else {
+		d[0] = INTEGER_RO(ax)[ tx];
+		ax = getx(x, R_DimNamesSymbol);
+	}
+	PROTECT(ax);
+	if (ay == R_NilValue)
+		d[1] = (ty) ? (int) ny : 1;
+	else {
+		d[1] = INTEGER_RO(ax)[!ty];
+		ay = gety(y, R_DimNamesSymbol);
+	}
+	PROTECT(ay);
+	sets(s, R_DimSymbol, dim);
+	if (ax != R_NilValue || ay != R_NilValue) {
+		SEXP dimnames = PROTECT(Rf_allocVector(VECSXP, 2));
+		if (ax != R_NilValue) {
+			SET_VECTOR_ELT(dimnames, 0, VECTOR_ELT(ax,  tx));
+			ax = Rf_getAttrib(ax, R_NamesSymbol);
+		}
+		PROTECT(ax);
+		if (ay != R_NilValue) {
+			SET_VECTOR_ELT(dimnames, 1, VECTOR_ELT(ax, !ty));
+			ay = Rf_getAttrib(ay, R_NamesSymbol);
+		}
+		PROTECT(ay);
+		if (ax != R_NilValue || ay != R_NilValue) {
+			SEXP namesdimnames = PROTECT(Rf_allocVector(STRSXP, 2));
+			if (ax != R_NilValue)
+				SET_STRING_ELT(namesdimnames, 0, STRING_ELT(ax,  tx));
+			if (ay != R_NilValue)
+				SET_STRING_ELT(namesdimnames, 1, STRING_ELT(ay, !ty));
+			Rf_setAttrib(dimnames, R_NamesSymbol, namesdimnames);
+			UNPROTECT(1);
+		}
+		sets(s, R_DimNamesSymbol, dimnames);
+		UNPROTECT(3);
+	}
+	UNPROTECT(3);
+
+	}
+	UNPROTECT(2);
 	return;
 }
 
 void setDDNN1(SEXP s, SEXP x)
 {
 	SEXP (*getx)(SEXP, SEXP) =
-		(TYPEOF(x) == OBJSXP) ? &R_do_slot        : &Rf_getAttrib;
+		(Rf_isS4(x)) ? &R_do_slot        : &Rf_getAttrib;
 	SEXP (*sets)(SEXP, SEXP, SEXP) =
-		(TYPEOF(s) == OBJSXP) ? &R_do_slot_assign : &Rf_setAttrib;
+		(Rf_isS4(s)) ? &R_do_slot_assign : &Rf_setAttrib;
 	SEXP a;
 	if ((a = getx(x, R_DimSymbol)) != R_NilValue) {
 		PROTECT(a);
@@ -430,27 +481,69 @@ void setDDNN1(SEXP s, SEXP x)
 	return;
 }
 
-void checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny)
+int checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny, int op)
 {
 	SEXP (*getx)(SEXP, SEXP) =
-		(TYPEOF(x) == OBJSXP) ? &R_do_slot : &Rf_getAttrib;
+		(Rf_isS4(x)) ? &R_do_slot : &Rf_getAttrib;
 	SEXP (*gety)(SEXP, SEXP) =
-		(TYPEOF(y) == OBJSXP) ? &R_do_slot : &Rf_getAttrib;
+		(Rf_isS4(y)) ? &R_do_slot : &Rf_getAttrib;
 	SEXP ax, ay;
 	R_xlen_t n;
 	PROTECT(ax = getx(x, R_DimSymbol));
 	PROTECT(ay = gety(y, R_DimSymbol));
+	if (op < 0) {
+
 	if (ax != R_NilValue && ay != R_NilValue &&
 	    (nx != ny || (n = XLENGTH(ax)) != XLENGTH(ay) ||
 	     (n > 0 && memcmp(INTEGER_RO(ax), INTEGER_RO(ay), sizeof(int) * (size_t) n) != 0)))
-		Rf_error(_("non-conformable arrays"));
+		Rf_error(_("non-conformable arguments"));
 	if ((ax != R_NilValue && ny > nx) || (ay != R_NilValue && nx > ny))
 		/* NB: stricter than R which allows if array length is zero */
-		Rf_error(_("non-array length exceeds array length"));
+		Rf_error(_("non-array argument length exceeds array argument length"));
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
-		Rf_warning(_("longer object length is not a multiple of shorter object length"));
+		Rf_warning(_("longer argument length is not a multiple of shorter argument length"));
+	op = -1;
+
+	} else {
+
+	if ((ax != R_NilValue && XLENGTH(ax) != 2) ||
+	    (ay != R_NilValue && XLENGTH(ay) != 2))
+		Rf_error(_("non-matrix array arguments"));
+	if ((ax == R_NilValue && nx > INT_MAX) ||
+	    (ay != R_NilValue && ny > INT_MAX))
+		Rf_error(_("non-matrix argument length exceeds maximum %d"),
+		         INT_MAX);
+	int tx = (op & 1) != 0, ty = (op & 2) != 0;
+	if (ax != R_NilValue && ay != R_NilValue) {
+		if (INTEGER_RO(ax)[!tx] != INTEGER_RO(ay)[ty])
+			Rf_error(_("non-conformable arguments"));
+	} else if (ax != R_NilValue || (ay == R_NilValue && tx)) {
+		int k = (ax != R_NilValue) ? INTEGER_RO(ax)[!tx] : (int) nx;
+		if ((ty) ? k !=  1 : k != 1 && k != ny)
+			Rf_error(_("non-conformable arguments"));
+		if (!ty) ty = k == 1;
+	} else if (ay != R_NilValue || (ax == R_NilValue && ty)) {
+		int k = (ay != R_NilValue) ? INTEGER_RO(ay)[ ty] : (int) ny;
+		if ((tx) ? k != nx : k != 1 && k != nx)
+			Rf_error(_("non-conformable arguments"));
+		if (!tx) tx = k != 1;
+	} else {
+		if (nx == ny) {
+			tx = 1;
+			ty = 0;
+		}
+		else if (nx == 1)
+			ty = 1;
+		else if (ny == 1)
+			tx = 0;
+		else
+			Rf_error(_("non-conformable arguments"));
+	}
+	op = (ty << 1) | tx;
+
+	}
 	UNPROTECT(2);
-	return;
+	return op;
 }
 
 mpfr_prec_t asPrec(SEXP prec, const char *where)
@@ -608,4 +701,18 @@ size_t strmatch(const char *s, const char **ss)
 		pos += 1;
 	}
 	return 0;
+}
+
+int matrixop(size_t op)
+{
+	switch (op) {
+	case 16: /*        "%*%" */
+		return  0;
+	case 17: /*  "crossprod" */
+		return  2;
+	case 18: /* "tcrossprod" */
+		return  1;
+	default:
+		return -1;
+	}
 }

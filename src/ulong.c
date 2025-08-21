@@ -334,7 +334,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
 	mp_limb_t j, n = RECYCLE2(nx, ny);
-	checkConformable(s_x, s_y, nx, ny);
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -481,7 +481,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "ulong"));
 		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_ulong_finalize));
-		setDDNN2(ans, s_x, s_y, n, nx, ny);
+		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -502,7 +502,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				Rf_error(_("quotient with 0 is undefined"));
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny);
+		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -552,7 +552,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				z[j] = x[j % nx] || y[j % ny];
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny);
+		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
