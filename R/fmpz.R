@@ -183,6 +183,85 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_fmpz_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
+setMatrixOpsMethod(
+          c(x = "ANY", y = "fmpz"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         g(.fmpz(x), y),
+                     "double" =
+                         g(.arf(x), .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "fmpz"),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "ANY"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              if (.Generic != "%*%" && (missing(y) || is.null(y)))
+                  return(.Call(R_flint_fmpz_ops2, .Generic, x, x))
+              switch(typeof(y),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         g(x, .fmpz(y)),
+                     "double" =
+                         g(.arf(x), .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), "fmpz", if (isS4(y)) class(y) else typeof(y)),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "ulong"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .fmpz(y)))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "slong"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .fmpz(y)))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "fmpz"),
+          function (x, y)
+              .Call(R_flint_fmpz_ops2, .Generic, x, y))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "fmpq"),
+          function (x, y)
+              get(.Generic, mode = "function")(.fmpq(x), y))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "mag"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "arf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "acf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "arb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arb(x), y))
+
+setMatrixOpsMethod(
+          c(x = "fmpz", y = "acb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acb(x), y))
+
 setMethod("mean",
           c(x = "fmpz"),
           function (x, na.rm = FALSE, ...) {

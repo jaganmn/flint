@@ -191,6 +191,81 @@ setMethod("log",
               .Call(R_flint_mag_ops1, "log", x,
                     if (!missing(base)) list(as(base, "arf"))))
 
+setMatrixOpsMethod(
+          c(x = "ANY", y = "mag"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         g(.arf(x), .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "mag"),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "ANY"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              if (.Generic != "%*%" && (missing(y) || is.null(y)))
+                  return(g(.arf(x)))
+              switch(typeof(y),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         g(.arf(x), .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), "mag", if (isS4(y)) class(y) else typeof(y)),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "ulong"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "slong"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "fmpz"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "fmpq"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "mag"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "arf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "acf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "arb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arb(x), y))
+
+setMatrixOpsMethod(
+          c(x = "mag", y = "acb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acb(x), y))
+
 setMethod("mean",
           c(x = "mag"),
           function (x, na.rm = FALSE, ...) {

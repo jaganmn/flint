@@ -4,6 +4,17 @@
 \alias{.mag}
 \alias{.mag.array}
 \alias{!,mag-method}
+\alias{\%*\%,ANY,mag-method}
+\alias{\%*\%,mag,ANY-method}
+\alias{\%*\%,mag,ulong-method}
+\alias{\%*\%,mag,slong-method}
+\alias{\%*\%,mag,fmpz-method}
+\alias{\%*\%,mag,fmpq-method}
+\alias{\%*\%,mag,mag-method}
+\alias{\%*\%,mag,arf-method}
+\alias{\%*\%,mag,acf-method}
+\alias{\%*\%,mag,arb-method}
+\alias{\%*\%,mag,acb-method}
 \alias{+,mag,missing-method}
 \alias{-,mag,missing-method}
 \alias{Complex,mag-method}
@@ -26,6 +37,17 @@
 \alias{coerce,ANY,mag-method}
 \alias{colMeans,mag-method}
 \alias{colSums,mag-method}
+\alias{crossprod,ANY,mag-method}
+\alias{crossprod,mag,ANY-method}
+\alias{crossprod,mag,ulong-method}
+\alias{crossprod,mag,slong-method}
+\alias{crossprod,mag,fmpz-method}
+\alias{crossprod,mag,fmpq-method}
+\alias{crossprod,mag,mag-method}
+\alias{crossprod,mag,arf-method}
+\alias{crossprod,mag,acf-method}
+\alias{crossprod,mag,arb-method}
+\alias{crossprod,mag,acb-method}
 \alias{is.finite,mag-method}
 \alias{is.infinite,mag-method}
 \alias{is.na,mag-method}
@@ -35,6 +57,17 @@
 \alias{mean,mag-method}
 \alias{rowMeans,mag-method}
 \alias{rowSums,mag-method}
+\alias{tcrossprod,ANY,mag-method}
+\alias{tcrossprod,mag,ANY-method}
+\alias{tcrossprod,mag,ulong-method}
+\alias{tcrossprod,mag,slong-method}
+\alias{tcrossprod,mag,fmpz-method}
+\alias{tcrossprod,mag,fmpq-method}
+\alias{tcrossprod,mag,mag-method}
+\alias{tcrossprod,mag,arf-method}
+\alias{tcrossprod,mag,acf-method}
+\alias{tcrossprod,mag,arb-method}
+\alias{tcrossprod,mag,acb-method}
 \docType{class}
 \title{Fixed Precision Magnitude (Error) Bounds}
 \description{
@@ -118,6 +151,16 @@
     \item{\code{!}}{
       \code{signature(x = "mag")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
+    \item{\code{\%*\%}, \code{crossprod}, \code{tcrossprod}}{
+      \code{signature(x = "ANY", y = "mag")}:\cr
+      \code{signature(x = "mag", y = "ANY")}:\cr
+      matrix products.  The \dQuote{other} operand must be atomic or
+      inherit from virtual class \code{\linkS4class{flint}}.
+      \code{crossprod} and \code{tcrossprod} behave as if \code{y = x}
+      when \code{y} is missing or \code{NULL}.  Operands are promoted as
+      necessary and must be conformable (have compatible dimensions).
+      Non-array operands of length \code{k} are handled as 1-by-\code{k}
+      or \code{k}-by-1 matrices depending on the call.}
     \item{\code{+}}{
       \code{signature(e1 = "mag", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -152,13 +195,14 @@
       binary arithmetic, comparison, and logical operators; see
       \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
       must be atomic or inherit from virtual class
-      \code{\linkS4class{flint}}.  The operands are recycled and
-      promoted as necessary.  For arithmetic, the return value is a
-      \code{mag} vector only if both operands are \code{mag} vectors.
-      In that case, the return value is an upper bound for the absolute
-      value of the exact answer.  Users wanting \dQuote{standard}
-      floating-point arithmetic must ensure that at least one operand is
-      not a \code{mag} vector.}
+      \code{\linkS4class{flint}}.  Operands are promoted as necessary.
+      Array operands must be conformable (have identical dimensions).
+      Non-array operands are recycled.  For arithmetic, the return value
+      is a \code{mag} vector only if both operands are \code{mag}
+      vectors.  In that case, the return value is an upper bound for the
+      absolute value of the exact answer.  Users wanting
+      \dQuote{standard} floating-point arithmetic must ensure that at
+      least one operand is not a \code{mag} vector.}
     \item{\code{Summary}}{
       \code{signature(x = "mag")}:\cr
       univariate summary statistics; see

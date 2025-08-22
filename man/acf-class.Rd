@@ -4,6 +4,17 @@
 \alias{.acf}
 \alias{.acf.array}
 \alias{!,acf-method}
+\alias{\%*\%,ANY,acf-method}
+\alias{\%*\%,acf,ANY-method}
+\alias{\%*\%,acf,ulong-method}
+\alias{\%*\%,acf,slong-method}
+\alias{\%*\%,acf,fmpz-method}
+\alias{\%*\%,acf,fmpq-method}
+\alias{\%*\%,acf,mag-method}
+\alias{\%*\%,acf,arf-method}
+\alias{\%*\%,acf,acf-method}
+\alias{\%*\%,acf,arb-method}
+\alias{\%*\%,acf,acb-method}
 \alias{+,acf,missing-method}
 \alias{-,acf,missing-method}
 \alias{Complex,acf-method}
@@ -26,6 +37,17 @@
 \alias{coerce,ANY,acf-method}
 \alias{colMeans,acf-method}
 \alias{colSums,acf-method}
+\alias{crossprod,ANY,acf-method}
+\alias{crossprod,acf,ANY-method}
+\alias{crossprod,acf,ulong-method}
+\alias{crossprod,acf,slong-method}
+\alias{crossprod,acf,fmpz-method}
+\alias{crossprod,acf,fmpq-method}
+\alias{crossprod,acf,mag-method}
+\alias{crossprod,acf,arf-method}
+\alias{crossprod,acf,acf-method}
+\alias{crossprod,acf,arb-method}
+\alias{crossprod,acf,acb-method}
 \alias{is.finite,acf-method}
 \alias{is.infinite,acf-method}
 \alias{is.na,acf-method}
@@ -34,6 +56,17 @@
 \alias{mean,acf-method}
 \alias{rowMeans,acf-method}
 \alias{rowSums,acf-method}
+\alias{tcrossprod,ANY,acf-method}
+\alias{tcrossprod,acf,ANY-method}
+\alias{tcrossprod,acf,ulong-method}
+\alias{tcrossprod,acf,slong-method}
+\alias{tcrossprod,acf,fmpz-method}
+\alias{tcrossprod,acf,fmpq-method}
+\alias{tcrossprod,acf,mag-method}
+\alias{tcrossprod,acf,arf-method}
+\alias{tcrossprod,acf,acf-method}
+\alias{tcrossprod,acf,arb-method}
+\alias{tcrossprod,acf,acb-method}
 \alias{xtfrm,acf-method}
 \docType{class}
 \title{Arbitrary Precision Floating-Point Complex Numbers}
@@ -149,6 +182,16 @@
     \item{\code{!}}{
       \code{signature(x = "acf")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
+    \item{\code{\%*\%}, \code{crossprod}, \code{tcrossprod}}{
+      \code{signature(x = "ANY", y = "acf")}:\cr
+      \code{signature(x = "acf", y = "ANY")}:\cr
+      matrix products.  The \dQuote{other} operand must be atomic or
+      inherit from virtual class \code{\linkS4class{flint}}.
+      \code{crossprod} and \code{tcrossprod} behave as if \code{y = x}
+      when \code{y} is missing or \code{NULL}.  Operands are promoted as
+      necessary and must be conformable (have compatible dimensions).
+      Non-array operands of length \code{k} are handled as 1-by-\code{k}
+      or \code{k}-by-1 matrices depending on the call.}
     \item{\code{+}}{
       \code{signature(e1 = "acf", e2 = "missing")}:\cr
       returns a copy of the argument.}
@@ -176,8 +219,9 @@
       binary arithmetic, comparison, and logical operators; see
       \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
       must be atomic or inherit from virtual class
-      \code{\linkS4class{flint}}.  The operands are recycled and
-      promoted as necessary.}
+      \code{\linkS4class{flint}}.  Operands are promoted as necessary.
+      Array operands must be conformable (have identical dimensions).
+      Non-array operands are recycled.}
     \item{\code{Summary}}{
       \code{signature(x = "acf")}:\cr
       univariate summary statistics; see

@@ -187,6 +187,85 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_ulong_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
+setMatrixOpsMethod(
+          c(x = "ANY", y = "ulong"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         g(.fmpz(x), .fmpz(y)),
+                     "double" =
+                         g(.arf(x), .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "ulong"),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "ANY"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              if (.Generic != "%*%" && (missing(y) || is.null(y)))
+                  return(g(.fmpz(x)))
+              switch(typeof(y),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         g(.fmpz(x), .fmpz(y)),
+                     "double" =
+                         g(.arf(x), .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), "ulong", if (isS4(y)) class(y) else typeof(y)),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "ulong"),
+          function (x, y)
+              get(.Generic, mode = "function")(.fmpz(x), .fmpz(y)))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "slong"),
+          function (x, y)
+              get(.Generic, mode = "function")(.fmpz(x), .fmpz(y)))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "fmpz"),
+          function (x, y)
+              get(.Generic, mode = "function")(.fmpz(x), y))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "fmpq"),
+          function (x, y)
+              get(.Generic, mode = "function")(.fmpq(x), y))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "mag"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "arf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "acf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "arb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arb(x), y))
+
+setMatrixOpsMethod(
+          c(x = "ulong", y = "acb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acb(x), y))
+
 setMethod("mean",
           c(x = "ulong"),
           function (x, na.rm = FALSE, ...) {

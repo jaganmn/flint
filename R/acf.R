@@ -229,6 +229,77 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_acf_ops1, "is.unsorted", x, list(as.logical(na.rm), as.logical(strictly))))
 
+setMatrixOpsMethod(
+          c(x = "ANY", y = "acf"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                         g(.acf(x), y),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "acf"),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "ANY"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              if (.Generic != "%*%" && (missing(y) || is.null(y)))
+                  return(.Call(R_flint_acf_ops2, .Generic, x, x))
+              switch(typeof(y),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                         g(x, .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), "acf", if (isS4(y)) class(y) else typeof(y)),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "ulong"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .acf(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "slong"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .acf(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "fmpz"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .acf(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "fmpq"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .acf(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "mag"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .acf(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "arf"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .acf(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "acf"),
+          function (x, y)
+              .Call(R_flint_acf_ops2, .Generic, x, y))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "arb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acb(x), .acb(y)))
+
+setMatrixOpsMethod(
+          c(x = "acf", y = "acb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acb(x), y))
+
 setMethod("mean",
           c(x = "acf"),
           function (x, na.rm = FALSE, ...) {

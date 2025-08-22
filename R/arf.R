@@ -185,6 +185,81 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_arf_ops1, "is.unsorted", x, list(as.logical(na.rm), as.logical(strictly))))
 
+setMatrixOpsMethod(
+          c(x = "ANY", y = "arf"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         g(.arf(x), y),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "arf"),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "ANY"),
+          function (x, y) {
+              g <- get(.Generic, mode = "function")
+              if (.Generic != "%*%" && (missing(y) || is.null(y)))
+                  return(.Call(R_flint_arf_ops2, .Generic, x, x))
+              switch(typeof(y),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         g(x, .arf(y)),
+                     "complex" =
+                         g(.acf(x), .acf(y)),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   deparse(as.name(.Generic), backtick = TRUE), "arf", if (isS4(y)) class(y) else typeof(y)),
+                          domain = NA))
+          })
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "ulong"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "slong"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "fmpz"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "fmpq"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "mag"),
+          function (x, y)
+              get(.Generic, mode = "function")(x, .arf(y)))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "arf"),
+          function (x, y)
+              .Call(R_flint_arf_ops2, .Generic, x, y))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "acf"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acf(x), y))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "arb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.arb(x), y))
+
+setMatrixOpsMethod(
+          c(x = "arf", y = "acb"),
+          function (x, y)
+              get(.Generic, mode = "function")(.acb(x), y))
+
 setMethod("mean",
           c(x = "arf"),
           function (x, na.rm = FALSE, ...) {

@@ -9,6 +9,28 @@
 \alias{.slong.array}
 \alias{!,ulong-method}
 \alias{!,slong-method}
+\alias{\%*\%,ANY,ulong-method}
+\alias{\%*\%,ANY,slong-method}
+\alias{\%*\%,ulong,ANY-method}
+\alias{\%*\%,slong,ANY-method}
+\alias{\%*\%,ulong,slong-method}
+\alias{\%*\%,slong,slong-method}
+\alias{\%*\%,ulong,ulong-method}
+\alias{\%*\%,slong,ulong-method}
+\alias{\%*\%,ulong,fmpz-method}
+\alias{\%*\%,slong,fmpz-method}
+\alias{\%*\%,ulong,fmpq-method}
+\alias{\%*\%,slong,fmpq-method}
+\alias{\%*\%,ulong,mag-method}
+\alias{\%*\%,slong,mag-method}
+\alias{\%*\%,ulong,arf-method}
+\alias{\%*\%,slong,arf-method}
+\alias{\%*\%,ulong,acf-method}
+\alias{\%*\%,slong,acf-method}
+\alias{\%*\%,ulong,arb-method}
+\alias{\%*\%,slong,arb-method}
+\alias{\%*\%,ulong,acb-method}
+\alias{\%*\%,slong,acb-method}
 \alias{+,ulong,missing-method}
 \alias{+,slong,missing-method}
 \alias{-,ulong,missing-method}
@@ -53,6 +75,28 @@
 \alias{colMeans,slong-method}
 \alias{colSums,ulong-method}
 \alias{colSums,slong-method}
+\alias{crossprod,ANY,ulong-method}
+\alias{crossprod,ANY,slong-method}
+\alias{crossprod,ulong,ANY-method}
+\alias{crossprod,slong,ANY-method}
+\alias{crossprod,ulong,slong-method}
+\alias{crossprod,slong,slong-method}
+\alias{crossprod,ulong,ulong-method}
+\alias{crossprod,slong,ulong-method}
+\alias{crossprod,ulong,fmpz-method}
+\alias{crossprod,slong,fmpz-method}
+\alias{crossprod,ulong,fmpq-method}
+\alias{crossprod,slong,fmpq-method}
+\alias{crossprod,ulong,mag-method}
+\alias{crossprod,slong,mag-method}
+\alias{crossprod,ulong,arf-method}
+\alias{crossprod,slong,arf-method}
+\alias{crossprod,ulong,acf-method}
+\alias{crossprod,slong,acf-method}
+\alias{crossprod,ulong,arb-method}
+\alias{crossprod,slong,arb-method}
+\alias{crossprod,ulong,acb-method}
+\alias{crossprod,slong,acb-method}
 \alias{is.finite,ulong-method}
 \alias{is.finite,slong-method}
 \alias{is.infinite,ulong-method}
@@ -69,6 +113,28 @@
 \alias{rowMeans,slong-method}
 \alias{rowSums,ulong-method}
 \alias{rowSums,slong-method}
+\alias{tcrossprod,ANY,ulong-method}
+\alias{tcrossprod,ANY,slong-method}
+\alias{tcrossprod,ulong,ANY-method}
+\alias{tcrossprod,slong,ANY-method}
+\alias{tcrossprod,ulong,slong-method}
+\alias{tcrossprod,slong,slong-method}
+\alias{tcrossprod,ulong,ulong-method}
+\alias{tcrossprod,slong,ulong-method}
+\alias{tcrossprod,ulong,fmpz-method}
+\alias{tcrossprod,slong,fmpz-method}
+\alias{tcrossprod,ulong,fmpq-method}
+\alias{tcrossprod,slong,fmpq-method}
+\alias{tcrossprod,ulong,mag-method}
+\alias{tcrossprod,slong,mag-method}
+\alias{tcrossprod,ulong,arf-method}
+\alias{tcrossprod,slong,arf-method}
+\alias{tcrossprod,ulong,acf-method}
+\alias{tcrossprod,slong,acf-method}
+\alias{tcrossprod,ulong,arb-method}
+\alias{tcrossprod,slong,arb-method}
+\alias{tcrossprod,ulong,acb-method}
+\alias{tcrossprod,slong,acb-method}
 \docType{class}
 \title{Fixed Precision Unsigned and Signed Integers}
 \description{
@@ -163,6 +229,18 @@
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
+    \item{\code{\%*\%}, \code{crossprod}, \code{tcrossprod}}{
+      \code{signature(x = "ANY", y = "ulong")}:\cr
+      \code{signature(x = "ANY", y = "slong")}:\cr
+      \code{signature(x = "ulong", y = "ANY")}:\cr
+      \code{signature(x = "slong", y = "ANY")}:\cr
+      matrix products.  The \dQuote{other} operand must be atomic or
+      inherit from virtual class \code{\linkS4class{flint}}.
+      \code{crossprod} and \code{tcrossprod} behave as if \code{y = x}
+      when \code{y} is missing or \code{NULL}.  Operands are promoted as
+      necessary and must be conformable (have compatible dimensions).
+      Non-array operands of length \code{k} are handled as 1-by-\code{k}
+      or \code{k}-by-1 matrices depending on the call.}
     \item{\code{+}}{
       \code{signature(e1 = "ulong", e2 = "missing")}:\cr
       \code{signature(e1 = "slong", e2 = "missing")}:\cr
@@ -197,8 +275,9 @@
       binary arithmetic, comparison, and logical operators; see
       \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
       must be atomic or inherit from virtual class
-      \code{\linkS4class{flint}}.  The operands are recycled and
-      promoted as necessary.}
+      \code{\linkS4class{flint}}.  Operands are promoted as necessary.
+      Array operands must be conformable (have identical dimensions).
+      Non-array operands are recycled.}
     \item{\code{Summary}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr
