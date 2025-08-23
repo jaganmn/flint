@@ -382,6 +382,8 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = R_flint_get_pointer(s_y);
 	int dz[3];
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
+	if (mop >= 0)
+		nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
 	switch (op) {
 	case  1: /*   "+" */
@@ -468,6 +470,74 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				? NA_LOGICAL
 				: 0;
 			break;
+		}
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 16: /*        "%*%" */
+	case 17: /*  "crossprod" */
+	case 18: /* "tcrossprod" */
+	{
+		/*        %*%: Z = X Y  = (Y'X')' = (A B)', A := Y', B := X' */
+		/*  crossprod: Z = X'Y  = (Y'X )' = (A B)', A := Y', B := X  */
+		/* tcrossprod: Z = X Y' = (Y X')' = (A B)', A := Y , B := X' */
+		SEXP ans = PROTECT(newObject("acb"));
+		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
+		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
+		acb_mat_t ma, mb, mz;
+		mz->entries = z;
+		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(acb_t)) : 0) : (void *) y;
+		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(acb_t)) : 0) : (void *) x;
+		mz->r = mb->c = dz[0];
+		mz->c = ma->r = dz[1];
+		ma->c = mb->r = dz[2];
+		mz->rows = (mz->r) ? flint_calloc((size_t) mz->r, sizeof(acb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(acb_ptr)) : 0;
+		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(acb_ptr)) : 0;
+		if (mz->r) {
+			mz->rows[0] = mz->entries;
+			for (i = 1; i < mz->r; ++i)
+				mz->rows[i] = mz->rows[i-1] + mz->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i-1] + ma->c;
+		}
+		if (mb->r) {
+			mb->rows[0] = mb->entries;
+			for (i = 1; i < mb->r; ++i)
+				mb->rows[i] = mb->rows[i-1] + mb->c;
+		}
+		if (ty) {
+			mp_limb_t ja = 0, jy = 0;
+			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
+				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
+					acb_set(ma->entries + ja, y + jy);
+		}
+		if (tx) {
+			mp_limb_t jb = 0, jx = 0;
+			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
+				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
+					acb_set(mb->entries + jb, x + jx);
+		}
+		acb_mat_mul(mz, ma, mb, prec);
+		flint_free(mz->rows);
+		flint_free(ma->rows);
+		flint_free(mb->rows);
+		if (ty) {
+			mp_limb_t ja;
+			for (ja = 0; ja < ny; ++ja)
+				acb_clear(ma->entries + ja);
+			flint_free(ma->entries);
+		}
+		if (tx) {
+			mp_limb_t jb;
+			for (jb = 0; jb < nx; ++jb)
+				acb_clear(mb->entries + jb);
+			flint_free(mb->entries);
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);

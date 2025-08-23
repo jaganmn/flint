@@ -421,7 +421,7 @@ void setDDNN2(SEXP z, SEXP x, SEXP y,
 	if (ay == R_NilValue)
 		dz[1] = (ty) ? (int) ny : 1;
 	else {
-		dz[1] = INTEGER_RO(ax)[!ty];
+		dz[1] = INTEGER_RO(ay)[!ty];
 		ay = gety(y, R_DimNamesSymbol);
 	}
 	PROTECT(ay);
@@ -434,7 +434,7 @@ void setDDNN2(SEXP z, SEXP x, SEXP y,
 		}
 		PROTECT(ax);
 		if (ay != R_NilValue) {
-			SET_VECTOR_ELT(dimnames, 1, VECTOR_ELT(ax, !ty));
+			SET_VECTOR_ELT(dimnames, 1, VECTOR_ELT(ay, !ty));
 			ay = Rf_getAttrib(ay, R_NamesSymbol);
 		}
 		PROTECT(ay);
@@ -543,11 +543,13 @@ int checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny,
 	}
 	mop = (ty << 1) | tx;
 
-	if (dz) {
 	dz[0] = (ax == R_NilValue) ? ((tx) ? 1 : (int) nx) : INTEGER_RO(ax)[ tx];
 	dz[1] = (ay == R_NilValue) ? ((ty) ? (int) ny : 1) : INTEGER_RO(ay)[!ty];
 	dz[2] = (ax == R_NilValue) ? ((tx) ? (int) nx : 1) : INTEGER_RO(ax)[!tx];
-	}
+
+	if (dz[0] > 0 && dz[1] > UWORD_MAX / dz[0])
+		Rf_error(_("value length would exceed maximum %llu"),
+		         (unsigned long long int) UWORD_MAX);
 
 	}
 	UNPROTECT(2);
@@ -717,9 +719,9 @@ int matrixop(size_t op)
 	case 16: /*        "%*%" */
 		return  0;
 	case 17: /*  "crossprod" */
-		return  2;
-	case 18: /* "tcrossprod" */
 		return  1;
+	case 18: /* "tcrossprod" */
+		return  2;
 	default:
 		return -1;
 	}
