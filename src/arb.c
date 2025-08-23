@@ -17,7 +17,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
                             SEXP s_dim, SEXP s_dimnames, SEXP s_names,
                             SEXP s_mid, SEXP s_rad)
 {
-	mp_limb_t j, nm = 1, nr = 1, nx = 0, ny = 0;
+	mp_limb_t jy, nx = 0, ny = 0, nm = 1, nr = 1;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -59,70 +59,70 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr xm = R_flint_get_pointer(s_mid);
 			if (s_rad != R_NilValue) {
 				mag_srcptr xr = R_flint_get_pointer(s_rad);
-				for (j = 0; j < ny; ++j) {
-					arf_set(arb_midref(y + j), xm + j % nm);
-					mag_set(arb_radref(y + j), xr + j % nr);
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(arb_midref(y + jy), xm + jy % nm);
+					mag_set(arb_radref(y + jy), xr + jy % nr);
 				}
 			} else {
-				for (j = 0; j < ny; ++j) {
-					arf_set(arb_midref(y + j), xm + j % nm);
-					mag_zero(arb_radref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(arb_midref(y + jy), xm + jy % nm);
+					mag_zero(arb_radref(y + jy));
 				}
 			}
 		} else {
 			if (s_rad != R_NilValue) {
 				mag_srcptr xr = R_flint_get_pointer(s_rad);
-				for (j = 0; j < ny; ++j) {
-					arf_zero(arb_midref(y + j));
-					mag_set(arb_radref(y + j), xr + j % nr);
+				for (jy = 0; jy < ny; ++jy) {
+					arf_zero(arb_midref(y + jy));
+					mag_set(arb_radref(y + jy), xr + jy % nr);
 				}
 			}
 		}
 	} else {
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
-			for (j = 0; j < ny; ++j)
-				arb_zero(y + j);
+			for (jy = 0; jy < ny; ++jy)
+				arb_zero(y + jy);
 			break;
 		case RAWSXP:
 		{
 			const Rbyte *x = RAW_RO(s_x);
-			for (j = 0; j < ny; ++j)
-				arb_set_ui(y + j, x[j % nx]);
+			for (jy = 0; jy < ny; ++jy)
+				arb_set_ui(y + jy, x[jy % nx]);
 			break;
 		}
 		case LGLSXP:
 		{
 			const int *x = LOGICAL_RO(s_x);
-			for (j = 0; j < ny; ++j)
-				if (x[j % nx] == NA_LOGICAL)
-				arb_set_d(y + j, R_NaN);
+			for (jy = 0; jy < ny; ++jy)
+				if (x[jy % nx] == NA_LOGICAL)
+				arb_set_d(y + jy, R_NaN);
 				else
-				arb_set_si(y + j, x[j % nx]);
+				arb_set_si(y + jy, x[jy % nx]);
 			break;
 		}
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);
-			for (j = 0; j < ny; ++j)
-				if (x[j % nx] == NA_INTEGER)
-				arb_set_d(y + j, R_NaN);
+			for (jy = 0; jy < ny; ++jy)
+				if (x[jy % nx] == NA_INTEGER)
+				arb_set_d(y + jy, R_NaN);
 				else
-				arb_set_si(y + j, x[j % nx]);
+				arb_set_si(y + jy, x[jy % nx]);
 			break;
 		}
 		case REALSXP:
 		{
 			const double *x = REAL_RO(s_x);
-			for (j = 0; j < ny; ++j)
-				arb_set_d(y + j, x[j % nx]);
+			for (jy = 0; jy < ny; ++jy)
+				arb_set_d(y + jy, x[jy % nx]);
 			break;
 		}
 		case CPLXSXP:
 		{
 			const Rcomplex *x = COMPLEX_RO(s_x);
-			for (j = 0; j < ny; ++j)
-				arb_set_d(y + j, x[j % nx].r);
+			for (jy = 0; jy < ny; ++jy)
+				arb_set_d(y + jy, x[jy % nx].r);
 			break;
 		}
 		case STRSXP:
@@ -137,8 +137,8 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const char *s;
 			char *t;
 			int negate;
-			for (j = 0; j < ny; ++j) {
-				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+			for (jy = 0; jy < ny; ++jy) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
 				while (isspace(*s))
 					s++;
 				negate = *s == '-';
@@ -174,14 +174,14 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 					s++;
 				if (*s != '\0')
 					break;
-				arf_set_mpfr(arb_midref(y + j), m);
+				arf_set_mpfr(arb_midref(y + jy), m);
 				arf_set_mpfr(tmp, r);
-				arf_get_mag(arb_radref(y + j), tmp);
+				arf_get_mag(arb_radref(y + jy), tmp);
 			}
 			mpfr_clear(m);
 			mpfr_clear(r);
 			arf_clear(tmp);
-			if (j < ny)
+			if (jy < ny)
 				Rf_error(_("invalid input in string conversion"));
 			break;
 		}
@@ -190,71 +190,71 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ULONG:
 			{
 				const ulong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					arb_set_ui(y + j, x[j % nx]);
+				for (jy = 0; jy < ny; ++jy)
+					arb_set_ui(y + jy, x[jy % nx]);
 				break;
 			}
 			case R_FLINT_CLASS_SLONG:
 			{
 				const slong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					arb_set_si(y + j, x[j % nx]);
+				for (jy = 0; jy < ny; ++jy)
+					arb_set_si(y + jy, x[jy % nx]);
 				break;
 			}
 			case R_FLINT_CLASS_FMPZ:
 			{
 				const fmpz *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					arb_set_fmpz(y + j, x + j % nx);
+				for (jy = 0; jy < ny; ++jy)
+					arb_set_fmpz(y + jy, x + jy % nx);
 				break;
 			}
 			case R_FLINT_CLASS_FMPQ:
 			{
 				const fmpq *x = R_flint_get_pointer(s_x);
 				slong prec = asPrec(R_NilValue, __func__);
-				for (j = 0; j < ny; ++j)
-					arb_fmpz_div_fmpz(y + j, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec);
+				for (jy = 0; jy < ny; ++jy)
+					arb_fmpz_div_fmpz(y + jy, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec);
 				break;
 			}
 			case R_FLINT_CLASS_MAG:
 			{
 				mag_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set_mag(arb_midref(y + j), x + j % nx);
-					mag_zero(arb_radref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set_mag(arb_midref(y + jy), x + jy % nx);
+					mag_zero(arb_radref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set(arb_midref(y + j), x + j % nx);
-					mag_zero(arb_radref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(arb_midref(y + jy), x + jy % nx);
+					mag_zero(arb_radref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set(arb_midref(y + j), acf_realref(x + j % nx));
-					mag_zero(arb_radref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(arb_midref(y + jy), acf_realref(x + jy % nx));
+					mag_zero(arb_radref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ARB:
 			{
 				arb_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					arb_set(y + j, x + j % nx);
+				for (jy = 0; jy < ny; ++jy)
+					arb_set(y + jy, x + jy % nx);
 				break;
 			}
 			case R_FLINT_CLASS_ACB:
 			{
 				acb_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					arb_set(y + j, acb_realref(x + j % nx));
+				for (jy = 0; jy < ny; ++jy)
+					arb_set(y + jy, acb_realref(x + jy % nx));
 				break;
 			}
 			case R_FLINT_CLASS_INVALID:
@@ -326,15 +326,16 @@ SEXP R_flint_arb_atomic(SEXP object)
 SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	mp_limb_t
+	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
-		ny = R_flint_get_length(s_y);
+		ny = R_flint_get_length(s_y),
+		nz = RECYCLE2(nx, ny);
 	arb_srcptr
 		x = R_flint_get_pointer(s_x),
 		y = R_flint_get_pointer(s_y);
-	mp_limb_t j, n = RECYCLE2(nx, ny);
+	int dz[3];
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	slong prec = asPrec(R_NilValue, __func__);
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -343,31 +344,31 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = PROTECT(newObject("arb"));
-		arb_ptr z = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arb_finalize);
+		arb_ptr z = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arb_finalize);
 		switch (op) {
 		case 1: /*   "+" */
-			for (j = 0; j < n; ++j)
-				arb_add(z + j, x + j % nx, y + j % ny, prec);
+			for (jz = 0; jz < nz; ++jz)
+				arb_add(z + jz, x + jz % nx, y + jz % ny, prec);
 			break;
 		case 2: /*   "-" */
-			for (j = 0; j < n; ++j)
-				arb_sub(z + j, x + j % nx, y + j % ny, prec);
+			for (jz = 0; jz < nz; ++jz)
+				arb_sub(z + jz, x + jz % nx, y + jz % ny, prec);
 			break;
 		case 3: /*   "*" */
-			for (j = 0; j < n; ++j)
-				arb_mul(z + j, x + j % nx, y + j % ny, prec);
+			for (jz = 0; jz < nz; ++jz)
+				arb_mul(z + jz, x + jz % nx, y + jz % ny, prec);
 			break;
 		case 6: /*   "/" */
-			for (j = 0; j < n; ++j)
-				arb_div(z + j, x + j % nx, y + j % ny, prec);
+			for (jz = 0; jz < nz; ++jz)
+				arb_div(z + jz, x + jz % nx, y + jz % ny, prec);
 			break;
 		case 7: /*   "^" */
-			for (j = 0; j < n; ++j)
-				arb_pow(z + j, x + j % nx, y + j % ny, prec);
+			for (jz = 0; jz < nz; ++jz)
+				arb_pow(z + jz, x + jz % nx, y + jz % ny, prec);
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -380,84 +381,84 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
-				: arb_eq(x + j % nx, y + j % ny) != 0;
+				: arb_eq(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case  9: /*  "!=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
-				: arb_ne(x + j % nx, y + j % ny) != 0;
+				: arb_ne(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case 10: /*   "<" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
-				: arb_lt(x + j % nx, y + j % ny) != 0;
+				: arb_lt(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case 11: /*   ">" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
-				: arb_gt(x + j % nx, y + j % ny) != 0;
+				: arb_gt(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case 12: /*  "<=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
-				: arb_le(x + j % nx, y + j % ny) != 0;
+				: arb_le(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case 13: /*  ">=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
-				: arb_ge(x + j % nx, y + j % ny) != 0;
+				: arb_ge(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case 14: /*   "&" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_ZERO(x + j % nx) ||
-				 ARB_CONTAINS_ZERO(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_ZERO(x + jz % nx) ||
+				 ARB_CONTAINS_ZERO(y + jz % ny))
 				? 0
 				:
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(ARB_CONTAINS_NONZERO(x + j % nx) ||
-				 ARB_CONTAINS_NONZERO(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(ARB_CONTAINS_NONZERO(x + jz % nx) ||
+				 ARB_CONTAINS_NONZERO(y + jz % ny))
 				? 1
 				:
-				(ARB_CONTAINS_NAN(x + j % nx) ||
-				 ARB_CONTAINS_NAN(y + j % ny))
+				(ARB_CONTAINS_NAN(x + jz % nx) ||
+				 ARB_CONTAINS_NAN(y + jz % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}

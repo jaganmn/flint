@@ -33,7 +33,7 @@ void R_flint_arf_finalize(SEXP x)
 SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
                             SEXP s_dim, SEXP s_dimnames, SEXP s_names)
 {
-	mp_limb_t j, nx = 0, ny = 0;
+	mp_limb_t jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -59,50 +59,50 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
-		for (j = 0; j < ny; ++j)
-			arf_zero(y + j);
+		for (jy = 0; jy < ny; ++jy)
+			arf_zero(y + jy);
 		break;
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (j = 0; j < ny; ++j)
-			arf_set_ui(y + j, x[j % nx]);
+		for (jy = 0; jy < ny; ++jy)
+			arf_set_ui(y + jy, x[jy % nx]);
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (x[j % nx] == NA_LOGICAL)
-			arf_nan(y + j);
+		for (jy = 0; jy < ny; ++jy) {
+			if (x[jy % nx] == NA_LOGICAL)
+			arf_nan(y + jy);
 			else
-			arf_set_si(y + j, x[j % nx]);
+			arf_set_si(y + jy, x[jy % nx]);
 		}
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (x[j % nx] == NA_INTEGER)
-			arf_nan(y + j);
+		for (jy = 0; jy < ny; ++jy) {
+			if (x[jy % nx] == NA_INTEGER)
+			arf_nan(y + jy);
 			else
-			arf_set_si(y + j, x[j % nx]);
+			arf_set_si(y + jy, x[jy % nx]);
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (j = 0; j < ny; ++j)
-			arf_set_d(y + j, x[j % nx]);
+		for (jy = 0; jy < ny; ++jy)
+			arf_set_d(y + jy, x[jy % nx]);
 		break;
 	}
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (j = 0; j < ny; ++j)
-			arf_set_d(y + j, x[j % nx].r);
+		for (jy = 0; jy < ny; ++jy)
+			arf_set_d(y + jy, x[jy % nx].r);
 		break;
 	}
 	case STRSXP:
@@ -113,8 +113,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		mpfr_init2(m, prec);
 		const char *s;
 		char *t;
-		for (j = 0; j < ny; ++j) {
-			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+		for (jy = 0; jy < ny; ++jy) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
 			mpfr_strtofr(m, s, &t, 0, rnd);
 			if (t <= s)
 				break;
@@ -123,10 +123,10 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				s++;
 			if (*s != '\0')
 				break;
-			arf_set_mpfr(y + j, m);
+			arf_set_mpfr(y + jy, m);
 		}
 		mpfr_clear(m);
-		if (j < ny)
+		if (jy < ny)
 			Rf_error(_("invalid input in string conversion"));
 		break;
 	}
@@ -135,22 +135,22 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				arf_set_ui(y + j, x[j % nx]);
+			for (jy = 0; jy < ny; ++jy)
+				arf_set_ui(y + jy, x[jy % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				arf_set_si(y + j, x[j % nx]);
+			for (jy = 0; jy < ny; ++jy)
+				arf_set_si(y + jy, x[jy % nx]);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				arf_set_fmpz(y + j, x + j % nx);
+			for (jy = 0; jy < ny; ++jy)
+				arf_set_fmpz(y + jy, x + jy % nx);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
@@ -158,29 +158,29 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpq *x = R_flint_get_pointer(s_x);
 			slong prec = asPrec(R_NilValue, __func__);
 			arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
-			for (j = 0; j < ny; ++j)
-				arf_fmpz_div_fmpz(y + j, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec, rnd);
+			for (jy = 0; jy < ny; ++jy)
+				arf_fmpz_div_fmpz(y + jy, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_MAG:
 		{
 			mag_srcptr x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				arf_set_mag(y + j, x + j % nx);
+			for (jy = 0; jy < ny; ++jy)
+				arf_set_mag(y + jy, x + jy % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
 		{
 			arf_srcptr x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				arf_set(y + j, x + j % nx);
+			for (jy = 0; jy < ny; ++jy)
+				arf_set(y + jy, x + jy % nx);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				arf_set(y + j, acf_realref(x + j % nx));
+			for (jy = 0; jy < ny; ++jy)
+				arf_set(y + jy, acf_realref(x + jy % nx));
 			break;
 		}
 		case R_FLINT_CLASS_ARB:
@@ -386,16 +386,17 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	mp_limb_t
+	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
-		ny = R_flint_get_length(s_y);
+		ny = R_flint_get_length(s_y),
+		nz = RECYCLE2(nx, ny);
 	arf_srcptr
 		x = R_flint_get_pointer(s_x),
 		y = R_flint_get_pointer(s_y);
-	mp_limb_t j, n = RECYCLE2(nx, ny);
+	int dz[3];
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	slong prec = asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -403,27 +404,27 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  6: /*   "/" */
 	{
 		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_arf_finalize);
+		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
 		switch (op) {
 		case 1: /*   "+" */
-			for (j = 0; j < n; ++j)
-				arf_add(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				arf_add(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 		case 2: /*   "-" */
-			for (j = 0; j < n; ++j)
-				arf_sub(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				arf_sub(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 		case 3: /*   "*" */
-			for (j = 0; j < n; ++j)
-				arf_mul(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				arf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 		case 6: /*   "/" */
-			for (j = 0; j < n; ++j)
-				arf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				arf_div(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -436,75 +437,75 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: arf_equal(x + j % nx, y + j % ny) != 0;
+				: arf_equal(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case  9: /*  "!=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: arf_equal(x + j % nx, y + j % ny) == 0;
+				: arf_equal(x + jz % nx, y + jz % ny) == 0;
 			break;
 		case 10: /*   "<" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: arf_cmp(x + j % nx, y + j % ny) < 0;
+				: arf_cmp(x + jz % nx, y + jz % ny) < 0;
 			break;
 		case 11: /*   ">" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: arf_cmp(x + j % nx, y + j % ny) > 0;
+				: arf_cmp(x + jz % nx, y + jz % ny) > 0;
 			break;
 		case 12: /*  "<=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: arf_cmp(x + j % nx, y + j % ny) <= 0;
+				: arf_cmp(x + jz % nx, y + jz % ny) <= 0;
 			break;
 		case 13: /*  ">=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_nan(x + j % nx) || arf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: arf_cmp(x + j % nx, y + j % ny) >= 0;
+				: arf_cmp(x + jz % nx, y + jz % ny) >= 0;
 			break;
 		case 14: /*   "&" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(arf_is_zero(x + j % nx) || arf_is_zero(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(arf_is_zero(x + jz % nx) || arf_is_zero(y + jz % ny))
 				? 0
 				:
-				(arf_is_nan (x + j % nx) || arf_is_nan (y + j % ny))
+				(arf_is_nan (x + jz % nx) || arf_is_nan (y + jz % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(!(arf_is_nan(x + j % nx) || arf_is_zero(x + j % nx)) ||
-				 !(arf_is_nan(y + j % ny) || arf_is_zero(y + j % ny)))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(!(arf_is_nan(x + jz % nx) || arf_is_zero(x + jz % nx)) ||
+				 !(arf_is_nan(y + jz % ny) || arf_is_zero(y + jz % ny)))
 				? 1
 				:
-				(arf_is_nan (x + j % nx) || arf_is_nan (y + j % ny))
+				(arf_is_nan (x + jz % nx) || arf_is_nan (y + jz % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}

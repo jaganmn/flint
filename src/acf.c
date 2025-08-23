@@ -180,7 +180,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
                             SEXP s_dim, SEXP s_dimnames, SEXP s_names,
                             SEXP s_real, SEXP s_imag)
 {
-	mp_limb_t j, nr = 1, ni = 1, nx = 0, ny = 0;
+	mp_limb_t jy, nx = 0, ny = 0, nr = 1, ni = 1;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -222,81 +222,81 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr xr = R_flint_get_pointer(s_real);
 			if (s_imag != R_NilValue) {
 				arf_srcptr xi = R_flint_get_pointer(s_imag);
-				for (j = 0; j < ny; ++j) {
-					arf_set(acf_realref(y + j), xr + j % nr);
-					arf_set(acf_imagref(y + j), xi + j % ni);
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(acf_realref(y + jy), xr + jy % nr);
+					arf_set(acf_imagref(y + jy), xi + jy % ni);
 				}
 			} else {
-				for (j = 0; j < ny; ++j) {
-					arf_set(acf_realref(y + j), xr + j % nr);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(acf_realref(y + jy), xr + jy % nr);
+					arf_zero(acf_imagref(y + jy));
 				}
 			}
 		} else {
 			if (s_imag != R_NilValue) {
 				arf_srcptr xi = R_flint_get_pointer(s_imag);
-				for (j = 0; j < ny; ++j) {
-					arf_zero(acf_realref(y + j));
-					arf_set(acf_imagref(y + j), xi + j % ni);
+				for (jy = 0; jy < ny; ++jy) {
+					arf_zero(acf_realref(y + jy));
+					arf_set(acf_imagref(y + jy), xi + jy % ni);
 				}
 			}
 		}
 	} else if (s_x != R_NilValue) {
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
-			for (j = 0; j < ny; ++j) {
-				arf_zero(acf_realref(y + j));
-				arf_zero(acf_imagref(y + j));
+			for (jy = 0; jy < ny; ++jy) {
+				arf_zero(acf_realref(y + jy));
+				arf_zero(acf_imagref(y + jy));
 			}
 			break;
 		case RAWSXP:
 		{
 			const Rbyte *x = RAW_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				arf_set_ui(acf_realref(y + j), x[j % nx]);
-				arf_zero(acf_imagref(y + j));
+			for (jy = 0; jy < ny; ++jy) {
+				arf_set_ui(acf_realref(y + jy), x[jy % nx]);
+				arf_zero(acf_imagref(y + jy));
 			}
 			break;
 		}
 		case LGLSXP:
 		{
 			const int *x = LOGICAL_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (x[j] == NA_LOGICAL)
-				arf_nan(acf_realref(y + j));
+			for (jy = 0; jy < ny; ++jy) {
+				if (x[jy] == NA_LOGICAL)
+				arf_nan(acf_realref(y + jy));
 				else
-				arf_set_si(acf_realref(y + j), x[j % nx]);
-				arf_zero(acf_imagref(y + j));
+				arf_set_si(acf_realref(y + jy), x[jy % nx]);
+				arf_zero(acf_imagref(y + jy));
 			}
 			break;
 		}
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (x[j] == NA_INTEGER)
-				arf_nan(acf_realref(y + j));
+			for (jy = 0; jy < ny; ++jy) {
+				if (x[jy] == NA_INTEGER)
+				arf_nan(acf_realref(y + jy));
 				else
-				arf_set_si(acf_realref(y + j), x[j % nx]);
-				arf_zero(acf_imagref(y + j));
+				arf_set_si(acf_realref(y + jy), x[jy % nx]);
+				arf_zero(acf_imagref(y + jy));
 			}
 			break;
 		}
 		case REALSXP:
 		{
 			const double *x = REAL_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				arf_set_d(acf_realref(y + j), x[j % nx]);
-				arf_zero(acf_imagref(y + j));
+			for (jy = 0; jy < ny; ++jy) {
+				arf_set_d(acf_realref(y + jy), x[jy % nx]);
+				arf_zero(acf_imagref(y + jy));
 			}
 			break;
 		}
 		case CPLXSXP:
 		{
 			const Rcomplex *x = COMPLEX_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				arf_set_d(acf_realref(y + j), x[j % nx].r);
-				arf_set_d(acf_imagref(y + j), x[j % nx].i);
+			for (jy = 0; jy < ny; ++jy) {
+				arf_set_d(acf_realref(y + jy), x[jy % nx].r);
+				arf_set_d(acf_imagref(y + jy), x[jy % nx].i);
 			}
 			break;
 		}
@@ -308,8 +308,8 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mpfr_init2(m, prec);
 			const char *s;
 			char *t;
-			for (j = 0; j < ny; ++j) {
-				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+			for (jy = 0; jy < ny; ++jy) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
 #define COMMON \
 				do { \
 				mpfr_strtofr(m, s, &t, 0, rnd); \
@@ -322,18 +322,18 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 					while (isspace(*s))
 						s++;
 				if (*s == '\0') {
-					arf_set_mpfr(acf_realref(y + j), m);
-					arf_zero(acf_imagref(y + j));
+					arf_set_mpfr(acf_realref(y + jy), m);
+					arf_zero(acf_imagref(y + jy));
 				} else if (*s == 'i') {
 					s++;
 					while (isspace(*s))
 						s++;
 					if (*s != '\0')
 						break;
-					arf_zero(acf_realref(y + j));
-					arf_set_mpfr(acf_imagref(y + j), m);
+					arf_zero(acf_realref(y + jy));
+					arf_set_mpfr(acf_imagref(y + jy), m);
 				} else if (*s == '+' || *s == '-') {
-					arf_set_mpfr(acf_realref(y + j), m);
+					arf_set_mpfr(acf_realref(y + jy), m);
 					COMMON;
 					if (*s != 'i')
 						break;
@@ -342,13 +342,13 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 						s++;
 					if (*s != '\0')
 						break;
-					arf_set_mpfr(acf_imagref(y + j), m);
+					arf_set_mpfr(acf_imagref(y + jy), m);
 				} else
 					break;
 #undef COMMON
 			}
 			mpfr_clear(m);
-			if (j < ny)
+			if (jy < ny)
 				Rf_error(_("invalid input in string conversion"));
 			break;
 		}
@@ -357,27 +357,27 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ULONG:
 			{
 				const ulong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set_ui(acf_realref(y + j), x[j % nx]);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set_ui(acf_realref(y + jy), x[jy % nx]);
+					arf_zero(acf_imagref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_SLONG:
 			{
 				const slong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set_si(acf_realref(y + j), x[j % nx]);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set_si(acf_realref(y + jy), x[jy % nx]);
+					arf_zero(acf_imagref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_FMPZ:
 			{
 				const fmpz *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set_fmpz(acf_realref(y + j), x + j % nx);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set_fmpz(acf_realref(y + jy), x + jy % nx);
+					arf_zero(acf_imagref(y + jy));
 				}
 				break;
 			}
@@ -386,35 +386,35 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				const fmpq *x = R_flint_get_pointer(s_x);
 				slong prec = asPrec(R_NilValue, __func__);
 				arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
-				for (j = 0; j < ny; ++j) {
-					arf_fmpz_div_fmpz(acf_realref(y + j), fmpq_numref(x + j % nx), fmpq_denref(x + j % nx), prec, rnd);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_fmpz_div_fmpz(acf_realref(y + jy), fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
+					arf_zero(acf_imagref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_MAG:
 			{
 				mag_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set_mag(acf_realref(y + j), x + j % nx);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set_mag(acf_realref(y + jy), x + jy % nx);
+					arf_zero(acf_imagref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					arf_set(acf_realref(y + j), x + j % nx);
-					arf_zero(acf_imagref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					arf_set(acf_realref(y + jy), x + jy % nx);
+					arf_zero(acf_imagref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					acf_set(y + j, x + j % nx);
+				for (jy = 0; jy < ny; ++jy)
+					acf_set(y + jy, x + jy % nx);
 				break;
 			}
 			case R_FLINT_CLASS_ARB:
@@ -496,16 +496,17 @@ SEXP R_flint_acf_atomic(SEXP object)
 SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	mp_limb_t
+	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
-		ny = R_flint_get_length(s_y);
+		ny = R_flint_get_length(s_y),
+		nz = RECYCLE2(nx, ny);
 	acf_srcptr
 		x = R_flint_get_pointer(s_x),
 		y = R_flint_get_pointer(s_y);
-	mp_limb_t j, n = RECYCLE2(nx, ny);
+	int dz[3];
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	slong prec = asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -515,29 +516,29 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 #endif
 	{
 		SEXP ans = PROTECT(newObject("acf"));
-		acf_ptr z = (n) ? flint_calloc(n, sizeof(acf_t)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_acf_finalize);
+		acf_ptr z = (nz) ? flint_calloc(nz, sizeof(acf_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acf_finalize);
 		switch (op) {
 		case 1: /*   "+" */
-			for (j = 0; j < n; ++j)
-				acf_add(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				acf_add(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 		case 2: /*   "-" */
-			for (j = 0; j < n; ++j)
-				acf_sub(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				acf_sub(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 		case 3: /*   "*" */
-			for (j = 0; j < n; ++j)
-				__local_acf_mul(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				__local_acf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 #if 0
 		case 6: /*   "/" */
-			for (j = 0; j < n; ++j)
-				__local_acf_div(z + j, x + j % nx, y + j % ny, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				__local_acf_div(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 #endif
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -546,47 +547,47 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(acf_is_nan(x + j % nx) || acf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(acf_is_nan(x + jz % nx) || acf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: acf_equal(x + j % nx, y + j % ny) != 0;
+				: acf_equal(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case  9: /*  "!=" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(acf_is_nan(x + j % nx) || acf_is_nan(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(acf_is_nan(x + jz % nx) || acf_is_nan(y + jz % ny))
 				? NA_LOGICAL
-				: acf_equal(x + j % nx, y + j % ny) == 0;
+				: acf_equal(x + jz % nx, y + jz % ny) == 0;
 			break;
 		case 14: /*   "&" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(acf_is_zero(x + j % nx) || acf_is_zero(y + j % ny))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(acf_is_zero(x + jz % nx) || acf_is_zero(y + jz % ny))
 				? 0
 				:
-				(acf_is_nan (x + j % nx) || acf_is_nan (y + j % ny))
+				(acf_is_nan (x + jz % nx) || acf_is_nan (y + jz % ny))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case 15: /*   "|" */
-			for (j = 0; j < n; ++j)
-				z[j] =
-				(!(acf_is_nan(x + j % nx) || acf_is_zero(x + j % nx)) ||
-				 !(acf_is_nan(y + j % ny) || acf_is_zero(y + j % ny)))
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] =
+				(!(acf_is_nan(x + jz % nx) || acf_is_zero(x + jz % nx)) ||
+				 !(acf_is_nan(y + jz % ny) || acf_is_zero(y + jz % ny)))
 				? 1
 				:
-				(acf_is_nan (x + j % nx) || acf_is_nan (y + j % ny))
+				(acf_is_nan (x + jz % nx) || acf_is_nan (y + jz % ny))
 				? NA_LOGICAL
 				: 0;
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}

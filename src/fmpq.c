@@ -43,7 +43,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
                              SEXP s_dim, SEXP s_dimnames, SEXP s_names,
                              SEXP s_num, SEXP s_den)
 {
-	mp_limb_t j, np = 1, nq = 1, nx = 0, ny = 0;
+	mp_limb_t jy, nx = 0, ny = 0, np = 1, nq = 1;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -85,56 +85,56 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpz *xp = R_flint_get_pointer(s_num);
 			if (s_den != R_NilValue) {
 				const fmpz *xq = R_flint_get_pointer(s_den);
-				for (j = 0; j < ny; ++j) {
-					if (fmpz_is_zero(xq + j % nq))
+				for (jy = 0; jy < ny; ++jy) {
+					if (fmpz_is_zero(xq + jy % nq))
 					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
 					else {
-					fmpz_set(fmpq_numref(y + j), xp + j % np);
-					fmpz_set(fmpq_denref(y + j), xq + j % nq);
-					fmpq_canonicalise(y + j);
+					fmpz_set(fmpq_numref(y + jy), xp + jy % np);
+					fmpz_set(fmpq_denref(y + jy), xq + jy % nq);
+					fmpq_canonicalise(y + jy);
 					}
 				}
 			} else {
-				for (j = 0; j < ny; ++j) {
-					fmpz_set(fmpq_numref(y + j), xp + j % np);
-					fmpz_one(fmpq_denref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					fmpz_set(fmpq_numref(y + jy), xp + jy % np);
+					fmpz_one(fmpq_denref(y + jy));
 				}
 			}
 		} else {
 			if (s_den != R_NilValue) {
 				const fmpz *xq = R_flint_get_pointer(s_den);
-				for (j = 0; j < ny; ++j) {
-					if (fmpz_is_zero(xq + j % nq))
+				for (jy = 0; jy < ny; ++jy) {
+					if (fmpz_is_zero(xq + jy % nq))
 					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
 					else
-					fmpz_one(fmpq_denref(y + j));
+					fmpz_one(fmpq_denref(y + jy));
 				}
 			}
 		}
 	} else {
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
-			for (j = 0; j < ny; ++j)
-				fmpz_one(fmpq_denref(y + j));
+			for (jy = 0; jy < ny; ++jy)
+				fmpz_one(fmpq_denref(y + jy));
 			break;
 		case RAWSXP:
 		{
 			const Rbyte *x = RAW_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				fmpz_set_ui(fmpq_numref(y + j), x[j % nx]);
-				fmpz_one(fmpq_denref(y + j));
+			for (jy = 0; jy < ny; ++jy) {
+				fmpz_set_ui(fmpq_numref(y + jy), x[jy % nx]);
+				fmpz_one(fmpq_denref(y + jy));
 			}
 			break;
 		}
 		case LGLSXP:
 		{
 			const int *x = LOGICAL_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (x[j % nx] == NA_LOGICAL)
+			for (jy = 0; jy < ny; ++jy) {
+				if (x[jy % nx] == NA_LOGICAL)
 				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 				else {
-				fmpz_set_si(fmpq_numref(y + j), x[j % nx]);
-				fmpz_one(fmpq_denref(y + j));
+				fmpz_set_si(fmpq_numref(y + jy), x[jy % nx]);
+				fmpz_one(fmpq_denref(y + jy));
 				}
 			}
 			break;
@@ -142,12 +142,12 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (x[j % nx] == NA_INTEGER)
+			for (jy = 0; jy < ny; ++jy) {
+				if (x[jy % nx] == NA_INTEGER)
 				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 				else {
-				fmpz_set_si(fmpq_numref(y + j), x[j % nx]);
-				fmpz_one(fmpq_denref(y + j));
+				fmpz_set_si(fmpq_numref(y + jy), x[jy % nx]);
+				fmpz_one(fmpq_denref(y + jy));
 				}
 			}
 			break;
@@ -156,20 +156,20 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		{
 			const double *x = REAL_RO(s_x);
 			int e;
-			for (j = 0; j < ny; ++j) {
-				if (!R_FINITE(x[j % nx]))
+			for (jy = 0; jy < ny; ++jy) {
+				if (!R_FINITE(x[jy % nx]))
 				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 				else {
-				fmpz_set_d(fmpq_numref(y + j), ldexp(frexp(x[j % nx], &e), DBL_MANT_DIG));
+				fmpz_set_d(fmpq_numref(y + jy), ldexp(frexp(x[jy % nx], &e), DBL_MANT_DIG));
 				e -= DBL_MANT_DIG;
 				if (e < 0) {
-				fmpz_one_2exp(fmpq_denref(y + j),
+				fmpz_one_2exp(fmpq_denref(y + jy),
 				              (ulong) -e); /* fear not as e > INT_MIN */
-				fmpq_canonicalise(y + j);
+				fmpq_canonicalise(y + jy);
 				} else {
-				fmpz_mul_2exp(fmpq_numref(y + j), fmpq_numref(y + j),
+				fmpz_mul_2exp(fmpq_numref(y + jy), fmpq_numref(y + jy),
 				              (ulong)  e);
-				fmpz_one(fmpq_denref(y + j));
+				fmpz_one(fmpq_denref(y + jy));
 				}
 				}
 			}
@@ -179,20 +179,20 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		{
 			const Rcomplex *x = COMPLEX_RO(s_x);
 			int e;
-			for (j = 0; j < ny; ++j) {
-				if (!R_FINITE(x[j % nx].r))
+			for (jy = 0; jy < ny; ++jy) {
+				if (!R_FINITE(x[jy % nx].r))
 				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 				else {
-				fmpz_set_d(fmpq_numref(y + j), ldexp(frexp(x[j % nx].r, &e), DBL_MANT_DIG));
+				fmpz_set_d(fmpq_numref(y + jy), ldexp(frexp(x[jy % nx].r, &e), DBL_MANT_DIG));
 				e -= DBL_MANT_DIG;
 				if (e < 0) {
-				fmpz_one_2exp(fmpq_denref(y + j),
+				fmpz_one_2exp(fmpq_denref(y + jy),
 				              (ulong) -e); /* fear not as e > INT_MIN */
-				fmpq_canonicalise(y + j);
+				fmpq_canonicalise(y + jy);
 				} else {
-				fmpz_mul_2exp(fmpq_numref(y + j), fmpq_numref(y + j),
+				fmpz_mul_2exp(fmpq_numref(y + jy), fmpq_numref(y + jy),
 				              (ulong)  e);
-				fmpz_one(fmpq_denref(y + j));
+				fmpz_one(fmpq_denref(y + jy));
 				}
 				}
 			}
@@ -203,14 +203,14 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mpq_t r;
 			mpq_init(r);
 			const char *s;
-			for (j = 0; j < ny; ++j) {
-				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+			for (jy = 0; jy < ny; ++jy) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
 				if (mpq_set_str(r, s, 0) != 0) {
 					mpq_clear(r);
 					Rf_error(_("invalid input in string conversion"));
 				}
-				fmpq_set_mpq(y + j, r);
-				fmpq_canonicalise(y + j);
+				fmpq_set_mpq(y + jy, r);
+				fmpq_canonicalise(y + jy);
 			}
 			mpq_clear(r);
 			break;
@@ -220,67 +220,67 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ULONG:
 			{
 				const ulong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					fmpz_set_ui(fmpq_numref(y + j), x[j % nx]);
-					fmpz_one(fmpq_denref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					fmpz_set_ui(fmpq_numref(y + jy), x[jy % nx]);
+					fmpz_one(fmpq_denref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_SLONG:
 			{
 				const slong *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					fmpz_set_si(fmpq_numref(y + j), x[j % nx]);
-					fmpz_one(fmpq_denref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					fmpz_set_si(fmpq_numref(y + jy), x[jy % nx]);
+					fmpz_one(fmpq_denref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_FMPZ:
 			{
 				const fmpz *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					fmpz_set(fmpq_numref(y + j), x + j % nx);
-					fmpz_one(fmpq_denref(y + j));
+				for (jy = 0; jy < ny; ++jy) {
+					fmpz_set(fmpq_numref(y + jy), x + jy % nx);
+					fmpz_one(fmpq_denref(y + jy));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_FMPQ:
 			{
 				const fmpq *x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j)
-					fmpq_set(y + j, x + j % nx);
+				for (jy = 0; jy < ny; ++jy)
+					fmpq_set(y + jy, x + jy % nx);
 				break;
 			}
 			case R_FLINT_CLASS_MAG:
 			{
 				mag_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					if (mag_is_inf(x + j % nx))
+				for (jy = 0; jy < ny; ++jy) {
+					if (mag_is_inf(x + jy % nx))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
-					mag_get_fmpq(y + j, x + j % nx);
+					mag_get_fmpq(y + jy, x + jy % nx);
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					if (!arf_is_finite(x + j % nx))
+				for (jy = 0; jy < ny; ++jy) {
+					if (!arf_is_finite(x + jy % nx))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
-					arf_get_fmpq(y + j, x + j % nx);
+					arf_get_fmpq(y + jy, x + jy % nx);
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = R_flint_get_pointer(s_x);
-				for (j = 0; j < ny; ++j) {
-					if (!arf_is_finite(acf_realref(x + j % nx)))
+				for (jy = 0; jy < ny; ++jy) {
+					if (!arf_is_finite(acf_realref(x + jy % nx)))
 					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
 					else
-					arf_get_fmpq(y + j, acf_realref(x + j % nx));
+					arf_get_fmpq(y + jy, acf_realref(x + jy % nx));
 				}
 				break;
 			}
@@ -349,14 +349,15 @@ SEXP R_flint_fmpq_atomic(SEXP object)
 SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	mp_limb_t
+	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
-		ny = R_flint_get_length(s_y);
+		ny = R_flint_get_length(s_y),
+		nz = RECYCLE2(nx, ny);
 	const fmpq
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
-	mp_limb_t j, n = RECYCLE2(nx, ny);
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
+	int dz[3];
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -367,49 +368,49 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 1: /*   "+" */
-			for (j = 0; j < n; ++j)
-				fmpq_add(z + j, x + j % nx, y + j % ny);
+			for (jz = 0; jz < nz; ++jz)
+				fmpq_add(z + jz, x + jz % nx, y + jz % ny);
 			break;
 		case 2: /*   "-" */
-			for (j = 0; j < n; ++j)
-				fmpq_sub(z + j, x + j % nx, y + j % ny);
+			for (jz = 0; jz < nz; ++jz)
+				fmpq_sub(z + jz, x + jz % nx, y + jz % ny);
 			break;
 		case 3: /*   "*" */
-			for (j = 0; j < n; ++j)
-				fmpq_mul(z + j, x + j % nx, y + j % ny);
+			for (jz = 0; jz < nz; ++jz)
+				fmpq_mul(z + jz, x + jz % nx, y + jz % ny);
 			break;
 		case 4: /*  "%%" */
-			for (j = 0; j < n; ++j) {
-				if (fmpz_is_zero(fmpq_numref(y + j % ny)))
+			for (jz = 0; jz < nz; ++jz) {
+				if (fmpz_is_zero(fmpq_numref(y + jz % ny)))
 				Rf_error(_("quotient with 0 is undefined"));
 				else {
-				fmpq_div(z + j, x + j % nx, y + j % ny);
-				fmpz_fdiv_r(fmpq_numref(z + j), fmpq_numref(z + j), fmpq_denref(z + j));
-				fmpq_mul(z + j, z + j, y + j % ny);
+				fmpq_div(z + jz, x + jz % nx, y + jz % ny);
+				fmpz_fdiv_r(fmpq_numref(z + jz), fmpq_numref(z + jz), fmpq_denref(z + jz));
+				fmpq_mul(z + jz, z + jz, y + jz % ny);
 				}
 			}
 			break;
 		case 5: /* "%/%" */
-			for (j = 0; j < n; ++j) {
-				if (fmpz_is_zero(fmpq_numref(y + j % ny)))
+			for (jz = 0; jz < nz; ++jz) {
+				if (fmpz_is_zero(fmpq_numref(y + jz % ny)))
 				Rf_error(_("quotient with 0 is undefined"));
 				else {
-				fmpq_div(z + j, x + j % nx, y + j % ny);
-				fmpz_fdiv_q(fmpq_numref(z + j), fmpq_numref(z + j), fmpq_denref(z + j));
-				fmpz_one(fmpq_denref(z + j));
+				fmpq_div(z + jz, x + jz % nx, y + jz % ny);
+				fmpz_fdiv_q(fmpq_numref(z + jz), fmpq_numref(z + jz), fmpq_denref(z + jz));
+				fmpz_one(fmpq_denref(z + jz));
 				}
 			}
 			break;
 		case 6: /*   "/" */
-			for (j = 0; j < n; ++j)
-				if (fmpz_is_zero(fmpq_numref(y + j % ny)))
+			for (jz = 0; jz < nz; ++jz)
+				if (fmpz_is_zero(fmpq_numref(y + jz % ny)))
 				Rf_error(_("quotient with 0 is undefined"));
 				else
-				fmpq_div(z + j, x + j % nx, y + j % ny);
+				fmpq_div(z + jz, x + jz % nx, y + jz % ny);
 			break;
 		case 7: /*   "^" */
 		{
@@ -420,9 +421,9 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			int exact;
 			fmpz_init(a);
 			fmpz_init(p);
-			for (j = 0; j < n; ++j) {
-				b = x + j % nx;
-				e = y + j % ny;
+			for (jz = 0; jz < nz; ++jz) {
+				b = x + jz % nx;
+				e = y + jz % ny;
 				if ((fmpq_sgn(b) == 0 && fmpq_sgn(e) < 0) ||
 				    (fmpq_sgn(b) <  0 && fmpz_is_even(fmpq_denref(e)))) {
 				fmpz_clear(a);
@@ -446,21 +447,21 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				if (fmpz_sgn(fmpq_numref(e)) >= 0) {
 				u = fmpz_get_ui(fmpq_numref(e));
 				fmpz_pow_ui(p, fmpq_numref(b), u);
-				exact = fmpz_root(fmpq_numref(z + j), p, s);
+				exact = fmpz_root(fmpq_numref(z + jz), p, s);
 				if (exact) {
 				fmpz_pow_ui(p, fmpq_denref(b), u);
-				exact = fmpz_root(fmpq_denref(z + j), p, s);
+				exact = fmpz_root(fmpq_denref(z + jz), p, s);
 				}
 				} else {
 				fmpz_neg(a, fmpq_numref(e));
 				u = fmpz_get_ui(fmpq_numref(e));
 				fmpz_pow_ui(p, fmpq_denref(b), u);
-				exact = fmpz_root(fmpq_numref(z + j), p, s);
+				exact = fmpz_root(fmpq_numref(z + jz), p, s);
 				if (exact) {
 				fmpz_pow_ui(p, fmpq_numref(b), u);
-				exact = fmpz_root(fmpq_denref(z + j), p, s);
+				exact = fmpz_root(fmpq_denref(z + jz), p, s);
 				if (exact)
-				fmpq_canonicalise(z + j);
+				fmpq_canonicalise(z + jz);
 				}
 				}
 				if (!exact) {
@@ -475,7 +476,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			break;
 		}
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -488,44 +489,44 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_equal(x + j % nx, y + j % ny) != 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_equal(x + jz % nx, y + jz % ny) != 0;
 			break;
 		case  9: /*  "!=" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_equal(x + j % nx, y + j % ny) == 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_equal(x + jz % nx, y + jz % ny) == 0;
 			break;
 		case 10: /*   "<" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_cmp(x + j % nx, y + j % ny) < 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_cmp(x + jz % nx, y + jz % ny) < 0;
 			break;
 		case 11: /*   ">" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_cmp(x + j % nx, y + j % ny) > 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_cmp(x + jz % nx, y + jz % ny) > 0;
 			break;
 		case 12: /*  "<=" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_cmp(x + j % nx, y + j % ny) <= 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_cmp(x + jz % nx, y + jz % ny) <= 0;
 			break;
 		case 13: /*  ">=" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_cmp(x + j % nx, y + j % ny) >= 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_cmp(x + jz % nx, y + jz % ny) >= 0;
 			break;
 		case 14: /*   "&" */
-			for (j = 0; j < n; ++j)
-				z[j] = !fmpq_is_zero(x + j % nx) && !fmpq_is_zero(y + j % ny);
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = !fmpq_is_zero(x + jz % nx) && !fmpq_is_zero(y + jz % ny);
 			break;
 		case 15: /*   "|" */
-			for (j = 0; j < n; ++j)
-				z[j] = !fmpq_is_zero(x + j % nx) || !fmpq_is_zero(y + j % ny);
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = !fmpq_is_zero(x + jz % nx) || !fmpq_is_zero(y + jz % ny);
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}

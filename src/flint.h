@@ -21,12 +21,16 @@
 #include <flint/long_extras.h>
 #include <flint/double_extras.h>
 #include <flint/fmpz.h>
+#include <flint/fmpz_mat.h>
 #include <flint/fmpq.h>
+#include <flint/fmpq_mat.h>
 #include <flint/mag.h>
 #include <flint/arf.h>
 #include <flint/acf.h>
 #include <flint/arb.h>
+#include <flint/arb_mat.h>
 #include <flint/acb.h>
+#include <flint/acb_mat.h>
 #include "revertnoreturn.h"
 #include <Rconfig.h> /* R_INLINE, ENABLE_NLS */
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
@@ -209,7 +213,7 @@ void setDDNN(SEXP, SEXP, SEXP, SEXP);
 void setDDNN2(SEXP, SEXP, SEXP, mp_limb_t, mp_limb_t, mp_limb_t, int);
 void setDDNN1(SEXP, SEXP);
 
-int checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t, int);
+int checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t, int, int *);
 
 mpfr_prec_t asPrec(SEXP, const char *);
 mpfr_rnd_t asRnd(SEXP, const char *);

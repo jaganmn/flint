@@ -33,7 +33,7 @@ void R_flint_ulong_finalize(SEXP x)
 SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
                               SEXP s_dim, SEXP s_dimnames, SEXP s_names)
 {
-	mp_limb_t j, nx = 0, ny = 0;
+	mp_limb_t jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -63,65 +63,65 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (j = 0; j < ny; ++j)
-			y[j] = x[j % nx];
+		for (jy = 0; jy < ny; ++jy)
+			y[jy] = x[jy % nx];
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (x[j % nx] == NA_LOGICAL)
+		for (jy = 0; jy < ny; ++jy) {
+			if (x[jy % nx] == NA_LOGICAL)
 			Rf_error(_("NaN is not representable by '%s'"), "ulong");
 			else
-			y[j] = (ulong) x[j % nx];
+			y[jy] = (ulong) x[jy % nx];
 		}
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (x[j % nx] == NA_INTEGER)
+		for (jy = 0; jy < ny; ++jy) {
+			if (x[jy % nx] == NA_INTEGER)
 			Rf_error(_("NaN is not representable by '%s'"), "ulong");
-			else if (x[j % nx] < 0)
+			else if (x[jy % nx] < 0)
 			Rf_error(_("integer not in range of '%s'"), "ulong");
 			else
-			y[j] = (ulong) x[j % nx];
+			y[jy] = (ulong) x[jy % nx];
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (ISNAN(x[j % nx]))
+		for (jy = 0; jy < ny; ++jy) {
+			if (ISNAN(x[jy % nx]))
 			Rf_error(_("NaN is not representable by '%s'"), "ulong");
 #ifdef R_FLINT_ABI_64
-			else if (x[j % nx] <= -1.0 || x[j % nx] >= 0x1.0p+64)
+			else if (x[jy % nx] <= -1.0 || x[jy % nx] >= 0x1.0p+64)
 #else
-			else if (x[j % nx] <= -1.0 || x[j % nx] >= 0x1.0p+32)
+			else if (x[jy % nx] <= -1.0 || x[jy % nx] >= 0x1.0p+32)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 			else
-			y[j] = (ulong) x[j % nx];
+			y[jy] = (ulong) x[jy % nx];
 		}
 		break;
 	}
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (ISNAN(x[j % nx].r))
+		for (jy = 0; jy < ny; ++jy) {
+			if (ISNAN(x[jy % nx].r))
 			Rf_error(_("NaN is not representable by '%s'"), "ulong");
 #ifdef R_FLINT_ABI_64
-			else if (x[j % nx].r <= -1.0 || x[j % nx].r >= 0x1.0p+64)
+			else if (x[jy % nx].r <= -1.0 || x[jy % nx].r >= 0x1.0p+64)
 #else
-			else if (x[j % nx].r <= -1.0 || x[j % nx].r >= 0x1.0p+32)
+			else if (x[jy % nx].r <= -1.0 || x[jy % nx].r >= 0x1.0p+32)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 			else
-			y[j] = (ulong) x[j % nx].r;
+			y[jy] = (ulong) x[jy % nx].r;
 		}
 		break;
 	}
@@ -130,8 +130,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		mpz_t r;
 		mpz_init(r);
 		const char *s;
-		for (j = 0; j < ny; ++j) {
-			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+		for (jy = 0; jy < ny; ++jy) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
 			if (mpz_set_str(r, s, 0) != 0) {
 				mpz_clear(r);
 				Rf_error(_("invalid input in string conversion"));
@@ -140,7 +140,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				mpz_clear(r);
 				Rf_error(_("converted string not in range of '%s'"), "ulong");
 			}
-			y[j] = __local_mpz_get_ui(r);
+			y[jy] = __local_mpz_get_ui(r);
 		}
 		mpz_clear(r);
 		break;
@@ -150,29 +150,29 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				y[j] = x[j % nx];
+			for (jy = 0; jy < ny; ++jy)
+				y[jy] = x[jy % nx];
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (x[j % nx] < 0)
+			for (jy = 0; jy < ny; ++jy) {
+				if (x[jy % nx] < 0)
 				Rf_error(_("integer not in range of '%s'"), "ulong");
 				else
-				y[j] = (ulong) x[j % nx];
+				y[jy] = (ulong) x[jy % nx];
 			}
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (fmpz_sgn(x + j % nx) < 0 || !fmpz_abs_fits_ui(x + j % nx))
+			for (jy = 0; jy < ny; ++jy) {
+				if (fmpz_sgn(x + jy % nx) < 0 || !fmpz_abs_fits_ui(x + jy % nx))
 				Rf_error(_("integer not in range of '%s'"), "ulong");
 				else
-				y[j] = fmpz_get_ui(x + j % nx);
+				y[jy] = fmpz_get_ui(x + jy % nx);
 			}
 			break;
 		}
@@ -181,14 +181,14 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpq *x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				fmpz_tdiv_q(q, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx));
+			for (jy = 0; jy < ny; ++jy) {
+				fmpz_tdiv_q(q, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx));
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
 				Rf_error(_("rational not in range of '%s'"), "ulong");
 				}
 				else
-				y[j] = fmpz_get_ui(q);
+				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -198,14 +198,14 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mag_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				mag_get_fmpz_lower(q, x + j % nx);
+			for (jy = 0; jy < ny; ++jy) {
+				mag_get_fmpz_lower(q, x + jy % nx);
 				if (!fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 				}
 				else
-				y[j] = fmpz_get_ui(q);
+				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -215,14 +215,14 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				arf_get_fmpz(q, x + j % nx, ARF_RND_DOWN);
+			for (jy = 0; jy < ny; ++jy) {
+				arf_get_fmpz(q, x + jy % nx, ARF_RND_DOWN);
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 				}
 				else
-				y[j] = fmpz_get_ui(q);
+				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -232,14 +232,14 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				arf_get_fmpz(q, acf_realref(x + j % nx), ARF_RND_DOWN);
+			for (jy = 0; jy < ny; ++jy) {
+				arf_get_fmpz(q, acf_realref(x + jy % nx), ARF_RND_DOWN);
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
 				}
 				else
-				y[j] = fmpz_get_ui(q);
+				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -327,14 +327,15 @@ SEXP R_flint_ulong_format(SEXP object, SEXP s_base)
 SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	mp_limb_t
+	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
-		ny = R_flint_get_length(s_y);
+		ny = R_flint_get_length(s_y),
+		nz = RECYCLE2(nx, ny);
 	const ulong
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
-	mp_limb_t j, n = RECYCLE2(nx, ny);
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
+	int dz[3];
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -343,7 +344,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  5: /* "%/%" */
 	case  7: /*   "^" */
 	{
-		ulong *z = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
+		ulong *z = (nz) ? flint_calloc(nz, sizeof(ulong)) : 0;
 #if !defined(__GNUC__)
 		ulong a;
 #endif
@@ -351,88 +352,88 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		int over = 0;
 		switch (op) {
 		case 1: /*   "+" */
-			for (j = 0; j < n; ++j) {
+			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				a = x[j % nx];
-				b = y[j % ny];
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if (b > UWORD_MAX - a)
 					break;
-				z[j] = a + b;
+				z[jz] = a + b;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_uaddll_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_uaddll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #else
-				if (__builtin_uaddl_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_uaddl_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(ulong));
+			memset(z, 0, nz * sizeof(ulong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				fmpz_set_ui(Z + j, x[j % nx]);
-				fmpz_add_ui(Z + j, Z + j, y[j % ny]);
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_ui(Z + jz, x[jz % nx]);
+				fmpz_add_ui(Z + jz, Z + jz, y[jz % ny]);
 			}
 			}
 			break;
 		case 2: /*   "-" */
-			for (j = 0; j < n; ++j) {
+			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				a = x[j % nx];
-				b = y[j % ny];
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if (b > a)
 					break;
-				z[j] = b - a;
+				z[jz] = b - a;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_usubll_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_usubll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #else
-				if (__builtin_usubl_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_usubl_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(ulong));
+			memset(z, 0, nz * sizeof(ulong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				fmpz_set_ui(Z + j, x[j % nx]);
-				fmpz_sub_ui(Z + j, Z + j, y[j % ny]);
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_ui(Z + jz, x[jz % nx]);
+				fmpz_sub_ui(Z + jz, Z + jz, y[jz % ny]);
 			}
 			}
 			break;
 		case 3: /*   "*" */
-			for (j = 0; j < n; ++j) {
+			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				a = x[j % nx];
-				b = y[j % ny];
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if (a > 0 && b > UWORD_MAX / a)
 					break;
-				z[j] = a * b;
+				z[jz] = a * b;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_umulll_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_umulll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #else
-				if (__builtin_umull_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_umull_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(ulong));
+			memset(z, 0, nz * sizeof(ulong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				fmpz_set_ui(Z + j, x[j % nx]);
-				fmpz_mul_ui(Z + j, Z + j, y[j % ny]);
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_ui(Z + jz, x[jz % nx]);
+				fmpz_mul_ui(Z + jz, Z + jz, y[jz % ny]);
 			}
 			}
 			break;
 		case 4: /*  "%%" */
-			for (j = 0; j < n; ++j) {
-				b = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				b = y[jz % ny];
 				if (b)
-				z[j] = x[j % nx] % b;
+				z[jz] = x[jz % nx] % b;
 				else {
 				flint_free(z);
 				Rf_error(_("quotient with 0 is undefined"));
@@ -440,10 +441,10 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			}
 			break;
 		case 5: /* "%/%" */
-			for (j = 0; j < n; ++j) {
-				b = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				b = y[jz % ny];
 				if (b)
-				z[j] = x[j % nx] / b;
+				z[jz] = x[jz % nx] / b;
 				else {
 				flint_free(z);
 				Rf_error(_("quotient with 0 is undefined"));
@@ -453,56 +454,56 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case 7: /*   "^" */
 		{
 			ulong b, e;
-			for (j = 0; j < n; ++j) {
-				b = x[j % nx];
-				e = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				b = x[jz % nx];
+				e = y[jz % ny];
 				if (b <= 1)
-					z[j] = b;
+					z[jz] = b;
 				else if (e <= 1)
-					z[j] = (e == 0) ? 1 : b;
+					z[jz] = (e == 0) ? 1 : b;
 #ifdef R_FLINT_ABI_64
 				else if (e <= 64 && (int) e * (64 - flint_clz(b)) <= 64)
 #else
 				else if (e <= 32 && (int) e * (32 - flint_clz(b)) <= 32)
 #endif
-					z[j] = n_pow(b, e);
+					z[jz] = n_pow(b, e);
 				else
 					break;
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(ulong));
+			memset(z, 0, nz * sizeof(ulong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j)
-				fmpz_ui_pow_ui(Z + j, x[j % nx], y[j % ny]);
+			for (jz = 0; jz < nz; ++jz)
+				fmpz_ui_pow_ui(Z + jz, x[jz % nx], y[jz % ny]);
 			}
 			break;
 		}
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "ulong"));
-		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_ulong_finalize));
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_ulong_finalize));
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
 	case  6: /*   "/" */
 	{
 		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 6: /*   "/" */
-			for (j = 0; j < n; ++j)
-				if (y[j % ny]) {
-				fmpz_set_ui(fmpq_numref(z + j), x[j % nx]);
-				fmpz_set_ui(fmpq_denref(z + j), y[j % ny]);
-				fmpq_canonicalise(z + j);
+			for (jz = 0; jz < nz; ++jz)
+				if (y[jz % ny]) {
+				fmpz_set_ui(fmpq_numref(z + jz), x[jz % nx]);
+				fmpz_set_ui(fmpq_denref(z + jz), y[jz % ny]);
+				fmpq_canonicalise(z + jz);
 				}
 				else
 				Rf_error(_("quotient with 0 is undefined"));
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -515,44 +516,44 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] == y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] == y[jz % ny];
 			break;
 		case  9: /*  "!=" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] != y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] != y[jz % ny];
 			break;
 		case 10: /*   "<" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] < y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] < y[jz % ny];
 			break;
 		case 11: /*   ">" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] > y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] > y[jz % ny];
 			break;
 		case 12: /*  "<=" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] <= y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] <= y[jz % ny];
 			break;
 		case 13: /*  ">=" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] >= y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] >= y[jz % ny];
 			break;
 		case 14: /*   "&" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] && y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] && y[jz % ny];
 			break;
 		case 15: /*   "|" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] || y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] || y[jz % ny];
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -1164,16 +1165,16 @@ SEXP R_flint_ulong_seq(SEXP s_from, SEXP s_lengthout, SEXP s_reverse)
 
 SEXP R_flint_ulong_complement(SEXP s_x, SEXP s_max, SEXP s_nozero)
 {
-	mp_limb_t max = ((ulong *) R_flint_get_pointer(s_max))[0];
+	mp_limb_t j, max = ((ulong *) R_flint_get_pointer(s_max))[0];
 	if (max == UWORD_MAX)
 		Rf_error(_("cardinality exceeds maximum %llu"),
 		         (unsigned long long int) UWORD_MAX);
-	mp_limb_t j, jx, jy,
+	mp_limb_t jx, jy,
 		nx = R_flint_get_length(s_x),
 		ny = 0;
 	const ulong *x = R_flint_get_pointer(s_x);
 	ulong *y;
-	unsigned char *work = flint_calloc(1 + max, 1);
+	unsigned char *work = flint_calloc(1 + max, sizeof(char));
 	for (jx = 0; jx < nx; ++jx)
 		work[x[jx]] = 1;
 	if (LOGICAL_RO(s_nozero)[0])

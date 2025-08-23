@@ -41,7 +41,7 @@ void R_flint_slong_finalize(SEXP x)
 SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
                               SEXP s_dim, SEXP s_dimnames, SEXP s_names)
 {
-	mp_limb_t j, nx = 0, ny = 0;
+	mp_limb_t jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -71,67 +71,67 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (j = 0; j < ny; ++j)
-			y[j] = (slong) x[j % nx];
+		for (jy = 0; jy < ny; ++jy)
+			y[jy] = (slong) x[jy % nx];
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (x[j % nx] == NA_LOGICAL)
+		for (jy = 0; jy < ny; ++jy) {
+			if (x[jy % nx] == NA_LOGICAL)
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 			else
-			y[j] = x[j % nx];
+			y[jy] = x[jy % nx];
 		}
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (x[j % nx] == NA_INTEGER)
+		for (jy = 0; jy < ny; ++jy) {
+			if (x[jy % nx] == NA_INTEGER)
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 			else
-			y[j] = x[j % nx];
+			y[jy] = x[jy % nx];
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (ISNAN(x[j % nx]))
+		for (jy = 0; jy < ny; ++jy) {
+			if (ISNAN(x[jy % nx]))
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 #ifdef R_FLINT_ABI_64
-			else if (x[j % nx] <  -0x1.0p+63       ||
-			         x[j % nx] >=  0x1.0p+63)
+			else if (x[jy % nx] <  -0x1.0p+63       ||
+			         x[jy % nx] >=  0x1.0p+63)
 #else
-			else if (x[j % nx] <= -0x1.0p+31 - 1.0 ||
-			         x[j % nx] >=  0x1.0p+31)
+			else if (x[jy % nx] <= -0x1.0p+31 - 1.0 ||
+			         x[jy % nx] >=  0x1.0p+31)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "slong");
 			else
-			y[j] = (slong) x[j % nx];
+			y[jy] = (slong) x[jy % nx];
 		}
 		break;
 	}
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (j = 0; j < ny; ++j) {
-			if (ISNAN(x[j % nx].r))
+		for (jy = 0; jy < ny; ++jy) {
+			if (ISNAN(x[jy % nx].r))
 			Rf_error(_("NaN is not representable by '%s'"), "slong");
 #ifdef R_FLINT_ABI_64
-			else if (x[j % nx].r <  -0x1.0p+63       ||
-			         x[j % nx].r >=  0x1.0p+63)
+			else if (x[jy % nx].r <  -0x1.0p+63       ||
+			         x[jy % nx].r >=  0x1.0p+63)
 #else
-			else if (x[j % nx].r <= -0x1.0p+31 - 1.0 ||
-			         x[j % nx].r >=  0x1.0p+31)
+			else if (x[jy % nx].r <= -0x1.0p+31 - 1.0 ||
+			         x[jy % nx].r >=  0x1.0p+31)
 #endif
 			Rf_error(_("floating-point number not in range of '%s'"), "slong");
 			else
-			y[j] = (slong) x[j % nx].r;
+			y[jy] = (slong) x[jy % nx].r;
 		}
 		break;
 	}
@@ -140,8 +140,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		mpz_t r;
 		mpz_init(r);
 		const char *s;
-		for (j = 0; j < ny; ++j) {
-			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (j % nx)));
+		for (jy = 0; jy < ny; ++jy) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
 			if (mpz_set_str(r, s, 0) != 0) {
 				mpz_clear(r);
 				Rf_error(_("invalid input in string conversion"));
@@ -150,7 +150,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				mpz_clear(r);
 				Rf_error(_("converted string not in range of '%s'"), "slong");
 			}
-			y[j] = __local_mpz_get_si(r);
+			y[jy] = __local_mpz_get_si(r);
 		}
 		mpz_clear(r);
 		break;
@@ -160,29 +160,29 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (x[j % nx] > WORD_MAX)
+			for (jy = 0; jy < ny; ++jy) {
+				if (x[jy % nx] > WORD_MAX)
 				Rf_error(_("integer not in range of '%s'"), "slong");
 				else
-				y[j] = (slong) x[j % nx];
+				y[jy] = (slong) x[jy % nx];
 			}
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j)
-				y[j] = x[j % nx];
+			for (jy = 0; jy < ny; ++jy)
+				y[jy] = x[jy % nx];
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
-			for (j = 0; j < ny; ++j) {
-				if (!fmpz_fits_si(x + j % nx))
+			for (jy = 0; jy < ny; ++jy) {
+				if (!fmpz_fits_si(x + jy % nx))
 				Rf_error(_("integer not in range of '%s'"), "slong");
 				else
-				y[j] = fmpz_get_si(x + j % nx);
+				y[jy] = fmpz_get_si(x + jy % nx);
 			}
 			break;
 		}
@@ -191,14 +191,14 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpq *x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				fmpz_tdiv_q(q, fmpq_numref(x + j % nx), fmpq_denref(x + j % nx));
+			for (jy = 0; jy < ny; ++jy) {
+				fmpz_tdiv_q(q, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx));
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("rational not in range of '%s'"), "slong");
 				}
 				else
-				y[j] = fmpz_get_si(q);
+				y[jy] = fmpz_get_si(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -208,14 +208,14 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mag_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				mag_get_fmpz_lower(q, x + j % nx);
+			for (jy = 0; jy < ny; ++jy) {
+				mag_get_fmpz_lower(q, x + jy % nx);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "slong");
 				}
 				else
-				y[j] = fmpz_get_si(q);
+				y[jy] = fmpz_get_si(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -225,14 +225,14 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				arf_get_fmpz(q, x + j % nx, ARF_RND_DOWN);
+			for (jy = 0; jy < ny; ++jy) {
+				arf_get_fmpz(q, x + jy % nx, ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "slong");
 				}
 				else
-				y[j] = fmpz_get_si(q);
+				y[jy] = fmpz_get_si(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -242,14 +242,14 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (j = 0; j < ny; ++j) {
-				arf_get_fmpz(q, acf_realref(x + j % nx), ARF_RND_DOWN);
+			for (jy = 0; jy < ny; ++jy) {
+				arf_get_fmpz(q, acf_realref(x + jy % nx), ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of '%s'"), "slong");
 				}
 				else
-				y[j] = fmpz_get_si(q);
+				y[jy] = fmpz_get_si(q);
 			}
 			fmpz_clear(q);
 			break;
@@ -350,8 +350,9 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	const slong
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
-	mp_limb_t j, n = RECYCLE2(nx, ny);
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op));
+	mp_limb_t jz, nz = RECYCLE2(nx, ny);
+	int dz[3];
+	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -359,97 +360,97 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  4: /*  "%%" */
 	case  5: /* "%/%" */
 	{
-		slong *z = (n) ? flint_calloc(n, sizeof(slong)) : 0;
+		slong *z = (nz) ? flint_calloc(nz, sizeof(slong)) : 0;
 		slong a, b;
 		int over = 0;
 		switch (op) {
 		case 1: /*   "+" */
-			for (j = 0; j < n; ++j) {
+			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				a = x[j % nx];
-				b = y[j % ny];
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if ((a >= 0) ? b > WORD_MAX - a : b < WORD_MIN - a)
 					break;
-				z[j] = a + b;
+				z[jz] = a + b;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_saddll_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_saddll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #else
-				if (__builtin_saddl_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_saddl_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				fmpz_set_si(Z + j, x[j % nx]);
-				fmpz_add_si(Z + j, Z + j, y[j % ny]);
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_si(Z + jz, x[jz % nx]);
+				fmpz_add_si(Z + jz, Z + jz, y[jz % ny]);
 			}
 			}
 			break;
 		case 2: /*   "-" */
-			for (j = 0; j < n; ++j) {
+			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				a = x[j % nx];
-				b = y[j % ny];
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if ((a >= 0) ? b < a - WORD_MAX : b > a - WORD_MIN)
 					break;
-				z[j] = b - a;
+				z[jz] = b - a;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_ssubll_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_ssubll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #else
-				if (__builtin_ssubl_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_ssubl_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				fmpz_set_si(Z + j, x[j % nx]);
-				fmpz_sub_si(Z + j, Z + j, y[j % ny]);
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_si(Z + jz, x[jz % nx]);
+				fmpz_sub_si(Z + jz, Z + jz, y[jz % ny]);
 			}
 			}
 			break;
 		case 3: /*   "*" */
-			for (j = 0; j < n; ++j) {
+			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				if (z_mul_checked(&z[j], x[j % nx], y[j % ny]))
+				if (z_mul_checked(&z[jz], x[jz % nx], y[jz % ny]))
 					break;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_smulll_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_smulll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #else
-				if (__builtin_smull_overflow(x[j % nx], y[j % ny], &z[j]))
+				if (__builtin_smull_overflow(x[jz % nx], y[jz % ny], &z[jz]))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				fmpz_set_si(Z + j, x[j % nx]);
-				fmpz_mul_si(Z + j, Z + j, y[j % ny]);
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_si(Z + jz, x[jz % nx]);
+				fmpz_mul_si(Z + jz, Z + jz, y[jz % ny]);
 			}
 			}
 			break;
 		case 4: /*  "%%" */
 		{
 			slong t;
-			for (j = 0; j < n; ++j) {
-				a = x[j % nx];
-				b = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if (b) {
 				if (a == WORD_MIN && b == -1)
-					z[j] = 0;
+					z[jz] = 0;
 				else {
 					t = a % b;
-					z[j] = (t && (a >= 0) != (b >= 0)) ? t + b : t;
+					z[jz] = (t && (a >= 0) != (b >= 0)) ? t + b : t;
 				}
 				} else {
 				flint_free(z);
@@ -461,33 +462,33 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		case 5: /* "%/%" */
 		{
 			slong t;
-			for (j = 0; j < n; ++j) {
-				a = x[j % nx];
-				b = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				a = x[jz % nx];
+				b = y[jz % ny];
 				if (b) {
 				if (a == WORD_MIN && b == -1)
 					break;
 				else {
 					t = a / b;
-					z[j] = (a % b && (a >= 0) != (b >= 0)) ? t - 1 : t;
+					z[jz] = (a % b && (a >= 0) != (b >= 0)) ? t - 1 : t;
 				}
 				} else {
 				flint_free(z);
 				Rf_error(_("quotient with 0 is undefined"));
 				}
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j) {
-				b = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				b = y[jz % ny];
 				if (b) {
 				if (a == WORD_MIN && b == -1)
-					fmpz_set_ui(Z + j, (ulong) -1 - (ulong) WORD_MIN + 1);
+					fmpz_set_ui(Z + jz, (ulong) -1 - (ulong) WORD_MIN + 1);
 				else {
 					t = a / b;
-					fmpz_set_si(Z + j, (a % b && (a >= 0) != (b >= 0)) ? t - 1 : t);
+					fmpz_set_si(Z + jz, (a % b && (a >= 0) != (b >= 0)) ? t - 1 : t);
 				}
 				} else {
 				flint_free(z);
@@ -499,8 +500,8 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		}
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
-		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -508,15 +509,15 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case  7: /*   "^" */
 	{
 		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 6: /*   "/" */
-			for (j = 0; j < n; ++j)
-				if (y[j % ny]) {
-				fmpz_set_si(fmpq_numref(z + j), x[j % nx]);
-				fmpz_set_si(fmpq_denref(z + j), y[j % ny]);
-				fmpq_canonicalise(z + j);
+			for (jz = 0; jz < nz; ++jz)
+				if (y[jz % ny]) {
+				fmpz_set_si(fmpq_numref(z + jz), x[jz % nx]);
+				fmpz_set_si(fmpq_denref(z + jz), y[jz % ny]);
+				fmpq_canonicalise(z + jz);
 				}
 				else
 				Rf_error(_("quotient with 0 is undefined"));
@@ -526,9 +527,9 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			slong b, e;
 			fmpz_t t;
 			fmpz_init(t);
-			for (j = 0; j < n; ++j) {
-				b = x[j % nx];
-				e = y[j % ny];
+			for (jz = 0; jz < nz; ++jz) {
+				b = x[jz % nx];
+				e = y[jz % ny];
 				if (b == 0 && e < 0) {
 				fmpz_clear(t);
 				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
@@ -536,19 +537,19 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				}
 				fmpz_set_si(t, b);
 				if (e >= 0) {
-				fmpz_pow_ui(fmpq_numref(z + j), t, (ulong) e);
-				fmpz_one(fmpq_denref(z + j));
+				fmpz_pow_ui(fmpq_numref(z + jz), t, (ulong) e);
+				fmpz_one(fmpq_denref(z + jz));
 				} else {
-				fmpz_one(fmpq_numref(z + j));
-				fmpz_pow_ui(fmpq_denref(z + j), t, (ulong) -1 - (ulong) e + 1);
-				fmpq_canonicalise(z + j);
+				fmpz_one(fmpq_numref(z + jz));
+				fmpz_pow_ui(fmpq_denref(z + jz), t, (ulong) -1 - (ulong) e + 1);
+				fmpq_canonicalise(z + jz);
 				}
 			}
 			fmpz_clear(t);
 			break;
 		}
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -561,44 +562,44 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 	case 14: /*   "&" */
 	case 15: /*   "|" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  8: /*  "==" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] == y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] == y[jz % ny];
 			break;
 		case  9: /*  "!=" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] != y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] != y[jz % ny];
 			break;
 		case 10: /*   "<" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] < y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] < y[jz % ny];
 			break;
 		case 11: /*   ">" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] > y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] > y[jz % ny];
 			break;
 		case 12: /*  "<=" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] <= y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] <= y[jz % ny];
 			break;
 		case 13: /*  ">=" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] >= y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] >= y[jz % ny];
 			break;
 		case 14: /*   "&" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] && y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] && y[jz % ny];
 			break;
 		case 15: /*   "|" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j % nx] || y[j % ny];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz % nx] || y[jz % ny];
 			break;
 		}
-		setDDNN2(ans, s_x, s_y, n, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
 	}
