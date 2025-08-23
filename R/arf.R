@@ -202,9 +202,9 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "arf", y = "ANY"),
           function (x, y) {
-              g <- get(.Generic, mode = "function")
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
                   return(.Call(R_flint_arf_ops2, .Generic, x, x))
+              g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
                          g(x, .arf(y)),

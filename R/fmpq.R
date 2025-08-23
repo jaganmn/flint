@@ -250,9 +250,9 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "fmpq", y = "ANY"),
           function (x, y) {
-              g <- get(.Generic, mode = "function")
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
                   return(.Call(R_flint_fmpq_ops2, .Generic, x, x))
+              g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =
                          g(x, .fmpq(y)),

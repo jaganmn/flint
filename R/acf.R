@@ -244,9 +244,9 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "acf", y = "ANY"),
           function (x, y) {
-              g <- get(.Generic, mode = "function")
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
                   return(.Call(R_flint_acf_ops2, .Generic, x, x))
+              g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
                          g(x, .acf(y)),
