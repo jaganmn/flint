@@ -7,7 +7,7 @@
 *** TODO [, [<-, [[, [[<-
 *** DONE diag, diag<-
 *** DONE t
-*** TODO %*%, crossprod, tcrossprod
+*** DONE %*%, crossprod, tcrossprod
 *** TODO kronecker, scale
 *** TODO solve, backsolve, chol2inv
 *** TODO determinant, norm, rcond

@@ -395,6 +395,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = R_flint_get_pointer(s_y);
 	int dz[3];
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
+	if (mop >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
 	switch (op) {
@@ -505,6 +506,76 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 				: 0;
 			break;
 		}
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 16: /*        "%*%" */
+	case 17: /*  "crossprod" */
+	case 18: /* "tcrossprod" */
+	{
+		/*        %*%: Z = X Y  = (Y'X')' = (A B)', A := Y', B := X' */
+		/*  crossprod: Z = X'Y  = (Y'X )' = (A B)', A := Y', B := X  */
+		/* tcrossprod: Z = X Y' = (Y X')' = (A B)', A := Y , B := X' */
+		SEXP ans = PROTECT(newObject("arf"));
+		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
+		mp_limb_t jx = 0, jy = 0, ja = 0, jb = 0;
+		arb_mat_t mz, ma, mb;
+		mz->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
+		ma->entries = (ny) ? flint_calloc(ny, sizeof(arb_t)) : 0;
+		mb->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
+		mz->r = mb->c = dz[0];
+		mz->c = ma->r = dz[1];
+		ma->c = mb->r = dz[2];
+		mz->rows = (mz->r) ? flint_calloc((size_t) mz->r, sizeof(arb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
+		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(arb_ptr)) : 0;
+		if (mz->r) {
+			mz->rows[0] = mz->entries;
+			for (i = 1; i < mz->r; ++i)
+				mz->rows[i] = mz->rows[i-1] + mz->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i-1] + ma->c;
+		}
+		if (mb->r) {
+			mb->rows[0] = mb->entries;
+			for (i = 1; i < mb->r; ++i)
+				mb->rows[i] = mb->rows[i-1] + mb->c;
+		}
+		if (ty)
+			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
+				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
+					arf_set(arb_midref(ma->entries + ja), y + jy);
+		else
+			for (jy = 0; jy < ny; ++jy)
+				arf_set(arb_midref(ma->entries + jy), y + jy);
+		if (tx)
+			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
+				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
+					arf_set(arb_midref(mb->entries + jb), x + jx);
+		else
+			for (jx = 0; jx < nx; ++jx)
+				arf_set(arb_midref(mb->entries + jx), x + jx);
+		arb_mat_approx_mul(mz, ma, mb, prec);
+		for (jz = 0; jz < nz; ++jz) {
+			arf_set(z + jz, arb_midref(mz->entries + jz));
+			arb_clear(mz->entries + jz);
+		}
+		for (jy = 0; jy < ny; ++jy)
+			arb_clear(ma->entries + jy);
+		for (jx = 0; jx < nx; ++jx)
+			arb_clear(mb->entries + jx);
+		flint_free(mz->entries);
+		flint_free(ma->entries);
+		flint_free(mb->entries);
+		flint_free(mz->rows);
+		flint_free(ma->rows);
+		flint_free(mb->rows);
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;

@@ -191,7 +191,8 @@
       when \code{y} is missing or \code{NULL}.  Operands are promoted as
       necessary and must be conformable (have compatible dimensions).
       Non-array operands of length \code{k} are handled as 1-by-\code{k}
-      or \code{k}-by-1 matrices depending on the call.}
+      or \code{k}-by-1 matrices depending on the call.  The return value
+      is approximate insofar that it may not be correctly rounded.}
     \item{\code{+}}{
       \code{signature(e1 = "acf", e2 = "missing")}:\cr
       returns a copy of the argument.}

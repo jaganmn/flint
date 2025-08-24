@@ -382,8 +382,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		y = R_flint_get_pointer(s_y);
 	int dz[3];
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
-	if (mop >= 0)
-		nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
+	if (mop >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
 	switch (op) {
 	case  1: /*   "+" */
@@ -486,7 +485,8 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
 		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
-		acb_mat_t ma, mb, mz;
+		mp_limb_t jx = 0, jy = 0, ja = 0, jb = 0;
+		acb_mat_t mz, ma, mb;
 		mz->entries = z;
 		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(acb_t)) : 0) : (void *) y;
 		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(acb_t)) : 0) : (void *) x;
@@ -511,34 +511,28 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
 			for (i = 1; i < mb->r; ++i)
 				mb->rows[i] = mb->rows[i-1] + mb->c;
 		}
-		if (ty) {
-			mp_limb_t ja = 0, jy = 0;
+		if (ty)
 			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
 				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
 					acb_set(ma->entries + ja, y + jy);
-		}
-		if (tx) {
-			mp_limb_t jb = 0, jx = 0;
+		if (tx)
 			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
 				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
 					acb_set(mb->entries + jb, x + jx);
-		}
 		acb_mat_mul(mz, ma, mb, prec);
-		flint_free(mz->rows);
-		flint_free(ma->rows);
-		flint_free(mb->rows);
 		if (ty) {
-			mp_limb_t ja;
-			for (ja = 0; ja < ny; ++ja)
-				acb_clear(ma->entries + ja);
+			for (jy = 0; jy < ny; ++jy)
+				acb_clear(ma->entries + jy);
 			flint_free(ma->entries);
 		}
 		if (tx) {
-			mp_limb_t jb;
-			for (jb = 0; jb < nx; ++jb)
-				acb_clear(mb->entries + jb);
+			for (jx = 0; jx < nx; ++jx)
+				acb_clear(mb->entries + jx);
 			flint_free(mb->entries);
 		}
+		flint_free(mz->rows);
+		flint_free(ma->rows);
+		flint_free(mb->rows);
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
