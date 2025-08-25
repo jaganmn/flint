@@ -174,9 +174,9 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               switch(typeof(r),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         backsolve(.arb(r), x, k, upper.tri, transpose),
+                         backsolve(.arb(r), x, , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acb(r), .acb(x), k, upper.tri, transpose),
+                         backsolve(.acb(r), .acb(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", if (isS4(r)) class(r) else typeof(r), "arb"),
                           domain = NA)))
@@ -185,12 +185,12 @@ setMethod("backsolve",
           c(r = "arb", x = "ANY"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
               if (missing(x))
-                  return(.Call(R_flint_arb_ops1, "backsolve", r, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+                  return(.Call(R_flint_arb_ops1, if (transpose) "tbacksolve" else "backsolve", r, list(as.logical(upper.tri))))
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         backsolve(r, .arb(x), k, upper.tri, transpose),
+                         backsolve(r, .arb(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acb(r), .acb(x), k, upper.tri, transpose),
+                         backsolve(.acb(r), .acb(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", "arb", if (isS4(x)) class(x) else typeof(x)),
                           domain = NA))
@@ -199,52 +199,52 @@ setMethod("backsolve",
 setMethod("backsolve",
           c(r = "arb", x = "ulong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .arb(x), k, upper.tri, transpose))
+              backsolve(r, .arb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "slong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .arb(x), k, upper.tri, transpose))
+              backsolve(r, .arb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "fmpz"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .arb(x), k, upper.tri, transpose))
+              backsolve(r, .arb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "fmpq"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .arb(x), k, upper.tri, transpose))
+              backsolve(r, .arb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "mag"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .arb(x), k, upper.tri, transpose))
+              backsolve(r, .arb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "arf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .arb(x), k, upper.tri, transpose))
+              backsolve(r, .arb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "acf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acb(r), .acb(x), k, upper.tri, transpose))
+              backsolve(.acb(r), .acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "arb", x = "arb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              .Call(R_flint_arb_ops2, "backsolve", r, x, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+              .Call(R_flint_arb_ops2, if (transpose) "tbacksolve" else "backsolve", r, x, list(as.logical(upper.tri))))
 
 setMethod("backsolve",
           c(r = "arb", x = "acb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acb(r), x, k, upper.tri, transpose))
+              backsolve(.acb(r), x, , upper.tri, transpose))
 
 setMethod("chol2inv",
           c(x = "arb"),
-          function (x, size = ncol(x), ...)
-              .Call(R_flint_arb_ops1, "chol2inv", x, list(as.integer(size))))
+          function (x, ...)
+              .Call(R_flint_arb_ops1, "chol2inv", x, list()))
 
 setAs("ANY", "arb",
       function (from)

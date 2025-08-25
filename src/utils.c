@@ -367,8 +367,7 @@ void setDDNN(SEXP z, SEXP dim, SEXP dimnames, SEXP names)
 }
 
 void setDDNN2(SEXP z, SEXP x, SEXP y,
-              mp_limb_t nz, mp_limb_t nx, mp_limb_t ny,
-              int mop)
+              mp_limb_t nz, mp_limb_t nx, mp_limb_t ny, int mop)
 {
 	SEXP (*setz)(SEXP, SEXP, SEXP) =
 		(Rf_isS4(z)) ? &R_do_slot_assign : &Rf_setAttrib;
@@ -482,8 +481,8 @@ void setDDNN1(SEXP z, SEXP x)
 	return;
 }
 
-int checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny,
-                     int mop, int *dz)
+int checkConformable(SEXP x, SEXP y,
+                     mp_limb_t nx, mp_limb_t ny, int mop, int *dz)
 {
 	SEXP (*getx)(SEXP, SEXP) =
 		(Rf_isS4(x)) ? &R_do_slot : &Rf_getAttrib;
@@ -508,14 +507,17 @@ int checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny,
 
 	} else {
 
+	int tx = (mop & 1) != 0, ty = (mop & 2) != 0, sq = (mop & 4) != 0;
+
 	if ((ax != R_NilValue && XLENGTH(ax) != 2) ||
 	    (ay != R_NilValue && XLENGTH(ay) != 2))
 		Rf_error(_("non-matrix array arguments"));
+	if (sq && ((ax == R_NilValue) ? nx != 1 : INTEGER_RO(ax)[0] != INTEGER_RO(ax)[1]))
+		Rf_error(_("first argument is not a square matrix"));
 	if ((ax == R_NilValue && nx > INT_MAX) ||
-	    (ay != R_NilValue && ny > INT_MAX))
+	    (ay == R_NilValue && ny > INT_MAX))
 		Rf_error(_("non-matrix argument length exceeds maximum %d"),
 		         INT_MAX);
-	int tx = (mop & 1) != 0, ty = (mop & 2) != 0;
 	if (ax != R_NilValue && ay != R_NilValue) {
 		if (INTEGER_RO(ax)[!tx] != INTEGER_RO(ay)[ty])
 			Rf_error(_("non-conformable arguments"));
@@ -541,7 +543,7 @@ int checkConformable(SEXP x, SEXP y, mp_limb_t nx, mp_limb_t ny,
 		else
 			Rf_error(_("non-conformable arguments"));
 	}
-	mop = (ty << 1) | tx;
+	mop = (sq << 2) | (ty << 1) | tx;
 
 	dz[0] = (ax == R_NilValue) ? ((tx) ? 1 : (int) nx) : INTEGER_RO(ax)[ tx];
 	dz[1] = (ay == R_NilValue) ? ((ty) ? (int) ny : 1) : INTEGER_RO(ay)[!ty];
@@ -722,6 +724,11 @@ int matrixop(size_t op)
 		return  1;
 	case 18: /* "tcrossprod" */
 		return  2;
+	case 19: /*      "solve" */
+	case 20: /*  "backsolve" */
+		return  5;
+	case 21: /* "tbacksolve" */
+		return  4;
 	default:
 		return -1;
 	}

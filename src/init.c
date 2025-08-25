@@ -30,8 +30,9 @@ const char *R_flint_ops2[] =
 	"==", "!=", "<", ">", "<=", ">=",
 	/* Logic (2) : */
 	"&", "|",
-	/* matrixOps (3) : */
+	/* matrixOps (6) : */
 	"%*%", "crossprod", "tcrossprod",
+	"solve", "backsolve", "tbacksolve",
 	NULL
 };
 
@@ -61,6 +62,8 @@ const char *R_flint_ops1[] =
 	"sum", "prod", "mean",
 	"any", "all", "anyNA", "is.unsorted",
 	"colSums", "rowSums", "colMeans", "rowMeans",
+	/* matrixOps (4) : */
+	"solve", "backsolve", "tbacksolve", "chol2inv",
 	NULL
 };
 

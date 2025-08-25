@@ -140,11 +140,11 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               switch(typeof(r),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose),
+                         backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose),
                      "double" =
-                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                         backsolve(.arf(r), .arf(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                         backsolve(.acf(r), .acf(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", if (isS4(r)) class(r) else typeof(r), "ulong"),
                           domain = NA)))
@@ -153,14 +153,14 @@ setMethod("backsolve",
           c(r = "ulong", x = "ANY"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
               if (missing(x))
-                  return(backsolve(.fmpz(r), , k, upper.tri, transpose))
+                  return(backsolve(.fmpz(r), , , upper.tri, transpose))
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose),
+                         backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose),
                      "double" =
-                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                         backsolve(.arf(r), .arf(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                         backsolve(.acf(r), .acf(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", "ulong", if (isS4(x)) class(x) else typeof(x)),
                           domain = NA))
@@ -169,47 +169,47 @@ setMethod("backsolve",
 setMethod("backsolve",
           c(r = "ulong", x = "ulong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose))
+              backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "slong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose))
+              backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "fmpz"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpz(r), x, k, upper.tri, transpose))
+              backsolve(.fmpz(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "fmpq"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpq(r), x, k, upper.tri, transpose))
+              backsolve(.fmpq(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "mag"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "arf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), x, k, upper.tri, transpose))
+              backsolve(.arf(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "acf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acf(r), x, k, upper.tri, transpose))
+              backsolve(.acf(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "arb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arb(r), x, k, upper.tri, transpose))
+              backsolve(.arb(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "acb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acb(r), x, k, upper.tri, transpose))
+              backsolve(.acb(r), x, , upper.tri, transpose))
 
 setMethod("chol2inv",
           c(x = "ulong"),
