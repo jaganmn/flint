@@ -75,7 +75,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "slong", e2 = "slong"),
           function (e1, e2)
-              .Call(R_flint_slong_ops2, .Generic, e1, e2))
+              .Call(R_flint_slong_ops2, .Generic, e1, e2, list()))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "fmpz"),
@@ -134,6 +134,87 @@ setMethod("as.vector",
                      "symbol" =, "name" =, "character" =
                          as.vector(format(x), mode),
                      as.vector(.Call(R_flint_slong_atomic, x), mode)))
+
+setMethod("backsolve",
+          c(r = "ANY", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              switch(typeof(r),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose),
+                     "double" =
+                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", if (isS4(r)) class(r) else typeof(r), "slong"),
+                          domain = NA)))
+
+setMethod("backsolve",
+          c(r = "slong", x = "ANY"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
+              if (missing(x))
+                  return(backsolve(.fmpz(r), , k, upper.tri, transpose))
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose),
+                     "double" =
+                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", "slong", if (isS4(x)) class(x) else typeof(x)),
+                          domain = NA))
+          })
+
+setMethod("backsolve",
+          c(r = "slong", x = "ulong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.fmpz(r), .fmpz(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "fmpz"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.fmpz(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.fmpq(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arb(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "slong", x = "acb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), x, k, upper.tri, transpose))
+
+setMethod("chol2inv",
+          c(x = "slong"),
+          function (x, ...)
+              chol2inv(.fmpz(x), ...))
 
 setAs("ANY", "slong",
       function (from)
@@ -283,3 +364,79 @@ setMethod("rowSums",
           c(x = "slong"),
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_slong_ops1, "rowSums", x, list(NULL, as.integer(dims))))
+
+setMethod("solve",
+          c(a = "ANY", b = "slong"),
+          function (a, b, ...)
+              switch(typeof(a),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         solve(.fmpz(a), .fmpz(b), ...),
+                     "double" =
+                         solve(.arf(a), .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", if (isS4(a)) class(a) else typeof(b), "slong"),
+                          domain = NA)))
+
+setMethod("solve",
+          c(a = "slong", b = "ANY"),
+          function (a, b, ...) {
+              if (missing(b))
+                  return(solve(.fmpz(a), ...))
+              switch(typeof(b),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         solve(.fmpz(a), .fmpz(b), ...),
+                     "double" =
+                         solve(.arf(a), .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", "slong", if (isS4(b)) class(b) else typeof(b)),
+                          domain = NA))
+          })
+
+setMethod("solve",
+          c(a = "slong", b = "ulong"),
+          function (a, b, ...)
+              solve(.fmpz(a), .fmpz(b), ...))
+
+setMethod("solve",
+          c(a = "slong", b = "slong"),
+          function (a, b, ...)
+              solve(.fmpz(a), .fmpz(b), ...))
+
+setMethod("solve",
+          c(a = "slong", b = "fmpz"),
+          function (a, b, ...)
+              solve(.fmpz(a), b, ...))
+
+setMethod("solve",
+          c(a = "slong", b = "fmpq"),
+          function (a, b, ...)
+              solve(.fmpq(a), b, ...))
+
+setMethod("solve",
+          c(a = "slong", b = "mag"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "slong", b = "arf"),
+          function (a, b, ...)
+              solve(.arf(a), b, ...))
+
+setMethod("solve",
+          c(a = "slong", b = "acf"),
+          function (a, b, ...)
+              solve(.acf(a), b, ...))
+
+setMethod("solve",
+          c(a = "slong", b = "arb"),
+          function (a, b, ...)
+              solve(.arb(a), b, ...))
+
+setMethod("solve",
+          c(a = "slong", b = "acb"),
+          function (a, b, ...)
+              solve(.acb(a), b, ...))

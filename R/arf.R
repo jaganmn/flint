@@ -87,7 +87,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arf", e2 = "arf"),
           function (e1, e2)
-              .Call(R_flint_arf_ops2, .Generic, e1, e2))
+              .Call(R_flint_arf_ops2, .Generic, e1, e2, list()))
 
 setMethod("Ops",
           c(e1 = "arf", e2 = "acf"),
@@ -126,6 +126,83 @@ setMethod("as.vector",
                      "symbol" =, "name" =, "character" =
                          as.vector(format(x, digits = 15L, rnd = "N"), mode),
                      as.vector(.Call(R_flint_arf_atomic, x), mode)))
+
+setMethod("backsolve",
+          c(r = "ANY", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              switch(typeof(r),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         backsolve(.arf(r), x, k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", if (isS4(r)) class(r) else typeof(r), "arf"),
+                          domain = NA)))
+
+setMethod("backsolve",
+          c(r = "arf", x = "ANY"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
+              if (missing(x))
+                  return(.Call(R_flint_arf_ops1, "backsolve", r, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         backsolve(r, .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", "arf", if (isS4(x)) class(x) else typeof(x)),
+                          domain = NA))
+          })
+
+setMethod("backsolve",
+          c(r = "arf", x = "ulong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "fmpz"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              .Call(R_flint_arf_ops2, "backsolve", r, x, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+
+setMethod("backsolve",
+          c(r = "arf", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arb(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arf", x = "acb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), x, k, upper.tri, transpose))
+
+setMethod("chol2inv",
+          c(x = "arf"),
+          function (x, size = ncol(x), ...)
+              .Call(R_flint_arf_ops1, "chol2inv", x, list(as.integer(size))))
 
 setAs("ANY", "arf",
       function (from)
@@ -203,7 +280,7 @@ setMatrixOpsMethod(
           c(x = "arf", y = "ANY"),
           function (x, y) {
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(.Call(R_flint_arf_ops2, .Generic, x, x))
+                  return(.Call(R_flint_arf_ops2, .Generic, x, x, list()))
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
@@ -243,7 +320,7 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "arf", y = "arf"),
           function (x, y)
-              .Call(R_flint_arf_ops2, .Generic, x, y))
+              .Call(R_flint_arf_ops2, .Generic, x, y, list()))
 
 setMatrixOpsMethod(
           c(x = "arf", y = "acf"),
@@ -277,3 +354,75 @@ setMethod("rowSums",
           c(x = "arf"),
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_arf_ops1, "rowSums", x, list(as.logical(na.rm), as.integer(dims))))
+
+setMethod("solve",
+          c(a = "ANY", b = "arf"),
+          function (a, b, ...)
+              switch(typeof(a),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         solve(.arf(a), b, ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", if (isS4(a)) class(a) else typeof(b), "arf"),
+                          domain = NA)))
+
+setMethod("solve",
+          c(a = "arf", b = "ANY"),
+          function (a, b, ...) {
+              if (missing(b))
+                  return(.Call(R_flint_arf_ops1, "solve", a, list()))
+              switch(typeof(b),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         solve(a, .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", "arf", if (isS4(b)) class(b) else typeof(b)),
+                          domain = NA))
+          })
+
+setMethod("solve",
+          c(a = "arf", b = "ulong"),
+          function (a, b, ...)
+              solve(a, .arf(b), ...))
+
+setMethod("solve",
+          c(a = "arf", b = "slong"),
+          function (a, b, ...)
+              solve(a, .arf(b), ...))
+
+setMethod("solve",
+          c(a = "arf", b = "fmpz"),
+          function (a, b, ...)
+              solve(a, .arf(b), ...))
+
+setMethod("solve",
+          c(a = "arf", b = "fmpq"),
+          function (a, b, ...)
+              solve(a, .arf(b), ...))
+
+setMethod("solve",
+          c(a = "arf", b = "mag"),
+          function (a, b, ...)
+              solve(a, .arf(b), ...))
+
+setMethod("solve",
+          c(a = "arf", b = "arf"),
+          function (a, b, ...)
+              .Call(R_flint_arf_ops2, "solve", a, b, list()))
+
+setMethod("solve",
+          c(a = "arf", b = "acf"),
+          function (a, b, ...)
+              solve(.acf(a), b, ...))
+
+setMethod("solve",
+          c(a = "arf", b = "arb"),
+          function (a, b, ...)
+              solve(.arb(a), b, ...))
+
+setMethod("solve",
+          c(a = "arf", b = "acb"),
+          function (a, b, ...)
+              solve(.acb(a), b, ...))

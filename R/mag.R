@@ -82,7 +82,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "mag", e2 = "mag"),
           function (e1, e2)
-              .Call(R_flint_mag_ops2, .Generic, e1, e2))
+              .Call(R_flint_mag_ops2, .Generic, e1, e2, list()))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "arf"),
@@ -126,6 +126,83 @@ setMethod("as.vector",
                      "symbol" =, "name" =, "character" =
                          as.vector(format(x, digits = 15L, rnd = "A"), mode),
                      as.vector(.Call(R_flint_mag_atomic, x), mode)))
+
+setMethod("backsolve",
+          c(r = "ANY", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              switch(typeof(r),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", if (isS4(r)) class(r) else typeof(r), "mag"),
+                          domain = NA)))
+
+setMethod("backsolve",
+          c(r = "mag", x = "ANY"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
+              if (missing(x))
+                  return(backsolve(.arf(r), , k, upper.tri, transpose))
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", "mag", if (isS4(x)) class(x) else typeof(x)),
+                          domain = NA))
+          })
+
+setMethod("backsolve",
+          c(r = "mag", x = "ulong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "fmpz"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arb(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "mag", x = "acb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), x, k, upper.tri, transpose))
+
+setMethod("chol2inv",
+          c(x = "mag"),
+          function (x, ...)
+              chol2inv(.arf(x), ...))
 
 setAs("ANY", "mag",
       function (from)
@@ -283,3 +360,75 @@ setMethod("rowSums",
           c(x = "mag"),
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_mag_ops1, "rowSums", x, list(NULL, as.integer(dims))))
+
+setMethod("solve",
+          c(a = "ANY", b = "mag"),
+          function (a, b, ...)
+              switch(typeof(a),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         solve(.arf(a), .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", if (isS4(a)) class(a) else typeof(b), "mag"),
+                          domain = NA)))
+
+setMethod("solve",
+          c(a = "mag", b = "ANY"),
+          function (a, b, ...) {
+              if (missing(b))
+                  return(solve(.arf(a), ...))
+              switch(typeof(b),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         solve(.arf(a), .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", "mag", if (isS4(b)) class(b) else typeof(b)),
+                          domain = NA))
+          })
+
+setMethod("solve",
+          c(a = "mag", b = "ulong"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "mag", b = "slong"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "mag", b = "fmpz"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "mag", b = "fmpq"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "mag", b = "mag"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "mag", b = "arf"),
+          function (a, b, ...)
+              solve(.arf(a), b, ...))
+
+setMethod("solve",
+          c(a = "mag", b = "acf"),
+          function (a, b, ...)
+              solve(.acf(a), b, ...))
+
+setMethod("solve",
+          c(a = "mag", b = "arb"),
+          function (a, b, ...)
+              solve(.arb(a), b, ...))
+
+setMethod("solve",
+          c(a = "mag", b = "acb"),
+          function (a, b, ...)
+              solve(.acb(a), b, ...))

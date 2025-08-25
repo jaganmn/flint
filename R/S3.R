@@ -78,6 +78,10 @@ function (...)
 function (nvec, ...)
     sequence(nvec, ...)
 
+.S3.solve.flint <-
+function (a, b, ...)
+    solve(a, b, ...)
+
 .S3.summary.flint <-
 function (object, ...)
     summary(object, ...)

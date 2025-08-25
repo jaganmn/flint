@@ -109,7 +109,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "acf", e2 = "acf"),
           function (e1, e2)
-              .Call(R_flint_acf_ops2, .Generic, e1, e2))
+              .Call(R_flint_acf_ops2, .Generic, e1, e2, list()))
 
 setMethod("Ops",
           c(e1 = "acf", e2 = "arb"),
@@ -164,6 +164,79 @@ setMethod("as.vector",
                      "symbol" =, "name" =, "character" =
                          as.vector(format(x, digits = 15L, rnd = "N"), mode),
                      as.vector(.Call(R_flint_acf_atomic, x), mode)))
+
+setMethod("backsolve",
+          c(r = "ANY", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              switch(typeof(r),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                         backsolve(.acf(r), x, k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", if (isS4(r)) class(r) else typeof(r), "acf"),
+                          domain = NA)))
+
+setMethod("backsolve",
+          c(r = "acf", x = "ANY"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
+              if (missing(x))
+                  return(.Call(R_flint_acf_ops1, "backsolve", r, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                         backsolve(r, .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", "acf", if (isS4(x)) class(x) else typeof(x)),
+                          domain = NA))
+          })
+
+setMethod("backsolve",
+          c(r = "acf", x = "ulong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .acf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .acf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "fmpz"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .acf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .acf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .acf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .acf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              .Call(R_flint_acf_ops2, "backsolve", r, x, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+
+setMethod("backsolve",
+          c(r = "acf", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), .acb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "acf", x = "acb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), x, k, upper.tri, transpose))
+
+setMethod("chol2inv",
+          c(x = "acf"),
+          function (x, size = ncol(x), ...)
+              .Call(R_flint_acf_ops1, "chol2inv", x, list(as.integer(size))))
 
 setAs("ANY", "acf",
       function (from)
@@ -245,7 +318,7 @@ setMatrixOpsMethod(
           c(x = "acf", y = "ANY"),
           function (x, y) {
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(.Call(R_flint_acf_ops2, .Generic, x, x))
+                  return(.Call(R_flint_acf_ops2, .Generic, x, x, list()))
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
@@ -288,7 +361,7 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "acf", y = "acf"),
           function (x, y)
-              .Call(R_flint_acf_ops2, .Generic, x, y))
+              .Call(R_flint_acf_ops2, .Generic, x, y, list()))
 
 setMatrixOpsMethod(
           c(x = "acf", y = "arb"),
@@ -317,6 +390,74 @@ setMethod("rowSums",
           c(x = "acf"),
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_acf_ops1, "rowSums", x, list(as.logical(na.rm), as.integer(dims))))
+
+setMethod("solve",
+          c(a = "ANY", b = "acf"),
+          function (a, b, ...)
+              switch(typeof(a),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                         solve(.acf(a), b, ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", if (isS4(a)) class(a) else typeof(b), "acf"),
+                          domain = NA)))
+
+setMethod("solve",
+          c(a = "acf", b = "ANY"),
+          function (a, b, ...) {
+              if (missing(b))
+                  return(.Call(R_flint_acf_ops1, "solve", a, list()))
+              switch(typeof(b),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
+                         solve(a, .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", "acf", if (isS4(b)) class(b) else typeof(b)),
+                          domain = NA))
+          })
+
+setMethod("solve",
+          c(a = "acf", b = "ulong"),
+          function (a, b, ...)
+              solve(a, .acf(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "slong"),
+          function (a, b, ...)
+              solve(a, .acf(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "fmpz"),
+          function (a, b, ...)
+              solve(a, .acf(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "fmpq"),
+          function (a, b, ...)
+              solve(a, .acf(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "mag"),
+          function (a, b, ...)
+              solve(a, .acf(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "arf"),
+          function (a, b, ...)
+              solve(a, .acf(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "acf"),
+          function (a, b, ...)
+              .Call(R_flint_acf_ops2, "solve", a, b, list()))
+
+setMethod("solve",
+          c(a = "acf", b = "arb"),
+          function (a, b, ...)
+              solve(.acb(a), .acb(b), ...))
+
+setMethod("solve",
+          c(a = "acf", b = "acb"),
+          function (a, b, ...)
+              solve(.acb(a), b, ...))
 
 setMethod("xtfrm",
           c(x = "acf"),

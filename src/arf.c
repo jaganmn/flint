@@ -383,7 +383,7 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 	return ans;
 }
 
-SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y)
+SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
 	mp_limb_t jz,

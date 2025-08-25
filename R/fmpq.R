@@ -123,7 +123,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "fmpq"),
           function (e1, e2)
-              .Call(R_flint_fmpq_ops2, .Generic, e1, e2))
+              .Call(R_flint_fmpq_ops2, .Generic, e1, e2, list()))
 
 setMethod("Ops",
           c(e1 = "fmpq", e2 = "mag"),
@@ -172,6 +172,87 @@ setMethod("as.vector",
                      "symbol" =, "name" =, "character" =
                          as.vector(format(x), mode),
                      as.vector(.Call(R_flint_fmpq_atomic, x), mode)))
+
+setMethod("backsolve",
+          c(r = "ANY", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              switch(typeof(r),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         backsolve(.fmpq(r), x, k, upper.tri, transpose),
+                     "double" =
+                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", if (isS4(r)) class(r) else typeof(r), "fmpq"),
+                          domain = NA)))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "ANY"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
+              if (missing(x))
+                  return(.Call(R_flint_fmpq_ops1, "backsolve", r, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         backsolve(r, .fmpq(x), k, upper.tri, transpose),
+                     "double" =
+                         backsolve(.arf(r), .arf(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acf(r), .acf(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", "fmpq", if (isS4(x)) class(x) else typeof(x)),
+                          domain = NA))
+          })
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "ulong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .fmpq(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .fmpq(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "fmpz"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .fmpq(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              .Call(R_flint_fmpq_ops2, "backsolve", r, x, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), .arf(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acf(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.arb(r), x, k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "fmpq", x = "acb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), x, k, upper.tri, transpose))
+
+setMethod("chol2inv",
+          c(x = "fmpq"),
+          function (x, size = ncol(x), ...)
+              .Call(R_flint_fmpq_ops1, "chol2inv", x, list(as.integer(size))))
 
 setAs("ANY", "fmpq",
       function (from)
@@ -251,7 +332,7 @@ setMatrixOpsMethod(
           c(x = "fmpq", y = "ANY"),
           function (x, y) {
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(.Call(R_flint_fmpq_ops2, .Generic, x, x))
+                  return(.Call(R_flint_fmpq_ops2, .Generic, x, x, list()))
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =
@@ -283,7 +364,7 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "fmpq", y = "fmpq"),
           function (x, y)
-              .Call(R_flint_fmpq_ops2, .Generic, x, y))
+              .Call(R_flint_fmpq_ops2, .Generic, x, y, list()))
 
 setMatrixOpsMethod(
           c(x = "fmpq", y = "mag"),
@@ -327,3 +408,79 @@ setMethod("rowSums",
           c(x = "fmpq"),
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_fmpq_ops1, "rowSums", x, list(NULL, as.integer(dims))))
+
+setMethod("solve",
+          c(a = "ANY", b = "fmpq"),
+          function (a, b, ...)
+              switch(typeof(a),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         solve(.fmpq(a), b, ...),
+                     "double" =
+                         solve(.arf(a), .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", if (isS4(a)) class(a) else typeof(b), "fmpq"),
+                          domain = NA)))
+
+setMethod("solve",
+          c(a = "fmpq", b = "ANY"),
+          function (a, b, ...) {
+              if (missing(b))
+                  return(.Call(R_flint_fmpq_ops1, "solve", a, list()))
+              switch(typeof(b),
+                     "NULL" =, "raw" =, "logical" =, "integer" =
+                         solve(a, .fmpq(b), ...),
+                     "double" =
+                         solve(.arf(a), .arf(b), ...),
+                     "complex" =
+                         solve(.acf(a), .acf(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", "fmpq", if (isS4(b)) class(b) else typeof(b)),
+                          domain = NA))
+          })
+
+setMethod("solve",
+          c(a = "fmpq", b = "ulong"),
+          function (a, b, ...)
+              solve(a, .fmpq(b), ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "slong"),
+          function (a, b, ...)
+              solve(a, .fmpq(b), ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "fmpz"),
+          function (a, b, ...)
+              solve(a, .fmpq(b), ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "fmpq"),
+          function (a, b, ...)
+              .Call(R_flint_fmpq_ops2, "solve", a, b, list()))
+
+setMethod("solve",
+          c(a = "fmpq", b = "mag"),
+          function (a, b, ...)
+              solve(.arf(a), .arf(b), ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "arf"),
+          function (a, b, ...)
+              solve(.arf(a), b, ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "acf"),
+          function (a, b, ...)
+              solve(.acf(a), b, ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "arb"),
+          function (a, b, ...)
+              solve(.arb(a), b, ...))
+
+setMethod("solve",
+          c(a = "fmpq", b = "acb"),
+          function (a, b, ...)
+              solve(.acb(a), b, ...))

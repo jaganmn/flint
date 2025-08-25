@@ -118,7 +118,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arb", e2 = "arb"),
           function (e1, e2)
-              .Call(R_flint_arb_ops2, .Generic, e1, e2))
+              .Call(R_flint_arb_ops2, .Generic, e1, e2, list()))
 
 setMethod("Ops",
           c(e1 = "arb", e2 = "acb"),
@@ -168,6 +168,83 @@ setMethod("as.vector",
                      "symbol" =, "name" =, "character" =
                          as.vector(format(x, digits = 15L, rnd = "N"), mode),
                      as.vector(.Call(R_flint_arb_atomic, x), mode)))
+
+setMethod("backsolve",
+          c(r = "ANY", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              switch(typeof(r),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         backsolve(.arb(r), x, k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acb(r), .acb(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", if (isS4(r)) class(r) else typeof(r), "arb"),
+                          domain = NA)))
+
+setMethod("backsolve",
+          c(r = "arb", x = "ANY"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
+              if (missing(x))
+                  return(.Call(R_flint_arb_ops1, "backsolve", r, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+              switch(typeof(x),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         backsolve(r, .arb(x), k, upper.tri, transpose),
+                     "complex" =
+                         backsolve(.acb(r), .acb(x), k, upper.tri, transpose),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "backsolve", "arb", if (isS4(x)) class(x) else typeof(x)),
+                          domain = NA))
+          })
+
+setMethod("backsolve",
+          c(r = "arb", x = "ulong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "slong"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "fmpz"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "fmpq"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "mag"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "arf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(r, .arb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "acf"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), .acb(x), k, upper.tri, transpose))
+
+setMethod("backsolve",
+          c(r = "arb", x = "arb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              .Call(R_flint_arb_ops2, "backsolve", r, x, list(as.integer(k), as.logical(upper.tri), as.logical(transpose))))
+
+setMethod("backsolve",
+          c(r = "arb", x = "acb"),
+          function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
+              backsolve(.acb(r), x, k, upper.tri, transpose))
+
+setMethod("chol2inv",
+          c(x = "arb"),
+          function (x, size = ncol(x), ...)
+              .Call(R_flint_arb_ops1, "chol2inv", x, list(as.integer(size))))
 
 setAs("ANY", "arb",
       function (from)
@@ -251,7 +328,7 @@ setMatrixOpsMethod(
           c(x = "arb", y = "ANY"),
           function (x, y) {
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(.Call(R_flint_arb_ops2, .Generic, x, x))
+                  return(.Call(R_flint_arb_ops2, .Generic, x, x, list()))
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
@@ -301,7 +378,7 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "arb", y = "arb"),
           function (x, y)
-              .Call(R_flint_arb_ops2, .Generic, x, y))
+              .Call(R_flint_arb_ops2, .Generic, x, y, list()))
 
 setMatrixOpsMethod(
           c(x = "arb", y = "acb"),
@@ -325,6 +402,78 @@ setMethod("rowSums",
           c(x = "arb"),
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_arb_ops1, "rowSums", x, list(as.logical(na.rm), as.integer(dims))))
+
+setMethod("solve",
+          c(a = "ANY", b = "arb"),
+          function (a, b, ...)
+              switch(typeof(a),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         solve(.arb(a), b, ...),
+                     "complex" =
+                         solve(.acb(a), .acb(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", if (isS4(a)) class(a) else typeof(b), "arb"),
+                          domain = NA)))
+
+setMethod("solve",
+          c(a = "arb", b = "ANY"),
+          function (a, b, ...) {
+              if (missing(b))
+                  return(.Call(R_flint_arb_ops1, "solve", a, list()))
+              switch(typeof(b),
+                     "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
+                         solve(a, .arb(b), ...),
+                     "complex" =
+                         solve(.acb(a), .acb(b), ...),
+                     stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
+                                   "solve", "arb", if (isS4(b)) class(b) else typeof(b)),
+                          domain = NA))
+          })
+
+setMethod("solve",
+          c(a = "arb", b = "ulong"),
+          function (a, b, ...)
+              solve(a, .arb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "slong"),
+          function (a, b, ...)
+              solve(a, .arb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "fmpz"),
+          function (a, b, ...)
+              solve(a, .arb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "fmpq"),
+          function (a, b, ...)
+              solve(a, .arb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "mag"),
+          function (a, b, ...)
+              solve(a, .arb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "arf"),
+          function (a, b, ...)
+              solve(a, .arb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "acf"),
+          function (a, b, ...)
+              solve(.acb(a), .acb(b), ...))
+
+setMethod("solve",
+          c(a = "arb", b = "arb"),
+          function (a, b, ...)
+              .Call(R_flint_arb_ops2, "solve", a, b, list()))
+
+setMethod("solve",
+          c(a = "arb", b = "acb"),
+          function (a, b, ...)
+              solve(.acb(a), b, ...))
 
 setMethod("xtfrm",
           c(x = "arb"),
