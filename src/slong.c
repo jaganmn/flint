@@ -344,13 +344,13 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
-	mp_limb_t
+	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
-		ny = R_flint_get_length(s_y);
+		ny = R_flint_get_length(s_y),
+		nz = RECYCLE2(nx, ny);
 	const slong
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
-	mp_limb_t jz, nz = RECYCLE2(nx, ny);
 	int dz[3];
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	switch (op) {

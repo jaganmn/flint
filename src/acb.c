@@ -478,28 +478,31 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case 17: /*  "crossprod" */
 	case 18: /* "tcrossprod" */
 	{
-		/*        %*%: Z = X Y  = (Y'X')' = (A B)', A := Y', B := X' */
-		/*  crossprod: Z = X'Y  = (Y'X )' = (A B)', A := Y', B := X  */
-		/* tcrossprod: Z = X Y' = (Y X')' = (A B)', A := Y , B := X' */
+		/* Z' = C = AB                */
+		/*                            */
+		/*        %*%: A = Y', B = X' */
+		/*  crossprod: A = Y', B = X  */
+		/* tcrossprod: A = Y , B = X' */
+
 		SEXP ans = PROTECT(newObject("acb"));
 		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
 		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
-		mp_limb_t jx = 0, jy = 0, ja = 0, jb = 0;
-		acb_mat_t mz, ma, mb;
-		mz->entries = z;
+		mp_limb_t jx, jy, ja, jb;
+		acb_mat_t mc, ma, mb;
+		mc->entries = z;
 		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(acb_t)) : 0) : (void *) y;
 		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(acb_t)) : 0) : (void *) x;
-		mz->r = mb->c = dz[0];
-		mz->c = ma->r = dz[1];
-		ma->c = mb->r = dz[2];
-		mz->rows = (mz->r) ? flint_calloc((size_t) mz->r, sizeof(acb_ptr)) : 0;
+		mc->r = mb->c = dz[1];
+		ma->r = mc->c = dz[0];
+		mb->r = ma->c = dz[2];
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(acb_ptr)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(acb_ptr)) : 0;
 		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(acb_ptr)) : 0;
-		if (mz->r) {
-			mz->rows[0] = mz->entries;
-			for (i = 1; i < mz->r; ++i)
-				mz->rows[i] = mz->rows[i-1] + mz->c;
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i-1] + mc->c;
 		}
 		if (ma->r) {
 			ma->rows[0] = ma->entries;
@@ -511,26 +514,144 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (i = 1; i < mb->r; ++i)
 				mb->rows[i] = mb->rows[i-1] + mb->c;
 		}
-		if (ty)
+		if (ty) {
+			ja = jy = 0;
 			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
 				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
 					acb_set(ma->entries + ja, y + jy);
-		if (tx)
+		}
+		if (tx) {
+			jb = jx = 0;
 			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
 				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
 					acb_set(mb->entries + jb, x + jx);
-		acb_mat_mul(mz, ma, mb, prec);
+		}
+		acb_mat_mul(mc, ma, mb, prec);
 		if (ty) {
-			for (jy = 0; jy < ny; ++jy)
-				acb_clear(ma->entries + jy);
+			for (ja = 0; ja < ny; ++ja)
+				acb_clear(ma->entries + ja);
 			flint_free(ma->entries);
 		}
 		if (tx) {
-			for (jx = 0; jx < nx; ++jx)
-				acb_clear(mb->entries + jx);
+			for (jb = 0; jb < nx; ++jb)
+				acb_clear(mb->entries + jb);
 			flint_free(mb->entries);
 		}
-		flint_free(mz->rows);
+		flint_free(mc->rows);
+		flint_free(ma->rows);
+		flint_free(mb->rows);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 19: /*      "solve" */
+	case 20: /*  "backsolve" */
+	case 21: /* "tbacksolve" */
+	{
+		/* AZ = AC = B               */
+		/*                           */
+		/*      solve: A = X , B = Y */
+		/*  backsolve: A = X , B = Y */
+		/* tbacksolve: A = X', B = Y */
+
+		int uplo = 'N';
+		if (op == 20 || op == 21) {
+			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);
+			if (XLENGTH(s_uppertri) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
+			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
+		}
+
+		SEXP ans = PROTECT(newObject("acb"));
+		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
+		int tx = (mop & 1) != 0, i, j;
+		mp_limb_t jx, jy, jc, ja, jb;
+		acb_mat_t mc, ma, mb;
+		mc->entries = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
+		ma->entries = (nx) ? flint_calloc(nx, sizeof(acb_t)) : 0;
+		mb->entries = (ny) ? flint_calloc(ny, sizeof(acb_t)) : 0;
+		mc->r = mb->r = dz[0];
+		mc->c = mb->c = dz[1];
+		ma->r = ma->c = dz[2];
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(acb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(acb_ptr)) : 0;
+		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(acb_ptr)) : 0;
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i-1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i-1] + ma->c;
+		}
+		if (mb->r) {
+			mb->rows[0] = mb->entries;
+			for (i = 1; i < mb->r; ++i)
+				mb->rows[i] = mb->rows[i-1] + mb->c;
+		}
+		if (tx)
+		switch (uplo) {
+		case 'N':
+			for (ja = 0; ja < nx; ++ja)
+				acb_set(ma->entries + ja, x + ja);
+			break;
+		case 'U':
+			ja = 0;
+			for (i = 0; i < ma->r; ja += ma->r - (++i))
+				for (j = 0; j <= i; ++j, ++ja)
+					acb_set(ma->entries + ja, x + ja);
+			break;
+		case 'L':
+			ja = 0;
+			for (i = 0; i < ma->r; ja += (++i))
+				for (j = i; j < ma->c; ++j, ++ja)
+					acb_set(ma->entries + ja, x + ja);
+			break;
+		}
+		else
+		switch (uplo) {
+		case 'N':
+			ja = jx = 0;
+			for (i = 0; i < ma->r; ++i, jx -= nx - 1)
+				for (j = 0; j < ma->c; ++j, ++ja, jx += ma->r)
+					acb_set(ma->entries + ja, x + jx);
+			break;
+		case 'U':
+			ja = jx = 0;
+			for (i = 0; i < ma->r; ja += (++i), jx = ja)
+				for (j = i; j < ma->c; ++j, ++ja, jx += ma->r)
+					acb_set(ma->entries + ja, x + jx);
+			break;
+		case 'L':
+			ja = jx = 0;
+			for (i = 0; i < ma->r; ja += ma->c - (++i), jx = ja)
+				for (j = 0; j <= i; ++j, ++ja, jx += ma->r)
+					acb_set(ma->entries + ja, x + jx);
+			break;
+		}
+		jb = jy = 0;
+		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
+			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
+				acb_set(mb->entries + jb, y + jy);
+		acb_mat_solve(mc, ma, mb, prec);
+		jc = jz = 0;
+		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
+			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->r) {
+				acb_set(z + jz, mc->entries + jc);
+				acb_clear(mc->entries + jc);
+			}
+		for (ja = 0; ja < nx; ++ja)
+			acb_clear(ma->entries + ja);
+		for (jb = 0; jb < ny; ++jb)
+			acb_clear(mb->entries + jb);
+		flint_free(mc->entries);
+		flint_free(ma->entries);
+		flint_free(mb->entries);
+		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
