@@ -427,11 +427,11 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case 17: /*  "crossprod" */
 	case 18: /* "tcrossprod" */
 	{
-		/* Z' = C = AB                */
-		/*                            */
-		/*        %*%: A = Y', B = X' */
-		/*  crossprod: A = Y', B = X  */
-		/* tcrossprod: A = Y , B = X' */
+		/* C = A B                            */
+		/*                                    */
+		/*        %*%: C = Z', A = Y', B = X' */
+		/*  crossprod: C = Z', A = Y', B = X  */
+		/* tcrossprod: C = Z', A = Y , B = X' */
 
 		SEXP ans = PROTECT(newObject("fmpz"));
 		fmpz *z = (nz) ? flint_calloc(nz, sizeof(fmpz)) : 0;
@@ -497,11 +497,11 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case 20: /*  "backsolve" */
 	case 21: /* "tbacksolve" */
 	{
-		/* AZ = AC = B               */
-		/*                           */
-		/*      solve: A = X , B = Y */
-		/*  backsolve: A = X , B = Y */
-		/* tbacksolve: A = X', B = Y */
+		/* A C = B                          */
+		/*                                  */
+		/*      solve: C = Z, A = X , B = Y */
+		/*  backsolve: C = Z, A = X , B = Y */
+		/* tbacksolve: C = Z, A = X', B = Y */
 
 		int uplo = 'N';
 		if (op == 20 || op == 21) {
