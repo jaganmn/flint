@@ -613,7 +613,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	mp_limb_t j, n = R_flint_get_length(s_x);
+	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	const slong *x = R_flint_get_pointer(s_x);
 	switch (op) {
 	case  1: /*       "+" */
@@ -635,7 +635,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		slong *z = (n) ? flint_calloc(n, sizeof(slong)) : 0;
+		slong *z = (nz) ? flint_calloc(nz, sizeof(slong)) : 0;
 		int over = 0;
 		switch (op) {
 		case  1: /*       "+" */
@@ -644,55 +644,55 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 16: /*   "floor" */
 		case 17: /* "ceiling" */
 		case 18: /*   "trunc" */
-			for (j = 0; j < n; ++j)
-				z[j] = x[j];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz];
 			break;
 		case  2: /*       "-" */
-			for (j = 0; j < n; ++j) {
-				if (x[j] == WORD_MIN)
+			for (jz = 0; jz < nz; ++jz) {
+				if (x[jz] == WORD_MIN)
 					break;
-				z[j] = -x[j];
+				z[jz] = -x[jz];
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j)
-				if (x[j] == WORD_MIN)
-				fmpz_set_ui(Z + j, (ulong) -1 - (ulong) WORD_MIN + 1);
+			for (jz = 0; jz < nz; ++jz)
+				if (x[jz] == WORD_MIN)
+				fmpz_set_ui(Z + jz, (ulong) -1 - (ulong) WORD_MIN + 1);
 				else
-				fmpz_set_si(Z + j, -x[j]);
+				fmpz_set_si(Z + jz, -x[jz]);
 			}
 			break;
 		case 10: /*      "Im" */
-			for (j = 0; j < n; ++j)
-				z[j] = 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = 0;
 			break;
 		case 11: /*     "Mod" */
 		case 13: /*     "abs" */
-			for (j = 0; j < n; ++j) {
-				if (x[j] == WORD_MIN)
+			for (jz = 0; jz < nz; ++jz) {
+				if (x[jz] == WORD_MIN)
 					break;
-				z[j] = (x[j] < 0) ? -x[j] : x[j];
+				z[jz] = (x[jz] < 0) ? -x[jz] : x[jz];
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (j = 0; j < n; ++j)
-				fmpz_set_ui(Z + j, (x[j] < 0) ? (ulong) -1 - (ulong) WORD_MIN + 1 : (ulong) x[j]);
+			for (jz = 0; jz < nz; ++jz)
+				fmpz_set_ui(Z + jz, (x[jz] < 0) ? (ulong) -1 - (ulong) WORD_MIN + 1 : (ulong) x[jz]);
 			}
 			break;
 		case 14: /*    "sign" */
-			for (j = 0; j < n; ++j)
-				z[j] = (x[j] < 0) ? -1 : (x[j] > 0);
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = (x[jz] < 0) ? -1 : (x[jz] > 0);
 			break;
 		case 15: /*    "sqrt" */
 		{
 			ulong r;
-			for (j = 0; j < n; ++j) {
-				if (x[j] >= 0)
-				z[j] = (slong) n_sqrtrem(&r, (ulong) x[j]);
+			for (jz = 0; jz < nz; ++jz) {
+				if (x[jz] >= 0)
+				z[jz] = (slong) n_sqrtrem(&r, (ulong) x[jz]);
 				else
 				r = 1;
 				if (r) {
@@ -704,74 +704,74 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		case 19: /*  "cummin" */
-			if (n) {
+			if (nz) {
 			z[0] = x[0];
-			for (j = 1; j < n; ++j)
-				z[j] = (z[j - 1] <= x[j]) ? z[j - 1] : x[j];
+			for (jz = 1; jz < nz; ++jz)
+				z[jz] = (z[jz - 1] <= x[jz]) ? z[jz - 1] : x[jz];
 			}
 			break;
 		case 20: /*  "cummax" */
-			if (n) {
+			if (nz) {
 			z[0] = x[0];
-			for (j = 1; j < n; ++j)
-				z[j] = (z[j - 1] >= x[j]) ? z[j - 1] : x[j];
+			for (jz = 1; jz < nz; ++jz)
+				z[jz] = (z[jz - 1] >= x[jz]) ? z[jz - 1] : x[jz];
 			}
 			break;
 		case 21: /*  "cumsum" */
-			if (n) {
+			if (nz) {
 			z[0] = x[0];
-			for (j = 1; j < n; ++j) {
+			for (jz = 1; jz < nz; ++jz) {
 #if !defined(__GNUC__)
-				if ((z[j - 1] >= 0) ? x[j] > WORD_MAX - z[j - 1] : x[j] < WORD_MIN - z[j - 1])
+				if ((z[jz - 1] >= 0) ? x[jz] > WORD_MAX - z[jz - 1] : x[jz] < WORD_MIN - z[jz - 1])
 					break;
-				z[j] = z[j - 1] + x[j];
+				z[jz] = z[jz - 1] + x[jz];
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_saddll_overflow(z[j - 1], x[j], z + j))
+				if (__builtin_saddll_overflow(z[jz - 1], x[jz], z + jz))
 					break;
 #else
-				if (__builtin_saddl_overflow(z[j - 1], x[j], z + j))
+				if (__builtin_saddl_overflow(z[jz - 1], x[jz], z + jz))
 					break;
 #endif
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
 			fmpz_set_si(Z, x[0]);
-			for (j = 1; j < n; ++j)
-				fmpz_add_si(Z + j, Z + j - 1, x[j]);
+			for (jz = 1; jz < nz; ++jz)
+				fmpz_add_si(Z + jz, Z + jz - 1, x[jz]);
 			}
 			}
 			break;
 		case 22: /* "cumprod" */
-			if (n && x[0]) {
+			if (nz && x[0]) {
 			z[0] = x[0];
-			for (j = 1; j < n; ++j) {
-				if (x[j]) {
+			for (jz = 1; jz < nz; ++jz) {
+				if (x[jz]) {
 #if !defined(__GNUC__)
-				if (z_mul_checked(z + j, z[j - 1], x[j]))
+				if (z_mul_checked(z + jz, z[jz - 1], x[jz]))
 					break;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_smulll_overflow(z[j - 1], x[j], z + j))
+				if (__builtin_smulll_overflow(z[jz - 1], x[jz], z + jz))
 					break;
 #else
-				if (__builtin_smull_overflow(z[j - 1], x[j], z + j))
+				if (__builtin_smull_overflow(z[jz - 1], x[jz], z + jz))
 					break;
 #endif
 				} else {
-					while (j < n)
-						z[j++] = 0;
+					while (jz < nz)
+						z[jz++] = 0;
 					break;
 				}
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
 			fmpz_set_si(Z, x[0]);
-			for (j = 1; j < n; ++j)
-				if (x[j])
-				fmpz_mul_si(Z + j, Z + j - 1, x[j]);
+			for (jz = 1; jz < nz; ++jz)
+				if (x[jz])
+				fmpz_mul_si(Z + jz, Z + jz - 1, x[jz]);
 				else
 				break;
 			}
@@ -785,36 +785,36 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				         "digits", CHAR(STRING_ELT(s_op, 0)));
 			slong digits = ((slong *) R_flint_get_pointer(s_digits))[0];
 			if (digits >= 0)
-			for (j = 0; j < n; ++j)
-				z[j] = x[j];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = x[jz];
 #ifdef R_FLINT_ABI_64
 			else if (digits <= -20)
 #else
 			else if (digits <= -10)
 #endif
-			for (j = 0; j < n; ++j)
-				z[j] = 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = 0;
 			else {
 #ifdef R_FLINT_ABI_64
 			if (digits == -19) {
-			for (j = 0; j < n; ++j) {
-				if (x[j] <= -5000000000000000000L ||
-				    x[j] >=  5000000000000000000L)
+			for (jz = 0; jz < nz; ++jz) {
+				if (x[jz] <= -5000000000000000000L ||
+				    x[jz] >=  5000000000000000000L)
 					break;
-				z[j] = 0;
+				z[jz] = 0;
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
 			fmpz_t t;
 			fmpz_init(t);
 			fmpz_set_ui(t, 10000000000000000000UL);
-			for (j = 0; j < n; ++j)
-				if (x[j] <= -5000000000000000000L)
-				fmpz_neg(Z + j, t);
-				else if (x[j] >= 5000000000000000000L)
-				fmpz_set(Z + j, t);
+			for (jz = 0; jz < nz; ++jz)
+				if (x[jz] <= -5000000000000000000L)
+				fmpz_neg(Z + jz, t);
+				else if (x[jz] >= 5000000000000000000L)
+				fmpz_set(Z + jz, t);
 			fmpz_clear(t);
 			}
 			} else {
@@ -823,9 +823,9 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (i = digits, p = 1; i < 0; ++i)
 				p *= 10;
 			h = p / 2; qmin = WORD_MIN / p; qmax = WORD_MAX / p;
-			for (j = 0; j < n; ++j) {
-				q = x[j] / p;
-				r = x[j] % p;
+			for (jz = 0; jz < nz; ++jz) {
+				q = x[jz] / p;
+				r = x[jz] % p;
 				if (r >= h) {
 					if (r >  h || q % 2)
 						q += 1;
@@ -838,18 +838,18 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					if (q < qmin)
 						break;
 				}
-				z[j] = q * p;
+				z[jz] = q * p;
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
 			fmpz_t t;
 			fmpz_init(t);
 			fmpz_set_si(t, p);
-			for (j = 0; j < n; ++j) {
-				q = x[j] / p;
-				r = x[j] % p;
+			for (jz = 0; jz < nz; ++jz) {
+				q = x[jz] / p;
+				r = x[jz] % p;
 				if (r >= h) {
 					if (r >  h || q % 2)
 						q += 1;
@@ -858,7 +858,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					if (r < -h || q % 2)
 						q -= 1;
 				}
-				fmpz_mul_si(Z + j, t, q);
+				fmpz_mul_si(Z + jz, t, q);
 			}
 			fmpz_clear(t);
 			}
@@ -878,17 +878,17 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				clog, i, h, p, q, r;
 			if (digits <= 0)
 				digits = 1;
-			for (j = 0; j < n; ++j) {
-				if (x[j]) {
-				clog = (slong) n_clog((x[j] >= 0) ? (ulong) x[j] : (ulong) -1 - (ulong) x[j] + 1, 10);
+			for (jz = 0; jz < nz; ++jz) {
+				if (x[jz]) {
+				clog = (slong) n_clog((x[jz] >= 0) ? (ulong) x[jz] : (ulong) -1 - (ulong) x[jz] + 1, 10);
 				if (clog <= digits)
-				z[j] = x[j];
+				z[jz] = x[jz];
 				else {
 				for (i = digits, p = 1; i < clog; ++i)
 					p *= 10;
 				h = p / 2;
-				q = x[j] / p;
-				r = x[j] % p;
+				q = x[jz] / p;
+				r = x[jz] % p;
 				if (r >= h) {
 					if (r >  h || q % 2)
 						q += 1;
@@ -901,29 +901,29 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					if (q < WORD_MIN / p)
 						break;
 				}
-				z[j] = q * p;
+				z[jz] = q * p;
 				}
 				}
 				else
-				z[j] = 0;
+				z[jz] = 0;
 			}
-			over = j < n;
+			over = jz < nz;
 			if (over) {
-			memset(z, 0, n * sizeof(slong));
+			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
 			fmpz_t t;
 			fmpz_init(t);
-			for (j = 0; j < n; ++j) {
-				if (x[j]) {
-				clog = (slong) n_clog((x[j] >= 0) ? (ulong) x[j] : (ulong) -1 - (ulong) x[j] + 1, 10);
+			for (jz = 0; jz < nz; ++jz) {
+				if (x[jz]) {
+				clog = (slong) n_clog((x[jz] >= 0) ? (ulong) x[jz] : (ulong) -1 - (ulong) x[jz] + 1, 10);
 				if (clog <= digits)
-				fmpz_set_si(Z + j, x[j]);
+				fmpz_set_si(Z + jz, x[jz]);
 				else {
 				for (i = digits, p = 1; i < clog; ++i)
 					p *= 10;
 				h = p / 2;
-				q = x[j] / p;
-				r = x[j] % p;
+				q = x[jz] / p;
+				r = x[jz] % p;
 				if (r >= h) {
 					if (r >  h || q % 2)
 						q += 1;
@@ -933,7 +933,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 						q -= 1;
 				}
 				fmpz_set_si(t, p);
-				fmpz_mul_si(Z + j, t, q);
+				fmpz_mul_si(Z + jz, t, q);
 				}
 				}
 			}
@@ -942,7 +942,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		}
 		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
-		R_flint_set(ans, z, n, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
@@ -950,43 +950,43 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 50: /*     "min" */
 	case 51: /*     "max" */
 	case 52: /*   "range" */
-		if (n == 0)
+		if (nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
 	{
-		mp_limb_t nz = (op == 52) ? 2 : 1;
+		nz = (op == 52) ? 2 : 1;
 		slong *z = flint_calloc(nz, sizeof(slong));
 		int over = 0;
 		switch (op) {
 		case 50: /*     "min" */
 			z[0] = x[0];
-			for (j = 1; j < n; ++j)
-				if (z[0] > x[j])
-					z[0] = x[j];
+			for (jx = 1; jx < nx; ++jx)
+				if (z[0] > x[jx])
+					z[0] = x[jx];
 			break;
 		case 51: /*     "max" */
 			z[0] = x[0];
-			for (j = 1; j < n; ++j)
-				if (z[0] < x[j])
-					z[0] = x[j];
+			for (jx = 1; jx < nx; ++jx)
+				if (z[0] < x[jx])
+					z[0] = x[jx];
 			break;
 		case 52: /*   "range" */
 			z[0] = z[1] = x[0];
-			for (j = 1; j < n; ++j)
-				if (z[0] > x[j])
-					z[0] = x[j];
-				else if (z[1] < x[j])
-					z[1] = x[j];
+			for (jx = 1; jx < nx; ++jx)
+				if (z[0] > x[jx])
+					z[0] = x[jx];
+				else if (z[1] < x[jx])
+					z[1] = x[jx];
 			break;
 		case 53: /*     "sum" */
 		{
 			fmpz_t t;
 			fmpz_init(t);
 			fmpz_zero(t);
-			for (j = 0; j < n; ++j)
-				fmpz_add_si(t, t, x[j]);
+			for (jx = 0; jx < nx; ++jx)
+				fmpz_add_si(t, t, x[jx]);
 			if (fmpz_fits_si(t))
 				z[0] = fmpz_get_si(t);
 			else {
@@ -1002,9 +1002,9 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_t t;
 			fmpz_init(t);
 			fmpz_one(t);
-			for (j = 0; j < n; ++j) {
-				if (x[j])
-				fmpz_mul_si(t, t, x[j]);
+			for (jx = 0; jx < nx; ++jx) {
+				if (x[jx])
+				fmpz_mul_si(t, t, x[jx]);
 				else {
 				fmpz_zero(t);
 				break;
@@ -1029,7 +1029,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case 55: /*    "mean" */
 	{
-		if (n == 0)
+		if (nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
 		SEXP ans = PROTECT(newObject("fmpq"));
@@ -1039,9 +1039,9 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 55: /*    "mean" */
 		{
 			fmpq_zero(z);
-			for (j = 0; j < n; ++j)
-				fmpz_add_si(fmpq_numref(z), fmpq_numref(z), x[j]);
-			fmpz_set_ui(fmpq_denref(z), n);
+			for (jx = 0; jx < nx; ++jx)
+				fmpz_add_si(fmpq_numref(z), fmpq_numref(z), x[jx]);
+			fmpz_set_ui(fmpq_denref(z), nx);
 			fmpq_canonicalise(z);
 			break;
 		}
@@ -1058,12 +1058,12 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case 56: /*         "any" */
-			for (j = 0; j < n && x[j] == 0; ++j) ;
-			z[0] = j <  n;
+			for (jx = 0; jx < nx && x[jx] == 0; ++jx) ;
+			z[0] = jx <  nx;
 			break;
 		case 57: /*         "all" */
-			for (j = 0; j < n && x[j] != 0; ++j) ;
-			z[0] = j >= n;
+			for (jx = 0; jx < nx && x[jx] != 0; ++jx) ;
+			z[0] = jx >= nx;
 			break;
 		case 58: /*       "anyNA" */
 			z[0] = 0;
@@ -1076,10 +1076,10 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				         "strictly", CHAR(STRING_ELT(s_op, 0)));
 			int strict = LOGICAL_RO(s_strict)[0];
 			if (strict)
-			for (j = 1; j < n && x[0] <  x[1]; ++j, ++x) ;
+			for (jx = 1; jx < nx && x[0] <  x[1]; ++jx, ++x) ;
 			else
-			for (j = 1; j < n && x[0] <= x[1]; ++j, ++x) ;
-			z[0] = j <  n;
+			for (jx = 1; jx < nx && x[0] <= x[1]; ++jx, ++x) ;
+			z[0] = jx <  nx;
 			break;
 		}
 		}
@@ -1092,23 +1092,23 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  6: /*   "is.finite" */
 	case  7: /*           "!" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  3: /*       "is.na" */
 		case  4: /*      "is.nan" */
 		case  5: /* "is.infinite" */
-			for (j = 0; j < n; ++j)
-				z[j] = 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = 0;
 			break;
 		case  6: /*   "is.finite" */
-			for (j = 0; j < n; ++j)
-				z[j] = 1;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = 1;
 			break;
 		case  7: /*           "!" */
-			for (j = 0; j < n; ++j)
-				z[j] = !x[j];
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = !x[jz];
 			break;
 		}
 		setDDNN1(ans, s_x);
@@ -1126,7 +1126,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		if (dimx == R_NilValue || XLENGTH(dimx) < 2)
 			Rf_error(_("'%s' is not a matrix or a higher dimensional array"),
 			         "x");
-		if (domean && n == 0)
+		if (domean && nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
 		const int *dx = INTEGER_RO(dimx);
@@ -1144,7 +1144,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP dimz = PROTECT(Rf_allocVector(INTSXP, (byrow) ? off : ndx - off));
 		int *dz = INTEGER(dimz), ndz = LENGTH(dimz), k;
 
-		mp_limb_t jx = 0, jz, nx = n, nz = 1;
+		nz = 1;
 		for (k = 0; k < ndz; ++k)
 			nz *= (mp_limb_t) (dz[k] = dx[(byrow) ? k : off + k]);
 		mp_limb_t jt, nt = nx/nz;
@@ -1173,6 +1173,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		void *z;
 		R_CFinalizer_t f;
 		const char *what;
+		jx = 0;
 		if (domean) {
 			fmpq *z__ = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 			if (byrow) {

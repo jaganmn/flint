@@ -725,7 +725,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
-	mp_limb_t j, n = R_flint_get_length(s_x);
+	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	const fmpq *x = R_flint_get_pointer(s_x);
 	switch (op) {
 	case  1: /*       "+" */
@@ -748,45 +748,45 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 49: /*  "signif" */
 	{
 		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case  1: /*       "+" */
 		case  8: /*    "Conj" */
 		case  9: /*      "Re" */
-			for (j = 0; j < n; ++j)
-				fmpq_set(z + j, x + j);
+			for (jz = 0; jz < nz; ++jz)
+				fmpq_set(z + jz, x + jz);
 			break;
 		case  2: /*       "-" */
-			for (j = 0; j < n; ++j)
-				fmpq_neg(z + j, x + j);
+			for (jz = 0; jz < nz; ++jz)
+				fmpq_neg(z + jz, x + jz);
 			break;
 		case 10: /*      "Im" */
-			for (j = 0; j < n; ++j)
-				fmpz_one(fmpq_denref(z + j));
+			for (jz = 0; jz < nz; ++jz)
+				fmpz_one(fmpq_denref(z + jz));
 			break;
 		case 11: /*     "Mod" */
 		case 13: /*     "abs" */
-			for (j = 0; j < n; ++j)
-				fmpq_abs(z + j, x + j);
+			for (jz = 0; jz < nz; ++jz)
+				fmpq_abs(z + jz, x + jz);
 			break;
 		case 14: /*    "sign" */
-			for (j = 0; j < n; ++j) {
-				fmpz_set_si(fmpq_numref(z + j), fmpq_sgn(x + j));
-				fmpz_one(fmpq_denref(z + j));
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set_si(fmpq_numref(z + jz), fmpq_sgn(x + jz));
+				fmpz_one(fmpq_denref(z + jz));
 			}
 			break;
 		case 15: /*    "sqrt" */
 		{
 			fmpz_t r;
 			fmpz_init(r);
-			for (j = 0; j < n; ++j) {
-				if (fmpq_sgn(x + j) >= 0) {
-				fmpz_sqrtrem(fmpq_numref(z + j), r, fmpq_numref(x + j));
+			for (jz = 0; jz < nz; ++jz) {
+				if (fmpq_sgn(x + jz) >= 0) {
+				fmpz_sqrtrem(fmpq_numref(z + jz), r, fmpq_numref(x + jz));
 				if (fmpz_is_zero(r))
-				fmpz_sqrtrem(fmpq_denref(z + j), r, fmpq_denref(x + j));
+				fmpz_sqrtrem(fmpq_denref(z + jz), r, fmpq_denref(x + jz));
 				}
-				if (!(fmpq_sgn(x + j) >= 0 && fmpz_is_zero(r))) {
+				if (!(fmpq_sgn(x + jz) >= 0 && fmpz_is_zero(r))) {
 				fmpz_clear(r);
 				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
 				         "sqrt", "fmpq", "fmpq");
@@ -796,49 +796,49 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		case 16: /*   "floor" */
-			for (j = 0; j < n; ++j) {
-				fmpz_fdiv_q(fmpq_numref(z + j), fmpq_numref(x + j), fmpq_denref(x + j));
-				fmpz_one(fmpq_denref(z + j));
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_fdiv_q(fmpq_numref(z + jz), fmpq_numref(x + jz), fmpq_denref(x + jz));
+				fmpz_one(fmpq_denref(z + jz));
 			}
 			break;
 		case 17: /* "ceiling" */
-			for (j = 0; j < n; ++j) {
-				fmpz_cdiv_q(fmpq_numref(z + j), fmpq_numref(x + j), fmpq_denref(x + j));
-				fmpz_one(fmpq_denref(z + j));
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_cdiv_q(fmpq_numref(z + jz), fmpq_numref(x + jz), fmpq_denref(x + jz));
+				fmpz_one(fmpq_denref(z + jz));
 			}
 			break;
 		case 18: /*   "trunc" */
-			for (j = 0; j < n; ++j) {
-				fmpz_tdiv_q(fmpq_numref(z + j), fmpq_numref(x + j), fmpq_denref(x + j));
-				fmpz_one(fmpq_denref(z + j));
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_tdiv_q(fmpq_numref(z + jz), fmpq_numref(x + jz), fmpq_denref(x + jz));
+				fmpz_one(fmpq_denref(z + jz));
 			}
 			break;
 		case 19: /*  "cummin" */
-			if (n) {
+			if (nz) {
 			fmpq_set(z, x);
-			for (j = 1; j < n; ++j)
-				fmpq_set(z + j, (fmpq_cmp(z + j - 1, x + j) <= 0) ? z + j - 1 : x + j);
+			for (jz = 1; jz < nz; ++jz)
+				fmpq_set(z + jz, (fmpq_cmp(z + jz - 1, x + jz) <= 0) ? z + jz - 1 : x + jz);
 			}
 			break;
 		case 20: /*  "cummax" */
-			if (n) {
+			if (nz) {
 			fmpq_set(z, x);
-			for (j = 1; j < n; ++j)
-				fmpq_set(z + j, (fmpq_cmp(z + j - 1, x + j) >= 0) ? z + j - 1 : x + j);
+			for (jz = 1; jz < nz; ++jz)
+				fmpq_set(z + jz, (fmpq_cmp(z + jz - 1, x + jz) >= 0) ? z + jz - 1 : x + jz);
 			}
 			break;
 		case 21: /*  "cumsum" */
-			if (n) {
+			if (nz) {
 			fmpq_set(z, x);
-			for (j = 1; j < n; ++j)
-				fmpq_add(z + j, z + j - 1, x + j);
+			for (jz = 1; jz < nz; ++jz)
+				fmpq_add(z + jz, z + jz - 1, x + jz);
 			}
 			break;
 		case 22: /* "cumprod" */
-			if (n) {
+			if (nz) {
 			fmpq_set(z, x);
-			for (j = 1; j < n; ++j)
-				fmpq_mul(z + j, z + j - 1, x + j);
+			for (jz = 1; jz < nz; ++jz)
+				fmpq_mul(z + jz, z + jz - 1, x + jz);
 			}
 			break;
 		case 48: /*   "round" */
@@ -856,27 +856,27 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (digits >= 0) {
 			/* a/b ~ c/10^+digits   <=>   c ~ (a*10^+digits)/b */
 			fmpz_pow_ui(p, p, (ulong) digits);
-			for (j = 0; j < n; ++j) {
-				fmpz_mul(fmpq_numref(z + j), fmpq_numref(x + j), p);
-				fmpz_set(fmpq_denref(z + j), fmpq_denref(x + j));
-				fmpz_ndiv_qr(q, r, fmpq_numref(z + j), fmpq_denref(z + j));
-				if (fmpz_cmp2abs(fmpq_denref(z + j), r) == 0 && fmpz_is_odd(q))
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_mul(fmpq_numref(z + jz), fmpq_numref(x + jz), p);
+				fmpz_set(fmpq_denref(z + jz), fmpq_denref(x + jz));
+				fmpz_ndiv_qr(q, r, fmpq_numref(z + jz), fmpq_denref(z + jz));
+				if (fmpz_cmp2abs(fmpq_denref(z + jz), r) == 0 && fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
-				fmpz_set(fmpq_numref(z + j), q);
-				fmpz_set(fmpq_denref(z + j), p);
-				fmpq_canonicalise(z + j);
+				fmpz_set(fmpq_numref(z + jz), q);
+				fmpz_set(fmpq_denref(z + jz), p);
+				fmpq_canonicalise(z + jz);
 			}
 			} else {
 			/* a/b ~ c*10^-digits   <=>   c ~ a/(b*10^-digits) */
 			fmpz_pow_ui(p, p, (ulong) -1 - (ulong) digits + 1);
-			for (j = 0; j < n; ++j) {
-				fmpz_set(fmpq_numref(z + j), fmpq_numref(x + j));
-				fmpz_mul(fmpq_denref(z + j), fmpq_denref(x + j), p);
-				fmpz_ndiv_qr(q, r, fmpq_numref(z + j), fmpq_denref(z + j));
-				if (fmpz_cmp2abs(fmpq_denref(z + j), r) == 0 && fmpz_is_odd(q))
+			for (jz = 0; jz < nz; ++jz) {
+				fmpz_set(fmpq_numref(z + jz), fmpq_numref(x + jz));
+				fmpz_mul(fmpq_denref(z + jz), fmpq_denref(x + jz), p);
+				fmpz_ndiv_qr(q, r, fmpq_numref(z + jz), fmpq_denref(z + jz));
+				if (fmpz_cmp2abs(fmpq_denref(z + jz), r) == 0 && fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
-				fmpz_mul(fmpq_numref(z + j), q, p);
-				fmpz_one(fmpq_denref(z + j));
+				fmpz_mul(fmpq_numref(z + jz), q, p);
+				fmpz_one(fmpq_denref(z + jz));
 			}
 			}
 			fmpz_clear(p);
@@ -900,13 +900,13 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_init(p);
 			fmpz_init(q);
 			fmpz_init(r);
-			for (j = 0; j < n; ++j) {
-				if (fmpq_is_zero(x + j))
-				fmpq_zero(z + j);
+			for (jz = 0; jz < nz; ++jz) {
+				if (fmpq_is_zero(x + jz))
+				fmpq_zero(z + jz);
 				else {
-				fmpq_abs(a, x + j);
+				fmpq_abs(a, x + jz);
 				clog = fmpq_clog_ui(a, 10);
-				if (fmpq_sgn(x + j) < 0)
+				if (fmpq_sgn(x + jz) < 0)
 					fmpq_neg(a, a);
 				fmpz_set_si(p, 10);
 				if (clog <= digits) {
@@ -919,9 +919,9 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
 				    fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
-				fmpz_set(fmpq_numref(z + j), q);
-				fmpz_set(fmpq_denref(z + j), p);
-				fmpq_canonicalise(z + j);
+				fmpz_set(fmpq_numref(z + jz), q);
+				fmpz_set(fmpq_denref(z + jz), p);
+				fmpq_canonicalise(z + jz);
 				} else {
 				fmpz_pow_ui(p, p, (ulong) (clog - digits));
 				fmpz_mul(fmpq_denref(a), fmpq_denref(a), p);
@@ -929,8 +929,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				if (fmpz_cmp2abs(fmpq_denref(a), r) == 0 &&
 				    fmpz_is_odd(q))
 					fmpz_add_si(q, q, fmpz_sgn(r));
-				fmpz_mul(fmpq_numref(z + j), q, p);
-				fmpz_one(fmpq_denref(z + j));
+				fmpz_mul(fmpq_numref(z + jz), q, p);
+				fmpz_one(fmpq_denref(z + jz));
 				}
 				}
 			}
@@ -949,54 +949,54 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 51: /*     "max" */
 	case 52: /*   "range" */
 	case 55: /*    "mean" */
-		if (n == 0)
+		if (nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
 	case 53: /*     "sum" */
 	case 54: /*    "prod" */
 	{
+		nz = (op == 52) ? 2 : 1;
 		SEXP ans = PROTECT(newObject("fmpq"));
-		mp_limb_t nz = (op == 52) ? 2 : 1;
 		fmpq *z = flint_calloc(nz, sizeof(fmpq));
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
 		switch (op) {
 		case 50: /*     "min" */
 			fmpq_set(z, x);
-			for (j = 1; j < n; ++j)
-				if (fmpq_cmp(z, x + j) > 0)
-					fmpq_set(z, x + j);
+			for (jx = 1; jx < nx; ++jx)
+				if (fmpq_cmp(z, x + jx) > 0)
+					fmpq_set(z, x + jx);
 			break;
 		case 51: /*     "max" */
 			fmpq_set(z, x);
-			for (j = 1; j < n; ++j)
-				if (fmpq_cmp(z, x + j) < 0)
-					fmpq_set(z, x + j);
+			for (jx = 1; jx < nx; ++jx)
+				if (fmpq_cmp(z, x + jx) < 0)
+					fmpq_set(z, x + jx);
 			break;
 		case 52: /*   "range" */
 			fmpq_set(z, x);
 			fmpq_set(z + 1, x);
-			for (j = 1; j < n; ++j)
-				if (fmpq_cmp(z, x + j) > 0)
-					fmpq_set(z, x + j);
-				else if (fmpq_cmp(z + 1, x + j) < 0)
-					fmpq_set(z + 1, x + j);
+			for (jx = 1; jx < nx; ++jx)
+				if (fmpq_cmp(z, x + jx) > 0)
+					fmpq_set(z, x + jx);
+				else if (fmpq_cmp(z + 1, x + jx) < 0)
+					fmpq_set(z + 1, x + jx);
 			break;
 		case 53: /*     "sum" */
 			fmpq_zero(z);
-			for (j = 0; j < n; ++j)
-				fmpq_add(z, z, x + j);
+			for (jx = 0; jx < nx; ++jx)
+				fmpq_add(z, z, x + jx);
 			break;
 		case 54: /*    "prod" */
 			fmpq_one(z);
-			for (j = 0; j < n; ++j)
-				fmpq_mul(z, z, x + j);
+			for (jx = 0; jx < nx; ++jx)
+				fmpq_mul(z, z, x + jx);
 			break;
 		case 55: /*    "mean" */
 		{
 			fmpq_zero(z);
-			for (j = 0; j < n; ++j)
-				fmpq_add(z, z, x + j);
-			fmpz_mul_ui(fmpq_denref(z), fmpq_denref(z), n);
+			for (jx = 0; jx < nx; ++jx)
+				fmpq_add(z, z, x + jx);
+			fmpz_mul_ui(fmpq_denref(z), fmpq_denref(z), nx);
 			fmpq_canonicalise(z);
 			break;
 		}
@@ -1013,12 +1013,12 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case 56: /*         "any" */
-			for (j = 0; j < n &&  fmpq_is_zero(x + j); ++j) ;
-			z[0] = j <  n;
+			for (jx = 0; jx < nx &&  fmpq_is_zero(x + jx); ++jx) ;
+			z[0] = jx <  nx;
 			break;
 		case 57: /*         "all" */
-			for (j = 0; j < n && !fmpq_is_zero(x + j); ++j) ;
-			z[0] = j >= n;
+			for (jx = 0; jx < nx && !fmpq_is_zero(x + jx); ++jx) ;
+			z[0] = jx >= nx;
 			break;
 		case 58: /*       "anyNA" */
 			z[0] = 0;
@@ -1031,10 +1031,10 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				         "strictly", CHAR(STRING_ELT(s_op, 0)));
 			int strict = LOGICAL_RO(s_strict)[0];
 			if (strict)
-			for (j = 1; j < n && fmpq_cmp(x, x + 1) <  0; ++j, ++x) ;
+			for (jx = 1; jx < nx && fmpq_cmp(x, x + 1) <  0; ++jx, ++x) ;
 			else
-			for (j = 1; j < n && fmpq_cmp(x, x + 1) <= 0; ++j, ++x) ;
-			z[0] = j <  n;
+			for (jx = 1; jx < nx && fmpq_cmp(x, x + 1) <= 0; ++jx, ++x) ;
+			z[0] = jx <  nx;
 			break;
 		}
 		}
@@ -1047,23 +1047,23 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  6: /*   "is.finite" */
 	case  7: /*           "!" */
 	{
-		ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) n));
+		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
+		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case  3: /*       "is.na" */
 		case  4: /*      "is.nan" */
 		case  5: /* "is.infinite" */
-			for (j = 0; j < n; ++j)
-				z[j] = 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = 0;
 			break;
 		case  6: /*   "is.finite" */
-			for (j = 0; j < n; ++j)
-				z[j] = 1;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = 1;
 			break;
 		case  7: /*           "!" */
-			for (j = 0; j < n; ++j)
-				z[j] = fmpq_is_zero(x + j) != 0;
+			for (jz = 0; jz < nz; ++jz)
+				z[jz] = fmpq_is_zero(x + jz) != 0;
 			break;
 		}
 		setDDNN1(ans, s_x);
@@ -1081,7 +1081,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		if (dimx == R_NilValue || XLENGTH(dimx) < 2)
 			Rf_error(_("'%s' is not a matrix or a higher dimensional array"),
 			         "x");
-		if (domean && n == 0)
+		if (domean && nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
 		const int *dx = INTEGER_RO(dimx);
@@ -1099,7 +1099,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP dimz = PROTECT(Rf_allocVector(INTSXP, (byrow) ? off : ndx - off));
 		int *dz = INTEGER(dimz), ndz = LENGTH(dimz), k;
 
-		mp_limb_t jx = 0, jz, nx = n, nz = 1;
+		nz = 1;
 		for (k = 0; k < ndz; ++k)
 			nz *= (mp_limb_t) (dz[k] = dx[(byrow) ? k : off + k]);
 		mp_limb_t jt, nt = nx/nz;
@@ -1128,6 +1128,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		jx = 0;
 		if (byrow) {
 			for (jz = 0; jz < nz; ++jz)
 				fmpq_zero(z + jz);
