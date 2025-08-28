@@ -515,7 +515,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
-		int tx = (mop & 1) != 0, i, j;
+		int tx = (mop & 1) != 0, i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		fmpz_mat_t mc, ma, mb;
 		fmpz_t den;
@@ -588,7 +588,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				fmpz_set(mb->entries + jb, y + jy);
-		fmpz_mat_solve(mc, den, ma, mb);
+		singular = !fmpz_mat_solve(mc, den, ma, mb);
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
 			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->r) {
@@ -608,6 +608,8 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+		if (singular)
+			Rf_error(_("system is exactly singular"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -1064,7 +1066,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
-		int i, j;
+		int i, j, singular;
 		mp_limb_t jc, ja;
 		fmpz_mat_t mc, ma;
 		fmpz_t den;
@@ -1124,7 +1126,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					fmpz_set(ma->entries + ja, x + jx);
 			break;
 		}
-		fmpz_mat_inv(mc, den, ma);
+		singular = !fmpz_mat_inv(mc, den, ma);
 		for (jc = 0; jc < nz; ++jc) {
 			fmpz_set(fmpq_numref(z + jc), mc->entries + jc);
 			fmpz_set(fmpq_denref(z + jc), den);
@@ -1138,6 +1140,8 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		flint_free(ma->entries);
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+		if (singular)
+			Rf_error(_("system is exactly singular"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
 		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
 			dimnamesz = R_NilValue;

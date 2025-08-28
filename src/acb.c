@@ -566,7 +566,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("acb"));
 		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
-		int tx = (mop & 1) != 0, i, j;
+		int tx = (mop & 1) != 0, i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		acb_mat_t mc, ma, mb;
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
@@ -637,7 +637,16 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				acb_set(mb->entries + jb, y + jy);
-		acb_mat_solve(mc, ma, mb, prec);
+		if (uplo == 'N')
+			singular = !acb_mat_approx_solve(mc, ma, mb, prec);
+		else if ((uplo == 'U') == !tx) {
+			acb_mat_solve_triu(mc, ma, mb, 0, prec);
+			singular = 0;
+		}
+		else {
+			acb_mat_solve_tril(mc, ma, mb, 0, prec);
+			singular = 0;
+		}
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
 			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->r) {
@@ -654,6 +663,8 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+		if (singular)
+			Rf_error(_("system is exactly singular or precision is insufficient"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -1348,7 +1359,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("acb"));
 		acb_ptr z = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acb_finalize);
-		int i, j;
+		int i, j, singular;
 		mp_limb_t ja;
 		acb_mat_t mc, ma;
 		mc->entries = z;
@@ -1374,15 +1385,21 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 'U':
 			ja = 0;
-			for (i = 0; i < ma->r; ja += ma->r - (++i))
+			for (i = 0; i < ma->r; ++i) {
 				for (j = 0; j <= i; ++j, ++ja)
 					acb_set(ma->entries + ja, x + ja);
+				for (; j < ma->c; ++j, ++ja)
+					acb_zero(ma->entries + ja);
+			}
 			break;
 		case 'L':
 			ja = 0;
-			for (i = 0; i < ma->r; ja += (++i))
-				for (j = i; j < ma->c; ++j, ++ja)
+			for (i = 0; i < ma->r; ++i) {
+				for (j = 0; j < i; ++j, ++ja)
+					acb_zero(ma->entries + ja);
+				for (; j < ma->c; ++j, ++ja)
 					acb_set(ma->entries + ja, x + ja);
+			}
 			break;
 		}
 		else
@@ -1395,23 +1412,33 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 'U':
 			ja = jx = 0;
-			for (i = 0; i < ma->r; ja += (++i), jx = ja)
-				for (j = i; j < ma->c; ++j, ++ja, jx += ma->r)
+			for (i = 0; i < ma->r; ++i) {
+				for (j = 0; j < i; ++j, ++ja)
+					acb_zero(ma->entries + ja);
+				jx = ja;
+				for (; j < ma->c; ++j, ++ja, jx += ma->r)
 					acb_set(ma->entries + ja, x + jx);
+			}
 			break;
 		case 'L':
 			ja = jx = 0;
-			for (i = 0; i < ma->r; ja += ma->c - (++i), jx = ja)
+			for (i = 0; i < ma->r; ++i) {
+				jx = ja;
 				for (j = 0; j <= i; ++j, ++ja, jx += ma->r)
 					acb_set(ma->entries + ja, x + jx);
+				for (; j < ma->c; ++j, ++ja)
+					acb_zero(ma->entries + ja);
+			}
 			break;
 		}
-		acb_mat_inv(mc, ma, prec);
+		singular = !acb_mat_inv(mc, ma, prec);
 		for (ja = 0; ja < nx; ++ja)
 			acb_clear(ma->entries + ja);
 		flint_free(ma->entries);
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+		if (singular)
+			Rf_error(_("system is exactly singular or precision is insufficient"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
 		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
 			dimnamesz = R_NilValue;

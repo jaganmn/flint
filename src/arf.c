@@ -609,7 +609,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
-		int tx = (mop & 1) != 0, i, j;
+		int tx = (mop & 1) != 0, i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		arb_mat_t mc, ma, mb;
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
@@ -680,7 +680,16 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				arf_set(arb_midref(mb->entries + jb), y + jy);
-		arb_mat_approx_solve(mc, ma, mb, prec);
+		if (uplo == 'N')
+			singular = !arb_mat_approx_solve(mc, ma, mb, prec);
+		else if ((uplo == 'U') == !tx) {
+			arb_mat_approx_solve_triu(mc, ma, mb, 0, prec);
+			singular = 0;
+		}
+		else {
+			arb_mat_approx_solve_tril(mc, ma, mb, 0, prec);
+			singular = 0;
+		}
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
 			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->r) {
@@ -697,6 +706,8 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+		if (singular)
+			Rf_error(_("system is exactly singular or precision is insufficient"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -1262,7 +1273,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
-		int i, j;
+		int i, j, singular;
 		mp_limb_t jc, ja;
 		arb_mat_t mc, ma;
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
@@ -1288,15 +1299,21 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 'U':
 			ja = 0;
-			for (i = 0; i < ma->r; ja += ma->r - (++i))
+			for (i = 0; i < ma->r; ++i) {
 				for (j = 0; j <= i; ++j, ++ja)
 					arf_set(arb_midref(ma->entries + ja), x + ja);
+				for (; j < ma->c; ++j, ++ja)
+					arf_zero(arb_midref(ma->entries + ja));
+			}
 			break;
 		case 'L':
 			ja = 0;
-			for (i = 0; i < ma->r; ja += (++i))
-				for (j = i; j < ma->c; ++j, ++ja)
+			for (i = 0; i < ma->r; ++i) {
+				for (j = 0; j < i; ++j, ++ja)
+					arf_zero(arb_midref(ma->entries + ja));
+				for (; j < ma->c; ++j, ++ja)
 					arf_set(arb_midref(ma->entries + ja), x + ja);
+			}
 			break;
 		}
 		else
@@ -1309,18 +1326,26 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 'U':
 			ja = jx = 0;
-			for (i = 0; i < ma->r; ja += (++i), jx = ja)
-				for (j = i; j < ma->c; ++j, ++ja, jx += ma->r)
+			for (i = 0; i < ma->r; ++i) {
+				for (j = 0; j < i; ++j, ++ja)
+					arf_zero(arb_midref(ma->entries + ja));
+				jx = ja;
+				for (; j < ma->c; ++j, ++ja, jx += ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
+			}
 			break;
 		case 'L':
 			ja = jx = 0;
-			for (i = 0; i < ma->r; ja += ma->c - (++i), jx = ja)
+			for (i = 0; i < ma->r; ++i) {
+				jx = ja;
 				for (j = 0; j <= i; ++j, ++ja, jx += ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
+				for (; j < ma->c; ++j, ++ja)
+					arf_zero(arb_midref(ma->entries + ja));
+			}
 			break;
 		}
-		arb_mat_approx_inv(mc, ma, prec);
+		singular = !arb_mat_approx_inv(mc, ma, prec);
 		for (jc = 0; jc < nz; ++jc) {
 			arf_set(z + jc, arb_midref(mc->entries + jc));
 			arb_clear(mc->entries + jc);
@@ -1331,6 +1356,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		flint_free(ma->entries);
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+		if (singular)
+			Rf_error(_("system is exactly singular or precision is insufficient"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
 		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
 			dimnamesz = R_NilValue;
