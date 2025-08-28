@@ -620,17 +620,17 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i-1] + mc->c;
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
 		}
 		if (ma->r) {
 			ma->rows[0] = ma->entries;
 			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i-1] + ma->c;
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
 		if (mb->r) {
 			mb->rows[0] = mb->entries;
 			for (i = 1; i < mb->r; ++i)
-				mb->rows[i] = mb->rows[i-1] + mb->c;
+				mb->rows[i] = mb->rows[i - 1] + mb->c;
 		}
 		if (ty) {
 			ja = jy = 0;
@@ -725,17 +725,17 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i-1] + mc->c;
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
 		}
 		if (ma->r) {
 			ma->rows[0] = ma->entries;
 			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i-1] + ma->c;
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
 		if (mb->r) {
 			mb->rows[0] = mb->entries;
 			for (i = 1; i < mb->r; ++i)
-				mb->rows[i] = mb->rows[i-1] + mb->c;
+				mb->rows[i] = mb->rows[i - 1] + mb->c;
 		}
 		if (tx)
 		switch (uplo) {
@@ -1328,6 +1328,153 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		else if (dimnamesz != R_NilValue)
 			setDDNN(ans, R_NilValue, R_NilValue, VECTOR_ELT(dimnamesz, 0));
 		UNPROTECT(4);
+		return ans;
+	}
+	case 64: /*      "solve" */
+	case 65: /*  "backsolve" */
+	case 66: /* "tbacksolve" */
+	{
+		/* A C = I                    */
+		/*                            */
+		/*      solve: C = Z', A = X' */
+		/*  backsolve: C = Z', A = X' */
+		/* tbacksolve: C = Z', A = X  */
+
+		SEXP dimz = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
+		const int *dz = 0;
+		if (dimz == R_NilValue || XLENGTH(dimz) != 2 ||
+		    (dz = INTEGER_RO(dimz), dz[0] != dz[1]))
+			Rf_error(_("'%s' is not a square matrix"),
+			         "x");
+		int uplo = 'N';
+		if (op == 65 || op == 66) {
+			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);
+			if (XLENGTH(s_uppertri) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
+			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
+		}
+		SEXP ans = PROTECT(newObject("acf"));
+		acf_ptr z = (nz) ? flint_calloc(nz, sizeof(acf_t)) : 0;
+		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_acf_finalize);
+		int i, j;
+		mp_limb_t jc, ja;
+		acb_mat_t mc, ma;
+		mc->entries = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
+		ma->entries = (nx) ? flint_calloc(nx, sizeof(acb_t)) : 0;
+		mc->r = mc->c = ma->r = ma->c = dz[0];
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(acb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(acb_ptr)) : 0;
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
+		}
+		if (op == 64 || op == 65)
+		switch (uplo) {
+		case 'N':
+			for (ja = 0; ja < nx; ++ja) {
+				arf_set(arb_midref(acb_realref(ma->entries + ja)),
+				        acf_realref(x + ja));
+				arf_set(arb_midref(acb_imagref(ma->entries + ja)),
+				        acf_imagref(x + ja));
+			}
+			break;
+		case 'U':
+			ja = 0;
+			for (i = 0; i < ma->r; ja += ma->r - (++i))
+				for (j = 0; j <= i; ++j, ++ja) {
+					arf_set(arb_midref(acb_realref(ma->entries + ja)),
+					        acf_realref(x + ja));
+					arf_set(arb_midref(acb_imagref(ma->entries + ja)),
+					        acf_imagref(x + ja));
+				}
+			break;
+		case 'L':
+			ja = 0;
+			for (i = 0; i < ma->r; ja += (++i))
+				for (j = i; j < ma->c; ++j, ++ja) {
+					arf_set(arb_midref(acb_realref(ma->entries + ja)),
+					        acf_realref(x + ja));
+					arf_set(arb_midref(acb_imagref(ma->entries + ja)),
+					        acf_imagref(x + ja));
+				}
+			break;
+		}
+		else
+		switch (uplo) {
+		case 'N':
+			ja = jx = 0;
+			for (i = 0; i < ma->r; ++i, jx -= nx - 1)
+				for (j = 0; j < ma->c; ++j, ++ja, jx += ma->r) {
+					arf_set(arb_midref(acb_realref(ma->entries + ja)),
+					        acf_realref(x + jx));
+					arf_set(arb_midref(acb_imagref(ma->entries + ja)),
+					        acf_imagref(x + jx));
+				}
+			break;
+		case 'U':
+			ja = jx = 0;
+			for (i = 0; i < ma->r; ja += (++i), jx = ja)
+				for (j = i; j < ma->c; ++j, ++ja, jx += ma->r) {
+					arf_set(arb_midref(acb_realref(ma->entries + ja)),
+					        acf_realref(x + jx));
+					arf_set(arb_midref(acb_imagref(ma->entries + ja)),
+					        acf_imagref(x + jx));
+				}
+			break;
+		case 'L':
+			ja = jx = 0;
+			for (i = 0; i < ma->r; ja += ma->c - (++i), jx = ja)
+				for (j = 0; j <= i; ++j, ++ja, jx += ma->r) {
+					arf_set(arb_midref(acb_realref(ma->entries + ja)),
+					        acf_realref(x + jx));
+					arf_set(arb_midref(acb_imagref(ma->entries + ja)),
+					        acf_imagref(x + jx));
+				}
+			break;
+		}
+		acb_mat_approx_inv(mc, ma, prec);
+		for (jc = 0; jc < nz; ++jc) {
+			arf_set(acf_realref(z + jc),
+			        arb_midref(acb_realref(mc->entries + jc)));
+			arf_set(acf_imagref(z + jc),
+			        arb_midref(acb_imagref(mc->entries + jc)));
+			acb_clear(mc->entries + jc);
+		}
+		for (ja = 0; ja < nx; ++ja)
+			acb_clear(ma->entries + ja);
+		flint_free(mc->entries);
+		flint_free(ma->entries);
+		flint_free(mc->rows);
+		flint_free(ma->rows);
+		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
+		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
+			dimnamesz = R_NilValue;
+		if (dimnamesx != R_NilValue) {
+			PROTECT(dimnamesx);
+			PROTECT(dimnamesz = Rf_allocVector(VECSXP, 2));
+			SET_VECTOR_ELT(dimnamesz, 0, VECTOR_ELT(dimnamesx, 1));
+			SET_VECTOR_ELT(dimnamesz, 1, VECTOR_ELT(dimnamesx, 0));
+			SEXP namesdimnamesx = Rf_getAttrib(dimnamesx, R_NamesSymbol),
+				namesdimnamesz = R_NilValue;
+			if (namesdimnamesx != R_NilValue) {
+				PROTECT(namesdimnamesx);
+				PROTECT(namesdimnamesz = Rf_allocVector(STRSXP, 2));
+				SET_STRING_ELT(namesdimnamesz, 0, STRING_ELT(namesdimnamesx, 1));
+				SET_STRING_ELT(namesdimnamesz, 1, STRING_ELT(namesdimnamesx, 0));
+				Rf_setAttrib(dimnamesz, R_NamesSymbol, namesdimnamesz);
+				UNPROTECT(2);
+			}
+			R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnamesz);
+			UNPROTECT(2);
+		}
+		UNPROTECT(2);
 		return ans;
 	}
 	default:
