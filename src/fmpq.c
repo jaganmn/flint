@@ -550,9 +550,9 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mc->entries = z;
 		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(fmpq)) : 0) : (void *) y;
 		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(fmpq)) : 0) : (void *) x;
-		mc->r = mb->c = dz[1];
-		ma->r = mc->c = dz[0];
-		mb->r = ma->c = dz[2];
+		mc->c = mb->c = dz[0];
+		mc->r = ma->r = dz[1];
+		ma->c = mb->r = dz[2];
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
 		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpq *)) : 0;
@@ -610,7 +610,6 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		/*      solve: C = Z, A = X , B = Y */
 		/*  backsolve: C = Z, A = X , B = Y */
 		/* tbacksolve: C = Z, A = X', B = Y */
-
 		int uplo = 'N';
 		if (op == 20 || op == 21) {
 			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);
@@ -619,38 +618,22 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
 			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
 		}
-
 		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
-		int tx = (mop & 1) != 0, i, j, singular;
+		int i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		fmpq_mat_t mc, ma, mb;
-		mc->entries = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpq)) : 0;
-		mb->entries = (ny) ? flint_calloc(ny, sizeof(fmpq)) : 0;
 		mc->r = mb->r = dz[0];
 		mc->c = mb->c = dz[1];
 		ma->r = ma->c = dz[2];
+		mc->entries = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
+		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpq)) : 0;
+		mb->entries = (ny) ? flint_calloc(ny, sizeof(fmpq)) : 0;
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
 		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpq *)) : 0;
-		if (mc->r) {
-			mc->rows[0] = mc->entries;
-			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i - 1] + mc->c;
-		}
-		if (ma->r) {
-			ma->rows[0] = ma->entries;
-			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i - 1] + ma->c;
-		}
-		if (mb->r) {
-			mb->rows[0] = mb->entries;
-			for (i = 1; i < mb->r; ++i)
-				mb->rows[i] = mb->rows[i - 1] + mb->c;
-		}
-		if (tx)
+		if (op == 21)
 		switch (uplo) {
 		case 'N':
 			for (ja = 0; ja < nx; ++ja)
@@ -694,10 +677,25 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				fmpq_set(mb->entries + jb, y + jy);
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
+		}
+		if (mb->r) {
+			mb->rows[0] = mb->entries;
+			for (i = 1; i < mb->r; ++i)
+				mb->rows[i] = mb->rows[i - 1] + mb->c;
+		}
 		singular = !fmpq_mat_solve(mc, ma, mb);
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
-			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->r) {
+			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->c) {
 				fmpq_set(z + jz, mc->entries + jc);
 				fmpq_clear(mc->entries + jc);
 			}
@@ -1169,7 +1167,6 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		/*      solve: C = Z', A = X' */
 		/*  backsolve: C = Z', A = X' */
 		/* tbacksolve: C = Z', A = X  */
-
 		SEXP dimz = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		const int *dz = 0;
 		if (dimz == R_NilValue || XLENGTH(dimz) != 2 ||
@@ -1190,21 +1187,11 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		int i, j, singular;
 		mp_limb_t ja;
 		fmpq_mat_t mc, ma;
-		mc->entries = z;
-		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpz)) : 0;
 		mc->r = mc->c = ma->r = ma->c = dz[0];
+		mc->entries = z;
+		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpq)) : 0;
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
-		if (mc->r) {
-			mc->rows[0] = mc->entries;
-			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i - 1] + mc->c;
-		}
-		if (ma->r) {
-			ma->rows[0] = ma->entries;
-			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i - 1] + ma->c;
-		}
 		if (op == 64 || op == 65)
 		switch (uplo) {
 		case 'N':
@@ -1244,6 +1231,16 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				for (j = 0; j <= i; ++j, ++ja, jx += ma->r)
 					fmpq_set(ma->entries + ja, x + jx);
 			break;
+		}
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
 		singular = !fmpq_mat_inv(mc, ma);
 		for (ja = 0; ja < nx; ++ja)

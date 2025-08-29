@@ -442,9 +442,9 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mc->entries = z;
 		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(fmpz)) : 0) : (void *) y;
 		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(fmpz)) : 0) : (void *) x;
-		mc->r = mb->c = dz[1];
-		ma->r = mc->c = dz[0];
-		mb->r = ma->c = dz[2];
+		mc->c = mb->c = dz[0];
+		mc->r = ma->r = dz[1];
+		ma->c = mb->r = dz[2];
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpz *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpz *)) : 0;
 		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpz *)) : 0;
@@ -502,7 +502,6 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		/*      solve: C = Z, A = X , B = Y */
 		/*  backsolve: C = Z, A = X , B = Y */
 		/* tbacksolve: C = Z, A = X', B = Y */
-
 		int uplo = 'N';
 		if (op == 20 || op == 21) {
 			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);
@@ -511,40 +510,23 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
 			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
 		}
-
 		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
-		int tx = (mop & 1) != 0, i, j, singular;
+		int i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		fmpz_mat_t mc, ma, mb;
 		fmpz_t den;
-		fmpz_init(den);
-		mc->entries = (nz) ? flint_calloc(nz, sizeof(fmpz)) : 0;
-		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpz)) : 0;
-		mb->entries = (ny) ? flint_calloc(ny, sizeof(fmpz)) : 0;
 		mc->r = mb->r = dz[0];
 		mc->c = mb->c = dz[1];
 		ma->r = ma->c = dz[2];
+		mc->entries = (nz) ? flint_calloc(nz, sizeof(fmpz)) : 0;
+		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpz)) : 0;
+		mb->entries = (ny) ? flint_calloc(ny, sizeof(fmpz)) : 0;
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpz *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpz *)) : 0;
 		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpz *)) : 0;
-		if (mc->r) {
-			mc->rows[0] = mc->entries;
-			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i - 1] + mc->c;
-		}
-		if (ma->r) {
-			ma->rows[0] = ma->entries;
-			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i - 1] + ma->c;
-		}
-		if (mb->r) {
-			mb->rows[0] = mb->entries;
-			for (i = 1; i < mb->r; ++i)
-				mb->rows[i] = mb->rows[i - 1] + mb->c;
-		}
-		if (tx)
+		if (op == 21)
 		switch (uplo) {
 		case 'N':
 			for (ja = 0; ja < nx; ++ja)
@@ -588,16 +570,31 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				fmpz_set(mb->entries + jb, y + jy);
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
+		}
+		if (mb->r) {
+			mb->rows[0] = mb->entries;
+			for (i = 1; i < mb->r; ++i)
+				mb->rows[i] = mb->rows[i - 1] + mb->c;
+		}
+		fmpz_init(den);
 		singular = !fmpz_mat_solve(mc, den, ma, mb);
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
-			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->r) {
+			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->c) {
 				fmpz_set(fmpq_numref(z + jz), mc->entries + jc);
 				fmpz_set(fmpq_denref(z + jz), den);
 				fmpq_canonicalise(z + jz);
 				fmpz_clear(mc->entries + jc);
 			}
-		fmpz_clear(den);
 		for (ja = 0; ja < nx; ++ja)
 			fmpz_clear(ma->entries + ja);
 		for (jb = 0; jb < ny; ++jb)
@@ -608,6 +605,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+		fmpz_clear(den);
 		if (singular)
 			Rf_error(_("system is exactly singular"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
@@ -1048,7 +1046,6 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		/*      solve: C = Z', A = X' */
 		/*  backsolve: C = Z', A = X' */
 		/* tbacksolve: C = Z', A = X  */
-
 		SEXP dimz = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		const int *dz = 0;
 		if (dimz == R_NilValue || XLENGTH(dimz) != 2 ||
@@ -1070,22 +1067,11 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		mp_limb_t jc, ja;
 		fmpz_mat_t mc, ma;
 		fmpz_t den;
-		fmpz_init(den);
+		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(fmpz)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpz)) : 0;
-		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpz *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpz *)) : 0;
-		if (mc->r) {
-			mc->rows[0] = mc->entries;
-			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i - 1] + mc->c;
-		}
-		if (ma->r) {
-			ma->rows[0] = ma->entries;
-			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i - 1] + ma->c;
-		}
 		if (op == 64 || op == 65)
 		switch (uplo) {
 		case 'N':
@@ -1126,6 +1112,17 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					fmpz_set(ma->entries + ja, x + jx);
 			break;
 		}
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
+		}
+		fmpz_init(den);
 		singular = !fmpz_mat_inv(mc, den, ma);
 		for (jc = 0; jc < nz; ++jc) {
 			fmpz_set(fmpq_numref(z + jc), mc->entries + jc);
@@ -1133,13 +1130,13 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpq_canonicalise(z + jc);
 			fmpz_clear(mc->entries + jc);
 		}
-		fmpz_clear(den);
 		for (ja = 0; ja < nx; ++ja)
 			fmpz_clear(ma->entries + ja);
 		flint_free(mc->entries);
 		flint_free(ma->entries);
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+		fmpz_clear(den);
 		if (singular)
 			Rf_error(_("system is exactly singular"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
