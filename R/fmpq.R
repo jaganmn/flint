@@ -252,7 +252,7 @@ setMethod("backsolve",
 setMethod("chol2inv",
           c(x = "fmpq"),
           function (x, ...)
-              .Call(R_flint_fmpq_ops1, "chol2inv", x, list()))
+              tcrossprod(backsolve(x)))
 
 setAs("ANY", "fmpq",
       function (from)

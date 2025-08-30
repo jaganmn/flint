@@ -214,7 +214,7 @@ setMethod("backsolve",
 setMethod("chol2inv",
           c(x = "ulong"),
           function (x, ...)
-              chol2inv(.fmpz(x), ...))
+              tcrossprod(backsolve(x)))
 
 setAs("ANY", "ulong",
       function (from)

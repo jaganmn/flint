@@ -1171,8 +1171,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		const int *dz = 0;
 		if (dimz == R_NilValue || XLENGTH(dimz) != 2 ||
 		    (dz = INTEGER_RO(dimz), dz[0] != dz[1]))
-			Rf_error(_("'%s' is not a square matrix"),
-			         "x");
+			Rf_error(_("first argument is not a square matrix"));
 		int uplo = 'N';
 		if (op == 65 || op == 66) {
 			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);

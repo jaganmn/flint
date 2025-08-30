@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.6 (2025-08-29)}{
+\section{Changes in version 0.0.6 (2025-08-30)}{
   \subsection{Description}{
     \itemize{
       \item .
