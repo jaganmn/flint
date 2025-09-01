@@ -1,5 +1,11 @@
 /* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the 'acb_mat_cho' function. */
+#undef HAVE_ACB_MAT_CHO
+
+/* Define to 1 if you have the 'acb_mat_inv_cho_precomp' function. */
+#undef HAVE_ACB_MAT_INV_CHO_PRECOMP
+
 /* Define to 1 if you have the 'acf_abs' function. */
 #undef HAVE_ACF_ABS
 

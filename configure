@@ -4736,6 +4736,18 @@ esac
 fi
 
 
+ac_fn_c_check_func "$LINENO" "acb_mat_cho" "ac_cv_func_acb_mat_cho"
+if test "x$ac_cv_func_acb_mat_cho" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACB_MAT_CHO 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acb_mat_inv_cho_precomp" "ac_cv_func_acb_mat_inv_cho_precomp"
+if test "x$ac_cv_func_acb_mat_inv_cho_precomp" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACB_MAT_INV_CHO_PRECOMP 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "acf_abs" "ac_cv_func_acf_abs"
 if test "x$ac_cv_func_acf_abs" = xyes
 then :
