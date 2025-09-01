@@ -45,6 +45,7 @@
 \alias{backsolve,fmpz,acf-method}
 \alias{backsolve,fmpz,arb-method}
 \alias{backsolve,fmpz,acb-method}
+\alias{chol,fmpz-method}
 \alias{chol2inv,fmpz-method}
 \alias{coerce,ANY,fmpz-method}
 \alias{colMeans,fmpz-method}

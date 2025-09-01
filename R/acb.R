@@ -233,6 +233,11 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               .Call(R_flint_acb_ops2, if (transpose) "tbacksolve" else "backsolve", r, x, list(as.logical(upper.tri))))
 
+setMethod("chol",
+          c(x = "acb"),
+          function (x, ...)
+              .Call(R_flint_acb_ops1, "chol", x, list()))
+
 setMethod("chol2inv",
           c(x = "acb"),
           function (x, ...)

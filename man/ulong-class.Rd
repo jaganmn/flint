@@ -91,6 +91,8 @@
 \alias{backsolve,slong,arb-method}
 \alias{backsolve,ulong,acb-method}
 \alias{backsolve,slong,acb-method}
+\alias{chol,ulong-method}
+\alias{chol,slong-method}
 \alias{chol2inv,ulong-method}
 \alias{chol2inv,slong-method}
 \alias{coerce,ANY,ulong-method}

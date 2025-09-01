@@ -45,6 +45,7 @@
 \alias{backsolve,arf,acf-method}
 \alias{backsolve,arf,arb-method}
 \alias{backsolve,arf,acb-method}
+\alias{chol,arf-method}
 \alias{chol2inv,arf-method}
 \alias{coerce,ANY,arf-method}
 \alias{colMeans,arf-method}

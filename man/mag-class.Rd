@@ -45,6 +45,7 @@
 \alias{backsolve,mag,acf-method}
 \alias{backsolve,mag,arb-method}
 \alias{backsolve,mag,acb-method}
+\alias{chol,mag-method}
 \alias{chol2inv,mag-method}
 \alias{coerce,ANY,mag-method}
 \alias{colMeans,mag-method}

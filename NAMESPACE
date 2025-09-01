@@ -13,8 +13,8 @@ exportMethods("!", "%*%", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               anyDuplicated, anyNA, as.raw, as.logical, as.integer,
               as.numeric, as.complex, as.vector, as.matrix, as.array,
               as.data.frame, as.Date, as.POSIXct, as.POSIXlt, backsolve,
-              c, cbind2, chol2inv, colMeans, colSums, crossprod, cut,
-              diag, "diag<-", dim, "dim<-", dimnames, "dimnames<-",
+              c, cbind2, chol, chol2inv, colMeans, colSums, crossprod,
+              cut, diag, "diag<-", dim, "dim<-", dimnames, "dimnames<-",
               drop, duplicated, findInterval, format, is.array,
               is.finite, is.infinite, is.matrix, is.na, "is.na<-",
               is.nan, isSymmetric, is.unsorted, length, "length<-", log,
@@ -84,6 +84,7 @@ S3method(as.POSIXlt, flint, .S3.as.POSIXlt.flint)
 S3method(as.data.frame, flint, .S3.as.data.frame.flint)
 S3method(c, flint)
 S3method(cbind, flint)
+S3method(chol, flint, .S3.chol.flint)
 S3method(duplicated, flint, .S3.duplicated.flint)
 S3method(format, flint, .S3.format.flint)
 S3method("is.na<-", flint, ".S3.is.na<-.flint")

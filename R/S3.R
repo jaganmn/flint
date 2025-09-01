@@ -30,6 +30,10 @@ function (x, tz = "", ...)
 function (x, tz = "", ...)
     as.POSIXlt(x, tz = tz, ...)
 
+.S3.chol.flint <-
+function (x, ...)
+    chol(x, ...)
+
 .S3.duplicated.flint <-
 function (x, incomparables = FALSE, ...)
     duplicated(x, incomparables = incomparables, ...)

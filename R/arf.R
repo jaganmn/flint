@@ -199,6 +199,11 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               backsolve(.acb(r), x, , upper.tri, transpose))
 
+setMethod("chol",
+          c(x = "arf"),
+          function (x, ...)
+              .Call(R_flint_arf_ops1, "chol", x, list()))
+
 setMethod("chol2inv",
           c(x = "arf"),
           function (x, ...)

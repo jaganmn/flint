@@ -710,7 +710,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(ma->rows);
 		flint_free(mb->rows);
 		if (singular)
-			Rf_error(_("system is exactly singular"));
+			Rf_error(_("matrix is exactly singular"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -1248,7 +1248,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		if (singular)
-			Rf_error(_("system is exactly singular"));
+			Rf_error(_("matrix is exactly singular"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
 		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
 			dimnamesz = R_NilValue;

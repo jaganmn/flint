@@ -249,6 +249,11 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               backsolve(.acb(r), x, , upper.tri, transpose))
 
+setMethod("chol",
+          c(x = "fmpq"),
+          function (x, ...)
+              chol(.arf(x), ...))
+
 setMethod("chol2inv",
           c(x = "fmpq"),
           function (x, ...)
