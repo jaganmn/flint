@@ -17,10 +17,10 @@ exportMethods("!", "%*%", "+", "-", "[", "[<-", "[[", "[[<-", all.equal,
               diag, "diag<-", dim, "dim<-", dimnames, "dimnames<-",
               drop, duplicated, findInterval, format, is.array,
               is.finite, is.infinite, is.matrix, is.na, "is.na<-",
-              is.nan, is.unsorted, length, "length<-", log, match, mean,
-              mtfrm, names, "names<-", print, rbind2, rep, rep.int,
-              rep_len, rowMeans, rowSums, seq, sequence, solve, summary,
-              t, tcrossprod, unique, xtfrm)
+              is.nan, isSymmetric, is.unsorted, length, "length<-", log,
+              match, mean, mtfrm, names, "names<-", print, rbind2, rep,
+              rep.int, rep_len, rowMeans, rowSums, seq, sequence, solve,
+              summary, t, tcrossprod, unique, xtfrm)
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
               show)
 exportMethods(quantile)
@@ -88,6 +88,7 @@ S3method(duplicated, flint, .S3.duplicated.flint)
 S3method(format, flint, .S3.format.flint)
 S3method("is.na<-", flint, ".S3.is.na<-.flint")
 S3method(is.unsorted, flint, .S3.is.unsorted.flint)
+S3method(isSymmetric, flint, .S3.isSymmetric.flint)
 S3method(mean, flint, .S3.mean.flint)
 S3method(mtfrm, flint, .S3.mtfrm.flint)
 S3method(print, flint, .S3.print.flint)

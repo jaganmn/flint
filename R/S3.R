@@ -46,6 +46,10 @@ function (x, value)
 function (x, na.rm = FALSE, strictly = FALSE)
     is.unsorted(x, na.rm = na.rm, strictly = strictly)
 
+.S3.isSymmetric.flint <-
+function (object, ...)
+    isSymmetric(object, ...)
+
 .S3.mean.flint <-
 function (x, ...)
     mean(x, ...)

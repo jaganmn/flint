@@ -59,6 +59,7 @@
 \alias{is.array,flint-method}
 \alias{is.matrix,flint-method}
 \alias{is.na<-,flint-method}
+\alias{isSymmetric,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
 \alias{match,ANY,flint-method}

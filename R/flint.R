@@ -1375,6 +1375,28 @@ setMethod("is.na<-",
               x
           })
 
+setMethod("isSymmetric",
+          c(object = "flint"),
+          function (object,
+                    tol = 100 * .Machine$double.eps, tol1 = 8 * tol,
+                    trans = "C", ...) {
+              if (length(d <- object@dim) != 2L)
+                  stop(gettextf("'%s' is not a matrix", "object"),
+                       domain = NA)
+              if ((n <- d[1L]) != d[2L])
+                  return(FALSE)
+              op <- if (trans == "C" && any(flintClass(object) == c("acf", "acb")))
+                        Conj
+                    else identity
+              if (n > 1L && length(tol1))
+              for (i in c(1L, 2L, if (n > 3L) n - 1L, if (n > 2L) n))
+                  if (is.character(all.equal(object[, i], op(t(object[i, ])),
+                                             tolerance = tol1, ...)))
+                      return(FALSE)
+              !is.character(all.equal(object, op(t(object)),
+                                      tolerance = tol, ...))
+          })
+
 setMethod("length",
           c(x = "flint"),
           function (x)

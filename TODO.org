@@ -9,11 +9,11 @@
 *** DONE t
 *** DONE %*%, crossprod, tcrossprod
 *** TODO kronecker, scale
-*** TODO solve, backsolve, chol2inv
+*** DONE solve, backsolve, chol2inv
 *** TODO determinant, norm, rcond
 *** TODO chol, qr
 *** DONE is.array, is.matrix, drop
-*** TODO isSymmetric
+*** DONE isSymmetric
 
 ** TODO function for numerical solution of systems of ODE using 'arb'
 
