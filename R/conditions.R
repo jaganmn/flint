@@ -104,7 +104,7 @@ function () {
 .error.subscriptTooFew <-
 function () {
     call <- sys.call(-1L)
-    errorCondition(gettext("attempt to select less than one element"),
+    errorCondition(gettext("attempt to select fewer than one element"),
                    class = "simpleError", call = call)
 }
 
