@@ -5,15 +5,20 @@
 *** DONE rbind, cbind, rbind2, cbind2
 *** DONE rowSums, colSums, rowMeans, colMeans
 *** TODO [, [<-, [[, [[<-
+	have vector subscripts, need array subscripts
 *** DONE diag, diag<-
 *** DONE t
 *** DONE %*%, crossprod, tcrossprod
 *** TODO kronecker, scale
 *** DONE solve, backsolve, chol2inv
 *** TODO determinant, norm, rcond
-*** TODO chol, qr
 *** DONE is.array, is.matrix, drop
+*** DONE chol
+*** TODO eigen, qr, svd
+	FLINT does not yet provide entry points; actually, there are some
+	experimental ones in the acb_mat module that would support 'eigen'
 *** DONE isSymmetric
+*** TODO aperm, asplit
 
 ** TODO function for numerical solution of systems of ODE using 'arb'
 
