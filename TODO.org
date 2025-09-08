@@ -2,6 +2,7 @@
 
 ** TODO arrays and methods for generic functions designed for arrays
 
+*** DONE dim, dim<-, dimnames, dimnames<-
 *** DONE rbind, cbind, rbind2, cbind2
 *** DONE rowSums, colSums, rowMeans, colMeans
 *** TODO [, [<-, [[, [[<-
@@ -19,6 +20,10 @@
 	experimental ones in the acb_mat module that would support 'eigen'
 *** DONE isSymmetric
 *** TODO aperm, asplit
+*** TODO print
+	for arrays, provide an option, enabled by default, to print
+	"dim (d[1], ..., d[length(d)])" instead of "length prod(d)",
+	but what should happen if length(d) >> 1 ... ?
 
 ** TODO function for numerical solution of systems of ODE using 'arb'
 
