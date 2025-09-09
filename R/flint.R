@@ -1047,27 +1047,6 @@ function (x)
                else class.,
            stop(.error.invalidArgumentType(x)))
 
-.bind.as <-
-function (x, class, keep.dim = FALSE) {
-    ans <- as(x, class)
-    if (keep.dim && is.null(dim(ans)) && !is.null(a <- dim(x))) {
-        if (isS4(ans))
-            ans@dim <- a
-        else dim(ans) <- a
-        if (!is.null(a <- dimnames(x))) {
-            if (isS4(ans))
-                ans@dimnames <- a
-            else dimnames(ans) <- a
-        }
-    }
-    if (is.null(names(ans)) && !is.null(a <- names(x))) {
-        if (isS4(ans))
-            ans@names <- a
-        else names(ans) <- a
-    }
-    ans
-}
-
 c.flint <-
 function (..., recursive = FALSE, use.names = TRUE) {
     if (nargs() == 0L)
@@ -1083,7 +1062,7 @@ function (..., recursive = FALSE, use.names = TRUE) {
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(c(NULL, ..., recursive = FALSE, use.names = use.names))
-    args <- lapply(args, .bind.as, common)
+    args <- lapply(args, flintAs, common, use.dim = FALSE)
     if (any(common == c("character", "list", "expression")))
         unlist(args, recursive = FALSE, use.names = use.names)
     else {
@@ -1106,7 +1085,7 @@ function (..., deparse.level = 1) {
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(cbind(NULL, ..., deparse.level = deparse.level))
-    args <- lapply(args, .bind.as, common, keep.dim = TRUE)
+    args <- lapply(args, flintAs, common)
     if (any(common == c("character", "list", "expression")))
         do.call(cbind, c(args, list(deparse.level = deparse.level)))
     else {
@@ -1599,7 +1578,7 @@ function (..., deparse.level = 1) {
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(cbind(NULL, ..., deparse.level = deparse.level))
-    args <- lapply(args, .bind.as, common, keep.dim = TRUE)
+    args <- lapply(args, flintAs, common)
     if (any(common == c("character", "list", "expression")))
         do.call(rbind, c(args, list(deparse.level = deparse.level)))
     else {
