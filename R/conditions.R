@@ -1,7 +1,7 @@
 .error.notTotalOrder <-
 function () {
     call <- sys.call(-1L)
-    errorCondition(gettextf("'%s' is not a total order on the range of '%s'",
+    errorCondition(gettextf("'%s' is not a total order on the range of \"%s\"",
                             "<=", "arb"),
                    class = "notTotalOrderError", call = call)
 }
@@ -9,51 +9,51 @@ function () {
 .error.notSubsettable <-
 function (object) {
     call <- sys.call(-1L)
-    errorCondition(gettextf("object of type '%s' is not subsettable",
+    errorCondition(gettextf("object of type \"%s\" is not subsettable",
                             typeof(object)),
                    object = object,
                    class = "notSubsettableError", call = call)
 }
 
-.error.missingSubscript <-
+.error.subscriptMissing <-
 function () {
     call <- sys.call(-1L)
     errorCondition(gettext("missing subscript"),
                    class = "simpleError", call = call)
 }
 
-.error.missingSubassignValue <-
+.error.subassignMissing <-
 function () {
     call <- sys.call(-1L)
     errorCondition(gettext("missing subassignment value"),
                    class = "simpleError", call = call)
 }
 
-.error.invalidArgumentType <-
+.error.argumentInvalidType <-
 function (object) {
     call <- sys.call(-1L)
-    errorCondition(gettextf("invalid argument type '%s'",
+    errorCondition(gettextf("invalid argument type \"%s\"",
                             typeof(object)),
                    class = "simpleError", call = call)
 }
 
-.error.invalidSubscriptType <-
+.error.subscriptInvalidType <-
 function (object) {
     call <- sys.call(-1L)
-    errorCondition(gettextf("invalid subscript type '%s'",
+    errorCondition(gettextf("invalid subscript type \"%s\"",
                             typeof(object)),
                    class = "simpleError", call = call)
 }
 
-.error.invalidSubassignValueType <-
+.error.subassignInvalidType <-
 function (object) {
     call <- sys.call(-1L)
-    errorCondition(gettextf("invalid subassignment value type '%s'",
+    errorCondition(gettextf("invalid subassignment value type \"%s\"",
                             typeof(object)),
                    class = "simpleError", call = call)
 }
 
-.error.invalidArgumentClass <-
+.error.argumentInvalidClass <-
 function (object) {
     call <- sys.call(-1L)
     errorCondition(gettextf("invalid argument class %s",
@@ -61,7 +61,7 @@ function (object) {
                    class = "simpleError", call = call)
 }
 
-.error.invalidSubscriptClass <-
+.error.subscriptInvalidClass <-
 function (object) {
     call <- sys.call(-1L)
     errorCondition(gettextf("invalid subscript class %s",
@@ -69,7 +69,7 @@ function (object) {
                    class = "simpleError", call = call)
 }
 
-.error.invalidSubassignValueClass <-
+.error.subassignInvalidClass <-
 function (object) {
     call <- sys.call(-1L)
     errorCondition(gettextf("invalid subassignment value class %s",
@@ -77,7 +77,7 @@ function (object) {
                    class = "simpleError", call = call)
 }
 
-.error.invalidArity <-
+.error.subscriptInvalidArity <-
 function () {
     call <- sys.call(-1L)
     errorCondition(gettext("incorrect number of dimensions"),
@@ -104,27 +104,34 @@ function () {
 .error.subscriptTooFew <-
 function () {
     call <- sys.call(-1L)
-    errorCondition(gettext("attempt to select fewer than one element"),
+    errorCondition(gettext("subscript indexes zero elements"),
                    class = "simpleError", call = call)
 }
 
 .error.subscriptTooMany <-
 function () {
     call <- sys.call(-1L)
-    errorCondition(gettext("attempt to select more than one element"),
+    errorCondition(gettext("subscript indexes more than one element"),
                    class = "simpleError", call = call)
 }
 
-.error.emptyReplace <-
+.error.subassignTooFew <-
 function () {
     call <- sys.call(-1L)
-    errorCondition(gettext("replacement has length zero"),
+    errorCondition(gettext("subassignment value has length zero"),
                    class = "simpleError", call = call)
 }
 
-.warning.remainderInReplace <-
+.error.subassignTooMany <-
 function () {
     call <- sys.call(-1L)
-    warningCondition(gettext("number of items to replace is not a multiple of replacement length"),
+    errorCondition(gettext("subassignment value has length greater than one"),
+                   class = "simpleError", call = call)
+}
+
+.warning.subassignWithRemainder <-
+function () {
+    call <- sys.call(-1L)
+    warningCondition(gettext("number of elements to replace is not a multiple of replacement length"),
                      class = "simpleWarning", call = call)
 }

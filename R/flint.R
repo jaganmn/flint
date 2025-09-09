@@ -20,17 +20,17 @@ function (object, mode)
                       switch(class. <- flintClass(object),
                              "ulong" =, "slong" =, "fmpz" =, "fmpq" =
                                  class.,
-                             stop(.error.invalidSubscriptClass(object))),
-                  stop(.error.invalidSubscriptType(object))),
+                             stop(.error.subscriptInvalidClass(object))),
+                  stop(.error.subscriptInvalidType(object))),
            ## value
            switch(type. <- typeof(object),
                   "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "NULL" =, "pairlist" =, "language" =, "list" =, "expression" =
                       type.,
                   "S4" =
                       if (is.na(class. <- flintClass(object)))
-                          stop(.error.invalidSubassignValueClass(object))
+                          stop(.error.subassignInvalidClass(object))
                       else class.,
-                  stop(.error.invalidSubassignValueType(object))),
+                  stop(.error.subassignInvalidType(object))),
            stop("should never happen ..."))
 
 setMethod("[",
@@ -38,7 +38,7 @@ setMethod("[",
           function (x, i, j, ..., drop = TRUE) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- length(x)
@@ -73,7 +73,7 @@ setMethod("[",
           c(x = "flint", i = "ANY", j = "missing", drop = "missing"),
           function (x, i, j, ..., drop = TRUE) {
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(i))
                   return(x)
               ci <- .subscript.class(i, 2L)
@@ -136,7 +136,7 @@ setMethod("[",
           c(x = "flint", i = "flint", j = "missing", drop = "missing"),
           function (x, i, j, ..., drop = TRUE) {
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- flintLength(x)
@@ -168,7 +168,7 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               cv <- flintClass(value)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -185,9 +185,9 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- length(x)
@@ -224,7 +224,7 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               cv <- flintClass(value)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -238,9 +238,9 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               cv <- .subscript.class(value, 3L)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -257,7 +257,7 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(i)) {
               ni <- nx <- flintLength(x)
               i <- NULL
@@ -324,9 +324,9 @@ setMethod("[<-",
               nv <- flintLength(value)
               if (ni > 0L) {
               if (nv == 0L)
-                  stop(.error.emptyReplace())
+                  stop(.error.subassignTooFew())
               else if (nv > ni || ni %% nv > 0L)
-                  warning(.warning.remainderInReplace())
+                  warning(.warning.subassignWithRemainder())
               }
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -339,9 +339,9 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               cv <- .subscript.class(value, 3L)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -355,7 +355,7 @@ setMethod("[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- flintLength(x)
@@ -384,9 +384,9 @@ setMethod("[<-",
               nv <- flintLength(value)
               if (ni > 0L) {
               if (nv == 0L)
-                  stop(.error.emptyReplace())
+                  stop(.error.subassignTooFew())
               else if (nv > ni || ni %% nv > 0L)
-                  warning(.warning.remainderInReplace())
+                  warning(.warning.subassignWithRemainder())
               }
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -399,7 +399,7 @@ setMethod("[[",
           function (x, i, j, ...) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- length(x)
@@ -434,9 +434,9 @@ setMethod("[[",
           c(x = "flint", i = "ANY", j = "missing"),
           function (x, i, j, ...) {
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(i))
-                  stop(.error.missingSubscript())
+                  stop(.error.subscriptMissing())
               ci <- .subscript.class(i, 2L)
               ni <- length(i)
               nx <- flintLength(x)
@@ -493,7 +493,7 @@ setMethod("[[",
           c(x = "flint", i = "flint", j = "missing"),
           function (x, i, j, ...) {
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- flintLength(x)
@@ -528,7 +528,7 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               cv <- flintClass(value)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -545,9 +545,9 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- length(x)
@@ -584,7 +584,7 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- .subscript.class(x, 1L)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               cv <- flintClass(value)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -598,9 +598,9 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               cv <- .subscript.class(value, 3L)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -617,9 +617,9 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(i))
-                  stop(.error.missingSubscript())
+                  stop(.error.subscriptMissing())
               ci <- .subscript.class(i, 2L)
               ni <- length(i)
               nx <- flintLength(x)
@@ -670,13 +670,13 @@ setMethod("[[<-",
               else if (ni > 1L)
                   stop(.error.subscriptTooMany())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               cv <- flintClass(value)
               nv <- flintLength(value)
               if (nv == 0L)
-                  stop(.error.emptyReplace())
+                  stop(.error.subassignTooFew())
               else if (nv > 1L)
-                  warning(.warning.remainderInReplace())
+                  warning(.warning.subassignWithRemainder())
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
               value <- as(value, common)
@@ -688,9 +688,9 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               cv <- .subscript.class(value, 3L)
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
@@ -704,9 +704,9 @@ setMethod("[[<-",
           function (x, i, j, ..., value) {
               cx <- flintClass(x)
               if (...length())
-                  stop(.error.invalidArity())
+                  stop(.error.subscriptInvalidArity())
               if (missing(value))
-                  stop(.error.missingSubassignValue())
+                  stop(.error.subassignMissing())
               ci <- .subscript.class(i, 2L)
               ni <- flintLength(i)
               nx <- flintLength(x)
@@ -736,9 +736,9 @@ setMethod("[[<-",
               cv <- flintClass(value)
               nv <- flintLength(value)
               if (nv == 0L)
-                  stop(.error.emptyReplace())
+                  stop(.error.subassignTooFew())
               else if (nv > 1L)
-                  warning(.warning.remainderInReplace())
+                  warning(.warning.subassignWithRemainder())
               common <- flintClassCommon(c(cx, cv))
               x <- as(x, common)
               value <- as(value, common)
@@ -1043,9 +1043,9 @@ function (x)
                                                                                        type.,
            "S4" =
                if (is.na(class. <- flintClass(x)))
-                   stop(.error.invalidArgumentClass(x))
+                   stop(.error.argumentInvalidClass(x))
                else class.,
-           stop(.error.invalidArgumentType(x)))
+           stop(.error.argumentInvalidType(x)))
 
 c.flint <-
 function (..., recursive = FALSE, use.names = TRUE) {
