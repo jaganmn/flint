@@ -3,6 +3,8 @@
 \alias{flint}
 \alias{.flint}
 \alias{.flint.array}
+\alias{$,flint-method}
+\alias{$<-,flint-method}
 \alias{[,ANY,flint,missing,missing-method}
 \alias{[,flint,ANY,missing,missing-method}
 \alias{[,flint,flint,missing,missing-method}
@@ -156,6 +158,10 @@
 }
 \section{Methods}{
   \describe{
+    \item{\code{$}, \code{$<-}}{
+      \code{signature(x = "flint")}:\cr
+      signal an error as \code{x} is \dQuote{atomic-like} and in any
+      case not recursive or \code{NULL}.}
     \item{\code{[}}{
       \code{signature(x = "ANY", i = "flint", j = "missing", drop = "missing")}:\cr
       \code{signature(x = "flint", i = "ANY", j = "missing", drop = "missing")}:\cr

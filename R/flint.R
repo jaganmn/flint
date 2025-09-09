@@ -33,6 +33,20 @@ function (object, mode)
                   stop(.error.subassignInvalidType(object))),
            stop("should never happen ..."))
 
+setMethod("$",
+          c(x = "flint"),
+          function (x, name)
+              stop(gettextf("'%s' operator is invalid for atomic-like vectors",
+                            "$"),
+                   domain = NA))
+
+setMethod("$<-",
+          c(x = "flint"),
+          function (x, name, value)
+              stop(gettextf("'%s' operator is invalid for atomic-like vectors",
+                            "$<-"),
+                   domain = NA))
+
 setMethod("[",
           c(x = "ANY", i = "flint", j = "missing", drop = "missing"),
           function (x, i, j, ..., drop = TRUE) {
