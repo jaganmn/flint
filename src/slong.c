@@ -80,7 +80,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_LOGICAL)
-			Rf_error(_("NaN is not representable by '%s'"), "slong");
+			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 			else
 			y[jy] = x[jy % nx];
 		}
@@ -91,7 +91,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_INTEGER)
-			Rf_error(_("NaN is not representable by '%s'"), "slong");
+			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 			else
 			y[jy] = x[jy % nx];
 		}
@@ -102,7 +102,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (ISNAN(x[jy % nx]))
-			Rf_error(_("NaN is not representable by '%s'"), "slong");
+			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 #ifdef R_FLINT_ABI_64
 			else if (x[jy % nx] <  -0x1.0p+63       ||
 			         x[jy % nx] >=  0x1.0p+63)
@@ -110,7 +110,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			else if (x[jy % nx] <= -0x1.0p+31 - 1.0 ||
 			         x[jy % nx] >=  0x1.0p+31)
 #endif
-			Rf_error(_("floating-point number not in range of '%s'"), "slong");
+			Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 			else
 			y[jy] = (slong) x[jy % nx];
 		}
@@ -121,7 +121,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (ISNAN(x[jy % nx].r))
-			Rf_error(_("NaN is not representable by '%s'"), "slong");
+			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 #ifdef R_FLINT_ABI_64
 			else if (x[jy % nx].r <  -0x1.0p+63       ||
 			         x[jy % nx].r >=  0x1.0p+63)
@@ -129,7 +129,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			else if (x[jy % nx].r <= -0x1.0p+31 - 1.0 ||
 			         x[jy % nx].r >=  0x1.0p+31)
 #endif
-			Rf_error(_("floating-point number not in range of '%s'"), "slong");
+			Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 			else
 			y[jy] = (slong) x[jy % nx].r;
 		}
@@ -148,7 +148,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 			if (!__local_mpz_fits_slong_p(r)) {
 				mpz_clear(r);
-				Rf_error(_("converted string not in range of '%s'"), "slong");
+				Rf_error(_("converted string not in range of \"%s\""), "slong");
 			}
 			y[jy] = __local_mpz_get_si(r);
 		}
@@ -162,7 +162,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const ulong *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (x[jy % nx] > WORD_MAX)
-				Rf_error(_("integer not in range of '%s'"), "slong");
+				Rf_error(_("integer not in range of \"%s\""), "slong");
 				else
 				y[jy] = (slong) x[jy % nx];
 			}
@@ -180,7 +180,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpz *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (!fmpz_fits_si(x + jy % nx))
-				Rf_error(_("integer not in range of '%s'"), "slong");
+				Rf_error(_("integer not in range of \"%s\""), "slong");
 				else
 				y[jy] = fmpz_get_si(x + jy % nx);
 			}
@@ -195,7 +195,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				fmpz_tdiv_q(q, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx));
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
-				Rf_error(_("rational not in range of '%s'"), "slong");
+				Rf_error(_("rational not in range of \"%s\""), "slong");
 				}
 				else
 				y[jy] = fmpz_get_si(q);
@@ -212,7 +212,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				mag_get_fmpz_lower(q, x + jy % nx);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "slong");
+				Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 				}
 				else
 				y[jy] = fmpz_get_si(q);
@@ -229,7 +229,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				arf_get_fmpz(q, x + jy % nx, ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "slong");
+				Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 				}
 				else
 				y[jy] = fmpz_get_si(q);
@@ -246,7 +246,7 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				arf_get_fmpz(q, acf_realref(x + jy % nx), ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "slong");
+				Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 				}
 				else
 				y[jy] = fmpz_get_si(q);
@@ -532,7 +532,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				e = y[jz % ny];
 				if (b == 0 && e < 0) {
 				fmpz_clear(t);
-				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				Rf_error(_("<%s> %s <%s>: value is not in the range of \"%s\""),
 				         "slong", "^", "slong", "fmpq");
 				}
 				fmpz_set_si(t, b);
@@ -604,7 +604,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "slong");
 		return R_NilValue;
 	}
@@ -697,7 +697,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				r = 1;
 				if (r) {
 				flint_free(z);
-				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
+				Rf_error(_("%s(<%s>): value is not in the range of \"%s\""),
 				         "sqrt", "slong", "slong");
 				}
 			}
@@ -1241,7 +1241,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "slong");
 		return R_NilValue;
 	}

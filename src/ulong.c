@@ -72,7 +72,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_LOGICAL)
-			Rf_error(_("NaN is not representable by '%s'"), "ulong");
+			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
 			else
 			y[jy] = (ulong) x[jy % nx];
 		}
@@ -83,9 +83,9 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_INTEGER)
-			Rf_error(_("NaN is not representable by '%s'"), "ulong");
+			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
 			else if (x[jy % nx] < 0)
-			Rf_error(_("integer not in range of '%s'"), "ulong");
+			Rf_error(_("integer not in range of \"%s\""), "ulong");
 			else
 			y[jy] = (ulong) x[jy % nx];
 		}
@@ -96,13 +96,13 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (ISNAN(x[jy % nx]))
-			Rf_error(_("NaN is not representable by '%s'"), "ulong");
+			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
 #ifdef R_FLINT_ABI_64
 			else if (x[jy % nx] <= -1.0 || x[jy % nx] >= 0x1.0p+64)
 #else
 			else if (x[jy % nx] <= -1.0 || x[jy % nx] >= 0x1.0p+32)
 #endif
-			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+			Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
 			else
 			y[jy] = (ulong) x[jy % nx];
 		}
@@ -113,13 +113,13 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (ISNAN(x[jy % nx].r))
-			Rf_error(_("NaN is not representable by '%s'"), "ulong");
+			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
 #ifdef R_FLINT_ABI_64
 			else if (x[jy % nx].r <= -1.0 || x[jy % nx].r >= 0x1.0p+64)
 #else
 			else if (x[jy % nx].r <= -1.0 || x[jy % nx].r >= 0x1.0p+32)
 #endif
-			Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+			Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
 			else
 			y[jy] = (ulong) x[jy % nx].r;
 		}
@@ -138,7 +138,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 			if (!__local_mpz_fits_ulong_p(r)) {
 				mpz_clear(r);
-				Rf_error(_("converted string not in range of '%s'"), "ulong");
+				Rf_error(_("converted string not in range of \"%s\""), "ulong");
 			}
 			y[jy] = __local_mpz_get_ui(r);
 		}
@@ -159,7 +159,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const slong *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (x[jy % nx] < 0)
-				Rf_error(_("integer not in range of '%s'"), "ulong");
+				Rf_error(_("integer not in range of \"%s\""), "ulong");
 				else
 				y[jy] = (ulong) x[jy % nx];
 			}
@@ -170,7 +170,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpz *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (fmpz_sgn(x + jy % nx) < 0 || !fmpz_abs_fits_ui(x + jy % nx))
-				Rf_error(_("integer not in range of '%s'"), "ulong");
+				Rf_error(_("integer not in range of \"%s\""), "ulong");
 				else
 				y[jy] = fmpz_get_ui(x + jy % nx);
 			}
@@ -185,7 +185,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				fmpz_tdiv_q(q, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx));
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
-				Rf_error(_("rational not in range of '%s'"), "ulong");
+				Rf_error(_("rational not in range of \"%s\""), "ulong");
 				}
 				else
 				y[jy] = fmpz_get_ui(q);
@@ -202,7 +202,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				mag_get_fmpz_lower(q, x + jy % nx);
 				if (!fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+				Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
 				}
 				else
 				y[jy] = fmpz_get_ui(q);
@@ -219,7 +219,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				arf_get_fmpz(q, x + jy % nx, ARF_RND_DOWN);
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+				Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
 				}
 				else
 				y[jy] = fmpz_get_ui(q);
@@ -236,7 +236,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				arf_get_fmpz(q, acf_realref(x + jy % nx), ARF_RND_DOWN);
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
 				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of '%s'"), "ulong");
+				Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
 				}
 				else
 				y[jy] = fmpz_get_ui(q);
@@ -558,7 +558,7 @@ SEXP R_flint_ulong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "ulong");
 		return R_NilValue;
 	}
@@ -634,7 +634,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[jz] = n_sqrtrem(&r, (ulong) x[jz]);
 				if (r) {
 				flint_free(z);
-				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
+				Rf_error(_("%s(<%s>): value is not in the range of \"%s\""),
 				         "sqrt", "ulong", "ulong");
 				}
 			}
@@ -1133,7 +1133,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "ulong");
 		return R_NilValue;
 	}

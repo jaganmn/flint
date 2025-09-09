@@ -53,7 +53,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_LOGICAL)
-			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 			else
 			fmpz_set_si(y + jy, x[jy % nx]);
 		}
@@ -64,7 +64,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_INTEGER)
-			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 			else
 			fmpz_set_si(y + jy, x[jy % nx]);
 		}
@@ -75,7 +75,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (!R_FINITE(x[jy % nx]))
-			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 			else
 			fmpz_set_d(y + jy, (fabs(x[jy % nx]) < DBL_MIN) ? 0.0 : x[jy % nx]);
 		}
@@ -86,7 +86,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (!R_FINITE(x[jy % nx].r))
-			Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 			else
 			fmpz_set_d(y + jy, (fabs(x[jy % nx].r) < DBL_MIN) ? 0.0 : x[jy % nx].r);
 		}
@@ -143,7 +143,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mag_srcptr x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (mag_is_inf(x + jy % nx))
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 				else
 				mag_get_fmpz_lower(y + jy, x + jy % nx);
 			}
@@ -154,7 +154,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (!arf_is_finite(x + jy % nx))
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 				else
 				arf_get_fmpz(y + jy, x + jy % nx, ARF_RND_DOWN);
 			}
@@ -165,7 +165,7 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (!arf_is_finite(acf_realref(x + jy % nx)))
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpz");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
 				else
 				arf_get_fmpz(y + jy, acf_realref(x + jy % nx), ARF_RND_DOWN);
 			}
@@ -345,7 +345,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				e = y + jz % ny;
 				if (fmpz_is_zero(b) && fmpz_sgn(e) < 0) {
 				fmpz_clear(a);
-				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				Rf_error(_("<%s> %s <%s>: value is not in the range of \"%s\""),
 				         "fmpz", "^", "fmpz", "fmpq");
 				}
 				if (!fmpz_abs_fits_ui(e)) {
@@ -613,7 +613,7 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpz");
 		return R_NilValue;
 	}
@@ -681,7 +681,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_sqrtrem(z + jz, r, x + jz);
 				if (!(fmpz_sgn(x + jz) >= 0 && fmpz_is_zero(r))) {
 				fmpz_clear(r);
-				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
+				Rf_error(_("%s(<%s>): value is not in the range of \"%s\""),
 				         "sqrt", "fmpz", "fmpz");
 				}
 			}
@@ -1163,7 +1163,7 @@ SEXP R_flint_fmpz_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpz");
 		return R_NilValue;
 	}

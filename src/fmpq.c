@@ -87,7 +87,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				const fmpz *xq = R_flint_get_pointer(s_den);
 				for (jy = 0; jy < ny; ++jy) {
 					if (fmpz_is_zero(xq + jy % nq))
-					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
+					Rf_error(_("zero denominator not valid in canonical \"%s\""), "fmpq");
 					else {
 					fmpz_set(fmpq_numref(y + jy), xp + jy % np);
 					fmpz_set(fmpq_denref(y + jy), xq + jy % nq);
@@ -105,7 +105,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				const fmpz *xq = R_flint_get_pointer(s_den);
 				for (jy = 0; jy < ny; ++jy) {
 					if (fmpz_is_zero(xq + jy % nq))
-					Rf_error(_("zero denominator not valid in canonical '%s'"), "fmpq");
+					Rf_error(_("zero denominator not valid in canonical \"%s\""), "fmpq");
 					else
 					fmpz_one(fmpq_denref(y + jy));
 				}
@@ -131,7 +131,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const int *x = LOGICAL_RO(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (x[jy % nx] == NA_LOGICAL)
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 				else {
 				fmpz_set_si(fmpq_numref(y + jy), x[jy % nx]);
 				fmpz_one(fmpq_denref(y + jy));
@@ -144,7 +144,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const int *x = INTEGER_RO(s_x);
 			for (jy = 0; jy < ny; ++jy) {
 				if (x[jy % nx] == NA_INTEGER)
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 				else {
 				fmpz_set_si(fmpq_numref(y + jy), x[jy % nx]);
 				fmpz_one(fmpq_denref(y + jy));
@@ -158,7 +158,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			int e;
 			for (jy = 0; jy < ny; ++jy) {
 				if (!R_FINITE(x[jy % nx]))
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 				else {
 				fmpz_set_d(fmpq_numref(y + jy), ldexp(frexp(x[jy % nx], &e), DBL_MANT_DIG));
 				e -= DBL_MANT_DIG;
@@ -181,7 +181,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			int e;
 			for (jy = 0; jy < ny; ++jy) {
 				if (!R_FINITE(x[jy % nx].r))
-				Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 				else {
 				fmpz_set_d(fmpq_numref(y + jy), ldexp(frexp(x[jy % nx].r, &e), DBL_MANT_DIG));
 				e -= DBL_MANT_DIG;
@@ -256,7 +256,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				mag_srcptr x = R_flint_get_pointer(s_x);
 				for (jy = 0; jy < ny; ++jy) {
 					if (mag_is_inf(x + jy % nx))
-					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 					else
 					mag_get_fmpq(y + jy, x + jy % nx);
 				}
@@ -267,7 +267,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				arf_srcptr x = R_flint_get_pointer(s_x);
 				for (jy = 0; jy < ny; ++jy) {
 					if (!arf_is_finite(x + jy % nx))
-					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 					else
 					arf_get_fmpq(y + jy, x + jy % nx);
 				}
@@ -278,7 +278,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				acf_srcptr x = R_flint_get_pointer(s_x);
 				for (jy = 0; jy < ny; ++jy) {
 					if (!arf_is_finite(acf_realref(x + jy % nx)))
-					Rf_error(_("NaN, -Inf, Inf are not representable by '%s'"), "fmpq");
+					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpq");
 					else
 					arf_get_fmpq(y + jy, acf_realref(x + jy % nx));
 				}
@@ -429,7 +429,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				    (fmpq_sgn(b) <  0 && fmpz_is_even(fmpq_denref(e)))) {
 				fmpz_clear(a);
 				fmpz_clear(p);
-				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				Rf_error(_("<%s> %s <%s>: value is not in the range of \"%s\""),
 				         "fmpq", "^", "fmpq", "fmpq");
 				}
 				if (!fmpz_abs_fits_ui(fmpq_numref(e))) {
@@ -468,7 +468,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				if (!exact) {
 				fmpz_clear(a);
 				fmpz_clear(p);
-				Rf_error(_("<%s> %s <%s>: value is not in the range of '%s'"),
+				Rf_error(_("<%s> %s <%s>: value is not in the range of \"%s\""),
 				         "fmpq", "^", "fmpq", "fmpq");
 				}
 			}
@@ -716,7 +716,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpq");
 		return R_NilValue;
 	}
@@ -788,7 +788,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				}
 				if (!(fmpq_sgn(x + jz) >= 0 && fmpz_is_zero(r))) {
 				fmpz_clear(r);
-				Rf_error(_("%s(<%s>): value is not in the range of '%s'"),
+				Rf_error(_("%s(<%s>): value is not in the range of \"%s\""),
 				         "sqrt", "fmpq", "fmpq");
 				}
 			}
@@ -1274,7 +1274,7 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpq");
 		return R_NilValue;
 	}

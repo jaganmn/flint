@@ -145,7 +145,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_LOGICAL)
-			Rf_error(_("NaN is not representable by '%s'"), "mag");
+			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else
 			WRAP(mag_set_ui, lower, y + jy, (ulong) x[jy % nx]);
 		}
@@ -156,7 +156,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (x[jy % nx] == NA_INTEGER)
-			Rf_error(_("NaN is not representable by '%s'"), "mag");
+			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else if (x[jy % nx] >= 0)
 			WRAP(mag_set_ui, lower, y + jy, (ulong) x[jy % nx]);
 			else
@@ -169,7 +169,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (ISNAN(x[jy % nx]))
-			Rf_error(_("NaN is not representable by '%s'"), "mag");
+			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else
 			WRAP(mag_set_d, lower, y + jy, x[jy % nx]);
 		}
@@ -180,7 +180,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		for (jy = 0; jy < ny; ++jy) {
 			if (ISNAN(x[jy % nx].r))
-			Rf_error(_("NaN is not representable by '%s'"), "mag");
+			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else
 			WRAP(mag_set_d, lower, y + jy, x[jy % nx].r);
 		}
@@ -590,7 +590,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "mag");
 		return R_NilValue;
 	}
@@ -756,7 +756,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_srcptr base = R_flint_get_pointer(s_base);
 				if (arf_is_nan(base) || arf_sgn(base) < 0) {
 					mag_clear(tmp);
-					Rf_error(_("NaN is not representable by '%s'"), "mag");
+					Rf_error(_("NaN is not representable by \"%s\""), "mag");
 				}
 				if (arf_cmp_2exp_si(base, 0) >= 0)
 					WRAP(arf_get_mag, !lower, tmp, base);
@@ -771,7 +771,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				for (jz = 0; jz < nz; ++jz)
 					if (mag_is_inf(z + jz)) {
 					mag_clear(tmp);
-					Rf_error(_("NaN is not representable by '%s'"), "mag");
+					Rf_error(_("NaN is not representable by \"%s\""), "mag");
 					}
 					else
 					mag_zero(z + jz);
@@ -780,7 +780,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				for (jz = 0; jz < nz; ++jz)
 					if (mag_is_zero(z + jz)) {
 					mag_clear(tmp);
-					Rf_error(_("NaN is not representable by '%s'"), "mag");
+					Rf_error(_("NaN is not representable by \"%s\""), "mag");
 					}
 					else
 					mag_inf(z + jz);
@@ -1138,7 +1138,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 	default:
-		Rf_error(_("operation '%s' is not yet implemented for class '%s'"),
+		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "mag");
 		return R_NilValue;
 	}

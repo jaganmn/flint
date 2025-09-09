@@ -1147,10 +1147,10 @@ setAs("ANY", "flint",
                  "double" = .arf(from),
                  "complex" = .acf(from),
                  "character" =
-                 stop(gettextf("coercion from '%s' to '%s' is not yet implemented; consider coercing to a nonvirtual subclass of '%s'",
+                 stop(gettextf("coercion from \"%s\" to \"%s\" is not yet implemented; consider coercing to a nonvirtual subclass of \"%s\"",
                                type., "flint", "flint"),
                       domain = NA),
-                 stop(gettextf("coercion from '%s' to '%s' is not yet implemented",
+                 stop(gettextf("coercion from \"%s\" to \"%s\" is not yet implemented",
                                type., "flint"),
                       domain = NA)))
 
