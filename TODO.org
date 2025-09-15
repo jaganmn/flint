@@ -5,7 +5,7 @@
 *** DONE dim, dim<-, dimnames, dimnames<-
 *** DONE rbind, cbind, rbind2, cbind2
 *** DONE rowSums, colSums, rowMeans, colMeans
-*** TODO [, [<-, [[, [[<-
+*** DONE [, [<-, [[, [[<-
 	have vector subscripts, need array subscripts
 *** DONE diag, diag<-
 *** DONE t

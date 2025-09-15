@@ -1,9 +1,9 @@
 useDynLib(flint, .registration = TRUE)
 importClassesFrom(methods, classGeneratorFunction)
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
-           cbind2, coerce, getClassDef, initialize, new, rbind2,
-           selectMethod, setAs, setClass, setClassUnion, setMethod,
-           show)
+           callGeneric, callNextMethod, cbind2, coerce, getClassDef,
+           initialize, new, rbind2, selectMethod, setAs, setClass,
+           setClassUnion, setMethod, show)
 importFrom(stats, quantile, runif)
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
               OptionalInteger, OptionalCharacter, OptionalList)

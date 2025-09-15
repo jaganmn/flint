@@ -1,21 +1,41 @@
 library(flint)
 
+zapnames <-
+function (x) {
+    is.empty <- function (.) !is.null(.) && length(.) == 0L
+    if (is.empty(names(x)))
+        names(x) <- NULL
+    if (!is.null(a <- dimnames(x))) {
+        if (any(e <- vapply(a, is.empty, FALSE)))
+            a[e] <- list(NULL)
+        dimnames(x) <-
+            if (is.null(names(a)) && all(vapply(a, is.null, FALSE)))
+                NULL
+            else a
+    }
+    x
+}
+
+flintIdenticalZ <-
+function (object, reference)
+    flintIdentical(zapnames(object), zapnames(reference))
+
 ok0 <-
 function (...)
     tryCatch({ x[ ... ]; x.[ ... ]; FALSE }, error = function (e) TRUE) &&
     tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
 ok1 <-
 function (...)
-    flintIdentical(x[ ... ], .flint(.cl, x.[ ... ])) &&
+    flintIdenticalZ(x[ ... ], .flint(.cl, x.[ ... ])) &&
     tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
 ok2 <-
 function (...)
     tryCatch({ x[ ... ]; x.[ ... ]; FALSE }, error = function (e) TRUE) &&
-    flintIdentical(x[[...]], .flint(.cl, x.[[...]]))
+    flintIdenticalZ(x[[...]], .flint(.cl, x.[[...]]))
 ok3 <-
 function (...)
-    flintIdentical(x[ ... ], .flint(.cl, x.[ ... ])) &&
-    flintIdentical(x[[...]], .flint(.cl, x.[[...]]))
+    flintIdenticalZ(x[ ... ], .flint(.cl, x.[ ... ])) &&
+    flintIdenticalZ(x[[...]], .flint(.cl, x.[[...]]))
 
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
