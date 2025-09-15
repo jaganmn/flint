@@ -128,10 +128,3 @@ function () {
     errorCondition(gettext("subassignment value has length greater than one"),
                    class = "simpleError", call = call)
 }
-
-.warning.subassignWithRemainder <-
-function () {
-    call <- sys.call(-1L)
-    warningCondition(gettext("number of elements to replace is not a multiple of replacement length"),
-                     class = "simpleWarning", call = call)
-}
