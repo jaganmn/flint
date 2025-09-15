@@ -1296,7 +1296,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		if (byrow) {
 			mp_limb_t *c = 0;
 			if (domean && nz) {
-				c = (mp_limb_t *) R_alloc(nz, sizeof(mp_limb_t));
+				c = (void *) R_alloc(nz, sizeof(mp_limb_t));
 				memset(c, 0, nz * sizeof(mp_limb_t));
 			}
 			for (jz = 0; jz < nz; ++jz)
