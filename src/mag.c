@@ -946,13 +946,19 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 52: /*   "range" */
 		{
-			/* FIXME: GCC 14 -Wstringop-overread with just */
-			/*        else if (mag_cmp(z + 1, x + jx) < 0)  */
+			mag_inf(z);
+#ifdef R_FLINT_USE_NAIVE_RANGE
+			/* MJ: GCC 14 gives [-Wstringop-overread].  Why?? */
+			mag_zero(z + 1);
+			for (jx = 0; jx < nx; ++jx)
+				if (mag_cmp(z, x + jx) > 0)
+					mag_set(z, x + jx);
+				else if (mag_cmp(z + 1, x + jx) < 0)
+					mag_set(z + 1, x + jx);
+#else
 			mag_t t;
 			mag_init(t);
 			mag_zero(t);
-			mag_inf(z);
-			mag_zero(z + 1);
 			for (jx = 0; jx < nx; ++jx)
 				if (mag_cmp(z, x + jx) > 0)
 					mag_set(z, x + jx);
@@ -960,6 +966,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					mag_set(t, x + jx);
 			mag_set(z + 1, t);
 			mag_clear(t);
+#endif
 			break;
 		}
 		case 53: /*     "sum" */
