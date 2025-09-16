@@ -657,12 +657,12 @@ function (x, i, j, ..., value) {
     s <- .subscript.list(i, j, ..., ns = ns, dx = dx,
                          call = call, exps = exps)
     if (ns == 0L)
-        stop(.error.missingSubscript())
+        stop(.error.subscriptMissing())
     else if (ns != length(dx)) {
         i <- s[[1L]]
         ci <- .subscript.class(i, 2L)
         if (ci == "missing")
-            stop(.error.missingSubscript())
+            stop(.error.subscriptMissing())
         nx <- flintLengthAny(x)
         ni <- flintLengthAny(i)
         if (ni == 0L)
@@ -733,7 +733,7 @@ function (x, i, j, ..., value) {
             i <- s[[k]]
             ci <- .subscript.class(i, 2L)
             if (ci == "missing")
-                stop(.error.missingSubscript())
+                stop(.error.subscriptMissing())
             nx <- dx[[k]]
             ni <- length(i)
             if (ni == 0L)
