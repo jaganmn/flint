@@ -217,7 +217,7 @@ new("classGeneratorFunction",
     className = "arf",
     package = "flint")
 
-acf <-
+acf <- ACF <-
 new("classGeneratorFunction",
     function (x = 0i, length = 0L, names = NULL, real = 0, imag = 0) {
         simple <- nargs() == 1L && !missing(x)
@@ -233,7 +233,7 @@ new("classGeneratorFunction",
     className = "acf",
     package = "flint")
 
-acf.array <-
+acf.array <- ACF.array <-
 new("classGeneratorFunction",
     function (x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
         new("acf",

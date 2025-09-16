@@ -17,7 +17,7 @@ stopifnot(identical(lapply(a, length), as.list(n)),
 
 for (call. in expression(fmpq( num = 0L,  den = 1L),
                           arb( mid = 0 ,  rad = 0 ),
-                          acf(real = 0 , imag = 0 ),
+                          ACF(real = 0 , imag = 0 ),
                           acb(real = 0 , imag = 0 ))) {
     v <- eval(call.)
     stopifnot(flintIdentical(eval(call.[-2L]), v),
@@ -31,7 +31,7 @@ for (call. in expression(fmpq( num = 0L,  den = 1L),
 L <- list(list(a, bb), list(aa, bb), list(., bb), list(., .))
 for (call. in expression(fmpq( num = ,  den = ),
                           arb( mid = ,  rad = ),
-                          acf(real = , imag = ),
+                          ACF(real = , imag = ),
                           acb(real = , imag = ))) {
     v <- lapply(L, function (a) eval(`[<-`(call., 2L:3L, a)))
     stopifnot(flintIdentical(v[[1L]], v[[2L]]),
@@ -59,8 +59,8 @@ stopifnot(flintIdentical(a, b))
 ## Test single initialization of 'acf', 'acb'.
 
 x <- complex(real = exp(-2:2), imaginary = sin(-2:2))
-a <- acf(x)
-b <- acf(real = Re(x), imag = Im(x))
+a <- ACF(x)
+b <- ACF(real = Re(x), imag = Im(x))
 stopifnot(flintIdentical(a, b))
 a <- acb(x)
 b <- acb(real = Re(x), imag = Im(x))

@@ -1,6 +1,8 @@
 \name{acf-class}
 \alias{acf-class}
+\alias{ACF}
 \alias{acf}
+\alias{ACF.array}
 \alias{acf.array}
 \alias{!,acf-method}
 \alias{\%*\%,ANY,acf-method}
@@ -106,14 +108,19 @@
   autocorrelation functions of time series.  It returns objects of
   \emph{informal} S3 class \code{acf}, for which a small number of
   \emph{informal} S3 methods are registered.  The \emph{formal} S4 class
-  and methods documented here are entirely unrelated.
+  and methods documented here are unrelated.
+
+  The class generator functions are named \code{ACF} and
+  \code{ACF.array} instead of \code{acf} and \code{acf.array} because
+  an exported function named \code{acf} would mask the function in
+  package \pkg{stats}.
 }
 \usage{
 ## Class generator functions
 
-acf(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
+ACF(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
 
-acf.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
+ACF.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
 }
 \arguments{
   \item{x}{
@@ -148,12 +155,12 @@ acf.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
 }
 \details{
   The class generator function has six distinct usages:
-  \preformatted{acf()
-acf(length=)
-acf(x)
-acf(x, length=)
-acf(real=, imag=)
-acf(real=, imag=, length=)}
+  \preformatted{acf.()
+acf.(length=)
+acf.(x)
+acf.(x, length=)
+acf.(real=, imag=)
+acf.(real=, imag=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
@@ -303,7 +310,7 @@ acf(real=, imag=, length=)}
       \code{x} (discarding imaginary parts of diagonal entries).}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acf")}:\cr
-      returns the value of \code{acf(from)}.}
+      returns the value of \code{acf.(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "acf")}:\cr
       returns an \code{acf} vector or array containing the column sums

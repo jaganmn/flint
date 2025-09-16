@@ -32,7 +32,7 @@ export(flint, flint.array,
        fmpq, fmpq.array,
        mag, mag.array,
        arf, arf.array,
-       acf, acf.array,
+       ACF, ACF.array,
        arb, arb.array,
        acb, acb.array)
 export(c.flint,

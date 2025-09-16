@@ -40,5 +40,5 @@ stopifnot(identical(order(xtfrm(y)), o),
 s <- c(NaN, Inf, 1, 0)
 x <- complex(     real = rep(s,  each = 4L),
              imaginary = rep(s, times = 4L))
-y <- acf(x)
+y <- ACF(x)
 stopifnot(identical(xtfrm(x), xtfrm(y)))

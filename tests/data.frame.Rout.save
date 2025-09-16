@@ -16,55 +16,48 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(flint)
-
-Attaching package: 'flint'
-
-The following object is masked from 'package:stats':
-
-    acf
-
 > options(flint.Rdiff = TRUE)
 > 
 > (L <- sapply(c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
 +                "arb", "acb"),
 +              flint, seq_len(6L), simplify = FALSE))
 $ulong
-class "ulong", length 6, address <pointer: 0x60000152c4b0>
+class "ulong", length 6, address <pointer: 0x6000027dcc90>
 [1] 1 2 3 4 5 6
 
 $slong
-class "slong", length 6, address <pointer: 0x60000152c480>
+class "slong", length 6, address <pointer: 0x6000027dcc60>
 [1] 1 2 3 4 5 6
 
 $fmpz
-class "fmpz", length 6, address <pointer: 0x60000152c450>
+class "fmpz", length 6, address <pointer: 0x6000027dcc30>
 [1] 1 2 3 4 5 6
 
 $fmpq
-class "fmpq", length 6, address <pointer: 0x600003f2c300>
+class "fmpq", length 6, address <pointer: 0x600000ddc5a0>
 [1] 1/1 2/1 3/1 4/1 5/1 6/1
 
 $mag
-class "mag", length 6, address <pointer: 0x600003f2c360>
+class "mag", length 6, address <pointer: 0x600000ddc600>
 [1] 1.000000e+0 2.000000e+0 3.000000e+0 4.000000e+0 5.000000e+0 6.000000e+0
 
 $arf
-class "arf", length 6, address <pointer: 0x600002e0f540>
+class "arf", length 6, address <pointer: 0x600001cffb40>
 [1] 1.000000e+0 2.000000e+0 3.000000e+0 4.000000e+0 5.000000e+0 6.000000e+0
 
 $acf
-class "acf", length 6, address <pointer: 0x1597749d0>
+class "acf", length 6, address <pointer: 0x145733290>
 [1] 1.000000e+0+0.000000e+0i 2.000000e+0+0.000000e+0i 3.000000e+0+0.000000e+0i
 [4] 4.000000e+0+0.000000e+0i 5.000000e+0+0.000000e+0i 6.000000e+0+0.000000e+0i
 
 $arb
-class "arb", length 6, address <pointer: 0x1397152a0>
+class "arb", length 6, address <pointer: 0x14184f0c0>
 [1] (1.000000e+0 +/- 0.000000e+0) (2.000000e+0 +/- 0.000000e+0)
 [3] (3.000000e+0 +/- 0.000000e+0) (4.000000e+0 +/- 0.000000e+0)
 [5] (5.000000e+0 +/- 0.000000e+0) (6.000000e+0 +/- 0.000000e+0)
 
 $acb
-class "acb", length 6, address <pointer: 0x13975e140>
+class "acb", length 6, address <pointer: 0x141818ab0>
 [1] (1.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
 [2] (2.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
 [3] (3.000000e+0 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
@@ -259,4 +252,4 @@ Error in FUN(X[[i]], ...) :
 > 
 > proc.time()
    user  system elapsed 
-  0.297   0.027   0.322 
+  0.297   0.024   0.320 
