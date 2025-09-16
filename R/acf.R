@@ -32,10 +32,10 @@ setMethod("Imag<-",
                   stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
                                 "value", nv, "x", nz),
                        domain = NA)
-              ans <- acf(real = Real(z), imag = value)
-              ans@dim <- q@dim
-              ans@dimnames <- q@dimnames
-              ans@names <- q@names
+              ans <- .acf(real = Real(z), imag = value)
+              ans@dim <- z@dim
+              ans@dimnames <- z@dimnames
+              ans@names <- z@names
               ans
           })
 

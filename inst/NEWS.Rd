@@ -51,12 +51,14 @@
   }
   \subsection{New Features}{
     \itemize{
-      \item .
+      \item \code{Mid()} and \code{Rad()} are extended to class \code{acb},
+      working on the real and imaginary parts.
     }
   }
   \subsection{Bug Fixes}{
     \itemize{
-      \item .
+      \item \code{Mid(r) <- value} and \code{Imag(c) <- value}
+      now work for class \code{arb} and \code{acb}, respectively.
     }
   }
   \subsection{Internals}{
@@ -65,6 +67,7 @@
     }
   }
 }
+
 \section{Changes in version 0.0.5 (2025-05-27)}{
   \subsection{Installation}{
     \itemize{
