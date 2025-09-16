@@ -37,9 +37,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(.arf(e1), .arf(e2)),
+                         g(arf(e1), arf(e2)),
                      "complex" =
-                         g(.acf(e1), .acf(e2)),
+                         g(acf(e1), acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "mag"),
                           domain = NA))
@@ -51,9 +51,9 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(.arf(e1), .arf(e2)),
+                         g(arf(e1), arf(e2)),
                      "complex" =
-                         g(.acf(e1), .acf(e2)),
+                         g(acf(e1), acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "mag", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -62,22 +62,22 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "mag", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
+              get(.Generic, mode = "function")(arf(e1), arf(e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
+              get(.Generic, mode = "function")(arf(e1), arf(e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
+              get(.Generic, mode = "function")(arf(e1), arf(e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
+              get(.Generic, mode = "function")(arf(e1), arf(e2)))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "mag"),
@@ -87,22 +87,22 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "mag", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), e2))
+              get(.Generic, mode = "function")(arf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acf(e1), e2))
+              get(.Generic, mode = "function")(acf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arb(e1), e2))
+              get(.Generic, mode = "function")(arb(e1), e2))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(e1), e2))
+              get(.Generic, mode = "function")(acb(e1), e2))
 
 setMethod("Summary",
           c(x = "mag"),
@@ -132,9 +132,9 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               switch(typeof(r),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         backsolve(.arf(r), .arf(x), , upper.tri, transpose),
+                         backsolve(arf(r), arf(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acf(r), .acf(x), , upper.tri, transpose),
+                         backsolve(acf(r), acf(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", if (isS4(r)) class(r) else typeof(r), "mag"),
                           domain = NA)))
@@ -143,12 +143,12 @@ setMethod("backsolve",
           c(r = "mag", x = "ANY"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
               if (missing(x))
-                  return(backsolve(.arf(r), , , upper.tri, transpose))
+                  return(backsolve(arf(r), , , upper.tri, transpose))
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         backsolve(.arf(r), .arf(x), , upper.tri, transpose),
+                         backsolve(arf(r), arf(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acf(r), .acf(x), , upper.tri, transpose),
+                         backsolve(acf(r), acf(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", "mag", if (isS4(x)) class(x) else typeof(x)),
                           domain = NA))
@@ -157,57 +157,57 @@ setMethod("backsolve",
 setMethod("backsolve",
           c(r = "mag", x = "ulong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
+              backsolve(arf(r), arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "slong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
+              backsolve(arf(r), arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "fmpz"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
+              backsolve(arf(r), arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "fmpq"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
+              backsolve(arf(r), arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "mag"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
+              backsolve(arf(r), arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "arf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), x, , upper.tri, transpose))
+              backsolve(arf(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "acf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acf(r), x, , upper.tri, transpose))
+              backsolve(acf(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "arb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arb(r), x, , upper.tri, transpose))
+              backsolve(arb(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "mag", x = "acb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acb(r), x, , upper.tri, transpose))
+              backsolve(acb(r), x, , upper.tri, transpose))
 
 setMethod("chol",
           c(x = "mag"),
           function (x, ...)
-              chol(.arf(x), ...))
+              chol(arf(x), ...))
 
 setMethod("chol2inv",
           c(x = "mag"),
           function (x, ...)
-              chol2inv(.arf(x), ...))
+              chol2inv(arf(x), ...))
 
 setAs("ANY", "mag",
       function (from)
@@ -279,9 +279,9 @@ setMatrixOpsMethod(
               g <- get(.Generic, mode = "function")
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(.arf(x), .arf(y)),
+                         g(arf(x), arf(y)),
                      "complex" =
-                         g(.acf(x), .acf(y)),
+                         g(acf(x), acf(y)),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "mag"),
                           domain = NA))
@@ -292,12 +292,12 @@ setMatrixOpsMethod(
           function (x, y) {
               g <- get(.Generic, mode = "function")
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(g(.arf(x)))
+                  return(g(arf(x)))
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         g(.arf(x), .arf(y)),
+                         g(arf(x), arf(y)),
                      "complex" =
-                         g(.acf(x), .acf(y)),
+                         g(acf(x), acf(y)),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    deparse(as.name(.Generic), backtick = TRUE), "mag", if (isS4(y)) class(y) else typeof(y)),
                           domain = NA))
@@ -306,47 +306,47 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "mag", y = "ulong"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+              get(.Generic, mode = "function")(arf(x), arf(y)))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "slong"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+              get(.Generic, mode = "function")(arf(x), arf(y)))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "fmpz"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+              get(.Generic, mode = "function")(arf(x), arf(y)))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "fmpq"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+              get(.Generic, mode = "function")(arf(x), arf(y)))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "mag"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+              get(.Generic, mode = "function")(arf(x), arf(y)))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "arf"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), y))
+              get(.Generic, mode = "function")(arf(x), y))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "acf"),
           function (x, y)
-              get(.Generic, mode = "function")(.acf(x), y))
+              get(.Generic, mode = "function")(acf(x), y))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "arb"),
           function (x, y)
-              get(.Generic, mode = "function")(.arb(x), y))
+              get(.Generic, mode = "function")(arb(x), y))
 
 setMatrixOpsMethod(
           c(x = "mag", y = "acb"),
           function (x, y)
-              get(.Generic, mode = "function")(.acb(x), y))
+              get(.Generic, mode = "function")(acb(x), y))
 
 setMethod("mean",
           c(x = "mag"),
@@ -371,9 +371,9 @@ setMethod("solve",
           function (a, b, ...)
               switch(typeof(a),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         solve(.arf(a), .arf(b), ...),
+                         solve(arf(a), arf(b), ...),
                      "complex" =
-                         solve(.acf(a), .acf(b), ...),
+                         solve(acf(a), acf(b), ...),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "solve", if (isS4(a)) class(a) else typeof(b), "mag"),
                           domain = NA)))
@@ -382,12 +382,12 @@ setMethod("solve",
           c(a = "mag", b = "ANY"),
           function (a, b, ...) {
               if (missing(b))
-                  return(solve(.arf(a), ...))
+                  return(solve(arf(a), ...))
               switch(typeof(b),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
-                         solve(.arf(a), .arf(b), ...),
+                         solve(arf(a), arf(b), ...),
                      "complex" =
-                         solve(.acf(a), .acf(b), ...),
+                         solve(acf(a), acf(b), ...),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "solve", "mag", if (isS4(b)) class(b) else typeof(b)),
                           domain = NA))
@@ -396,44 +396,44 @@ setMethod("solve",
 setMethod("solve",
           c(a = "mag", b = "ulong"),
           function (a, b, ...)
-              solve(.arf(a), .arf(b), ...))
+              solve(arf(a), arf(b), ...))
 
 setMethod("solve",
           c(a = "mag", b = "slong"),
           function (a, b, ...)
-              solve(.arf(a), .arf(b), ...))
+              solve(arf(a), arf(b), ...))
 
 setMethod("solve",
           c(a = "mag", b = "fmpz"),
           function (a, b, ...)
-              solve(.arf(a), .arf(b), ...))
+              solve(arf(a), arf(b), ...))
 
 setMethod("solve",
           c(a = "mag", b = "fmpq"),
           function (a, b, ...)
-              solve(.arf(a), .arf(b), ...))
+              solve(arf(a), arf(b), ...))
 
 setMethod("solve",
           c(a = "mag", b = "mag"),
           function (a, b, ...)
-              solve(.arf(a), .arf(b), ...))
+              solve(arf(a), arf(b), ...))
 
 setMethod("solve",
           c(a = "mag", b = "arf"),
           function (a, b, ...)
-              solve(.arf(a), b, ...))
+              solve(arf(a), b, ...))
 
 setMethod("solve",
           c(a = "mag", b = "acf"),
           function (a, b, ...)
-              solve(.acf(a), b, ...))
+              solve(acf(a), b, ...))
 
 setMethod("solve",
           c(a = "mag", b = "arb"),
           function (a, b, ...)
-              solve(.arb(a), b, ...))
+              solve(arb(a), b, ...))
 
 setMethod("solve",
           c(a = "mag", b = "acb"),
           function (a, b, ...)
-              solve(.acb(a), b, ...))
+              solve(acb(a), b, ...))

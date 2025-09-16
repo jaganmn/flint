@@ -1,8 +1,7 @@
 \name{acb-class}
 \alias{acb-class}
 \alias{acb}
-\alias{.acb}
-\alias{.acb.array}
+\alias{acb.array}
 \alias{!,acb-method}
 \alias{\%*\%,ANY,acb-method}
 \alias{\%*\%,acb,ANY-method}
@@ -107,9 +106,9 @@
 \usage{
 ## Class generator functions
 
-.acb(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
+acb(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
 
-.acb.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
+acb.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
 }
 \arguments{
   \item{x}{
@@ -143,26 +142,27 @@
   An \code{acb} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.acb}: \preformatted{.acb()
-.acb(length=)
-.acb(x)
-.acb(x, length=)
-.acb(real=, imag=)
-.acb(real=, imag=, length=)}
+  The class generator function has six distinct usages:
+  \preformatted{acb()
+acb(length=)
+acb(x)
+acb(x, length=)
+acb(real=, imag=)
+acb(real=, imag=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
   fourth usage converts \code{x}, recycling its elements to the
   indicated length and discarding its dimensions, dimension names, and
   names.  The fifth and sixth usages, in which either of \code{real} and
-  \code{imag} can be missing, use \code{\link{.arb}(real)} and
-  \code{\link{.arb}(imag)} to separately initialize the real and
+  \code{imag} can be missing, use \code{\link{arb}(real)} and
+  \code{\link{arb}(imag)} to separately initialize the real and
   imaginary parts of the \code{acb} return value.
 
   Attempts to recycle \code{real}, \code{imag}, or \code{x} of length
   zero to nonzero length are an error.
 
-  Usage of \code{.acb.array} is modelled after \code{\link{array}}.
+  Usage of \code{acb.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Real numbers and real and imaginary parts of complex numbers are
@@ -304,7 +304,7 @@
       \code{x} (discarding imaginary parts of diagonal entries).}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acb")}:\cr
-      returns the value of \code{.acb(from)}.}
+      returns the value of \code{acb(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "acb")}:\cr
       returns an \code{acb} vector or array containing the column sums

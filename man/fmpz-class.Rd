@@ -1,8 +1,7 @@
 \name{fmpz-class}
 \alias{fmpz-class}
 \alias{fmpz}
-\alias{.fmpz}
-\alias{.fmpz.array}
+\alias{fmpz.array}
 \alias{!,fmpz-method}
 \alias{\%*\%,ANY,fmpz-method}
 \alias{\%*\%,fmpz,ANY-method}
@@ -102,9 +101,9 @@
 \usage{
 ## Class generator functions
 
-.fmpz(x = 0L, length = 0L, names = NULL)
+fmpz(x = 0L, length = 0L, names = NULL)
 
-.fmpz.array(x = 0L, dim = length(x), dimnames = NULL)
+fmpz.array(x = 0L, dim = length(x), dimnames = NULL)
 }
 \arguments{
   \item{x}{
@@ -134,10 +133,11 @@
   An \code{fmpz} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.fmpz}: \preformatted{.fmpz()
-.fmpz(length=)
-.fmpz(x)
-.fmpz(x, length=)}
+  The class generator function has four distinct usages:
+  \preformatted{fmpz()
+fmpz(length=)
+fmpz(x)
+fmpz(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
@@ -146,7 +146,7 @@
   names.  Attempts to recycle \code{x} of length zero to nonzero length
   are an error.
 
-  Usage of \code{.fmpz.array} is modelled after \code{\link{array}}.
+  Usage of \code{fmpz.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Real numbers and real parts of complex numbers are rounded in the
@@ -266,7 +266,7 @@
       as \code{tcrossprod(backsolve(x))}.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpz")}:\cr
-      returns the value of \code{.fmpz(from)}.}
+      returns the value of \code{fmpz(from)}.}
     \item{\code{colSums}}{
       \code{signature(x = "fmpz")}:\cr
       returns an \code{fmpz} vector or array containing the column sums

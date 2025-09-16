@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2025-08-07 r88529) -- "Unsuffered Consequences"
+R Under development (unstable) (2025-09-12 r88822) -- "Unsuffered Consequences"
 Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: aarch64-apple-darwin23.6.0
 
@@ -16,13 +16,20 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(flint)
+
+Attaching package: 'flint'
+
+The following object is masked from 'package:stats':
+
+    acf
+
 > options(flint.Rdiff = TRUE)
 > 
 > p. <- c(0L, as.integer(cumprod(rep(c(1, 2), c(1L, 30L)))))
-> p <- .ulong(p.)
+> p <- ulong(p.)
 > 
 > vv <- withVisible(print(p))
-class "ulong", length 32, address <pointer: 0x6000003da800>
+class "ulong", length 32, address <pointer: 0x600002dce800>
  [1]          0          1          2          4          8         16
  [7]         32         64        128        256        512       1024
 [13]       2048       4096       8192      16384      32768      65536
@@ -31,7 +38,7 @@ class "ulong", length 32, address <pointer: 0x6000003da800>
 [31]  536870912 1073741824
 > stopifnot(identical(vv$value,    p), identical(vv$visible, FALSE))
 > vv <- withVisible( show(p))
-class "ulong", length 32, address <pointer: 0x6000003da800>
+class "ulong", length 32, address <pointer: 0x600002dce800>
  [1]          0          1          2          4          8         16
  [7]         32         64        128        256        512       1024
 [13]       2048       4096       8192      16384      32768      65536
@@ -43,8 +50,8 @@ class "ulong", length 32, address <pointer: 0x6000003da800>
 > x. <- c(-rev(p.), p.)
 > for (.cl in c("slong", "fmpz", "fmpq", "mag", "arf", "acf",
 +               "arb", "acb"))
-+     print(.flint(.cl, x.))
-class "slong", length 64, address <pointer: 0x12e8ab030>
++     print(flint(.cl, x.))
+class "slong", length 64, address <pointer: 0x13bf173e0>
  [1] -1073741824  -536870912  -268435456  -134217728   -67108864   -33554432
  [7]   -16777216    -8388608    -4194304    -2097152    -1048576     -524288
 [13]     -262144     -131072      -65536      -32768      -16384       -8192
@@ -56,7 +63,7 @@ class "slong", length 64, address <pointer: 0x12e8ab030>
 [49]       32768       65536      131072      262144      524288     1048576
 [55]     2097152     4194304     8388608    16777216    33554432    67108864
 [61]   134217728   268435456   536870912  1073741824
-class "fmpz", length 64, address <pointer: 0x12e8ab930>
+class "fmpz", length 64, address <pointer: 0x13bf17ce0>
  [1] -1073741824  -536870912  -268435456  -134217728   -67108864   -33554432
  [7]   -16777216    -8388608    -4194304    -2097152    -1048576     -524288
 [13]     -262144     -131072      -65536      -32768      -16384       -8192
@@ -68,7 +75,7 @@ class "fmpz", length 64, address <pointer: 0x12e8ab930>
 [49]       32768       65536      131072      262144      524288     1048576
 [55]     2097152     4194304     8388608    16777216    33554432    67108864
 [61]   134217728   268435456   536870912  1073741824
-class "fmpq", length 64, address <pointer: 0x12d033400>
+class "fmpq", length 64, address <pointer: 0x13eb32a00>
  [1] -1073741824/1  -536870912/1  -268435456/1  -134217728/1   -67108864/1
  [6]   -33554432/1   -16777216/1    -8388608/1    -4194304/1    -2097152/1
 [11]    -1048576/1     -524288/1     -262144/1     -131072/1      -65536/1
@@ -82,7 +89,7 @@ class "fmpq", length 64, address <pointer: 0x12d033400>
 [51]      131072/1      262144/1      524288/1     1048576/1     2097152/1
 [56]     4194304/1     8388608/1    16777216/1    33554432/1    67108864/1
 [61]   134217728/1   268435456/1   536870912/1  1073741824/1
-class "mag", length 64, address <pointer: 0x12d0caa00>
+class "mag", length 64, address <pointer: 0x13e22be00>
  [1] 1.073742e+9 5.368710e+8 2.684355e+8 1.342178e+8 6.710887e+7 3.355444e+7
  [7] 1.677722e+7 8.388608e+6 4.194304e+6 2.097152e+6 1.048576e+6 5.242880e+5
 [13] 2.621440e+5 1.310720e+5 6.553600e+4 3.276800e+4 1.638400e+4 8.192000e+3
@@ -94,7 +101,7 @@ class "mag", length 64, address <pointer: 0x12d0caa00>
 [49] 3.276800e+4 6.553600e+4 1.310720e+5 2.621440e+5 5.242880e+5 1.048576e+6
 [55] 2.097152e+6 4.194304e+6 8.388608e+6 1.677722e+7 3.355444e+7 6.710887e+7
 [61] 1.342178e+8 2.684355e+8 5.368710e+8 1.073742e+9
-class "arf", length 64, address <pointer: 0x12ce69a00>
+class "arf", length 64, address <pointer: 0x13d734200>
  [1] -1.073742e+9 -5.368709e+8 -2.684355e+8 -1.342177e+8 -6.710886e+7
  [6] -3.355443e+7 -1.677722e+7 -8.388608e+6 -4.194304e+6 -2.097152e+6
 [11] -1.048576e+6 -5.242880e+5 -2.621440e+5 -1.310720e+5 -6.553600e+4
@@ -108,7 +115,7 @@ class "arf", length 64, address <pointer: 0x12ce69a00>
 [51]  1.310720e+5  2.621440e+5  5.242880e+5  1.048576e+6  2.097152e+6
 [56]  4.194304e+6  8.388608e+6  1.677722e+7  3.355443e+7  6.710886e+7
 [61]  1.342177e+8  2.684355e+8  5.368709e+8  1.073742e+9
-class "acf", length 64, address <pointer: 0x12c8c1000>
+class "acf", length 64, address <pointer: 0x13eb23c00>
  [1] -1.073742e+9+0.000000e+0i -5.368709e+8+0.000000e+0i
  [3] -2.684355e+8+0.000000e+0i -1.342177e+8+0.000000e+0i
  [5] -6.710886e+7+0.000000e+0i -3.355443e+7+0.000000e+0i
@@ -141,7 +148,7 @@ class "acf", length 64, address <pointer: 0x12c8c1000>
 [59]  3.355443e+7+0.000000e+0i  6.710886e+7+0.000000e+0i
 [61]  1.342177e+8+0.000000e+0i  2.684355e+8+0.000000e+0i
 [63]  5.368709e+8+0.000000e+0i  1.073742e+9+0.000000e+0i
-class "arb", length 64, address <pointer: 0x12cf4f800>
+class "arb", length 64, address <pointer: 0x13cb14000>
  [1] (-1.073742e+9 +/- 0.000000e+0) (-5.368709e+8 +/- 0.000000e+0)
  [3] (-2.684355e+8 +/- 0.000000e+0) (-1.342177e+8 +/- 0.000000e+0)
  [5] (-6.710886e+7 +/- 0.000000e+0) (-3.355443e+7 +/- 0.000000e+0)
@@ -174,7 +181,7 @@ class "arb", length 64, address <pointer: 0x12cf4f800>
 [59] ( 3.355443e+7 +/- 0.000000e+0) ( 6.710886e+7 +/- 0.000000e+0)
 [61] ( 1.342177e+8 +/- 0.000000e+0) ( 2.684355e+8 +/- 0.000000e+0)
 [63] ( 5.368709e+8 +/- 0.000000e+0) ( 1.073742e+9 +/- 0.000000e+0)
-class "acb", length 64, address <pointer: 0x13ca57800>
+class "acb", length 64, address <pointer: 0x13cf5f200>
  [1] (-1.073742e+9 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
  [2] (-5.368709e+8 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
  [3] (-2.684355e+8 +/- 0.000000e+0)+(0.000000e+0 +/- 0.000000e+0)i
@@ -243,7 +250,7 @@ class "acb", length 64, address <pointer: 0x13ca57800>
 > prec <- as.integer(cumprod(rep(c(1, 2), c(1L, 15L))))
 > e... <- arb_const_e(prec)
 > print(e..., digits = 32L)
-class "arb", length 16, address <pointer: 0x12e8b45f0>
+class "arb", length 16, address <pointer: 0x13bf200c0>
  [1] (2.0000000000000000000000000000000e+0 +/- 2.0000000037252902984619140625000e+0000)
  [2] (2.0000000000000000000000000000000e+0 +/- 1.0000000018626451492309570312500e+0000)
  [3] (2.5000000000000000000000000000000e+0 +/- 2.5000000046566128730773925781250e-0001)
@@ -263,4 +270,4 @@ class "arb", length 16, address <pointer: 0x12e8b45f0>
 > 
 > proc.time()
    user  system elapsed 
-  0.218   0.020   0.237 
+  0.281   0.026   0.306 

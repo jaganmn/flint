@@ -4,19 +4,19 @@ n <- 4L
 x. <- y. <- z. <- seq_len(n)
 names(y.) <- letters[    seq_len(n)]
 names(z.) <- letters[n + seq_len(n)]
-x <- .slong(x.)
-y <- .slong(y.)
-z <- .slong(z.)
+x <- slong(x.)
+y <- slong(y.)
+z <- slong(z.)
 
 stopifnot(identical(length(x), n),
           flintIdentical(`length<-`(x, 1L),
-                         .slong(x.[1L])),
+                         slong(x.[1L])),
           flintIdentical(`length<-`(y, 1L),
-                         .slong(y.[1L])),
+                         slong(y.[1L])),
           flintIdentical(`length<-`(x, n + n),
-                         .slong(c(x., integer(n)))),
+                         slong(c(x., integer(n)))),
           flintIdentical(`length<-`(y, n + n),
-                         .slong(c(y., integer(n)))),
+                         slong(c(y., integer(n)))),
           identical(x@names, NULL),
           identical(names(x), NULL),
           identical(y@names, names(y.)),

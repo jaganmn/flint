@@ -58,8 +58,8 @@ dler <- acb_dirichlet_lerch_phi
 
 ## Somewhat famous particular values :
 debugging <- tolower(Sys.getenv("R_FLINT_CHECK_EXTRA")) == "true"
-     s <- .acb(x = c(   -1,    0,      2,       4))
-zeta.s <- .acb(x = c(-1/12, -1/2, pi^2/6, pi^4/90))
+     s <- acb(x = c(   -1,    0,      2,       4))
+zeta.s <- acb(x = c(-1/12, -1/2, pi^2/6, pi^4/90))
 stopifnot(all.equal(dzet(   s   ), zeta.s),
           all.equal(dhur(   s, 1), zeta.s),
           !debugging ||
@@ -74,7 +74,7 @@ eps <- 0x1p-4
 a    <- flint:::complex.runif(r, modulus = c(    0, 1/eps))
 z.l1 <- flint:::complex.runif(r, modulus = c(    0, 1-eps))
 z.g1 <- flint:::complex.runif(r, modulus = c(1+eps, 1/eps))
-z <- .acb(x = c(z.l1, z.g1))
+z <- acb(x = c(z.l1, z.g1))
 
 ## A relation with the hypergeometric function from
 ##   http://dlmf.nist.gov/25.14.E3_3 :

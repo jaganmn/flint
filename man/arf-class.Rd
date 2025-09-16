@@ -1,8 +1,7 @@
 \name{arf-class}
 \alias{arf-class}
 \alias{arf}
-\alias{.arf}
-\alias{.arf.array}
+\alias{arf.array}
 \alias{!,arf-method}
 \alias{\%*\%,ANY,arf-method}
 \alias{\%*\%,arf,ANY-method}
@@ -103,9 +102,9 @@
 \usage{
 ## Class generator functions
 
-.arf(x = 0, length = 0L, names = NULL)
+arf(x = 0, length = 0L, names = NULL)
 
-.arf.array(x = 0, dim = length(x), dimnames = NULL)
+arf.array(x = 0, dim = length(x), dimnames = NULL)
 }
 \arguments{
   \item{x}{
@@ -135,10 +134,11 @@
   A \code{arf} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.arf}: \preformatted{.arf()
-.arf(length=)
-.arf(x)
-.arf(x, length=)}
+  The class generator function has four distinct usages:
+  \preformatted{arf()
+arf(length=)
+arf(x)
+arf(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
@@ -147,7 +147,7 @@
   names.  Attempts to recycle \code{x} of length zero to nonzero length
   are an error.
 
-  Usage of \code{.arf.array} is modelled after \code{\link{array}}.
+  Usage of \code{arf.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Real numbers and real parts of complex numbers are rounded according
@@ -204,7 +204,7 @@
       \code{\link[methods]{S4groupGeneric}}.  Notably, the logarithmic,
       exponential, (inverse) trigonometric, (inverse) hyperbolic, and
       gamma-related member functions are not yet implemented.  Users
-      wanting those can (for now) operate on \code{\link{.arb}(x)}.}
+      wanting those can (for now) operate on \code{\link{arb}(x)}.}
     \item{\code{Math2}}{
       \code{signature(x = "arf")}:\cr
       decimal rounding according to a second argument \code{digits}; see
@@ -272,7 +272,7 @@
       \code{x}.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
-      returns the value of \code{.arf(from)}.}
+      returns the value of \code{arf(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "arf")}:\cr
       returns an \code{arf} vector or array containing the column sums

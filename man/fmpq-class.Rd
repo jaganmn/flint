@@ -1,8 +1,7 @@
 \name{fmpq-class}
 \alias{fmpq-class}
 \alias{fmpq}
-\alias{.fmpq}
-\alias{.fmpq.array}
+\alias{fmpq.array}
 \alias{!,fmpq-method}
 \alias{\%*\%,ANY,fmpq-method}
 \alias{\%*\%,fmpq,ANY-method}
@@ -103,9 +102,9 @@
 \usage{
 ## Class generator functions
 
-.fmpq(x = 0L, length = 0L, names = NULL, num = 0L, den = 1L)
+fmpq(x = 0L, length = 0L, names = NULL, num = 0L, den = 1L)
 
-.fmpq.array(x = 0L, dim = length(x), dimnames = NULL, num = 0L, den = 1L)
+fmpq.array(x = 0L, dim = length(x), dimnames = NULL, num = 0L, den = 1L)
 }
 \arguments{
   \item{x}{
@@ -140,26 +139,27 @@
   An \code{fmpq} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.fmpq}: \preformatted{.fmpq()
-.fmpq(length=)
-.fmpq(x)
-.fmpq(x, length=)
-.fmpq(num=, den=)
-.fmpq(num=, den=, length=)}
+  The class generator function has six distinct usages:
+  \preformatted{fmpq()
+fmpq(length=)
+fmpq(x)
+fmpq(x, length=)
+fmpq(num=, den=)
+fmpq(num=, den=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
   fourth usage converts \code{x}, recycling its elements to the
   indicated length and discarding its dimensions, dimension names, and
   names.  The fifth and sixth usages, in which either of \code{num} and
-  \code{den} can be missing, use \code{\link{.fmpz}(num)} and
-  \code{\link{.fmpz}(den)} to separately initialize the numerators and
+  \code{den} can be missing, use \code{\link{fmpz}(num)} and
+  \code{\link{fmpz}(den)} to separately initialize the numerators and
   denominators of the \code{fmpq} return value.
 
   Attempts to recycle \code{num}, \code{den}, or \code{x} of length zero
   to nonzero length are an error.
 
-  Usage of \code{.fmpq.array} is modelled after \code{\link{array}}.
+  Usage of \code{fmpq.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Real numbers and real parts of complex numbers are converted exactly,
@@ -281,7 +281,7 @@
       as \code{tcrossprod(backsolve(x))}.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "fmpq")}:\cr
-      returns the value of \code{.fmpq(from)}.}
+      returns the value of \code{fmpq(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "fmpq")}:\cr
       returns an \code{fmpq} vector or array containing the column sums

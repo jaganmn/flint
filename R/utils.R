@@ -92,7 +92,7 @@ flintLengthAny <-
 function (object, exact = TRUE) {
     if (is.na(flintClass(object))) {
         n <- length(object)
-        if (exact) .ulong(n) else n
+        if (exact) ulong(n) else n
     }
     else flintLength(object, exact = exact)
 }

@@ -37,13 +37,13 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =
-                         g(.ulong(e1), e2),
+                         g(ulong(e1), e2),
                      "logical" =, "integer" =
-                         g(.fmpz(e1), .fmpz(e2)),
+                         g(fmpz(e1), fmpz(e2)),
                      "double" =
-                         g(.arf(e1), .arf(e2)),
+                         g(arf(e1), arf(e2)),
                      "complex" =
-                         g(.acf(e1), .acf(e2)),
+                         g(acf(e1), acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "ulong"),
                           domain = NA))
@@ -55,13 +55,13 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =
-                         g(e1, .ulong(e2)),
+                         g(e1, ulong(e2)),
                      "logical" =, "integer" =
-                         g(.fmpz(e1), .fmpz(e2)),
+                         g(fmpz(e1), fmpz(e2)),
                      "double" =
-                         g(.arf(e1), .arf(e2)),
+                         g(arf(e1), arf(e2)),
                      "complex" =
-                         g(.acf(e1), .acf(e2)),
+                         g(acf(e1), acf(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "ulong", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -75,42 +75,42 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "ulong", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(e1), .fmpz(e2)))
+              get(.Generic, mode = "function")(fmpz(e1), fmpz(e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpz(e1), e2))
+              get(.Generic, mode = "function")(fmpz(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.fmpq(e1), e2))
+              get(.Generic, mode = "function")(fmpq(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), .arf(e2)))
+              get(.Generic, mode = "function")(arf(e1), arf(e2)))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arf(e1), e2))
+              get(.Generic, mode = "function")(arf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acf(e1), e2))
+              get(.Generic, mode = "function")(acf(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.arb(e1), e2))
+              get(.Generic, mode = "function")(arb(e1), e2))
 
 setMethod("Ops",
           c(e1 = "ulong", e2 = "acb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(.acb(e1), e2))
+              get(.Generic, mode = "function")(acb(e1), e2))
 
 setMethod("Summary",
           c(x = "ulong"),
@@ -140,11 +140,11 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               switch(typeof(r),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose),
+                         backsolve(fmpz(r), fmpz(x), , upper.tri, transpose),
                      "double" =
-                         backsolve(.arf(r), .arf(x), , upper.tri, transpose),
+                         backsolve(arf(r), arf(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acf(r), .acf(x), , upper.tri, transpose),
+                         backsolve(acf(r), acf(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", if (isS4(r)) class(r) else typeof(r), "ulong"),
                           domain = NA)))
@@ -153,14 +153,14 @@ setMethod("backsolve",
           c(r = "ulong", x = "ANY"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE) {
               if (missing(x))
-                  return(backsolve(.fmpz(r), , , upper.tri, transpose))
+                  return(backsolve(fmpz(r), , , upper.tri, transpose))
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose),
+                         backsolve(fmpz(r), fmpz(x), , upper.tri, transpose),
                      "double" =
-                         backsolve(.arf(r), .arf(x), , upper.tri, transpose),
+                         backsolve(arf(r), arf(x), , upper.tri, transpose),
                      "complex" =
-                         backsolve(.acf(r), .acf(x), , upper.tri, transpose),
+                         backsolve(acf(r), acf(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", "ulong", if (isS4(x)) class(x) else typeof(x)),
                           domain = NA))
@@ -169,52 +169,52 @@ setMethod("backsolve",
 setMethod("backsolve",
           c(r = "ulong", x = "ulong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose))
+              backsolve(fmpz(r), fmpz(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "slong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpz(r), .fmpz(x), , upper.tri, transpose))
+              backsolve(fmpz(r), fmpz(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "fmpz"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpz(r), x, , upper.tri, transpose))
+              backsolve(fmpz(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "fmpq"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.fmpq(r), x, , upper.tri, transpose))
+              backsolve(fmpq(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "mag"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), .arf(x), , upper.tri, transpose))
+              backsolve(arf(r), arf(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "arf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arf(r), x, , upper.tri, transpose))
+              backsolve(arf(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "acf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acf(r), x, , upper.tri, transpose))
+              backsolve(acf(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "arb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.arb(r), x, , upper.tri, transpose))
+              backsolve(arb(r), x, , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "ulong", x = "acb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(.acb(r), x, , upper.tri, transpose))
+              backsolve(acb(r), x, , upper.tri, transpose))
 
 setMethod("chol",
           c(x = "ulong"),
           function (x, ...)
-              chol(.arf(x), ...))
+              chol(arf(x), ...))
 
 setMethod("chol2inv",
           c(x = "ulong"),
@@ -279,11 +279,11 @@ setMatrixOpsMethod(
               g <- get(.Generic, mode = "function")
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(.fmpz(x), .fmpz(y)),
+                         g(fmpz(x), fmpz(y)),
                      "double" =
-                         g(.arf(x), .arf(y)),
+                         g(arf(x), arf(y)),
                      "complex" =
-                         g(.acf(x), .acf(y)),
+                         g(acf(x), acf(y)),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "ulong"),
                           domain = NA))
@@ -294,14 +294,14 @@ setMatrixOpsMethod(
           function (x, y) {
               g <- get(.Generic, mode = "function")
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(g(.fmpz(x)))
+                  return(g(fmpz(x)))
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         g(.fmpz(x), .fmpz(y)),
+                         g(fmpz(x), fmpz(y)),
                      "double" =
-                         g(.arf(x), .arf(y)),
+                         g(arf(x), arf(y)),
                      "complex" =
-                         g(.acf(x), .acf(y)),
+                         g(acf(x), acf(y)),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    deparse(as.name(.Generic), backtick = TRUE), "ulong", if (isS4(y)) class(y) else typeof(y)),
                           domain = NA))
@@ -310,47 +310,47 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "ulong", y = "ulong"),
           function (x, y)
-              get(.Generic, mode = "function")(.fmpz(x), .fmpz(y)))
+              get(.Generic, mode = "function")(fmpz(x), fmpz(y)))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "slong"),
           function (x, y)
-              get(.Generic, mode = "function")(.fmpz(x), .fmpz(y)))
+              get(.Generic, mode = "function")(fmpz(x), fmpz(y)))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "fmpz"),
           function (x, y)
-              get(.Generic, mode = "function")(.fmpz(x), y))
+              get(.Generic, mode = "function")(fmpz(x), y))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "fmpq"),
           function (x, y)
-              get(.Generic, mode = "function")(.fmpq(x), y))
+              get(.Generic, mode = "function")(fmpq(x), y))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "mag"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), .arf(y)))
+              get(.Generic, mode = "function")(arf(x), arf(y)))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "arf"),
           function (x, y)
-              get(.Generic, mode = "function")(.arf(x), y))
+              get(.Generic, mode = "function")(arf(x), y))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "acf"),
           function (x, y)
-              get(.Generic, mode = "function")(.acf(x), y))
+              get(.Generic, mode = "function")(acf(x), y))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "arb"),
           function (x, y)
-              get(.Generic, mode = "function")(.arb(x), y))
+              get(.Generic, mode = "function")(arb(x), y))
 
 setMatrixOpsMethod(
           c(x = "ulong", y = "acb"),
           function (x, y)
-              get(.Generic, mode = "function")(.acb(x), y))
+              get(.Generic, mode = "function")(acb(x), y))
 
 setMethod("mean",
           c(x = "ulong"),
@@ -375,11 +375,11 @@ setMethod("solve",
           function (a, b, ...)
               switch(typeof(a),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         solve(.fmpz(a), .fmpz(b), ...),
+                         solve(fmpz(a), fmpz(b), ...),
                      "double" =
-                         solve(.arf(a), .arf(b), ...),
+                         solve(arf(a), arf(b), ...),
                      "complex" =
-                         solve(.acf(a), .acf(b), ...),
+                         solve(acf(a), acf(b), ...),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "solve", if (isS4(a)) class(a) else typeof(b), "ulong"),
                           domain = NA)))
@@ -388,14 +388,14 @@ setMethod("solve",
           c(a = "ulong", b = "ANY"),
           function (a, b, ...) {
               if (missing(b))
-                  return(solve(.fmpz(a), ...))
+                  return(solve(fmpz(a), ...))
               switch(typeof(b),
                      "NULL" =, "raw" =, "logical" =, "integer" =
-                         solve(.fmpz(a), .fmpz(b), ...),
+                         solve(fmpz(a), fmpz(b), ...),
                      "double" =
-                         solve(.arf(a), .arf(b), ...),
+                         solve(arf(a), arf(b), ...),
                      "complex" =
-                         solve(.acf(a), .acf(b), ...),
+                         solve(acf(a), acf(b), ...),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "solve", "ulong", if (isS4(b)) class(b) else typeof(b)),
                           domain = NA))
@@ -404,44 +404,44 @@ setMethod("solve",
 setMethod("solve",
           c(a = "ulong", b = "ulong"),
           function (a, b, ...)
-              solve(.fmpz(a), .fmpz(b), ...))
+              solve(fmpz(a), fmpz(b), ...))
 
 setMethod("solve",
           c(a = "ulong", b = "slong"),
           function (a, b, ...)
-              solve(.fmpz(a), .fmpz(b), ...))
+              solve(fmpz(a), fmpz(b), ...))
 
 setMethod("solve",
           c(a = "ulong", b = "fmpz"),
           function (a, b, ...)
-              solve(.fmpz(a), b, ...))
+              solve(fmpz(a), b, ...))
 
 setMethod("solve",
           c(a = "ulong", b = "fmpq"),
           function (a, b, ...)
-              solve(.fmpq(a), b, ...))
+              solve(fmpq(a), b, ...))
 
 setMethod("solve",
           c(a = "ulong", b = "mag"),
           function (a, b, ...)
-              solve(.arf(a), .arf(b), ...))
+              solve(arf(a), arf(b), ...))
 
 setMethod("solve",
           c(a = "ulong", b = "arf"),
           function (a, b, ...)
-              solve(.arf(a), b, ...))
+              solve(arf(a), b, ...))
 
 setMethod("solve",
           c(a = "ulong", b = "acf"),
           function (a, b, ...)
-              solve(.acf(a), b, ...))
+              solve(acf(a), b, ...))
 
 setMethod("solve",
           c(a = "ulong", b = "arb"),
           function (a, b, ...)
-              solve(.arb(a), b, ...))
+              solve(arb(a), b, ...))
 
 setMethod("solve",
           c(a = "ulong", b = "acb"),
           function (a, b, ...)
-              solve(.acb(a), b, ...))
+              solve(acb(a), b, ...))

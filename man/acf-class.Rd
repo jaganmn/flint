@@ -1,8 +1,7 @@
 \name{acf-class}
 \alias{acf-class}
 \alias{acf}
-\alias{.acf}
-\alias{.acf.array}
+\alias{acf.array}
 \alias{!,acf-method}
 \alias{\%*\%,ANY,acf-method}
 \alias{\%*\%,acf,ANY-method}
@@ -112,9 +111,9 @@
 \usage{
 ## Class generator functions
 
-.acf(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
+acf(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
 
-.acf.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
+acf.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
 }
 \arguments{
   \item{x}{
@@ -148,26 +147,27 @@
   An \code{acf} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.acf}: \preformatted{.acf()
-.acf(length=)
-.acf(x)
-.acf(x, length=)
-.acf(real=, imag=)
-.acf(real=, imag=, length=)}
+  The class generator function has six distinct usages:
+  \preformatted{acf()
+acf(length=)
+acf(x)
+acf(x, length=)
+acf(real=, imag=)
+acf(real=, imag=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
   fourth usage converts \code{x}, recycling its elements to the
   indicated length and discarding its dimensions, dimension names, and
   names.  The fifth and sixth usages, in which either of \code{real} and
-  \code{imag} can be missing, use \code{\link{.arf}(real)} and
-  \code{\link{.arf}(imag)} to separately initialize the real and
+  \code{imag} can be missing, use \code{\link{arf}(real)} and
+  \code{\link{arf}(imag)} to separately initialize the real and
   imaginary parts of the \code{acf} return value.
 
   Attempts to recycle \code{real}, \code{imag}, or \code{x} of length
   zero to nonzero length are an error.
 
-  Usage of \code{.acf.array} is modelled after \code{\link{array}}.
+  Usage of \code{acf.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Real numbers and real and imaginary parts of complex numbers are
@@ -303,7 +303,7 @@
       \code{x} (discarding imaginary parts of diagonal entries).}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "acf")}:\cr
-      returns the value of \code{.acf(from)}.}
+      returns the value of \code{acf(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "acf")}:\cr
       returns an \code{acf} vector or array containing the column sums

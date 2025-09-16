@@ -1,8 +1,7 @@
 \name{mag-class}
 \alias{mag-class}
 \alias{mag}
-\alias{.mag}
-\alias{.mag.array}
+\alias{mag.array}
 \alias{!,mag-method}
 \alias{\%*\%,ANY,mag-method}
 \alias{\%*\%,mag,ANY-method}
@@ -104,9 +103,9 @@
 \usage{
 ## Class generator functions
 
-.mag(x = 0, length = 0L, names = NULL)
+mag(x = 0, length = 0L, names = NULL)
 
-.mag.array(x = 0, dim = length(x), dimnames = NULL)
+mag.array(x = 0, dim = length(x), dimnames = NULL)
 }
 \arguments{
   \item{x}{
@@ -136,10 +135,11 @@
   A \code{mag} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.mag}: \preformatted{.mag()
-.mag(length=)
-.mag(x)
-.mag(x, length=)}
+  The class generator function has four distinct usages:
+  \preformatted{mag()
+mag(length=)
+mag(x)
+mag(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
@@ -148,7 +148,7 @@
   names.  Attempts to recycle \code{x} of length zero to nonzero length
   are an error.
 
-  Usage of \code{.mag.array} is modelled after \code{\link{array}}.
+  Usage of \code{mag.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Magnitudes of real numbers and real parts of complex numbers are
@@ -206,7 +206,7 @@
       upper bound for the absolute value of the exact answer.  Notably,
       the (inverse) trigonometric, (inverse) hyperbolic, and
       gamma-related member functions are not yet implemented.  Users
-      wanting those can (for now) operate on \code{\link{.arb}(x)}.}
+      wanting those can (for now) operate on \code{\link{arb}(x)}.}
     \item{\code{Math2}}{
       \code{signature(x = "mag")}:\cr
       decimal rounding according to a second argument \code{digits}; see
@@ -264,7 +264,7 @@
       dispatches.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
-      returns the value of \code{.mag(from)}.}
+      returns the value of \code{mag(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "mag")}:\cr
       returns a \code{mag} vector or array containing upper bounds on

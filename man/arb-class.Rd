@@ -1,8 +1,7 @@
 \name{arb-class}
 \alias{arb-class}
 \alias{arb}
-\alias{.arb}
-\alias{.arb.array}
+\alias{arb.array}
 \alias{!,arb-method}
 \alias{\%*\%,ANY,arb-method}
 \alias{\%*\%,arb,ANY-method}
@@ -118,9 +117,9 @@
 \usage{
 ## Class generator functions
 
-.arb(x = 0, length = 0L, names = NULL, mid = 0, rad = 0)
+arb(x = 0, length = 0L, names = NULL, mid = 0, rad = 0)
 
-.arb.array(x = 0, dim = length(x), dimnames = NULL, mid = 0, rad = 0)
+arb.array(x = 0, dim = length(x), dimnames = NULL, mid = 0, rad = 0)
 }
 \arguments{
   \item{x}{
@@ -155,26 +154,27 @@
   An \code{arb} vector, possibly an array; see \sQuote{Details}.
 }
 \details{
-  There are six usages of \code{.arb}: \preformatted{.arb()
-.arb(length=)
-.arb(x)
-.arb(x, length=)
-.arb(mid=, mid=)
-.arb(mid=, mid=, length=)}
+  The class generator function has six distinct usages:
+  \preformatted{arb()
+arb(length=)
+arb(x)
+arb(x, length=)
+arb(mid=, mid=)
+arb(mid=, mid=, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
   fourth usage converts \code{x}, recycling its elements to the
   indicated length and discarding its dimensions, dimension names, and
   names.  The fifth and sixth usages, in which either of \code{mid} and
-  \code{rad} can be missing, use \code{\link{.arf}(mid)} and
-  \code{\link{.mag}(rad)} to separately initialize the midpoints and
+  \code{rad} can be missing, use \code{\link{arf}(mid)} and
+  \code{\link{mag}(rad)} to separately initialize the midpoints and
   radii of the \code{arb} return value.
 
   Attempts to recycle \code{mid}, \code{rad}, or \code{x} of length
   zero to nonzero length are an error.
 
-  Usage of \code{.arb.array} is modelled after \code{\link{array}}.
+  Usage of \code{arb.array} is modelled after \code{\link{array}}.
 }
 \section{Conversion}{
   Real numbers and real parts of complex numbers are rounded according
@@ -307,7 +307,7 @@
       \code{x}.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arb")}:\cr
-      returns the value of \code{.arb(from)}.}
+      returns the value of \code{arb(from)}.}
     \item{\code{colSums}, \code{colMeans}}{
       \code{signature(x = "arb")}:\cr
       returns an \code{arb} vector or array containing the column sums

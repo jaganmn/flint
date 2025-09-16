@@ -32,7 +32,7 @@ setMethod("Imag<-",
                   stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
                                 "value", nv, "x", nz),
                        domain = NA)
-              ans <- .acb(real = Real(z), imag = value)
+              ans <- acb(real = Real(z), imag = value)
               ans@dim <- q@dim
               ans@dimnames <- q@dimnames
               ans@names <- q@names
@@ -58,7 +58,7 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e1),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(.acb(e1), e2),
+                         g(acb(e1), e2),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    if (isS4(e1)) class(e1) else typeof(e1), .Generic, "acb"),
                           domain = NA))
@@ -70,7 +70,7 @@ setMethod("Ops",
               g <- get(.Generic, mode = "function")
               switch(typeof(e2),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(e1, .acb(e2)),
+                         g(e1, acb(e2)),
                      stop(gettextf("<%s> %s <%s> is not yet implemented",
                                    "acb", .Generic, if (isS4(e2)) class(e2) else typeof(e2)),
                           domain = NA))
@@ -79,42 +79,42 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "acb", e2 = "ulong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "slong"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "fmpz"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "fmpq"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "mag"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "arf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "acf"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "arb"),
           function (e1, e2)
-              get(.Generic, mode = "function")(e1, .acb(e2)))
+              get(.Generic, mode = "function")(e1, acb(e2)))
 
 setMethod("Ops",
           c(e1 = "acb", e2 = "acb"),
@@ -135,7 +135,7 @@ setMethod("Real<-",
                   stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
                                 "value", nv, "x", nz),
                        domain = NA)
-              ans <- .acb(real = value, imag = Imag(z))
+              ans <- acb(real = value, imag = Imag(z))
               ans@dim <- z@dim
               ans@dimnames <- z@dimnames
               ans@names <- z@names
@@ -170,7 +170,7 @@ setMethod("backsolve",
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
               switch(typeof(r),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         backsolve(.acb(r), x, k, upper.tri, transpose),
+                         backsolve(acb(r), x, k, upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", if (isS4(r)) class(r) else typeof(r), "acb"),
                           domain = NA)))
@@ -182,7 +182,7 @@ setMethod("backsolve",
                   return(.Call(R_flint_acb_ops1, if (transpose) "tbacksolve" else "backsolve", r, list(as.logical(upper.tri))))
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         backsolve(r, .acb(x), , upper.tri, transpose),
+                         backsolve(r, acb(x), , upper.tri, transpose),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "backsolve", "acb", if (isS4(x)) class(x) else typeof(x)),
                           domain = NA))
@@ -191,42 +191,42 @@ setMethod("backsolve",
 setMethod("backsolve",
           c(r = "acb", x = "ulong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "slong"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "fmpz"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "fmpq"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "mag"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "arf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "acf"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "arb"),
           function (r, x, k = ncol(r), upper.tri = TRUE, transpose = FALSE)
-              backsolve(r, .acb(x), , upper.tri, transpose))
+              backsolve(r, acb(x), , upper.tri, transpose))
 
 setMethod("backsolve",
           c(r = "acb", x = "acb"),
@@ -314,7 +314,7 @@ setMatrixOpsMethod(
               g <- get(.Generic, mode = "function")
               switch(typeof(x),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(.acb(x), y),
+                         g(acb(x), y),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    deparse(as.name(.Generic), backtick = TRUE), if (isS4(x)) class(x) else typeof(x), "acb"),
                           domain = NA))
@@ -328,7 +328,7 @@ setMatrixOpsMethod(
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         g(x, .acb(y)),
+                         g(x, acb(y)),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    deparse(as.name(.Generic), backtick = TRUE), "acb", if (isS4(y)) class(y) else typeof(y)),
                           domain = NA))
@@ -337,42 +337,42 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "acb", y = "ulong"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "slong"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "fmpz"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "fmpq"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "mag"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "arf"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "acf"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "arb"),
           function (x, y)
-              get(.Generic, mode = "function")(x, .acb(y)))
+              get(.Generic, mode = "function")(x, acb(y)))
 
 setMatrixOpsMethod(
           c(x = "acb", y = "acb"),
@@ -402,7 +402,7 @@ setMethod("solve",
           function (a, b, ...)
               switch(typeof(a),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         solve(.acb(a), b, ...),
+                         solve(acb(a), b, ...),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "solve", if (isS4(a)) class(a) else typeof(b), "acb"),
                           domain = NA)))
@@ -414,7 +414,7 @@ setMethod("solve",
                   return(.Call(R_flint_acb_ops1, "solve", a, list()))
               switch(typeof(b),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =, "complex" =
-                         solve(a, .acb(b), ...),
+                         solve(a, acb(b), ...),
                      stop(gettextf("%s(<%s>, <%s>) is not yet implemented",
                                    "solve", "acb", if (isS4(b)) class(b) else typeof(b)),
                           domain = NA))
@@ -423,42 +423,42 @@ setMethod("solve",
 setMethod("solve",
           c(a = "acb", b = "ulong"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "slong"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "fmpz"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "fmpq"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "mag"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "arf"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "acf"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "arb"),
           function (a, b, ...)
-              solve(a, .acb(b), ...))
+              solve(a, acb(b), ...))
 
 setMethod("solve",
           c(a = "acb", b = "acb"),

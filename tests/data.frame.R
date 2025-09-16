@@ -3,7 +3,7 @@ options(flint.Rdiff = TRUE)
 
 (L <- sapply(c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
                "arb", "acb"),
-             .flint, seq_len(6L), simplify = FALSE))
+             flint, seq_len(6L), simplify = FALSE))
 (D <- as.data.frame(L))
 stopifnot(identical(as.list(D), L),
           identical(do.call(data.frame, L), D))

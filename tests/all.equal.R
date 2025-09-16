@@ -1,8 +1,8 @@
 library(flint)
 
-x <- .arf(0)
-y <- .arf(1)
-z <- .arf(NaN)
+x <- arf(0)
+y <- arf(1)
+z <- arf(NaN)
 
 `!` <- is.character
 stopifnot( all.equal(x, x),
@@ -14,8 +14,8 @@ stopifnot( all.equal(x, x),
           !all.equal(z, x),
           !all.equal(z, y),
            all.equal(z, z),
-           all.equal(x, .arf(0)),
-          !all.equal(x, .arf(c(0, 0))),
+           all.equal(x, arf(0)),
+          !all.equal(x, arf(c(0, 0))),
            all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "a", 0)),
           !all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "a", 1)),
            all.equal(`attr<-`(x, "a", 0), `attr<-`(x, "a", 1),
@@ -39,10 +39,10 @@ stopifnot( all.equal(x, x),
                      check.attributes = FALSE),
            all.equal(x, 0,
                      check.class      = FALSE),
-          !all.equal(x, .acf(1L)),
-          !all.equal(x, .acf(1L),
+          !all.equal(x, acf(1L)),
+          !all.equal(x, acf(1L),
                      check.attributes = FALSE),
-           all.equal(x, .acf(1L),
+           all.equal(x, acf(1L),
                      check.class      = FALSE),
           !all.equal(x, y, scale = 1),
            all.equal(x, y, scale = 1, tolerance =   1),

@@ -106,9 +106,9 @@ function (x, i, j, ..., drop = TRUE) {
                        else if (ni < nx) {
                            q <- nx %/% ni
                            r <- nx %% ni
-                           w <- w. <- .ulong(w)
+                           w <- w. <- ulong(w)
                            if (q >= 1L)
-                               w <- w + rep(seq(from = .ulong(0L), by = ni, length.out = q), each = flintLength(w))
+                               w <- w + rep(seq(from = ulong(0L), by = ni, length.out = q), each = flintLength(w))
                            if (r >= w[1L])
                                w <- c(w, flintLength(w) + w.[w. <= r])
                        }
@@ -126,7 +126,7 @@ function (x, i, j, ..., drop = TRUE) {
                            any((m <- t(`dim<-`(as.integer(i) - 1L, di))) >= dx))
                            stop(.error.subscriptOutOfBounds(x, 0L, i))
                        else {
-                           m. <- colSums(.ulong(m) * cumprod(.ulong(c(1L, dx[-length(dx)])))) + .ulong(1L)
+                           m. <- colSums(ulong(m) * cumprod(ulong(c(1L, dx[-length(dx)])))) + ulong(1L)
                            if (a < 1L)
                                m.[colSums(m < 1L) == 0L]
                            else m.
@@ -143,7 +143,7 @@ function (x, i, j, ..., drop = TRUE) {
                                stop(.error.subscriptNegativePositive())
                            else if (a + 1L <= -nx)
                                stop(.error.subscriptOutOfBounds(x, 0L, i))
-                           else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
+                           else .Call(R_flint_ulong_complement, ulong(-i), nx, TRUE)
                        }
                    }
                },
@@ -159,7 +159,7 @@ function (x, i, j, ..., drop = TRUE) {
                                anyNA(m)
                            })
                            stop(.error.subscriptOutOfBounds(x, 0L, i))
-                       else colSums(.ulong(m) * cumprod(.ulong(c(1L, dx[-length(dx)])))) + .ulong(1L)
+                       else colSums(ulong(m) * cumprod(ulong(c(1L, dx[-length(dx)])))) + ulong(1L)
                    } else {
                        if (is.null(nms <- names(x)) ||
                            anyNA(m <- match(i, nms)))
@@ -170,7 +170,7 @@ function (x, i, j, ..., drop = TRUE) {
                stop("should never happen ..."))
         if (typeof(x) == "S4") {
             if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                i <- .ulong(i)
+                i <- ulong(i)
             .Call(R_flint_subscript, x, i, 1L)
         } else {
             if (typeof(i) == "S4")
@@ -226,7 +226,7 @@ function (x, i, j, ..., drop = TRUE) {
                                stop(.error.subscriptNegativePositive())
                            else if (a + 1L <= -nx)
                                stop(.error.subscriptOutOfBounds(x, k, i))
-                           else .Call(R_flint_ulong_complement, .ulong(-i), .ulong(nx), TRUE)
+                           else .Call(R_flint_ulong_complement, ulong(-i), ulong(nx), TRUE)
                        }
                    },
                    "character" =
@@ -239,7 +239,7 @@ function (x, i, j, ..., drop = TRUE) {
                    stop("should never happen ..."))
             if (typeof(x) == "S4") {
                 if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                    i <- .ulong(i)
+                    i <- ulong(i)
             } else {
                 if (typeof(i) == "S4")
                     i <- as.integer(i)
@@ -308,7 +308,7 @@ function (x, i, j, ...) {
                            stop(.error.subscriptNegativePositive())
                        else if (a + 1L <= -nx)
                            stop(.error.subscriptOutOfBounds(x, 0L, i))
-                       else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
+                       else .Call(R_flint_ulong_complement, ulong(-i), nx, TRUE)
                    }
                },
                "character" =
@@ -324,7 +324,7 @@ function (x, i, j, ...) {
             stop(if (ni == 0L) .error.subscriptTooFew() else .error.subscriptTooMany())
         if (typeof(x) == "S4") {
             if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                i <- .ulong(i)
+                i <- ulong(i)
             .Call(R_flint_subscript, x, i, 2L)
         } else {
             if (typeof(i) == "S4")
@@ -373,7 +373,7 @@ function (x, i, j, ...) {
                                stop(.error.subscriptNegativePositive())
                            else if (a + 1L <= -nx)
                                stop(.error.subscriptOutOfBounds(x, k, i))
-                           else .Call(R_flint_ulong_complement, .ulong(-i), .ulong(nx), TRUE)
+                           else .Call(R_flint_ulong_complement, ulong(-i), ulong(nx), TRUE)
                        }
                    },
                    "character" =
@@ -392,7 +392,7 @@ function (x, i, j, ...) {
             }
             if (typeof(x) == "S4") {
                 if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                    i <- .ulong(i)
+                    i <- ulong(i)
             } else {
                 if (typeof(i) == "S4")
                     i <- as.integer(i)
@@ -467,9 +467,9 @@ function (x, i, j, ..., value) {
                        else if (ni < nx) {
                            q <- nx %/% ni
                            r <- nx %% ni
-                           w <- w. <- .ulong(w)
+                           w <- w. <- ulong(w)
                            if (q >= 1L)
-                               w <- w + rep(seq(from = .ulong(0L), by = ni, length.out = q), each = flintLength(w))
+                               w <- w + rep(seq(from = ulong(0L), by = ni, length.out = q), each = flintLength(w))
                            if (r >= w[1L])
                                w <- c(w, flintLength(w) + w.[w. <= r])
                        }
@@ -487,7 +487,7 @@ function (x, i, j, ..., value) {
                            any((m <- t(`dim<-`(as.integer(i) - 1L, di))) >= dx))
                            stop(.error.subscriptOutOfBounds(x, 0L, i))
                        else {
-                           m. <- colSums(.ulong(m) * cumprod(.ulong(c(1L, dx[-length(dx)])))) + .ulong(1L)
+                           m. <- colSums(ulong(m) * cumprod(ulong(c(1L, dx[-length(dx)])))) + ulong(1L)
                            if (a < 1L)
                                m.[colSums(m < 1L) == 0L]
                            else m.
@@ -504,7 +504,7 @@ function (x, i, j, ..., value) {
                                stop(.error.subscriptNegativePositive())
                            else if (a + 1L <= -nx)
                                stop(.error.subscriptOutOfBounds(x, 0L, i))
-                           else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
+                           else .Call(R_flint_ulong_complement, ulong(-i), nx, TRUE)
                        }
                    }
                },
@@ -520,7 +520,7 @@ function (x, i, j, ..., value) {
                                anyNA(m)
                            })
                            stop(.error.subscriptOutOfBounds(x, 0L, i))
-                       else colSums(.ulong(m) * cumprod(.ulong(c(1L, dx[-length(dx)])))) + .ulong(1L)
+                       else colSums(ulong(m) * cumprod(ulong(c(1L, dx[-length(dx)])))) + ulong(1L)
                    } else {
                        if (is.null(nms <- names(x)) ||
                            anyNA(m <- match(i, nms)))
@@ -535,7 +535,7 @@ function (x, i, j, ..., value) {
         }
         if (typeof(x) == "S4") {
             if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                i <- .ulong(i)
+                i <- ulong(i)
             .Call(R_flint_subassign, x, i, 1L, value)
         } else {
             if (typeof(i) == "S4")
@@ -594,7 +594,7 @@ function (x, i, j, ..., value) {
                                stop(.error.subscriptNegativePositive())
                            else if (a + 1L <= -nx)
                                stop(.error.subscriptOutOfBounds(x, k, i))
-                           else .Call(R_flint_ulong_complement, .ulong(-i), .ulong(nx), TRUE)
+                           else .Call(R_flint_ulong_complement, ulong(-i), ulong(nx), TRUE)
                        }
                    },
                    "character" =
@@ -610,7 +610,7 @@ function (x, i, j, ..., value) {
                 anyEmpty <- TRUE
             if (typeof(x) == "S4") {
                 if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                    i <- .ulong(i)
+                    i <- ulong(i)
             } else {
                 if (typeof(i) == "S4")
                     i <- as.integer(i)
@@ -694,7 +694,7 @@ function (x, i, j, ..., value) {
                            stop(.error.subscriptNegativePositive())
                        else if (a + 1L <= -nx)
                            stop(.error.subscriptOutOfBounds(x, 0L, i))
-                       else .Call(R_flint_ulong_complement, .ulong(-i), nx, TRUE)
+                       else .Call(R_flint_ulong_complement, ulong(-i), nx, TRUE)
                    }
                },
                "character" =
@@ -715,7 +715,7 @@ function (x, i, j, ..., value) {
         }
         if (typeof(x) == "S4") {
             if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                i <- .ulong(i)
+                i <- ulong(i)
             .Call(R_flint_subassign, x, i, 2L, value)
         } else {
             if (typeof(i) == "S4")
@@ -765,7 +765,7 @@ function (x, i, j, ..., value) {
                                stop(.error.subscriptNegativePositive())
                            else if (a + 1L <= -nx)
                                stop(.error.subscriptOutOfBounds(x, k, i))
-                           else .Call(R_flint_ulong_complement, .ulong(-i), .ulong(nx), TRUE)
+                           else .Call(R_flint_ulong_complement, ulong(-i), ulong(nx), TRUE)
                        }
                    },
                    "character" =
@@ -784,7 +784,7 @@ function (x, i, j, ..., value) {
             }
             if (typeof(x) == "S4") {
                 if (typeof(i) == "S4" && flintClass(i) != "ulong")
-                    i <- .ulong(i)
+                    i <- ulong(i)
             } else {
                 if (typeof(i) == "S4")
                     i <- as.integer(i)
@@ -1209,10 +1209,10 @@ setMethod("cut",
 setAs("ANY", "flint",
       function (from)
           switch(type. <- typeof(from),
-                 "raw" = .ulong(from),
-                 "logical" =, "integer" = .slong(from),
-                 "double" = .arf(from),
-                 "complex" = .acf(from),
+                 "raw" = ulong(from),
+                 "logical" =, "integer" = slong(from),
+                 "double" = arf(from),
+                 "complex" = acf(from),
                  "character" =
                  stop(gettextf("coercion from \"%s\" to \"%s\" is not yet implemented; consider coercing to a nonvirtual subclass of \"%s\"",
                                type., "flint", "flint"),
@@ -1257,7 +1257,7 @@ setMethod("diag<-",
               if (length(d <- x@dim) != 2L)
                   stop(gettextf("'%s' is not a matrix", "x"),
                        domain = NA)
-              i <- .ulong(1L) + .ulong(d[1L]) * .Call(R_flint_ulong_seq, .ulong(0L), .ulong(min(d)), FALSE)
+              i <- ulong(1L) + ulong(d[1L]) * .Call(R_flint_ulong_seq, ulong(0L), ulong(min(d)), FALSE)
               x[i] <- value
               x
           })
@@ -1576,7 +1576,7 @@ setMethod("print",
 
 setMethod("quantile",
           c(x = "flint"),
-          function (x, probs = .fmpq(num = 0L:4L, den = 4L), type = 7L,
+          function (x, probs = fmpq(num = 0L:4L, den = 4L), type = 7L,
                     ...) {
               class. <-
               switch(flintClass(x),
@@ -1622,11 +1622,11 @@ setMethod("quantile",
                   if (type <= 3L) {
                       nppm <- n * probs
                       if (type == 3L)
-                          nppm <- nppm - .fmpq(num = 1L, den = 2L)
+                          nppm <- nppm - fmpq(num = 1L, den = 2L)
                       j <- floor(nppm)
                       h <- switch(type,
                                   nppm > j,
-                                  .fmpq(num = (nppm > j) + 1L, den = 2L),
+                                  fmpq(num = (nppm > j) + 1L, den = 2L),
                                   nppm != j | j%%2L == 1L)
                   } else {
                       switch(type - 3L,
@@ -1634,11 +1634,11 @@ setMethod("quantile",
                                  a <- 0L
                                  b <- 1L
                              },
-                             a <- b <- .fmpq(num = 1L, den = 2L),
+                             a <- b <- fmpq(num = 1L, den = 2L),
                              a <- b <- 0L,
                              a <- b <- 1L,
-                             a <- b <- .fmpq(num = 1L, den = 3L),
-                             a <- b <- .fmpq(num = 3L, den = 8L))
+                             a <- b <- fmpq(num = 1L, den = 3L),
+                             a <- b <- fmpq(num = 3L, den = 8L))
                       nppm <- a + (n + 1L - a - b) * probs
                       j <- floor(nppm)
                       h <- nppm - j
@@ -1775,15 +1775,15 @@ setMethod("seq",
                .seq <-
                function (from, length.out, reverse = FALSE)
                    .Call(R_flint_ulong_seq, from, length.out, reverse)
-               zero <- .ulong(0L)
-               unit <- .ulong(1L)
+               zero <- ulong(0L)
+               unit <- ulong(1L)
                switch(nargs() - ...length(),
                {
                    if (missing(length.out))
                        stop(gettextf("usage seq(%s=) is not yet implemented",
                                      if (missing(from)) if (missing(to)) "by" else "to" else "from"),
                             domain = NA)
-                   .seq(.ulong(1L), length.out)
+                   .seq(ulong(1L), length.out)
                },
                {
                    if (missing(length.out) != missing(by))
@@ -1830,7 +1830,7 @@ setMethod("seq",
 
 setMethod("sequence",
           c(nvec = "flint"),
-          function (nvec, from = .ulong(1L), by = .ulong(1L), ...) {
+          function (nvec, from = ulong(1L), by = ulong(1L), ...) {
               n. <- c(flintLengthAny(nvec),
                       flintLengthAny(from),
                       flintLengthAny(by))

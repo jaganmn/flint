@@ -9,37 +9,37 @@ setClass("flint",
                    names = "OptionalCharacter"),
          validity = function (object) .Call(R_flint_valid, object))
 
-.flint <-
+flint <-
 new("classGeneratorFunction",
     function (class, ...)
         switch(class,
-               ulong = .ulong(...),
-               slong = .slong(...),
-               fmpz = .fmpz(...),
-               fmpq = .fmpq(...),
-               mag = .mag(...),
-               arf = .arf(...),
-               acf = .acf(...),
-               arb = .arb(...),
-               acb = .acb(...),
+               ulong = ulong(...),
+               slong = slong(...),
+               fmpz = fmpz(...),
+               fmpq = fmpq(...),
+               mag = mag(...),
+               arf = arf(...),
+               acf = acf(...),
+               arb = arb(...),
+               acb = acb(...),
                stop(gettextf("invalid class name \"%s\"", class),
                     domain = NA)),
     className = "flint",
     package = "flint")
 
-.flint.array <-
+flint.array <-
 new("classGeneratorFunction",
     function (class, ...)
         switch(class,
-               ulong = .ulong.array(...),
-               slong = .slong.array(...),
-               fmpz = .fmpz.array(...),
-               fmpq = .fmpq.array(...),
-               mag = .mag.array(...),
-               arf = .arf.array(...),
-               acf = .acf.array(...),
-               arb = .arb.array(...),
-               acb = .acb.array(...),
+               ulong = ulong.array(...),
+               slong = slong.array(...),
+               fmpz = fmpz.array(...),
+               fmpq = fmpq.array(...),
+               mag = mag.array(...),
+               arf = arf.array(...),
+               acf = acf.array(...),
+               arb = arb.array(...),
+               acb = acb.array(...),
                stop(gettextf("invalid class name \"%s\"", class),
                     domain = NA)),
     className = "flint",
@@ -57,7 +57,7 @@ setClass(  "acf", contains = "flint")
 setClass(  "arb", contains = "flint")
 setClass(  "acb", contains = "flint")
 
-.ulong <-
+ulong <-
 new("classGeneratorFunction",
     function (x = 0L, length = 0L, names = NULL) {
         simple <- nargs() == 1L && !missing(x)
@@ -71,7 +71,7 @@ new("classGeneratorFunction",
     className = "ulong",
     package = "flint")
 
-.ulong.array <-
+ulong.array <-
 new("classGeneratorFunction",
     function (x = 0L, dim = length(x), dimnames = NULL)
         new("ulong",
@@ -83,7 +83,7 @@ new("classGeneratorFunction",
     className = "ulong",
     package = "flint")
 
-.slong <-
+slong <-
 new("classGeneratorFunction",
     function (x = 0L, length = 0L, names = NULL) {
         simple <- nargs() == 1L && !missing(x)
@@ -97,7 +97,7 @@ new("classGeneratorFunction",
     className = "slong",
     package = "flint")
 
-.slong.array <-
+slong.array <-
 new("classGeneratorFunction",
     function (x = 0L, dim = length(x), dimnames = NULL)
         new("slong",
@@ -109,7 +109,7 @@ new("classGeneratorFunction",
     className = "slong",
     package = "flint")
 
-.fmpz <-
+fmpz <-
 new("classGeneratorFunction",
     function (x = 0L, length = 0L, names = NULL) {
         simple <- nargs() == 1L && !missing(x)
@@ -123,7 +123,7 @@ new("classGeneratorFunction",
     className = "fmpz",
     package = "flint")
 
-.fmpz.array <-
+fmpz.array <-
 new("classGeneratorFunction",
     function (x = 0L, dim = length(x), dimnames = NULL)
         new("fmpz",
@@ -135,7 +135,7 @@ new("classGeneratorFunction",
     className = "fmpz",
     package = "flint")
 
-.fmpq <-
+fmpq <-
 new("classGeneratorFunction",
     function (x = 0L, length = 0L, names = NULL, num = 0L, den = 1L) {
         simple <- nargs() == 1L && !missing(x)
@@ -145,13 +145,13 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            num = if (!missing(num)) .fmpz(num),
-            den = if (!missing(den)) .fmpz(den))
+            num = if (!missing(num)) fmpz(num),
+            den = if (!missing(den)) fmpz(den))
     },
     className = "fmpq",
     package = "flint")
 
-.fmpq.array <-
+fmpq.array <-
 new("classGeneratorFunction",
     function (x = 0L, dim = length(x), dimnames = NULL, num = 0L, den = 1L)
         new("fmpq",
@@ -160,12 +160,12 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            num = if (!missing(num)) .fmpz(num),
-            den = if (!missing(den)) .fmpz(den)),
+            num = if (!missing(num)) fmpz(num),
+            den = if (!missing(den)) fmpz(den)),
     className = "fmpq",
     package = "flint")
 
-.mag <-
+mag <-
 new("classGeneratorFunction",
     function (x = 0, length = 0L, names = NULL) {
         simple <- nargs() == 1L && !missing(x)
@@ -179,7 +179,7 @@ new("classGeneratorFunction",
     className = "mag",
     package = "flint")
 
-.mag.array <-
+mag.array <-
 new("classGeneratorFunction",
     function (x = 0, dim = length(x), dimnames = NULL)
         new("mag",
@@ -191,7 +191,7 @@ new("classGeneratorFunction",
     className = "mag",
     package = "flint")
 
-.arf <-
+arf <-
 new("classGeneratorFunction",
     function (x = 0, length = 0L, names = NULL) {
         simple <- nargs() == 1L && !missing(x)
@@ -205,7 +205,7 @@ new("classGeneratorFunction",
     className = "arf",
     package = "flint")
 
-.arf.array <-
+arf.array <-
 new("classGeneratorFunction",
     function (x = 0, dim = length(x), dimnames = NULL)
         new("arf",
@@ -217,7 +217,7 @@ new("classGeneratorFunction",
     className = "arf",
     package = "flint")
 
-.acf <-
+acf <-
 new("classGeneratorFunction",
     function (x = 0i, length = 0L, names = NULL, real = 0, imag = 0) {
         simple <- nargs() == 1L && !missing(x)
@@ -227,13 +227,13 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            real = if (!missing(real)) .arf(real),
-            imag = if (!missing(imag)) .arf(imag))
+            real = if (!missing(real)) arf(real),
+            imag = if (!missing(imag)) arf(imag))
     },
     className = "acf",
     package = "flint")
 
-.acf.array <-
+acf.array <-
 new("classGeneratorFunction",
     function (x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
         new("acf",
@@ -242,12 +242,12 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            real = if (!missing(real)) .arf(real),
-            imag = if (!missing(imag)) .arf(imag)),
+            real = if (!missing(real)) arf(real),
+            imag = if (!missing(imag)) arf(imag)),
     className = "acf",
     package = "flint")
 
-.arb <-
+arb <-
 new("classGeneratorFunction",
     function (x = 0, length = 0L, names = NULL, mid = 0, rad = 0) {
         simple <- nargs() == 1L && !missing(x)
@@ -257,13 +257,13 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            mid = if (!missing(mid)) .arf(mid),
-            rad = if (!missing(rad)) .mag(rad))
+            mid = if (!missing(mid)) arf(mid),
+            rad = if (!missing(rad)) mag(rad))
     },
     className = "arb",
     package = "flint")
 
-.arb.array <-
+arb.array <-
 new("classGeneratorFunction",
     function (x = 0, dim = length(x), dimnames = NULL, mid = 0, rad = 0)
         new("arb",
@@ -272,12 +272,12 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            mid = if (!missing(mid)) .arf(mid),
-            rad = if (!missing(rad)) .mag(rad)),
+            mid = if (!missing(mid)) arf(mid),
+            rad = if (!missing(rad)) mag(rad)),
     className = "arb",
     package = "flint")
 
-.acb <-
+acb <-
 new("classGeneratorFunction",
     function (x = 0i, length = 0L, names = NULL, real = 0, imag = 0) {
         simple <- nargs() == 1L && !missing(x)
@@ -287,13 +287,13 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            real = if (!missing(real)) .arb(real),
-            imag = if (!missing(imag)) .arb(imag))
+            real = if (!missing(real)) arb(real),
+            imag = if (!missing(imag)) arb(imag))
     },
     className = "acb",
     package = "flint")
 
-.acb.array <-
+acb.array <-
 new("classGeneratorFunction",
     function (x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
         new("acb",
@@ -302,7 +302,7 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            real = if (!missing(real)) .arb(real),
-            imag = if (!missing(imag)) .arb(imag)),
+            real = if (!missing(real)) arb(real),
+            imag = if (!missing(imag)) arb(imag)),
     className = "acb",
     package = "flint")

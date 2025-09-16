@@ -26,23 +26,23 @@ function (...)
     tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
 ok1 <-
 function (...)
-    flintIdenticalZ(x[ ... ], .flint(.cl, x.[ ... ])) &&
+    flintIdenticalZ(x[ ... ], flint(.cl, x.[ ... ])) &&
     tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
 ok2 <-
 function (...)
     tryCatch({ x[ ... ]; x.[ ... ]; FALSE }, error = function (e) TRUE) &&
-    flintIdenticalZ(x[[...]], .flint(.cl, x.[[...]]))
+    flintIdenticalZ(x[[...]], flint(.cl, x.[[...]]))
 ok3 <-
 function (...)
-    flintIdenticalZ(x[ ... ], .flint(.cl, x.[ ... ])) &&
-    flintIdenticalZ(x[[...]], .flint(.cl, x.[[...]]))
+    flintIdenticalZ(x[ ... ], flint(.cl, x.[ ... ])) &&
+    flintIdenticalZ(x[[...]], flint(.cl, x.[[...]]))
 
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
     for (.n in 0L:2L) {
         x. <- seq_len(.n)
         names(x.) <- letters[seq_len(.n)]
-        x <- .flint(.cl, x.)
+        x <- flint(.cl, x.)
         stopifnot(ok0("?"),
                   ok0(NULL, NULL),
                   ok0(NA),

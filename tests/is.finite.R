@@ -15,8 +15,8 @@ for (.cl in names(k..)) {
     k. <- k..[[.cl]]
     x. <- x..[[k.]]
     y. <- y..[[k.]]
-    x <- .flint(.cl, x.)
-    y <- .flint(.cl, y.)
+    x <- flint(.cl, x.)
+    y <- flint(.cl, y.)
     stopifnot(identical(anyNA(x), anyNA(x.)),
               identical(anyNA(y), anyNA(y.)),
               identical(is.na(x), is.na(x.)),
@@ -30,11 +30,11 @@ for (.cl in names(k..)) {
     switch(k.,
            stopifnot(tryCatch(is.na(x) <- n, error = function (e) TRUE)),
            stopifnot(flintIdentical(`is.na<-`(x, n),
-                                    `is.na<-`(.arf(x), n)),
+                                    `is.na<-`(arf(x), n)),
                      flintIdentical(`is.na<-`(y, n),
-                                    `is.na<-`(.arf(y), n))),
+                                    `is.na<-`(arf(y), n))),
            stopifnot(flintIdentical(`is.na<-`(x, n),
-                                    .flint(.cl, `is.na<-`(x., n))),
+                                    flint(.cl, `is.na<-`(x., n))),
                      flintIdentical(`is.na<-`(y, n),
-                                    .flint(.cl, `is.na<-`(y., n)))))
+                                    flint(.cl, `is.na<-`(y., n)))))
 }

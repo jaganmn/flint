@@ -3,10 +3,8 @@
 \alias{slong-class}
 \alias{ulong}
 \alias{slong}
-\alias{.ulong}
-\alias{.ulong.array}
-\alias{.slong}
-\alias{.slong.array}
+\alias{ulong.array}
+\alias{slong.array}
 \alias{!,ulong-method}
 \alias{!,slong-method}
 \alias{\%*\%,ANY,ulong-method}
@@ -195,11 +193,11 @@
 \usage{
 ## Class generator functions
 
-.ulong(x = 0L, length = 0L, names = NULL)
-.slong(x = 0L, length = 0L, names = NULL)
+ulong(x = 0L, length = 0L, names = NULL)
+slong(x = 0L, length = 0L, names = NULL)
 
-.ulong.array(x = 0L, dim = length(x), dimnames = NULL)
-.slong.array(x = 0L, dim = length(x), dimnames = NULL)
+ulong.array(x = 0L, dim = length(x), dimnames = NULL)
+slong.array(x = 0L, dim = length(x), dimnames = NULL)
 }
 \arguments{
   \item{x}{
@@ -230,16 +228,16 @@
   \sQuote{Details}.
 }
 \details{
-  There are four usages of \code{.ulong} and \code{.slong}:
-  \preformatted{.ulong()
-.ulong(length=)
-.ulong(x)
-.ulong(x, length=)
+  The class generator functions have four distinct usages:
+  \preformatted{ulong()
+ulong(length=)
+ulong(x)
+ulong(x, length=)
 
-.slong()
-.slong(length=)
-.slong(x)
-.slong(x, length=)}
+slong()
+slong(length=)
+slong(x)
+slong(x, length=)}
   The first usage generates an empty vector.  The second usage generates
   a zero vector of the indicated length.  The third usage converts
   \code{x}, preserving dimensions, dimension names, and names.  The
@@ -248,7 +246,7 @@
   names.  Attempts to recycle \code{x} of length zero to nonzero length
   are an error.
 
-  Usage of \code{.ulong.array} and \code{.slong.array} is modelled after
+  Usage of \code{ulong.array} and \code{slong.array} is modelled after
   \code{\link{array}}.
 }
 \section{Conversion}{
@@ -392,7 +390,7 @@
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "ulong")}:\cr
       \code{signature(from = "ANY", to = "slong")}:\cr
-      returns the value of \code{.ulong(from)} or \code{.slong(from)}.}
+      returns the value of \code{ulong(from)} or \code{slong(from)}.}
     \item{\code{colSums}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr

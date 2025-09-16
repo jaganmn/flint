@@ -57,7 +57,7 @@
   of the classes of the arguments.
 }
 \examples{
-x <- .slong(x = 2:5)
+x <- slong(2:5)
 c(x, 6L)
 c(1L, x) # bad
 c.flint(x, 6L)

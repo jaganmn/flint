@@ -17,7 +17,7 @@ c    <- flint:::complex.runif(n, modulus = c(    0, 1/eps))
 z.l1 <- flint:::complex.runif(r, modulus = c(    0, 1-eps))
 z.e1 <- flint:::complex.runif(r, modulus = c(    1,     1))
 z.g1 <- flint:::complex.runif(r, modulus = c(1+eps, 1/eps))
-z <- .acb(c(z.l1, if (incl.unit.circle) z.e1, z.g1))
+z <- acb(c(z.l1, if (incl.unit.circle) z.e1, z.g1))
 
 
 ## http://dlmf.nist.gov/15.4.E1
