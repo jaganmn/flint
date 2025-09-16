@@ -76,6 +76,8 @@ function (i, j, ..., ns, dx, call, exps) {
 
 .subscript.1 <-
 function (x, i, j, ..., drop = TRUE) {
+    if (is.null(x))
+        return(NULL)
     cx <- .subscript.class(x, 1L)
     dx <- dim(x)
     call <- sys.call(sys.nframe())
@@ -257,6 +259,10 @@ function (x, i, j, ..., drop = TRUE) {
 
 .subscript.2 <-
 function (x, i, j, ...) {
+    if (is.null(x))
+        return(NULL)
+    if (is.environment(x))
+        return(callNextMethod())
     cx <- .subscript.class(x, 1L)
     dx <- dim(x)
     call <- sys.call(sys.nframe())
@@ -628,9 +634,10 @@ function (x, i, j, ..., value) {
         stop(.error.subassignMissing())
     if (is.null(x))
         return(if (is.null(value)) NULL else { x <- list(); callGeneric() })
-    if (is.recursive(x))
+    if (is.environment(x))
         return(callNextMethod())
     cx <- .subscript.class(x, 1L)
+    if (!is.recursive(x)) {
     if (!is.null(value) && !is.atomic(value) && is.na(flintClass(value))) {
         warning(gettextf("coercing left hand side of '%s' assignment to type \"%s\"",
                          "[[<-", "list"),
@@ -642,6 +649,7 @@ function (x, i, j, ..., value) {
     common <- flintClassCommon(c(cx, cv), strict = FALSE)
     x <- flintAs(x, common)
     value <- as(value, common)
+    }
     dx <- dim(x)
     call <- sys.call(sys.nframe())
     exps <- substitute(i(j, ...))
@@ -702,9 +710,11 @@ function (x, i, j, ..., value) {
         ni <- flintLengthAny(i)
         if (ni != 1L)
             stop(if (ni < 1L) .error.subscriptTooFew() else .error.subscriptTooMany())
+        if (!is.recursive(x)) {
         nv <- flintLengthAny(value)
         if (nv != 1L)
             stop(if (ni < 1L) .error.subassignTooFew() else .error.subassignTooMany())
+        }
         if (typeof(x) == "S4") {
             if (typeof(i) == "S4" && flintClass(i) != "ulong")
                 i <- .ulong(i)
@@ -785,9 +795,11 @@ function (x, i, j, ..., value) {
         } # for (k in seq_len(ns))
         if (anyLong)
             stop(.error.subscriptTooMany())
+        if (!is.recursive(x)) {
         nv <- flintLengthAny(value)
         if (nv != 1L)
             stop(if (nv < 1L) .error.subassignTooFew() else .error.subassignTooMany())
+        }
         if (typeof(x) == "S4")
             .Call(R_flint_subassign, x, s, 2L, value)
         else do.call(`[[<-`, c(list(x), s, list(value)))
