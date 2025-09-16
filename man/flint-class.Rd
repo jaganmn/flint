@@ -184,77 +184,72 @@
   \describe{
     \item{\code{$}, \code{$<-}}{
       \code{signature(x = "flint")}:\cr
-      signal an error as \code{x} is \dQuote{atomic-like} and in any
+      signals an error as \code{x} is \dQuote{atomic-like} and in any
       case not recursive or \code{NULL}.}
     \item{\code{[}}{
-      \code{signature(x = "ANY", i = "flint", j = "missing", drop = "missing")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing", drop = "missing")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing", drop = "missing")}:\cr
-      return a traditional vector or a \code{flint} vector containing
-      the elements of \code{x} indexed by \code{i} (the
-      \dQuote{subscript}).  The subscript can be missing, \code{NULL},
-      logical, integer, double, character, \code{\linkS4class{ulong}},
-      \code{\linkS4class{slong}}, \code{\linkS4class{fmpz}}, or
-      \code{\linkS4class{fmpq}}.  Methods for signatures with
-      \code{x = "flint"} signal an error for \code{NA} and out of bounds
-      subscripts, as the \proglang{C} types interfaced by \code{flint}
-      vectors have no representation for missing values.  Note that
-      \code{\link{[}} does not perform S4 dispatch if its first
-      positional argument is not an S4 object.  If it is known that
-      \code{i} is a \code{flint} vector and not known whether \code{x}
-      is a \code{flint} vector, then consider programming defensively
-      by calling \code{\link{[}} as \code{`[`(i = i, x = x)} rather than
-      as \code{x[i]}.}
+      \code{signature(x = "flint", i = "ANY", j = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "flint", j = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "ANY", j = "flint")}:\cr
+      returns a traditional vector or \code{flint} vector containing the
+      elements of \code{x} indexed by \code{(i, j, \dots)} (the
+      \dQuote{subscript}).  The components of the subscript can be
+      missing, \code{NULL}, logical, integer, double, character,
+      \code{\linkS4class{ulong}}, \code{\linkS4class{slong}},
+      \code{\linkS4class{fmpz}}, or \code{\linkS4class{fmpq}}.  Methods
+      for signatures with \code{x = "flint"} signal an error for
+      \code{NA} and out of bounds subscripts, as the \proglang{C} types
+      interfaced by \code{flint} vectors have no representation for
+      missing values.  Note that \code{\link{[}} does not perform S4
+      dispatch if its first positional argument is not an S4 object.  If
+      it is known that \code{i} is a \code{flint} vector and not known
+      whether \code{x} is a \code{flint} vector, then one option is to
+      call \code{\link{[}} as \code{`[`(i = i, x = x)} rather than as
+      \code{x[i]}.  However, it is not guaranteed that such usage of
+      \code{[}, which is mostly undocumented, continues to work in
+      future versions of \R{}.}
     \item{\code{[<-}}{
-      \code{signature(x = "ANY", i = "ANY", j = "missing", value = "flint")}:\cr
-      \code{signature(x = "ANY", i = "flint", j = "missing", value = "ANY")}:\cr
-      \code{signature(x = "ANY", i = "flint", j = "missing", value = "flint")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing", value = "flint")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing", value = "ANY")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing", value = "flint")}:\cr
-      return the traditional vector or \code{flint} vector obtained by
-      replacing the elements of \code{x} indexed by \code{i} (the
-      \dQuote{subscript}) with elements of \code{value}, which are
-      recycled as necessary.  The subscript can be missing, \code{NULL},
-      logical, integer, double, character, \code{\linkS4class{ulong}},
-      \code{\linkS4class{slong}}, \code{\linkS4class{fmpz}}, or
-      \code{\linkS4class{fmpq}}.  The class of the return value is
-      determined following strict rules from the classes of \code{x} and
-      \code{value}, which are promoted to the value class as necessary.
-      If the value class is a subclass of \code{flint}, then an error is
-      signaled for \code{NA} and out of bounds subscripts, as the
-      \proglang{C} types interfaced by \code{flint} vectors have no
-      representation for missing values.  Note that \code{\link{[<-}}
-      does not perform S4 dispatch if its first positional argument is
-      not an S4 object.  If it is known that \code{i} is a \code{flint}
-      vector and not known whether \code{x} is a \code{flint} vector,
-      then consider calling \code{\link{[<-}} as
-      \code{`[`(i = i, x = x) <- value} rather than as
-      \code{x[i] <- value}.  If it known that \code{value} is a
-      \code{flint} vector and not known whether \code{x} or \code{i} is
-      a \code{flint} vector, then consider doing something like
-      \code{x <- `[<-`(value = value, x = x, i = i)}.}
+      \code{signature(x = "flint", i = "ANY", j = "ANY", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "flint", j = "ANY", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "ANY", j = "flint", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "ANY", j = "ANY", value = "flint")}:\cr
+      returns the traditional vector or \code{flint} vector obtained by
+      replacing the elements of \code{x} indexed by \code{(i, j, \dots)}
+      (the \dQuote{subscript}) with elements of \code{value}, which are
+      recycled as necessary.  The components of the subscript can be
+      missing, \code{NULL}, logical, integer, double, character,
+      \code{\linkS4class{ulong}}, \code{\linkS4class{slong}},
+      \code{\linkS4class{fmpz}}, or \code{\linkS4class{fmpq}}.  The
+      class of the return value is determined following strict rules
+      from the classes of \code{x} and \code{value}, which are promoted
+      to the value class as necessary.  If the value class is a subclass
+      of \code{flint}, then an error is signaled for \code{NA} and out
+      of bounds subscripts, as the \proglang{C} types interfaced by
+      \code{flint} vectors have no representation for missing values.
+      Note that \code{\link{[<-}} does not perform S4 dispatch if its
+      first positional argument is not an S4 object.  If it is known
+      that \code{i} is a \code{flint} vector and not known whether
+      \code{x} is a \code{flint} vector, then one option is to call
+      \code{\link{[<-}} as \code{`[`(i = i, x = x) <- value} rather than
+      as \code{x[i] <- value}.  However, it is not guaranteed that such
+      usage of \code{[<-}, which is mostly undocumented, continues to
+      work in future versions of \R{}.}
     \item{\code{[[}}{
-      \code{signature(x = "ANY", i = "flint", j = "missing")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing")}:\cr
+      \code{signature(x = "flint", i = "ANY", j = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "flint", j = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "ANY", j = "flint")}:\cr
       similar to \code{[}, with differences as documented in
-      \code{\link{Extract}}.}
+      \code{\link{Extract}}, particularly for recursive \code{x}.}
     \item{\code{[[<-}}{
-      \code{signature(x = "ANY", i = "ANY", j = "missing", value = "flint")}:\cr
-      \code{signature(x = "ANY", i = "flint", j = "missing", value = "ANY")}:\cr
-      \code{signature(x = "ANY", i = "flint", j = "missing", value = "flint")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing", value = "ANY")}:\cr
-      \code{signature(x = "flint", i = "ANY", j = "missing", value = "flint")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing", value = "ANY")}:\cr
-      \code{signature(x = "flint", i = "flint", j = "missing", value = "flint")}:\cr
+      \code{signature(x = "flint", i = "ANY", j = "ANY", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "flint", j = "ANY", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "ANY", j = "flint", value = "ANY")}:\cr
+      \code{signature(x = "ANY", i = "ANY", j = "ANY", value = "flint")}:\cr
       similar to \code{[<-}, with differences as documented in
-      \code{\link{Extract}}.}
+      \code{\link{Extract}}, particularly for recursive \code{x}.}
     \item{\code{all.equal}}{
-      \code{signature(x = "ANY", y = "flint")}:\cr
-      \code{signature(x = "flint", y = "ANY")}:\cr
       \code{signature(x = "flint", y = "flint")}:\cr
+      \code{signature(x = "flint", y = "ANY")}:\cr
+      \code{signature(x = "ANY", y = "flint")}:\cr
       returns either \code{TRUE}, indicating that there is no meaningful
       difference between \code{x} and \code{y}, or a character vector
       describing differences.  The implementation (including optional
@@ -295,9 +290,9 @@
       arguments.  Function \code{c.flint} is exported to work around the
       fact that \code{\link{c}(x, \dots)} dispatches only on \code{x}.}
     \item{\code{cbind2}}{
-      \code{signature(x = "ANY", y = "flint")}:\cr
-      \code{signature(x = "flint", y = "ANY")}:\cr
       \code{signature(x = "flint", y = "flint")}:\cr
+      \code{signature(x = "flint", y = "ANY")}:\cr
+      \code{signature(x = "ANY", y = "flint")}:\cr
       returns \code{\link{cbind.flint}(x, y, \dots)}, the horizontal
       concatenation of \code{x} and \code{y}.  These methods are
       dispatched by \code{\link{cbind}} in case of S3 dispatch
@@ -382,6 +377,12 @@
       returns the value of \code{x} after \code{x[value] <- \var{na}},
       where \code{\var{na}} is an \code{\link{NA}} of integer, double,
       or complex type, depending on the class of \code{x}.}
+    \item{\code{isSymmetric}}{
+      \code{signature(x = "flint")}:\cr
+      returns a logical indicating if \code{x} is a Hermitian matrix or
+      if \code{x} is a symmetric matrix, depending on optional argument
+      \code{trans}, following the documented behaviour of the S3 method
+      for traditional matrices, hence see \code{\link{isSymmetric}}.}
     \item{\code{length}}{
       \code{signature(x = "flint")}:\cr
       returns \code{\link{flintLength}(x, exact = FALSE)}.}
@@ -392,9 +393,9 @@
       elements are copied from \code{x} and the remaining elements are
       initialized to zero.}
     \item{\code{match}}{
-      \code{signature(x = "ANY", table = "flint")}:\cr
-      \code{signature(x = "flint", table = "ANY")}:\cr
       \code{signature(x = "flint", table = "flint")}:\cr
+      \code{signature(x = "flint", table = "ANY")}:\cr
+      \code{signature(x = "ANY", table = "flint")}:\cr
       returns an integer vector matching \code{x} to \code{table} after
       coercing to a common class then \dQuote{match transforming} with
       \code{\link{mtfrm}}.  The behaviour is parallel to that of the
@@ -439,9 +440,9 @@
       see \code{\link{quantile}}.  Currently, an error is is signaled
       for \code{x} of length zero and \code{x} containing \code{NaN}.}
     \item{\code{rbind2}}{
-      \code{signature(x = "ANY", y = "flint")}:\cr
-      \code{signature(x = "flint", y = "ANY")}:\cr
       \code{signature(x = "flint", y = "flint")}:\cr
+      \code{signature(x = "flint", y = "ANY")}:\cr
+      \code{signature(x = "ANY", y = "flint")}:\cr
       returns \code{\link{rbind.flint}(x, y, \dots)}, the vertical
       concatenation of \code{x} and \code{y}.  These methods are
       dispatched by \code{\link{rbind}} in case of S3 dispatch
@@ -497,7 +498,7 @@ seq(to=, by=, length.out=)}
     \item{\code{t}}{
       \code{signature(x = "flint")}:\cr
       returns the transpose of \code{x} if \code{x} is a matrix,
-      handling vectors \code{x} as \code{length(x)}-by-1 matrices.}
+      handling non-array \code{x} as \code{length(x)}-by-1 matrices.}
     \item{\code{unique}}{
       \code{signature(x = "flint")}:\cr
       returns \code{x[!duplicated(x, \dots)]}.}

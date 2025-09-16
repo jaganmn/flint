@@ -177,8 +177,9 @@
       \code{signature(x = "arf")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
     \item{\code{\%*\%}, \code{crossprod}, \code{tcrossprod}}{
-      \code{signature(x = "ANY", y = "arf")}:\cr
+      \code{signature(x = "arf", y = "arf")}:\cr
       \code{signature(x = "arf", y = "ANY")}:\cr
+      \code{signature(x = "ANY", y = "arf")}:\cr
       matrix products.  The \dQuote{other} operand must be atomic or
       inherit from virtual class \code{\linkS4class{flint}}.
       \code{crossprod} and \code{tcrossprod} behave as if \code{y = x}
@@ -203,16 +204,16 @@
       \code{\link[methods]{S4groupGeneric}}.  Notably, the logarithmic,
       exponential, (inverse) trigonometric, (inverse) hyperbolic, and
       gamma-related member functions are not yet implemented.  Users
-      wanting those can (for now) operate on
-      \code{as(x, "\linkS4class{arb}")}.}
+      wanting those can (for now) operate on \code{\link{.arb}(x)}.}
     \item{\code{Math2}}{
       \code{signature(x = "arf")}:\cr
       decimal rounding according to a second argument \code{digits}; see
       \code{\link[methods]{S4groupGeneric}}.  There are just two member
       member functions: \code{\link{round}}, \code{\link{signif}}.}
     \item{\code{Ops}}{
-      \code{signature(e1 = "ANY", e2 = "arf")}:\cr
+      \code{signature(e1 = "arf", e2 = "arf")}:\cr
       \code{signature(e1 = "arf", e2 = "ANY")}:\cr
+      \code{signature(e1 = "ANY", e2 = "arf")}:\cr
       binary arithmetic, comparison, and logical operators; see
       \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
       must be atomic or inherit from virtual class
@@ -244,6 +245,31 @@
       \code{"name"}), \code{"pairlist"}, \code{"list"}, and
       \code{"expression"}, which are not \dQuote{number-like}, is
       handled specially.}
+    \item{\code{backsolve}}{
+      \code{signature(r = "arf", x = "arf")}:\cr
+      \code{signature(r = "arf", x = "ANY")}:\cr
+      \code{signature(r = "ANY", x = "arf")}:\cr
+      solution of the triangular system \code{op2(op1(r)) \%*\% y = x},
+      where \code{op1=ifelse(upper.tri, triu, tril)} and
+      \code{op2=ifelse(transpose, t, identity)} and \code{upper.tri} and
+      \code{transpose} are optional logical arguments with default
+      values \code{TRUE} and \code{FALSE}, respectively.  The
+      \dQuote{other} operand must be atomic or inherit from virtual
+      class \code{\linkS4class{flint}}.  If \code{x} is missing, then
+      the return value is the inverse of \code{op2(op1(r))}, as if
+      \code{x} were the identity matrix.  Operands are promoted as
+      necessary and must be conformable (have compatible dimensions).
+      Non-array \code{x} are handled as \code{length(x)}-by-1 matrices.}
+    \item{\code{chol}}{
+      \code{signature(x = "arf")}:\cr
+      returns the upper triangular Cholesky factor of the positive
+      definite matrix whose upper triangular part is the upper
+      triangular part of \code{x}.}
+    \item{\code{chol2inv}}{
+      \code{signature(x = "arf")}:\cr
+      returns the inverse of the positive definite matrix whose upper
+      triangular Cholesky factor is the upper triangular part of
+      \code{x}.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "arf")}:\cr
       returns the value of \code{.arf(from)}.}
@@ -288,6 +314,17 @@
       returns an \code{arf} vector or array containing the row sums or
       means of \code{x}, defined as sums or means over dimensions
       \code{(dims+1):length(dim(x))}.}
+    \item{\code{solve}}{
+      \code{signature(a = "arf", b = "arf")}:\cr
+      \code{signature(a = "arf", b = "ANY")}:\cr
+      \code{signature(a = "ANY", b = "arf")}:\cr
+      solution of the general system \code{a \%*\% x = b}.  The
+      \dQuote{other} operand must be atomic or inherit from virtual
+      class \code{\linkS4class{flint}}.  If \code{b} is missing, then
+      the return value is the inverse of \code{a}, as if \code{b} were
+      the identity matrix.  Operands are promoted as necessary and must
+      be conformable (have compatible dimensions).  Non-array \code{b}
+      are handled as \code{length(b)}-by-1 matrices.}
   }
 }
 \seealso{

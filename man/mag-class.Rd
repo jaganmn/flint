@@ -176,8 +176,9 @@
       \code{signature(x = "mag")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
     \item{\code{\%*\%}, \code{crossprod}, \code{tcrossprod}}{
-      \code{signature(x = "ANY", y = "mag")}:\cr
+      \code{signature(x = "mag", y = "mag")}:\cr
       \code{signature(x = "mag", y = "ANY")}:\cr
+      \code{signature(x = "ANY", y = "mag")}:\cr
       matrix products.  The \dQuote{other} operand must be atomic or
       inherit from virtual class \code{\linkS4class{flint}}.
       \code{crossprod} and \code{tcrossprod} behave as if \code{y = x}
@@ -205,8 +206,7 @@
       upper bound for the absolute value of the exact answer.  Notably,
       the (inverse) trigonometric, (inverse) hyperbolic, and
       gamma-related member functions are not yet implemented.  Users
-      wanting those can (for now) operate on
-      \code{as(x, "\linkS4class{arb}")}.}
+      wanting those can (for now) operate on \code{\link{.arb}(x)}.}
     \item{\code{Math2}}{
       \code{signature(x = "mag")}:\cr
       decimal rounding according to a second argument \code{digits}; see
@@ -214,8 +214,9 @@
       functions: \code{\link{round}}, \code{\link{signif}}.  The return
       value is an upper bound for the exact answer.}
     \item{\code{Ops}}{
-      \code{signature(e1 = "ANY", e2 = "mag")}:\cr
+      \code{signature(e1 = "mag", e2 = "mag")}:\cr
       \code{signature(e1 = "mag", e2 = "ANY")}:\cr
+      \code{signature(e1 = "ANY", e2 = "mag")}:\cr
       binary arithmetic, comparison, and logical operators; see
       \code{\link[methods]{S4groupGeneric}}.  The \dQuote{other} operand
       must be atomic or inherit from virtual class
@@ -249,6 +250,18 @@
       \code{"character"}, \code{"symbol"} (synonym \code{"name"}),
       \code{"pairlist"}, \code{"list"}, and \code{"expression"}, which
       are not \dQuote{number-like}, is handled specially.}
+    \item{\code{backsolve}}{
+      \code{signature(r = "mag", x = "mag")}:\cr
+      \code{signature(r = "mag", x = "ANY")}:\cr
+      \code{signature(r = "ANY", x = "mag")}:\cr
+      coerces the \code{mag} operand to class \code{\linkS4class{arf}},
+      \code{\linkS4class{acf}}, \code{\linkS4class{arb}}, or
+      \code{\linkS4class{acb}} (depending on the class of the other
+      operand) and dispatches.}
+    \item{\code{chol}, \code{chol2inv}}{
+      \code{signature(x = "mag")}:\cr
+      coerces \code{x} to class \code{\linkS4class{arf}} and
+      dispatches.}
     \item{\code{coerce}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
       returns the value of \code{.mag(from)}.}
@@ -298,6 +311,14 @@
       returns a \code{mag} vector or array containing upper bounds on
       the row sums or means of \code{x}, defined as sums or means over
       dimensions \code{(dims+1):length(dim(x))}.}
+    \item{\code{solve}}{
+      \code{signature(a = "mag", b = "mag")}:\cr
+      \code{signature(a = "mag", b = "ANY")}:\cr
+      \code{signature(a = "ANY", b = "mag")}:\cr
+      coerces the \code{mag} operand to class \code{\linkS4class{arf}},
+      \code{\linkS4class{acf}}, \code{\linkS4class{arb}}, or
+      \code{\linkS4class{acb}} (depending on the class of the other
+      operand) and dispatches.}
   }
 }
 \seealso{
