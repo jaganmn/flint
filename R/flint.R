@@ -1,5 +1,3 @@
-.subscript.missing <- substitute()
-
 .subscript.class <-
 function (object, mode) {
     type. <- typeof(object)
@@ -20,7 +18,7 @@ function (object, mode) {
                           stop("NA subscripts not supported")
                       else type.,
                   "symbol" =
-                      if (identical(object, .subscript.missing))
+                      if (identical(object, substitute()))
                           "missing"
                       else stop(.error.subscriptInvalidClass(object)),
                   "S4" =
@@ -56,17 +54,17 @@ function (i, j, ..., ns, dx, call, exps) {
     if (ns == 0L)
         list()
     else if (ns == 1L)
-        list(if (mi) .subscript.missing else i)
+        list(if (mi) substitute() else i)
     else {
         if (ns != length(dx))
             stop(.error.subscriptInvalidArity())
         ans <-
-        list(if (mi) .subscript.missing else i,
-             if (mj) .subscript.missing else j)
+        list(if (mi) substitute() else i,
+             if (mj) substitute() else j)
         if (ns >= 3L) {
             ans <- `[<-`(vector("list", ns), 1L:2L, ans)
             for (k in 3L:ns)
-                if (identical(i <- exps[[k]], .subscript.missing) ||
+                if (identical(i <- exps[[k]], substitute()) ||
                     !is.null(i <- ...elt(k - 2L)))
                     ans[[k]] <- i
         }
@@ -431,7 +429,7 @@ function (x, i, j, ..., value) {
         if (nx > 0L && flintLengthAny(value) == 0L)
             stop(.error.subassignTooFew())
         if (typeof(x) == "S4")
-            .Call(R_flint_subassign, x, .subscript.missing, 1L, value)
+            .Call(R_flint_subassign, x, substitute(), 1L, value)
         else {
             x[] <- value
             x
@@ -446,7 +444,7 @@ function (x, i, j, ..., value) {
                 stop(.error.subassignTooFew())
             return(
             if (typeof(x) == "S4")
-                .Call(R_flint_subassign, x, .subscript.missing, 1L, value)
+                .Call(R_flint_subassign, x, substitute(), 1L, value)
             else {
                 x[] <- value
                 x
