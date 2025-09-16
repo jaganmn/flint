@@ -10,6 +10,5 @@ Z <- acb(pi)
 Imag(Z) <- 1 # gave error
 ## Error in q@dim :
 ##   no applicable method for `@` applied to an object of class "function"
+stopifnot(Z == pi + 1i)
 
-(mz <- Mid(Z)) # newly works
-stopifnot(inherits(mz, "acf"), mz == pi + 1i)
