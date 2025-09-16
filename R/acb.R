@@ -49,7 +49,7 @@ setMethod("Math2",
           function (x, digits) {
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
-              .Call(R_flint_acb_ops1, .Generic, x, list(as(digits, "slong")))
+              .Call(R_flint_acb_ops1, .Generic, x, list(slong(digits)))
           })
 
 setMethod("Ops",
@@ -306,7 +306,7 @@ setMethod("log",
           c(x = "acb"),
           function (x, base, ...)
               .Call(R_flint_acb_ops1, "log", x,
-                    if (!missing(base)) list(as(base, "acb"))))
+                    if (!missing(base)) list(acb(base))))
 
 setMatrixOpsMethod(
           c(x = "ANY", y = "acb"),

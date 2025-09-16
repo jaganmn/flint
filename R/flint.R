@@ -1302,7 +1302,7 @@ setMethod("dim<-",
                   stop(gettextf("%s[[%d]] exceeds maximum %d",
                                 "value", which.max(value - 1 > .Machine[["integer.max"]]), .Machine[["integer.max"]]),
                        domain = NA)
-              if ((nv <- prod(as(value, "ulong"))) != (nx <- flintLength(x)))
+              if ((nv <- prod(ulong(value))) != (nx <- flintLength(x)))
                   stop(gettextf("product of '%s' [%s] is not equal to length of '%s' [%s]",
                                 "value", format(nv), "x", format(nx)),
                        domain = NA)
@@ -1472,7 +1472,7 @@ setMethod("length",
 setMethod("length<-",
           c(x = "flint"),
           function (x, value)
-              .Call(R_flint_length_assign, x, as(value, "ulong")))
+              .Call(R_flint_length_assign, x, ulong(value)))
 
 .match <-
 function (x, table, nomatch = NA_integer_, incomparables = NULL) {
@@ -1599,7 +1599,7 @@ setMethod("quantile",
                       stop(gettextf("'%s' is not in [%.0f,%.0f]",
                                     "probs", 0, 1),
                            domain = NA)
-                  probs <- as(probs, "fmpq")
+                  probs <- fmpq(probs)
               }
               if (!missing(type)) {
                   if (type < 1L || type >= 10L)
@@ -1694,23 +1694,23 @@ setMethod("rep",
           c(x = "flint"),
           function (x, times, length.out, each, ...) {
               if (!missing(each))
-                  x <- .Call(R_flint_rep_each, x, as(each, "ulong"), TRUE)
+                  x <- .Call(R_flint_rep_each, x, ulong(each), TRUE)
               if (!missing(length.out))
-                  x <- .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), TRUE)
+                  x <- .Call(R_flint_rep_lengthout, x, ulong(length.out), TRUE)
               else if (!missing(times))
-                  x <- .Call(R_flint_rep_times, x, as(times, "ulong"), TRUE)
+                  x <- .Call(R_flint_rep_times, x, ulong(times), TRUE)
               x
           })
 
 setMethod("rep.int",
           c(x = "flint"),
           function (x, times)
-              .Call(R_flint_rep_times, x, as(times, "ulong"), FALSE))
+              .Call(R_flint_rep_times, x, ulong(times), FALSE))
 
 setMethod("rep_len",
           c(x = "flint"),
           function (x, length.out)
-              .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), FALSE))
+              .Call(R_flint_rep_lengthout, x, ulong(length.out), FALSE))
 
 setMethod("seq",
           c("..." = "flint"),
@@ -1763,7 +1763,7 @@ setMethod("seq",
                    stop(gettextf("value length would exceed maximum 2^%d-1",
                                  flintABI()),
                         domain = NA)
-               length.out <- as(length.out, "ulong")
+               length.out <- ulong(length.out)
                }
                if (!missing(along.with)) {
                if (!missing(length.out))
@@ -1792,28 +1792,28 @@ setMethod("seq",
                             domain = NA)
                    if (missing(length.out)) {
                        d <- if (from <= to) { op <- `+`; to - from } else { op <- `-`; from - to }
-                       d. <- as(d, "fmpz")
+                       d. <- fmpz(d)
                        if (d. == d)
                            d. <- d. + unit
                        if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
                            stop(gettextf("value length would exceed maximum 2^%d-1",
                                          flintABI()),
                                 domain = NA)
-                       op(from, .seq(zero, as(d., "ulong")))
+                       op(from, .seq(zero, ulong(d.)))
                    }
                    else unit + by * .seq(zero, length.out)
                },
                {
                    if (missing(length.out)) {
                        d <- if (from == to) 0L else (to - from)/by
-                       d. <- as(d, "fmpz")
+                       d. <- fmpz(d)
                        if (d. == d)
                            d. <- d. + unit
                        if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
                            stop(gettextf("value length would exceed maximum 2^%d-1",
                                          flintABI()),
                                 domain = NA)
-                       from + by * .seq(zero, as(d., "ulong"))
+                       from + by * .seq(zero, ulong(d.))
                    }
                    else if (missing(by)) {
                        by <- if (length.out <= unit) zero else (to - from)/(length.out - unit)

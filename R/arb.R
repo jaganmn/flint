@@ -28,7 +28,7 @@ setMethod("Math2",
           function (x, digits) {
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
-              .Call(R_flint_arb_ops1, .Generic, x, list(as(digits, "slong")))
+              .Call(R_flint_arb_ops1, .Generic, x, list(slong(digits)))
           })
 
 setMethod("Mid",
@@ -314,7 +314,7 @@ setMethod("log",
           c(x = "arb"),
           function (x, base, ...)
               .Call(R_flint_arb_ops1, "log", x,
-                    if (!missing(base)) list(as(base, "arb"))))
+                    if (!missing(base)) list(arb(base))))
 
 setMatrixOpsMethod(
           c(x = "ANY", y = "arb"),
