@@ -28,7 +28,7 @@ setMethod("Math2",
           function (x, digits) {
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
-              .Call(R_flint_arf_ops1, .Generic, x, list(slong(digits)))
+              .Call(R_flint_arf_ops1, .Generic, x, list(as(digits, "slong")))
           })
 
 setMethod("Ops",

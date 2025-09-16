@@ -1472,7 +1472,7 @@ setMethod("length",
 setMethod("length<-",
           c(x = "flint"),
           function (x, value)
-              .Call(R_flint_length_assign, x, ulong(value)))
+              .Call(R_flint_length_assign, x, as(value, "ulong")))
 
 .match <-
 function (x, table, nomatch = NA_integer_, incomparables = NULL) {
@@ -1599,7 +1599,7 @@ setMethod("quantile",
                       stop(gettextf("'%s' is not in [%.0f,%.0f]",
                                     "probs", 0, 1),
                            domain = NA)
-                  probs <- fmpq(probs)
+                  probs <- as(probs, "fmpq")
               }
               if (!missing(type)) {
                   if (type < 1L || type >= 10L)
@@ -1694,23 +1694,23 @@ setMethod("rep",
           c(x = "flint"),
           function (x, times, length.out, each, ...) {
               if (!missing(each))
-                  x <- .Call(R_flint_rep_each, x, ulong(each), TRUE)
+                  x <- .Call(R_flint_rep_each, x, as(each, "ulong"), TRUE)
               if (!missing(length.out))
-                  x <- .Call(R_flint_rep_lengthout, x, ulong(length.out), TRUE)
+                  x <- .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), TRUE)
               else if (!missing(times))
-                  x <- .Call(R_flint_rep_times, x, ulong(times), TRUE)
+                  x <- .Call(R_flint_rep_times, x, as(times, "ulong"), TRUE)
               x
           })
 
 setMethod("rep.int",
           c(x = "flint"),
           function (x, times)
-              .Call(R_flint_rep_times, x, ulong(times), FALSE))
+              .Call(R_flint_rep_times, x, as(times, "ulong"), FALSE))
 
 setMethod("rep_len",
           c(x = "flint"),
           function (x, length.out)
-              .Call(R_flint_rep_lengthout, x, ulong(length.out), FALSE))
+              .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), FALSE))
 
 setMethod("seq",
           c("..." = "flint"),
@@ -1763,7 +1763,7 @@ setMethod("seq",
                    stop(gettextf("value length would exceed maximum 2^%d-1",
                                  flintABI()),
                         domain = NA)
-               length.out <- ulong(length.out)
+               length.out <- as(length.out, "ulong")
                }
                if (!missing(along.with)) {
                if (!missing(length.out))
@@ -1792,28 +1792,28 @@ setMethod("seq",
                             domain = NA)
                    if (missing(length.out)) {
                        d <- if (from <= to) { op <- `+`; to - from } else { op <- `-`; from - to }
-                       d. <- fmpz(d)
+                       d. <- as(d, "fmpz")
                        if (d. == d)
                            d. <- d. + unit
                        if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
                            stop(gettextf("value length would exceed maximum 2^%d-1",
                                          flintABI()),
                                 domain = NA)
-                       op(from, .seq(zero, ulong(d.)))
+                       op(from, .seq(zero, as(d., "ulong")))
                    }
                    else unit + by * .seq(zero, length.out)
                },
                {
                    if (missing(length.out)) {
                        d <- if (from == to) 0L else (to - from)/by
-                       d. <- fmpz(d)
+                       d. <- as(d, "fmpz")
                        if (d. == d)
                            d. <- d. + unit
                        if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
                            stop(gettextf("value length would exceed maximum 2^%d-1",
                                          flintABI()),
                                 domain = NA)
-                       from + by * .seq(zero, ulong(d.))
+                       from + by * .seq(zero, as(d., "ulong"))
                    }
                    else if (missing(by)) {
                        by <- if (length.out <= unit) zero else (to - from)/(length.out - unit)

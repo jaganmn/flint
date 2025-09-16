@@ -1,7 +1,7 @@
 arb_lambertw <-
 function (x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_lambertw, res, arb(x), as.integer(flags), slong(prec))
+    .Call(R_flint_arb_lambertw, res, as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }
 
@@ -9,7 +9,7 @@ function (x, flags = 0L, prec = flintPrec()) {
 arb_dirichlet_zeta <-
 function (s, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_dirichlet_zeta, res, arb(s), slong(prec))
+    .Call(R_flint_arb_dirichlet_zeta, res, as(s, "arb"), as(prec, "slong"))
     res
 }
 
@@ -17,42 +17,42 @@ function (s, prec = flintPrec()) {
 arb_dirichlet_hurwitz <-
 function (s, a = 1, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_dirichlet_hurwitz, res, arb(s), arb(a), slong(prec))
+    .Call(R_flint_arb_dirichlet_hurwitz, res, as(s, "arb"), as(a, "arb"), as(prec, "slong"))
     res
 }
 
 arb_hypgeom_gamma <-
 function (x, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_gamma, res, arb(x), slong(prec))
+    .Call(R_flint_arb_hypgeom_gamma, res, as(x, "arb"), as(prec, "slong"))
     res
 }
 
 arb_hypgeom_rgamma <-
 function (x, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_rgamma, res, arb(x), slong(prec))
+    .Call(R_flint_arb_hypgeom_rgamma, res, as(x, "arb"), as(prec, "slong"))
     res
 }
 
 arb_hypgeom_lgamma <-
 function (x, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_lgamma, res, arb(x), slong(prec))
+    .Call(R_flint_arb_hypgeom_lgamma, res, as(x, "arb"), as(prec, "slong"))
     res
 }
 
 arb_hypgeom_gamma_lower <-
 function (s, x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_gamma_lower, res, arb(s), arb(x), as.integer(flags), slong(prec))
+    .Call(R_flint_arb_hypgeom_gamma_lower, res, as(s, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }
 
 arb_hypgeom_gamma_upper <-
 function (s, x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_gamma_upper, res, arb(s), arb(x), as.integer(flags), slong(prec))
+    .Call(R_flint_arb_hypgeom_gamma_upper, res, as(s, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }
 
@@ -61,7 +61,7 @@ function (a, b, prec = flintPrec()) {
     if (FALSE) {
     ## FLINT bug, report this
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_beta_lower, res, arb(a), arb(b), arb(1), 0L, slong(prec))
+    .Call(R_flint_arb_hypgeom_beta_lower, res, as(a, "arb"), as(b, "arb"), as(1, "arb"), 0L, as(prec, "slong"))
     res
     }
     prec. <- flintPrec(prec)
@@ -72,13 +72,13 @@ function (a, b, prec = flintPrec()) {
 arb_hypgeom_beta_lower <-
 function (a, b, x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_beta_lower, res, arb(a), arb(b), arb(x), as.integer(flags), slong(prec))
+    .Call(R_flint_arb_hypgeom_beta_lower, res, as(a, "arb"), as(b, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }
 
 arb_hypgeom_2f1 <-
 function (a, b, c, x, flags = 0L, prec = flintPrec()) {
     res <- flintNew("arb")
-    .Call(R_flint_arb_hypgeom_2f1, res, arb(a), arb(b), arb(c), arb(x), as.integer(flags), slong(prec))
+    .Call(R_flint_arb_hypgeom_2f1, res, as(a, "arb"), as(b, "arb"), as(c, "arb"), as(x, "arb"), as.integer(flags), as(prec, "slong"))
     res
 }

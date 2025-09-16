@@ -145,8 +145,8 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            num = if (!missing(num)) fmpz(num),
-            den = if (!missing(den)) fmpz(den))
+            num = if (!missing(num)) as(num, "fmpz"),
+            den = if (!missing(den)) as(den, "fmpz"))
     },
     className = "fmpq",
     package = "flint")
@@ -160,8 +160,8 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            num = if (!missing(num)) fmpz(num),
-            den = if (!missing(den)) fmpz(den)),
+            num = if (!missing(num)) as(num, "fmpz"),
+            den = if (!missing(den)) as(den, "fmpz")),
     className = "fmpq",
     package = "flint")
 
@@ -227,8 +227,8 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            real = if (!missing(real)) arf(real),
-            imag = if (!missing(imag)) arf(imag))
+            real = if (!missing(real)) as(real, "arf"),
+            imag = if (!missing(imag)) as(imag, "arf"))
     },
     className = "acf",
     package = "flint")
@@ -242,8 +242,8 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            real = if (!missing(real)) arf(real),
-            imag = if (!missing(imag)) arf(imag)),
+            real = if (!missing(real)) as(real, "arf"),
+            imag = if (!missing(imag)) as(imag, "arf")),
     className = "acf",
     package = "flint")
 
@@ -257,8 +257,8 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            mid = if (!missing(mid)) arf(mid),
-            rad = if (!missing(rad)) mag(rad))
+            mid = if (!missing(mid)) as(mid, "arf"),
+            rad = if (!missing(rad)) as(rad, "mag"))
     },
     className = "arb",
     package = "flint")
@@ -272,8 +272,8 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            mid = if (!missing(mid)) arf(mid),
-            rad = if (!missing(rad)) mag(rad)),
+            mid = if (!missing(mid)) as(mid, "arf"),
+            rad = if (!missing(rad)) as(rad, "mag")),
     className = "arb",
     package = "flint")
 
@@ -287,8 +287,8 @@ new("classGeneratorFunction",
             dim = if (simple) dim(x),
             dimnames = if (simple) dimnames(x),
             names = if (simple) names(x) else names,
-            real = if (!missing(real)) arb(real),
-            imag = if (!missing(imag)) arb(imag))
+            real = if (!missing(real)) as(real, "arb"),
+            imag = if (!missing(imag)) as(imag, "arb"))
     },
     className = "acb",
     package = "flint")
@@ -302,7 +302,7 @@ new("classGeneratorFunction",
             dim = if (is.null(dim)) integer(0L) else dim,
             dimnames = dimnames,
             names = NULL,
-            real = if (!missing(real)) arb(real),
-            imag = if (!missing(imag)) arb(imag)),
+            real = if (!missing(real)) as(real, "arb"),
+            imag = if (!missing(imag)) as(imag, "arb")),
     className = "acb",
     package = "flint")
