@@ -110,13 +110,6 @@ flintTriple <-
 function (object)
     .Call(R_flint_triple, object)
 
-flintUnclass <-
-function (object)
-    `names<-`(`dimnames<-`(`dim<-`(as.vector(object),
-                                   dim(object)),
-                           dimnames(object)),
-              names(object))
-
 flintValid <-
 function (object)
     .Call(R_flint_valid, object)

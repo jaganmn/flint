@@ -1112,17 +1112,17 @@ setMethod("as.data.frame",
 setMethod("as.Date",
           c(x = "flint"),
           function (x, ...)
-              as.Date   (flintUnclass(x),          ...))
+              as.Date   (asVector(x, "vector", FALSE),          ...))
 
 setMethod("as.POSIXct",
           c(x = "flint"),
           function (x, tz = "", ...)
-              as.POSIXct(flintUnclass(x), tz = tz, ...))
+              as.POSIXct(asVector(x, "vector", FALSE), tz = tz, ...))
 
 setMethod("as.POSIXlt",
           c(x = "flint"),
           function (x, tz = "", ...)
-              as.POSIXlt(flintUnclass(x), tz = tz, ...))
+              as.POSIXlt(asVector(x, "vector", FALSE), tz = tz, ...))
 
 .bind.class <-
 function (x)

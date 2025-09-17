@@ -7,7 +7,6 @@
 \alias{flintRnd}
 \alias{flintSize}
 \alias{flintTriple}
-\alias{flintUnclass}
 \alias{flintVersion}
 \docType{package}
 \title{\R{} Package \pkg{flint}}
@@ -23,7 +22,6 @@ flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
 flintSize(object)
 flintTriple(object)
-flintUnclass(object)
 flintVersion()
 }
 \arguments{
@@ -111,9 +109,6 @@ flintVersion()
   \code{flintTriple} returns a character vector of length 3 containing
   the class of \code{object}, the length of \code{object}, and the
   address stored by \code{object}.
-
-  \code{flintUnclass} returns the value of \code{as.vector(object)} with
-  dimensions, dimension names, and names copied from \code{object}.
 
   \code{flintVersion} returns a named list of numeric versions with
   elements:
