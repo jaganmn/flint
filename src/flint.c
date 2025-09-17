@@ -858,6 +858,9 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 
 SEXP R_flint_length(SEXP object, SEXP s_exact)
 {
+	R_flint_class_t class = R_flint_get_class(object);
+	if (class == R_FLINT_CLASS_INVALID)
+		return Rf_ScalarInteger(NA_INTEGER);
 	if (XLENGTH(s_exact) == 0)
 		Rf_error(_("'%s' of length zero in '%s'"),
 		         "exact", "flintLength");
@@ -1232,6 +1235,8 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 SEXP R_flint_size(SEXP object)
 {
 	R_flint_class_t class = R_flint_get_class(object);
+	if (class == R_FLINT_CLASS_INVALID)
+		return Rf_ScalarReal(NA_REAL);
 	const void *x = R_flint_get_pointer(object);
 	mp_limb_t j, n = R_flint_get_length(object);
 	size_t count = 0;
@@ -1317,7 +1322,7 @@ SEXP R_flint_size(SEXP object)
 		SIZE_CASE(acb, acb_t, acb_srcptr);
 		break;
 	default:
-		return R_NilValue;
+		break;
 	}
 
 #undef SIZE_CASE
@@ -2029,6 +2034,13 @@ SEXP R_flint_transpose(SEXP object, SEXP s_conjugate)
 
 SEXP R_flint_triple(SEXP object)
 {
+	R_flint_class_t class = R_flint_get_class(object);
+	if (class == R_FLINT_CLASS_INVALID) {
+		SEXP ans = Rf_allocVector(STRSXP, 3);
+		for (R_xlen_t i = 0; i < 3; ++i)
+			SET_STRING_ELT(ans, i, NA_STRING);
+		return ans;
+	}
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, 3));
 	char buffer[64];
 	snprintf(buffer, 64, "%s",

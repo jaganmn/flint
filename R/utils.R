@@ -58,8 +58,17 @@ function (classes, strict = TRUE) {
 }
 
 flintIdentical <-
-function (object, reference)
-    .Call(R_flint_identical, object, reference)
+function (object, reference, ...) {
+    if (is.na(flintClass(object)) || is.na(flintClass(reference)))
+        identical(object, reference, ...)
+    else {
+        object0 <- object
+        reference0 <- reference
+        object0@.xData <- reference0@.xData <- new("externalptr")
+        identical(object0, reference0, ...) &&
+            .Call(R_flint_identical, object, reference)
+    }
+}
 
 flintLength <-
 function (object, exact = TRUE)
@@ -67,11 +76,11 @@ function (object, exact = TRUE)
 
 flintLengthAny <-
 function (object, exact = TRUE) {
-    if (is.na(flintClass(object))) {
+    if (is.na(n <- flintLength(object, exact = exact))) {
         n <- length(object)
         if (exact) ulong(n) else n
     }
-    else flintLength(object, exact = exact)
+    else n
 }
 
 flintLongLongLimb <-
