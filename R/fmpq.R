@@ -261,9 +261,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "fmpq",
       function (from)
-          new("fmpq", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from), num = NULL, den = NULL))
+          .Call(R_flint_fmpq_initialize, flintNew("fmpq"), from, NULL,
+                dim(from), dimnames(from), names(from), NULL, NULL))
 
 setMethod("colMeans",
           c(x = "fmpq"),
@@ -283,14 +282,6 @@ setMethod("format",
               p[] <- paste0(p, "/", q)
               p
           })
-
-setMethod("initialize",
-          c(.Object = "fmpq"),
-          function (.Object, x, length, dim, dimnames, names,
-                    num, den, ...)
-              .Call(R_flint_fmpq_initialize,
-                    .Object, x, length, dim, dimnames, names,
-                    num, den))
 
 setMethod("is.finite",
           c(x = "fmpq"),

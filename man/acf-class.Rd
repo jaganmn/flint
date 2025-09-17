@@ -322,12 +322,6 @@ acf.(real=, imag=, length=)}
       format \code{"a+bi"} and scientific format for each \code{a} and
       \code{b}.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "acf")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot and
-      (conditionally depending on arguments other than \code{.Object})
-      its \code{dim}, \code{dimnames}, and \code{names} slots; see
-      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "acf")}:\cr
       returns a logical vector indicating which elements of \code{x}

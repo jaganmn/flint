@@ -245,9 +245,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "acb",
       function (from)
-          new("acb", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from), real = NULL, imag = NULL))
+          .Call(R_flint_acb_initialize, flintNew("acb"), from, NULL,
+                dim(from), dimnames(from), names(from), NULL, NULL))
 
 setMethod("colMeans",
           c(x = "acb"),
@@ -268,14 +267,6 @@ setMethod("format",
               r[] <- paste0(r, "+", i, "i")
               r
           })
-
-setMethod("initialize",
-          c(.Object = "acb"),
-          function (.Object, x, length, dim, dimnames, names,
-                    real, imag, ...)
-              .Call(R_flint_acb_initialize,
-                    .Object, x, length, dim, dimnames, names,
-                    real, imag))
 
 setMethod("is.finite",
           c(x = "acb"),

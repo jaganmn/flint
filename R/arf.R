@@ -211,9 +211,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "arf",
       function (from)
-          new("arf", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from)))
+          .Call(R_flint_arf_initialize, flintNew("arf"), from, NULL,
+                dim(from), dimnames(from), names(from)))
 
 setMethod("colMeans",
           c(x = "arf"),
@@ -235,12 +234,6 @@ setMethod("format",
                   sep <- if (identical(base, 10L)) "e" else "@"
               .Call(R_flint_arf_format, x, base, digits, sep, rnd)
           })
-
-setMethod("initialize",
-          c(.Object = "arf"),
-          function (.Object, x, length, dim, dimnames, names, ...)
-              .Call(R_flint_arf_initialize,
-                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "arf"),

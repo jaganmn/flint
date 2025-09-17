@@ -302,12 +302,6 @@ fmpq(num=, den=, length=)}
       returns a character vector suitable for printing, using string
       format \code{"p/q"}.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "fmpq")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot and
-      (conditionally depending on arguments other than \code{.Object})
-      its \code{dim}, \code{dimnames}, and \code{names} slots; see
-      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "fmpq")}:\cr
       returns a logical vector whose elements are all \code{TRUE}, as

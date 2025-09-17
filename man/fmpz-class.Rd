@@ -281,12 +281,6 @@ fmpz(x, length=)}
       \code{signature(x = "fmpz")}:\cr
       returns a character vector suitable for printing.  Optional
       arguments control the output; see \code{\link{format-methods}}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "fmpz")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot and
-      (conditionally depending on arguments other than \code{.Object})
-      its \code{dim}, \code{dimnames}, and \code{names} slots; see
-      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       returns a logical vector whose elements are all \code{TRUE}, as
       \code{fmpz} has no representation for \code{NaN}, \code{-Inf}, and

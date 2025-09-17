@@ -245,9 +245,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "acf",
       function (from)
-          new("acf", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from), real = NULL, imag = NULL))
+          .Call(R_flint_acf_initialize, flintNew("acf"), from, NULL,
+                dim(from), dimnames(from), names(from), NULL, NULL))
 
 setMethod("colMeans",
           c(x = "acf"),
@@ -273,14 +272,6 @@ setMethod("format",
               }
               r
           })
-
-setMethod("initialize",
-          c(.Object = "acf"),
-          function (.Object, x, length, dim, dimnames, names,
-                    real, imag, ...)
-              .Call(R_flint_acf_initialize,
-                    .Object, x, length, dim, dimnames, names,
-                    real, imag))
 
 setMethod("is.finite",
           c(x = "acf"),

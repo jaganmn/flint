@@ -253,9 +253,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "arb",
       function (from)
-          new("arb", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from), mid = NULL, rad = NULL))
+          .Call(R_flint_arb_initialize, flintNew("arb"), from, NULL,
+                dim(from), dimnames(from), names(from), NULL, NULL))
 
 setMethod("colMeans",
           c(x = "arb"),
@@ -276,14 +275,6 @@ setMethod("format",
               m[] <- paste0("(", m, " +/- ", r, ")")
               m
           })
-
-setMethod("initialize",
-          c(.Object = "arb"),
-          function (.Object, x, length, dim, dimnames, names,
-                    mid, rad, ...)
-              .Call(R_flint_arb_initialize,
-                    .Object, x, length, dim, dimnames, names,
-                    mid, rad))
 
 setMethod("is.finite",
           c(x = "arb"),

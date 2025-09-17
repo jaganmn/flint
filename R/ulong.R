@@ -223,9 +223,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "ulong",
       function (from)
-          new("ulong", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from)))
+          .Call(R_flint_ulong_initialize, flintNew("ulong"), from, NULL,
+                dim(from), dimnames(from), names(from)))
 
 setMethod("colMeans",
           c(x = "ulong"),
@@ -241,12 +240,6 @@ setMethod("format",
           c(x = "ulong"),
           function (x, base = 10L, ...)
               .Call(R_flint_ulong_format, x, base))
-
-setMethod("initialize",
-          c(.Object = "ulong"),
-          function (.Object, x, length, dim, dimnames, names, ...)
-              .Call(R_flint_ulong_initialize,
-                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "ulong"),

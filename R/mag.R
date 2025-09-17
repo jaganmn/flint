@@ -211,9 +211,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "mag",
       function (from)
-          new("mag", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from)))
+          .Call(R_flint_mag_initialize, flintNew("mag"), from, NULL,
+                dim(from), dimnames(from), names(from)))
 
 setMethod("colMeans",
           c(x = "mag"),
@@ -235,12 +234,6 @@ setMethod("format",
                   sep <- if (identical(base, 10L)) "e" else "@"
               .Call(R_flint_mag_format, x, base, digits, sep, rnd)
           })
-
-setMethod("initialize",
-          c(.Object = "mag"),
-          function (.Object, x, length, dim, dimnames, names, ...)
-              .Call(R_flint_mag_initialize,
-                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "mag"),

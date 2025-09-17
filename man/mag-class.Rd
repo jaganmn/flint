@@ -276,12 +276,6 @@ mag(x, length=)}
       returns a character vector suitable for printing, using scientific
       format.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "mag")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot and
-      (conditionally depending on arguments other than \code{.Object})
-      its \code{dim}, \code{dimnames}, and \code{names} slots; see
-      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector indicating which elements of \code{x}

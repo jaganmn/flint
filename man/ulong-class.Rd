@@ -408,13 +408,6 @@ slong(x, length=)}
       \code{signature(x = "slong")}:\cr
       returns a character vector suitable for printing.  Optional
       arguments control the output; see \code{\link{format-methods}}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "ulong")}:\cr
-      \code{signature(.Object = "slong")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot and
-      (conditionally depending on arguments other than \code{.Object})
-      its \code{dim}, \code{dimnames}, and \code{names} slots; see
-      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr

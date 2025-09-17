@@ -2,8 +2,8 @@ useDynLib(flint, .registration = TRUE)
 importClassesFrom(methods, classGeneratorFunction)
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
            callGeneric, callNextMethod, cbind2, coerce, getClassDef,
-           initialize, new, rbind2, selectMethod, setAs, setClass,
-           setClassUnion, setMethod, show)
+           new, rbind2, selectMethod, setAs, setClass, setClassUnion,
+           setMethod, show)
 importFrom(stats, quantile, runif)
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
               OptionalInteger, OptionalCharacter, OptionalList)
@@ -22,8 +22,7 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               names, "names<-", print, rbind2, rep, rep.int, rep_len,
               rowMeans, rowSums, seq, sequence, solve, summary, t,
               tcrossprod, unique, xtfrm)
-exportMethods(Complex, Math, Math2, Ops, Summary, coerce, initialize,
-              show)
+exportMethods(Complex, Math, Math2, Ops, Summary, coerce, show)
 exportMethods(quantile)
 export(flint, flint.array,
        ulong, ulong.array,

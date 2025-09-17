@@ -219,9 +219,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "fmpz",
       function (from)
-          new("fmpz", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from)))
+          .Call(R_flint_fmpz_initialize, flintNew("fmpz"), from, NULL,
+                dim(from), dimnames(from), names(from)))
 
 setMethod("colMeans",
           c(x = "fmpz"),
@@ -237,12 +236,6 @@ setMethod("format",
           c(x = "fmpz"),
           function (x, base = 10L, ...)
               .Call(R_flint_fmpz_format, x, base))
-
-setMethod("initialize",
-          c(.Object = "fmpz"),
-          function (.Object, x, length, dim, dimnames, names, ...)
-              .Call(R_flint_fmpz_initialize,
-                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "fmpz"),

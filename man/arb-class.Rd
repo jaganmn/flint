@@ -319,12 +319,6 @@ arb(mid=, mid=, length=)}
       format \code{"(m +/- r)"} and scientific format for \code{m} and
       \code{r}.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
-    \item{\code{initialize}}{
-      \code{signature(.Object = "arb")}:\cr
-      returns \code{.Object} after setting its \code{.xData} slot and
-      (conditionally depending on arguments other than \code{.Object})
-      its \code{dim}, \code{dimnames}, and \code{names} slots; see
-      see \code{\link{initialize-methods}}.}
     \item{\code{is.finite}}{
       \code{signature(x = "arb")}:\cr
       returns a logical vector indicating which elements of \code{x}

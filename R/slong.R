@@ -223,9 +223,8 @@ setMethod("chol2inv",
 
 setAs("ANY", "slong",
       function (from)
-          new("slong", x = from, length = NULL,
-              dim = dim(from), dimnames = dimnames(from),
-              names = names(from)))
+          .Call(R_flint_slong_initialize, flintNew("slong"), from, NULL,
+                dim(from), dimnames(from), names(from)))
 
 setMethod("colMeans",
           c(x = "slong"),
@@ -241,12 +240,6 @@ setMethod("format",
           c(x = "slong"),
           function (x, base = 10L, ...)
               .Call(R_flint_slong_format, x, base))
-
-setMethod("initialize",
-          c(.Object = "slong"),
-          function (.Object, x, length, dim, dimnames, names, ...)
-              .Call(R_flint_slong_initialize,
-                    .Object, x, length, dim, dimnames, names))
 
 setMethod("is.finite",
           c(x = "slong"),
