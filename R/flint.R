@@ -416,7 +416,7 @@ function (x, i, j, ..., value) {
     cx <- .subscript.class(x, 1L)
     cv <- .subscript.class(value, 3L)
     common <- flintClassCommon(c(cx, cv), strict = FALSE)
-    x <- flintAs(x, common)
+    x <- asVector(x, common, strict = FALSE)
     value <- as(value, common)
     dx <- dim(x)
     call <- sys.call(sys.nframe())
@@ -640,12 +640,12 @@ function (x, i, j, ..., value) {
         warning(gettextf("coercing left hand side of '%s' assignment to type \"%s\"",
                          "[[<-", "list"),
                 domain = NA)
-        x <- flintAs(x, "list")
+        x <- asVector(x, "list", strict = FALSE)
         return(callGeneric())
     }
     cv <- .subscript.class(value, 3L)
     common <- flintClassCommon(c(cx, cv), strict = FALSE)
-    x <- flintAs(x, common)
+    x <- asVector(x, common, strict = FALSE)
     value <- as(value, common)
     }
     dx <- dim(x)
@@ -1150,7 +1150,7 @@ function (..., recursive = FALSE, use.names = TRUE) {
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(c(NULL, ..., recursive = FALSE, use.names = use.names))
-    args <- lapply(args, flintAs, common, use.dim = FALSE)
+    args <- lapply(args, as, common)
     if (any(common == c("character", "list", "expression")))
         unlist(args, recursive = FALSE, use.names = use.names)
     else {
@@ -1173,7 +1173,7 @@ function (..., deparse.level = 1) {
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(cbind(NULL, ..., deparse.level = deparse.level))
-    args <- lapply(args, flintAs, common)
+    args <- lapply(args, asVector, common, strict = FALSE)
     if (any(common == c("character", "list", "expression")))
         do.call(cbind, c(args, list(deparse.level = deparse.level)))
     else {
@@ -1666,7 +1666,7 @@ function (..., deparse.level = 1) {
     common <- flintClassCommon(classes, strict = FALSE)
     if (any(common == c("NULL", "raw", "logical", "integer", "double", "complex")))
         return(cbind(NULL, ..., deparse.level = deparse.level))
-    args <- lapply(args, flintAs, common)
+    args <- lapply(args, asVector, common, strict = FALSE)
     if (any(common == c("character", "list", "expression")))
         do.call(rbind, c(args, list(deparse.level = deparse.level)))
     else {

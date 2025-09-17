@@ -275,7 +275,8 @@ acb(real=, imag=, length=)}
       introduced with a warning.  Coercion to types \code{"character"},
       \code{"symbol"} (synonym \code{"name"}), \code{"pairlist"},
       \code{"list"}, and \code{"expression"}, which are not
-      \dQuote{number-like}, is handled specially.}
+      \dQuote{number-like}, is handled specially.  See also
+      \code{\link{asVector}}.}
     \item{\code{backsolve}}{
       \code{signature(r = "acb", x = "acb")}:\cr
       \code{signature(r = "acb", x = "ANY")}:\cr

@@ -353,7 +353,7 @@ slong(x, length=)}
       Coercion to types \code{"character"}, \code{"symbol"} (synonym
       \code{"name"}), \code{"pairlist"}, \code{"list"}, and
       \code{"expression"}, which are not \dQuote{number-like}, is
-      handled specially.}
+      handled specially.  See also \code{\link{asVector}}.}
     \item{\code{backsolve}}{
       \code{signature(r = "ulong", x = "ulong")}:\cr
       \code{signature(r = "slong", x = "slong")}:\cr

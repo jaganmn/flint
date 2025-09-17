@@ -2,29 +2,6 @@ flintABI <-
 function ()
     .Call(R_flint_abi)
 
-flintAs <-
-function (object, class,
-          use.dim = TRUE, use.dimnames = use.names, use.names = TRUE) {
-    ans <- as(object, class)
-    ans4 <- typeof(ans) == "S4"
-    if (use.dim && is.null(dim(ans)) && !is.null(a <- dim(object))) {
-        if (ans4)
-            ans@dim <- a
-        else dim(ans) <- a
-        if (use.dimnames && !is.null(a <- dimnames(object))) {
-            if (ans4)
-                ans@dimnames <- a
-            else dimnames(ans) <- a
-        }
-    }
-    if (use.names && is.null(names(ans)) && !is.null(a <- names(object))) {
-        if (ans4)
-            ans@names <- a
-        else names(ans) <- a
-    }
-    ans
-}
-
 flintBitsPerLimb <-
 function ()
     .Call(R_flint_bits_per_limb)
