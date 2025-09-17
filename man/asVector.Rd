@@ -42,6 +42,20 @@ asVector(x, mode = "any", strict = TRUE)
   \code{\link{as.vector}} and \code{\link{as}}.
 }
 \examples{
-## TODO
+str(J  <- diag(ulong(1L), 2L))
+
+as.integer(J)
+as.vector(J, "integer")
+as(J, "integer")
+asVector(J, "integer")
+asVector(J, "integer", FALSE)
+
+setClass("ulongExtension", contains = "ulong")
+str(J. <- new("ulongExtension", J))
+
+str(asVector(J , "ulong"))
+str(asVector(J., "ulong"))
+str(asVector(J , "ulong", FALSE))
+str(asVector(J., "ulong", FALSE))
 }
 \keyword{classes}
