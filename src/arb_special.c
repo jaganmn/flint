@@ -17,6 +17,26 @@ SEXP R_flint_arb_dirichlet_hurwitz(SEXP s_res, SEXP s_s, SEXP s_a, SEXP s_prec)
 	return R_flint_arb_2ary(&arb_hurwitz_zeta, s_res, s_s, s_a, s_prec);
 }
 
+SEXP R_flint_arb_hypgeom_bessel_j(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
+{
+	return R_flint_arb_2ary(&arb_hypgeom_bessel_j, s_res, s_nu, s_x, s_prec);
+}
+
+SEXP R_flint_arb_hypgeom_bessel_i(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
+{
+	return R_flint_arb_2ary(&arb_hypgeom_bessel_i, s_res, s_nu, s_x, s_prec);
+}
+
+SEXP R_flint_arb_hypgeom_bessel_y(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
+{
+	return R_flint_arb_2ary(&arb_hypgeom_bessel_y, s_res, s_nu, s_x, s_prec);
+}
+
+SEXP R_flint_arb_hypgeom_bessel_k(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
+{
+	return R_flint_arb_2ary(&arb_hypgeom_bessel_k, s_res, s_nu, s_x, s_prec);
+}
+
 SEXP R_flint_arb_hypgeom_gamma(SEXP s_res, SEXP s_x, SEXP s_prec)
 {
 	return R_flint_arb_1ary(&arb_hypgeom_gamma, s_res, s_x, s_prec);

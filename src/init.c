@@ -162,6 +162,18 @@ SEXP R_flint_acb_dirichlet_hurwitz(SEXP, SEXP, SEXP, SEXP);
 
 SEXP R_flint_acb_dirichlet_lerch_phi(SEXP, SEXP, SEXP, SEXP, SEXP);
 
+SEXP R_flint_arb_hypgeom_bessel_j(SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_hypgeom_bessel_j(SEXP, SEXP, SEXP, SEXP);
+
+SEXP R_flint_arb_hypgeom_bessel_i(SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_hypgeom_bessel_i(SEXP, SEXP, SEXP, SEXP);
+
+SEXP R_flint_arb_hypgeom_bessel_y(SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_hypgeom_bessel_y(SEXP, SEXP, SEXP, SEXP);
+
+SEXP R_flint_arb_hypgeom_bessel_k(SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_acb_hypgeom_bessel_k(SEXP, SEXP, SEXP, SEXP);
+
 SEXP R_flint_arb_hypgeom_gamma(SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_gamma(SEXP, SEXP, SEXP);
 
@@ -268,6 +280,14 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arb_dirichlet_hurwitz, 4),
 	CALL_ENTRY(R_flint_acb_dirichlet_hurwitz, 4),
 	CALL_ENTRY(R_flint_acb_dirichlet_lerch_phi, 5),
+	CALL_ENTRY(R_flint_arb_hypgeom_bessel_j, 4),
+	CALL_ENTRY(R_flint_acb_hypgeom_bessel_j, 4),
+	CALL_ENTRY(R_flint_arb_hypgeom_bessel_i, 4),
+	CALL_ENTRY(R_flint_acb_hypgeom_bessel_i, 4),
+	CALL_ENTRY(R_flint_arb_hypgeom_bessel_y, 4),
+	CALL_ENTRY(R_flint_acb_hypgeom_bessel_y, 4),
+	CALL_ENTRY(R_flint_arb_hypgeom_bessel_k, 4),
+	CALL_ENTRY(R_flint_acb_hypgeom_bessel_k, 4),
 	CALL_ENTRY(R_flint_arb_hypgeom_gamma, 3),
 	CALL_ENTRY(R_flint_acb_hypgeom_gamma, 3),
 	CALL_ENTRY(R_flint_arb_hypgeom_rgamma, 3),

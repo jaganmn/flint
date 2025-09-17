@@ -26,6 +26,34 @@ function (z = 1, s, a = 1, prec = flintPrec()) {
     res
 }
 
+acb_hypgeom_bessel_j <-
+function (nu, z, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_acb_hypgeom_bessel_j, res, as(nu, "arb"), as(z, "arb"), as(prec, "slong"))
+    res
+}
+
+acb_hypgeom_bessel_i <-
+function (nu, z, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_acb_hypgeom_bessel_i, res, as(nu, "arb"), as(z, "arb"), as(prec, "slong"))
+    res
+}
+
+acb_hypgeom_bessel_y <-
+function (nu, z, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_acb_hypgeom_bessel_y, res, as(nu, "arb"), as(z, "arb"), as(prec, "slong"))
+    res
+}
+
+acb_hypgeom_bessel_k <-
+function (nu, z, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_acb_hypgeom_bessel_k, res, as(nu, "arb"), as(z, "arb"), as(prec, "slong"))
+    res
+}
+
 acb_hypgeom_gamma <-
 function (z, prec = flintPrec()) {
     res <- flintNew("acb")

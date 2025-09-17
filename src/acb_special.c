@@ -39,6 +39,26 @@ SEXP R_flint_acb_dirichlet_lerch_phi(SEXP s_res, SEXP s_z, SEXP s_s, SEXP s_a, S
 	return R_flint_acb_3ary(&acb_dirichlet_lerch_phi, s_res, s_z, s_s, s_a, s_prec);
 }
 
+SEXP R_flint_acb_hypgeom_bessel_j(SEXP s_res, SEXP s_nu, SEXP s_z, SEXP s_prec)
+{
+	return R_flint_acb_2ary(&acb_hypgeom_bessel_j, s_res, s_nu, s_z, s_prec);
+}
+
+SEXP R_flint_acb_hypgeom_bessel_i(SEXP s_res, SEXP s_nu, SEXP s_z, SEXP s_prec)
+{
+	return R_flint_acb_2ary(&acb_hypgeom_bessel_i, s_res, s_nu, s_z, s_prec);
+}
+
+SEXP R_flint_acb_hypgeom_bessel_y(SEXP s_res, SEXP s_nu, SEXP s_z, SEXP s_prec)
+{
+	return R_flint_acb_2ary(&acb_hypgeom_bessel_y, s_res, s_nu, s_z, s_prec);
+}
+
+SEXP R_flint_acb_hypgeom_bessel_k(SEXP s_res, SEXP s_nu, SEXP s_z, SEXP s_prec)
+{
+	return R_flint_acb_2ary(&acb_hypgeom_bessel_k, s_res, s_nu, s_z, s_prec);
+}
+
 SEXP R_flint_acb_hypgeom_gamma(SEXP s_res, SEXP s_z, SEXP s_prec)
 {
 	return R_flint_acb_1ary(&acb_hypgeom_gamma, s_res, s_z, s_prec);
