@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.6 (2025-09-17)}{
+\section{Changes in version 0.0.6 (2025-09-18)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -51,7 +51,8 @@
   }
   \subsection{New Features}{
     \itemize{
-      \item .
+      \item \code{Mid()} and \code{Rad()} are extended to class \code{acb},
+      working on the real and imaginary parts.
     }
   }
   \subsection{Bug Fixes}{
