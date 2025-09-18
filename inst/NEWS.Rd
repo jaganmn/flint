@@ -51,8 +51,7 @@
   }
   \subsection{New Features}{
     \itemize{
-      \item \code{Mid()} and \code{Rad()} are extended to class \code{acb},
-      working on the real and imaginary parts.
+      \item .
     }
   }
   \subsection{Bug Fixes}{
