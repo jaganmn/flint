@@ -1,14 +1,18 @@
 useDynLib(flint, .registration = TRUE)
+
 importClassesFrom(methods, classGeneratorFunction)
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
            callGeneric, callNextMethod, cbind2, coerce, getClassDef,
            new, rbind2, selectMethod, setAs, setClass, setClassUnion,
            setMethod, show)
 importFrom(stats, quantile, runif)
+
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
               OptionalInteger, OptionalCharacter, OptionalList)
+# Methods for _own_ Generics
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
               Real, "Real<-", Imag, "Imag<-")
+# Methods for base Generics
 exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               "[[<-", all.equal, anyDuplicated, anyNA, as.raw,
               as.logical, as.integer, as.numeric, as.complex, as.vector,
@@ -22,8 +26,11 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               names, "names<-", print, rbind2, rep, rep.int, rep_len,
               rowMeans, rowSums, seq, sequence, solve, summary, t,
               tcrossprod, unique, xtfrm)
+# Methods for {methods} Generics
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, show)
+# Methods for {stats} Generics
 exportMethods(quantile)
+
 export(flint, flint.array,
        ulong, ulong.array,
        slong, slong.array,
@@ -34,6 +41,7 @@ export(flint, flint.array,
        ACF, ACF.array,
        arb, arb.array,
        acb, acb.array)
+
 export(c.flint,
        cbind.flint,
        rbind.flint,
@@ -83,6 +91,7 @@ export(c.flint,
        acb_hypgeom_beta_lower,
        arb_hypgeom_2f1,
        acb_hypgeom_2f1)
+
 S3method(all.equal, flint, .S3.all.equal.flint)
 S3method(anyDuplicated, flint, .S3.anyDuplicated.flint)
 S3method(as.matrix, flint, .S3.as.matrix.flint)

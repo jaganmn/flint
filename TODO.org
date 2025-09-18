@@ -25,6 +25,11 @@
 	"dim (d[1], ..., d[length(d)])" instead of "length prod(d)",
 	but what should happen if length(d) >> 1 ... ?
 
+** Organization of C code
+*** currently most R_flint_*_*() functions are declared in `src/init.c` and their implementation file <foo>.c,
+    Instead should have something like `#include <R_flint.h>`  in both
+    init.c and the respective implementation *.c file(s).
+
 ** TODO function for numerical solution of systems of ODE using 'arb'
 
 * TODO flint 0.0.x
@@ -38,4 +43,4 @@
 ** TODO write a vignette
 ** TODO serialization
 ** TODO formatting of floating-point types suppressing trailing zeros
-** TODO formatting of 'arb' with two 'digits' for midpoint, radius
+** TODO formatting of 'arb' with two different 'digits' for midpoint, radius
