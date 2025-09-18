@@ -10,12 +10,16 @@
 \alias{Den<-,fmpq-method}
 \alias{Mid}
 \alias{Mid,arb-method}
+\alias{Mid,acb-method}
 \alias{Mid<-}
 \alias{Mid<-,arb-method}
+\alias{Mid<-,acb-method}
 \alias{Rad}
 \alias{Rad,arb-method}
+\alias{Rad,acb-method}
 \alias{Rad<-}
 \alias{Rad<-,arb-method}
+\alias{Rad<-,acb-method}
 \alias{Real}
 \alias{Real,acf-method}
 \alias{Real,acb-method}
@@ -62,7 +66,8 @@ Imag(z) <- value
   \item{x}{
     a vector-like \R{} object with elements representing balls in a
     metric space.  Package \pkg{flint} provides methods for class
-    \code{\linkS4class{arb}}.}
+    \code{\linkS4class{arb}}.  We additionally provide the componentwise
+    extension to class \code{\linkS4class{acb}}}
   \item{z}{
     a vector-like \R{} object with elements representing complex
     numbers.  Package \pkg{flint} provides methods for classes

@@ -33,9 +33,9 @@ setMethod("Imag<-",
                                 "value", nv, "x", nz),
                        domain = NA)
               ans <- acb(real = Real(z), imag = value)
-              ans@dim <- q@dim
-              ans@dimnames <- q@dimnames
-              ans@names <- q@names
+              ans@dim <- z@dim
+              ans@dimnames <- z@dimnames
+              ans@names <- z@names
               ans
           })
 
@@ -50,6 +50,34 @@ setMethod("Math2",
               if (missing(digits))
                   digits <- switch(.Generic, "round" = 0L, "signif" = 6L)
               .Call(R_flint_acb_ops1, .Generic, x, list(as(digits, "slong")))
+          })
+
+setMethod("Mid",
+          c(x = "acb"),
+          function (x) {
+              ans <- acf(real = Mid(Re(x)), imag = Mid(Im(x)))
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
+              ans
+          })
+
+setMethod("Mid<-",
+          c(x = "acb"),
+          function (x, value) {
+              nx <- length(x)
+              nv <- length(value)
+              if (nv != 1L && nv != nx)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nx),
+                       domain = NA)
+              rx <- Re(x); Mid(rx) <- Re(value)
+              ix <- Im(x); Mid(ix) <- Im(value)
+              ans <- acb(real = rx, imag = ix)
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
+              ans
           })
 
 setMethod("Ops",
@@ -120,6 +148,34 @@ setMethod("Ops",
           c(e1 = "acb", e2 = "acb"),
           function (e1, e2)
               .Call(R_flint_acb_ops2, .Generic, e1, e2, list()))
+
+setMethod("Rad",
+          c(x = "acb"),
+          function (x) {
+              ans <- acf(real = Rad(Re(x)), imag = Rad(Im(x)))
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
+              ans
+          })
+
+setMethod("Rad<-",
+          c(x = "acb"),
+          function (x, value) {
+              nx <- length(x)
+              nv <- length(value)
+              if (nv != 1L && nv != nx)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nx),
+                       domain = NA)
+              rx <- Re(x); Rad(rx) <- Re(value)
+              ix <- Im(x); Rad(ix) <- Im(value)
+              ans <- acb(real = rx, imag = ix)
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
+              ans
+          })
 
 setMethod("Real",
           c(z = "acb"),

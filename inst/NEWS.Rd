@@ -67,7 +67,6 @@
     }
   }
 }
-
 \section{Changes in version 0.0.5 (2025-05-27)}{
   \subsection{Installation}{
     \itemize{
