@@ -9,18 +9,29 @@
 \alias{acb_hypgeom_bessel_k}
 \title{Bessel and Related Functions}
 \description{
-  Compute the (modified) Bessel functions of the first and second kind.
-  %% TODO: define the functions
+  Compute the principal branches of the (modified) Bessel functions of
+  the first and second kind.  The Bessel functions of the first and
+  second kind solve Bessel's equation
+  \deqn{z^{2} \dfrac{\text{d}^{2} w}{\text{d} z^{2}} + z \dfrac{\text{d} w}{\text{d} z} + (z^{2} - \nu^{2}) w = 0}{z^2 w''(z) + z w'(z) + (z^2 - nu^2) w(z) = 0}
+  and are given by
+  \deqn{\begin{aligned} J_{\nu}(z) &= (\tfrac{1}{2} z)^{\nu} \sum_{k = 0}^{\infty} (-1)^{k} \frac{(\frac{1}{4} z^{2})^{k}}{k! \Gamma(\nu + k + 1)} \\ Y_{\nu}(z) &= \frac{Y_{\nu}(z) \cos(\nu \pi) - J_{-\nu}(z)}{\sin(\nu \pi)} \end{aligned}}{J(z; nu) = (z/2)^nu sum_{k = 0, 1, \ldots} (-1)^k (z^2/4)^k/(k! Gamma(nu + k + 1))
+Y(z; nu) = (J(z; nu) cos(nu pi) - J(z; -nu))/sin(nu pi)}
+  The modified Bessel functions of the first and second kind solve the
+  modified Bessel's equation
+  \deqn{z^{2} \dfrac{\text{d}^{2} w}{\text{d} z^{2}} + z \dfrac{\text{d} w}{\text{d} z} + (z^{2} - \nu^{2}) w = 0}{z^2 w''(z) + z w'(z) - (z^2 + nu^2) w(z) = 0}
+  and are given by
+  \deqn{\begin{aligned} I_{\nu}(z) &= (\tfrac{1}{2} z)^{\nu} \sum_{k = 0}^{\infty} \frac{(\frac{1}{4} z^{2})^{k}}{k! \Gamma(\nu + k + 1)} \\ K_{\nu}(z) &= \frac{\pi}{2} \frac{I_{-\nu}(z) - I_{\nu}(z)}{\sin(\nu \pi)} \end{aligned}}{I(z; nu) = (z/2)^nu sum_{k = 0, 1, \ldots} (z^2/4)^k/(k! Gamma(nu + k + 1))
+K(z; nu) = (pi/2) (I(z; -nu) - I(z; nu))/sin(nu pi)}
 }
 \usage{
 arb_hypgeom_bessel_j(nu, x, prec = flintPrec())
 acb_hypgeom_bessel_j(nu, z, prec = flintPrec())
 
-arb_hypgeom_bessel_i(nu, x, prec = flintPrec())
-acb_hypgeom_bessel_i(nu, z, prec = flintPrec())
-
 arb_hypgeom_bessel_y(nu, x, prec = flintPrec())
 acb_hypgeom_bessel_y(nu, z, prec = flintPrec())
+
+arb_hypgeom_bessel_i(nu, x, prec = flintPrec())
+acb_hypgeom_bessel_i(nu, z, prec = flintPrec())
 
 arb_hypgeom_bessel_k(nu, x, prec = flintPrec())
 acb_hypgeom_bessel_k(nu, z, prec = flintPrec())

@@ -22,14 +22,14 @@ SEXP R_flint_arb_hypgeom_bessel_j(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
 	return R_flint_arb_2ary(&arb_hypgeom_bessel_j, s_res, s_nu, s_x, s_prec);
 }
 
-SEXP R_flint_arb_hypgeom_bessel_i(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
-{
-	return R_flint_arb_2ary(&arb_hypgeom_bessel_i, s_res, s_nu, s_x, s_prec);
-}
-
 SEXP R_flint_arb_hypgeom_bessel_y(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
 {
 	return R_flint_arb_2ary(&arb_hypgeom_bessel_y, s_res, s_nu, s_x, s_prec);
+}
+
+SEXP R_flint_arb_hypgeom_bessel_i(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
+{
+	return R_flint_arb_2ary(&arb_hypgeom_bessel_i, s_res, s_nu, s_x, s_prec);
 }
 
 SEXP R_flint_arb_hypgeom_bessel_k(SEXP s_res, SEXP s_nu, SEXP s_x, SEXP s_prec)
