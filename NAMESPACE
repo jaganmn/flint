@@ -9,7 +9,7 @@ importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
 importFrom(stats, quantile, runif)
 
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
-              OptionalInteger, OptionalCharacter, OptionalList)
+              OptionalInteger, OptionalList, OptionalCharacter)
 
 ## Generic functions in this package:
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
