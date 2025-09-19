@@ -23,7 +23,7 @@ yo <- arf(xo)
 you <- arf(xou)
 stopifnot(identical(order(xtfrm(y)), o),
           identical(order(y), o),
-          flintIdentical(sort(y, na.last = TRUE), yo),
+          identical(sort(y, na.last = TRUE), yo),
                 is.unsorted(y                                 ) ,
           is.na(is.unsorted(yo                                )),
           is.na(is.unsorted(you                               )),

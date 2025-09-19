@@ -57,19 +57,6 @@ function (classes, strict = TRUE) {
     else "ulong"
 }
 
-flintIdentical <-
-function (object, reference, ...) {
-    if (is.na(flintClass(object)) || is.na(flintClass(reference)))
-        identical(object, reference, ...)
-    else {
-        object0 <- object
-        reference0 <- reference
-        object0@.xData <- reference0@.xData <- new("externalptr")
-        identical(object0, reference0, ...) &&
-            .Call(R_flint_identical, object, reference)
-    }
-}
-
 flintLength <-
 function (object, exact = TRUE)
     .Call(R_flint_length, object, as.logical(exact))

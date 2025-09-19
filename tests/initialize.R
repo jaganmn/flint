@@ -20,8 +20,8 @@ for (call. in expression(fmpq( num = 0L,  den = 1L),
                           ACF(real = 0 , imag = 0 ),
                           acb(real = 0 , imag = 0 ))) {
     v <- eval(call.)
-    stopifnot(flintIdentical(eval(call.[-2L]), v),
-              flintIdentical(eval(call.[-3L]), v))
+    stopifnot(identical(eval(call.[-2L]), v),
+              identical(eval(call.[-3L]), v))
 }
 
 
@@ -34,8 +34,8 @@ for (call. in expression(fmpq( num = ,  den = ),
                           ACF(real = , imag = ),
                           acb(real = , imag = ))) {
     v <- lapply(L, function (a) eval(`[<-`(call., 2L:3L, a)))
-    stopifnot(flintIdentical(v[[1L]], v[[2L]]),
-              flintIdentical(v[[3L]], v[[4L]]))
+    stopifnot(identical(v[[1L]], v[[2L]]),
+              identical(v[[3L]], v[[4L]]))
 }
 
 
@@ -45,7 +45,7 @@ x <- c(-10, -0.125, 0, 1.25, 2.5)
 a <- fmpq(x)
 b <- fmpq(num = c(-10L, -1L, 0L, 5L, 5L),
           den = c(  1L,  8L, 1L, 4L, 2L))
-stopifnot(flintIdentical(a, b))
+stopifnot(identical(a, b))
 
 
 ## Test single initialization of 'arb'.
@@ -53,7 +53,7 @@ stopifnot(flintIdentical(a, b))
 x <- atan(-2:2)
 a <- arb(x)
 b <- arb(mid = x, rad = 0)
-stopifnot(flintIdentical(a, b))
+stopifnot(identical(a, b))
 
 
 ## Test single initialization of 'acf', 'acb'.
@@ -61,10 +61,10 @@ stopifnot(flintIdentical(a, b))
 x <- complex(real = exp(-2:2), imaginary = sin(-2:2))
 a <- ACF(x)
 b <- ACF(real = Re(x), imag = Im(x))
-stopifnot(flintIdentical(a, b))
+stopifnot(identical(a, b))
 a <- acb(x)
 b <- acb(real = Re(x), imag = Im(x))
-stopifnot(flintIdentical(a, b))
+stopifnot(identical(a, b))
 
 
 ## Test handling of unrepresentable values.

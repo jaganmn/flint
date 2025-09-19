@@ -29,12 +29,12 @@ for (.cl in names(k..)) {
               identical(is.finite(y), is.finite(y.)))
     switch(k.,
            stopifnot(tryCatch(is.na(x) <- n, error = function (e) TRUE)),
-           stopifnot(flintIdentical(`is.na<-`(x, n),
-                                    `is.na<-`(arf(x), n)),
-                     flintIdentical(`is.na<-`(y, n),
-                                    `is.na<-`(arf(y), n))),
-           stopifnot(flintIdentical(`is.na<-`(x, n),
-                                    flint(.cl, `is.na<-`(x., n))),
-                     flintIdentical(`is.na<-`(y, n),
-                                    flint(.cl, `is.na<-`(y., n)))))
+           stopifnot(identical(`is.na<-`(x, n),
+                               `is.na<-`(arf(x), n)),
+                     identical(`is.na<-`(y, n),
+                               `is.na<-`(arf(y), n))),
+           stopifnot(identical(`is.na<-`(x, n),
+                               flint(.cl, `is.na<-`(x., n))),
+                     identical(`is.na<-`(y, n),
+                               flint(.cl, `is.na<-`(y., n)))))
 }

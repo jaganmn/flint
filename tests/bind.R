@@ -2,17 +2,14 @@ library(flint)
 flint:::.initBasic()
 
 ## Hack:
-flintIdenticalRecursive <-
-function (object, reference) {
-    stopifnot(any(typeof(object) == c("list", "expression")))
-    if (typeof(object) != typeof(reference) ||
-        length(object) != length(reference) ||
-        !identical(names(object), names(reference)))
+identicalRecursive <-
+function (x, y, ...) {
+    stopifnot(any(typeof(x) == c("list", "expression")))
+    if (typeof(x) != typeof(y) || length(x) != length(y) ||
+        !identical(names(x), names(y)))
         return(FALSE)
-    for (i in seq_along(object))
-        if (!(if (is(object[[i]], "flint") && is(reference[[i]], "flint"))
-                  flintIdentical
-              else identical)(object[[i]], reference[[i]]))
+    for (i in seq_along(x))
+        if (!identical(x[[i]], y[[i]]))
             return(FALSE)
     TRUE
 }
@@ -36,13 +33,13 @@ for (i in seq_along(u)) {
     class. <- l[[p[[i]]]]
     identical. <-
     switch(class.,
-           "NULL" =, "raw" =, "character" = identical,
-           "list" =, "expression" = flintIdenticalRecursive,
-           flintIdentical)
+           "list" =, "expression" = identicalRecursive,
+           identical)
     a <- do.call(c.flint, u[seq_len(i)], quote = TRUE)
     b <-
     switch(class.,
-           "character" =, "list" =, "expression" = unlist(lapply(u[seq_len(i)], as, class.), recursive = FALSE),
+           "character" =,
+           "list" =, "expression" = unlist(lapply(u[seq_len(i)], as, class.), recursive = FALSE),
            rep(u[[p[[i]]]], times = i - 1L))
     stopifnot(identical.(a, b))
 }

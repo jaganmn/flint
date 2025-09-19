@@ -16,9 +16,9 @@ function (x) {
     x
 }
 
-flintIdenticalZ <-
-function (object, reference)
-    flintIdentical(zapnames(object), zapnames(reference))
+zapidentical <-
+function (x, y, ...)
+    identical(zapnames(x), zapnames(y), ...)
 
 ok0 <-
 function (...)
@@ -26,16 +26,16 @@ function (...)
     tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
 ok1 <-
 function (...)
-    flintIdenticalZ(x[ ... ], flint(.cl, x.[ ... ])) &&
+    zapidentical(x[ ... ], flint(.cl, x.[ ... ])) &&
     tryCatch({ x[[...]]; x.[[...]]; FALSE }, error = function (e) TRUE)
 ok2 <-
 function (...)
     tryCatch({ x[ ... ]; x.[ ... ]; FALSE }, error = function (e) TRUE) &&
-    flintIdenticalZ(x[[...]], flint(.cl, x.[[...]]))
+    zapidentical(x[[...]], flint(.cl, x.[[...]]))
 ok3 <-
 function (...)
-    flintIdenticalZ(x[ ... ], flint(.cl, x.[ ... ])) &&
-    flintIdenticalZ(x[[...]], flint(.cl, x.[[...]]))
+    zapidentical(x[ ... ], flint(.cl, x.[ ... ])) &&
+    zapidentical(x[[...]], flint(.cl, x.[[...]]))
 
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {

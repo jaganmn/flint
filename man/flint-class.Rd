@@ -81,6 +81,7 @@
 \alias{drop,flint-method}
 \alias{duplicated,flint-method}
 \alias{findInterval,flint-method}
+\alias{identical,flint,flint-method}
 \alias{is.array,flint-method}
 \alias{is.matrix,flint-method}
 \alias{is.na<-,flint-method}
@@ -257,8 +258,9 @@ flint.array(class, \dots)
       inheriting from different subclasses of virtual class \code{flint}
       and comparison with objects (typically atomic vectors) coercible
       to virtual class \code{flint} are supported with
-      \code{check.class = FALSE}.  See \code{\link{flintIdentical}} for
-      much stricter comparison of objects inheriting from \code{flint}.}
+      \code{check.class = FALSE}.  See the method for
+      \code{\link{identical}} for much stricter comparison of
+      \code{flint} objects.}
     \item{\code{anyDuplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{anyDuplicated(mtfrm(x), \dots)}.}
@@ -363,6 +365,17 @@ flint.array(class, \dots)
       caveat is that an error is signaled if \code{x} contains
       \code{NaN}, because \code{ulong} has no representation for \R{}'s
       missing value \code{\link{NA_integer_}}.}
+    \item{\code{identical}}{
+      \code{signature(x = "flint", y = "flint")}:\cr
+      returns a logical indicating if \code{x} and \code{y} are
+      \dQuote{exactly equal}.  Compared to the default method (which is
+      the \pkg{base} function, hence see \code{\link{identical}}), this
+      method handles the \code{.xData} slots of \code{x} and \code{y}
+      specially: by default (if \code{extptr.as.ref} is \code{FALSE}),
+      it does not test for equality of the stored pointers but rather
+      for entrywise equality of the \emph{pointed to} arrays.  Hence by
+      default the \code{.xData} slots are compared as if they were
+      traditional numeric or complex vectors.}
     \item{\code{is.array}}{
       \code{signature(x = "flint")}:\cr
       returns a logical indicating if \code{x} has a non-\code{NULL}

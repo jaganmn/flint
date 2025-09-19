@@ -1425,6 +1425,25 @@ setMethod("findInterval",
                     as.logical(all.inside))
           })
 
+setMethod("identical",
+          c(x = "flint", y = "flint"),
+          function (x, y,
+                    num.eq = TRUE, single.NA = TRUE,
+                    attrib.as.set = TRUE, ignore.bytecode = TRUE,
+                    ignore.environment = FALSE, ignore.srcref = TRUE,
+                    extptr.as.ref = FALSE) {
+              x. <- x
+              y. <- y
+              if (!extptr.as.ref)
+                  x@.xData <- y@.xData <- new("externalptr")
+              base::identical(x, y,
+                              num.eq, single.NA,
+                              attrib.as.set, ignore.bytecode,
+                              ignore.environment, ignore.srcref,
+                              extptr.as.ref) &&
+                  (extptr.as.ref || .Call(R_flint_identical, x., y.))
+          })
+
 setMethod("is.array",
           c(x = "flint"),
           function (x)

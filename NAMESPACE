@@ -22,12 +22,12 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               as.POSIXlt, backsolve, c, cbind2, chol, chol2inv,
               colMeans, colSums, crossprod, cut, diag, "diag<-", dim,
               "dim<-", dimnames, "dimnames<-", drop, duplicated,
-              findInterval, format, is.array, is.finite, is.infinite,
-              is.matrix, is.na, "is.na<-", is.nan, isSymmetric,
-              is.unsorted, length, "length<-", log, match, mean, mtfrm,
-              names, "names<-", print, rbind2, rep, rep.int, rep_len,
-              rowMeans, rowSums, seq, sequence, solve, summary, t,
-              tcrossprod, unique, xtfrm)
+              findInterval, format, identical, is.array, is.finite,
+              is.infinite, is.matrix, is.na, "is.na<-", is.nan,
+              isSymmetric, is.unsorted, length, "length<-", log, match,
+              mean, mtfrm, names, "names<-", print, rbind2, rep,
+              rep.int, rep_len, rowMeans, rowSums, seq, sequence, solve,
+              summary, t, tcrossprod, unique, xtfrm)
 ## Generic functions in 'methods':
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, show)
 ## Generic functions in 'stats':
@@ -51,7 +51,6 @@ export(c.flint,
        asVector,
        flintABI,
        flintClass,
-       flintIdentical,
        flintLength,
        flintPrec,
        flintRnd,

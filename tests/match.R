@@ -32,14 +32,14 @@ for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               identical(duplicated(z), !replace(logical(n), 1L, TRUE)),
               identical(duplicated(z, fromLast = TRUE), !replace(logical(n), n, TRUE)),
               identical(duplicated(z, incomparables = 0L), logical(n)),
-              flintIdentical(unique(x), x),
-              flintIdentical(unique(z), z[1L]),
-              flintIdentical(unique(z, incomparables = 0L), z))
+              identical(unique(x), x),
+              identical(unique(z), z[1L]),
+              identical(unique(z, incomparables = 0L), z))
     switch(.cl,
            "acf" =, "arb" =, "acb" = NULL,
            {
                b <- flint(.cl, b.)
-               stopifnot(all(mapply(flintIdentical, f1, .mapply(findInterval, g1, list(x = x,    vec = b)))),
-                         all(mapply(flintIdentical, f2, .mapply(         cut, g2, list(x = x, breaks = b)))))
+               stopifnot(all(mapply(identical, f1, .mapply(findInterval, g1, list(x = x,    vec = b)))),
+                         all(mapply(identical, f2, .mapply(         cut, g2, list(x = x, breaks = b)))))
            })
 }

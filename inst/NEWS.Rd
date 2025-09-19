@@ -31,7 +31,7 @@
       \ldots are removed and replaced with pairs of class generator
       functions \code{ulong}, \code{slong}, \ldots and
       \code{ulong.array}, \code{slong.array}, \ldots with much nicer
-      usage; see, e.g., \code{help("ulong", "flint")} for details.
+      usage; see, e.g., \code{help("ulong")} for details.
 
       \item S4 methods for \code{initialize}, which were nonstandard by
       virtue of not calling \code{callNextMethod} in order to dispatch
@@ -42,6 +42,9 @@
       \code{new("ulongWithExtraSlot", \var{ulong}, extra = .)}.  Users
       relying on the earlier behaviour of \code{new} should start using
       the documented class generator functions.
+
+      \item \R{} function \code{flintIdentical} is removed and replaced
+      by an S4 method for made-generic function \code{identical}.
     }
   }
   \subsection{Deprecated and Defunct}{
@@ -82,15 +85,15 @@
       \code{[[}, and \code{[[<-} are refactored completely to support
       array subscripts.
 
-      \item S4 methods are defined for generic functions \code{\%*\%},
-      \code{backsolve}, \code{cbind2}, \code{chol}, \code{chol2inv},
-      \code{colMeans}, \code{colSums}, \code{diag}, \code{diag<-},
-      \code{dim}, \code{dim<-}, \code{dimnames}, \code{dimnames<-},
-      \code{drop}, \code{is.array}, \code{is.matrix},
-      \code{isSymmetric}, \code{rbind2}, \code{rowMeans},
-      \code{rowSums}, \code{solve}, \code{t}, and \code{tcrossprod}.
-      It is not a coindicence that these are all more or less
-      array-specific.
+      \item S4 methods are defined for generic (or made-generic)
+      functions \code{\%*\%}, \code{backsolve}, \code{cbind2},
+      \code{chol}, \code{chol2inv}, \code{colMeans}, \code{colSums},
+      \code{diag}, \code{diag<-}, \code{dim}, \code{dim<-},
+      \code{dimnames}, \code{dimnames<-}, \code{drop}, \code{is.array},
+      \code{is.matrix}, \code{isSymmetric}, \code{rbind2},
+      \code{rowMeans}, \code{rowSums}, \code{solve}, \code{t}, and
+      \code{tcrossprod}.  It is not a coindicence that these are all
+      more or less array-specific.
 
       \item S3 methods are defined for S3-turned-S4 generic functions.
       These methods call the S4 generic function so that S4 dispatch
@@ -98,6 +101,10 @@
 
       \item S4 methods are defined for generic functions \code{$} and
       \code{$<-}, signaling an informative error.
+
+      \item An S4 method is defined for made-generic function
+      \code{identical} so that \code{.xData} slots are handled specially
+      when two \code{flint} objects are compared.
     }
   }
   \subsection{New Features}{
@@ -127,9 +134,9 @@
       similar in purpose to \code{c.flint}, enabling users to bypass
       the internal dispatch mechanism of \code{cbind} and \code{rbind}.
 
-      \item It is now defined how \code{flintLength},
-      \code{flintIdentical}, and \code{flintSize} handle arguments not
-      inheriting from virtual class \code{flint}.
+      \item It is now defined how \code{flintLength} and
+      \code{flintSize} handle arguments not inheriting from virtual
+      class \code{flint}.
 
       \item \code{Mid} and \code{Mid<-} are implemented for class
       \code{acb}, getting and setting the complex midpoint.  Thanks to
@@ -351,13 +358,14 @@
   }
   \subsection{Methods}{
     \itemize{
-      \item S4 methods are defined for generic functions \code{[},
-      \code{[<-}, \code{[[}, \code{[[<-}, \code{Complex}, \code{Den},
-      \code{Den<-}, \code{Imag}, \code{Imag<-}, \code{Math},
-      \code{Math2}, \code{Mid}, \code{Mid<-}, \code{Num}, \code{Num<-},
-      \code{Ops}, \code{Rad}, \code{Rad<-}, \code{Real}, \code{Real<-},
-      \code{Summary}, \code{all.equal}, \code{anyDuplicated},
-      \code{anyNA}, \code{as.raw}, \code{as.logical}, \code{as.integer},
+      \item S4 methods are defined for generic (or made-generic)
+      functions \code{[}, \code{[<-}, \code{[[}, \code{[[<-},
+      \code{Complex}, \code{Den}, \code{Den<-}, \code{Imag},
+      \code{Imag<-}, \code{Math}, \code{Math2}, \code{Mid},
+      \code{Mid<-}, \code{Num}, \code{Num<-}, \code{Ops}, \code{Rad},
+      \code{Rad<-}, \code{Real}, \code{Real<-}, \code{Summary},
+      \code{all.equal}, \code{anyDuplicated}, \code{anyNA},
+      \code{as.raw}, \code{as.logical}, \code{as.integer},
       \code{as.numeric}, \code{as.complex}, \code{as.vector},
       \code{as.matrix}, \code{as.array}, \code{as.data.frame},
       \code{as.Date}, \code{as.POSIXct}, \code{as.POSIXlt}, \code{c},

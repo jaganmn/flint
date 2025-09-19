@@ -2,7 +2,6 @@
 \alias{flint-package}
 \alias{flintABI}
 \alias{flintClass}
-\alias{flintIdentical}
 \alias{flintLength}
 \alias{flintPrec}
 \alias{flintRnd}
@@ -18,7 +17,6 @@
 \usage{
 flintABI()
 flintClass(object)
-flintIdentical(object, reference, \dots)
 flintLength(object, exact = TRUE)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
@@ -27,8 +25,8 @@ flintTriple(object)
 flintVersion()
 }
 \arguments{
-  \item{object, reference}{
-    \R{} objects typically inheriting from virtual class
+  \item{object}{
+    an \R{} object, typically inheriting from virtual class
     \code{\linkS4class{flint}}.}
   \item{exact}{
     a logical indicating if the length should be represented exactly as
@@ -45,8 +43,6 @@ flintVersion()
     \samp{[Dd]} (towards negative infinity), \samp{[Zz]} (towards zero),
     \samp{[Aa]} (away from zero), and \samp{[Nn]} (to nearest, with
     precedence to even significands).}
-  \item{\dots}{
-    optional arguments passed to \code{\link{identical}}.}
 }
 \details{
   To report a bug or request a feature, use
@@ -78,14 +74,6 @@ flintVersion()
   but not the name of any subclass of \code{\linkS4class{ulong}}.)
   If \code{object} does not inherit from virtual class \code{flint},
   then the return value is \code{\link{NA_character_}}.
-
-  \code{flintIdentical} is equivalent to \code{\link{identical}} with
-  the exception that if both arguments inherit from virtual class
-  \code{flint}, then their \code{.xData} slots (external pointer
-  objects storing pointers to allocated arrays) are tested not for
-  pointer equality but rather for identical \dQuote{pointed to} data.
-  If array entries are recursive structures, then they are compared
-  recursively.
 
   \code{flintLength} returns a representation of the length of
   \code{object}.  If \code{exact = TRUE}, then the return value is an

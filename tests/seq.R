@@ -17,15 +17,14 @@ for (i in seq_along(usage)) {
     u <- usage[[i]]
     v <- value[[i]]
     s <- flint(v, do.call(seq.int, args.[u]))
-    stopifnot(flintIdentical(do.call(seq.int, args[u]), s),
-              flintIdentical(do.call(seq    , args[u]), s))
+    stopifnot(identical(do.call(seq.int, args[u]), s),
+              identical(do.call(seq    , args[u]), s))
 }
 
 d <- 4L
 nvec. <- d:1L
 from. <- seq.int(from = 1L, by = d + 1L, length.out = d)
 s <- ulong(sequence(nvec = nvec., from = from.))
-stopifnot(flintIdentical(sequence(nvec = ulong(nvec.),
-                                  from = ulong(from.)),
-                         s),
+stopifnot(identical(sequence(nvec = ulong(nvec.), from = ulong(from.)),
+                    s),
           all(s == which(.row(c(d, d)) >= .col(c(d, d)))))
