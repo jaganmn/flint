@@ -54,10 +54,15 @@ function (object) {
 }
 
 .error.argumentInvalidClass <-
-function (object) {
+function (object, implicit.ok = FALSE) {
     call <- sys.call(-1L)
+    if (implicit.ok || is.object(object))
     errorCondition(gettextf("invalid argument class %s",
                             deparse(class(object))),
+                   class = "simpleError", call = call)
+    else
+    errorCondition(gettextf("invalid argument type \"%s\"",
+                            typeof(object)),
                    class = "simpleError", call = call)
 }
 
