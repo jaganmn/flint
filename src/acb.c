@@ -315,7 +315,17 @@ SEXP R_flint_acb_part(SEXP object, SEXP s_op)
 	mp_limb_t j, n = R_flint_get_length(object);
 	acb_srcptr x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
-	SEXP ans = PROTECT(newObject("arb"));
+	SEXP ans;
+	if (op == NA_INTEGER) {
+	PROTECT(ans = newObject("acf"));
+	acf_ptr y = (n) ? flint_calloc(n, sizeof(acf_t)) : 0;
+	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_acf_finalize);
+	for (j = 0; j < n; ++j) {
+		arf_set(acf_realref(y + j), arb_midref(acb_realref(x + j)));
+		arf_set(acf_imagref(y + j), arb_midref(acb_imagref(x + j)));
+	}
+	} else {
+	PROTECT(ans = newObject("arb"));
 	arb_ptr y = (n) ? flint_calloc(n, sizeof(arb_t)) : 0;
 	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_arb_finalize);
 	if (op == 0)
@@ -324,6 +334,7 @@ SEXP R_flint_acb_part(SEXP object, SEXP s_op)
 	else
 	for (j = 0; j < n; ++j)
 		arb_set(y + j, acb_imagref(x + j));
+	}
 	setDDNN1(ans, object);
 	UNPROTECT(1);
 	return ans;

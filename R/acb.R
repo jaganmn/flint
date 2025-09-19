@@ -52,6 +52,30 @@ setMethod("Math2",
               .Call(R_flint_acb_ops1, .Generic, x, list(as(digits, "slong")))
           })
 
+setMethod("Mid",
+          c(x = "acb"),
+          function (x)
+              .Call(R_flint_acb_part, x, NA_integer_))
+
+setMethod("Mid<-",
+          c(x = "acb"),
+          function (x, value) {
+              nx <- length(x)
+              nv <- length(value)
+              if (nv != 1L && nv != nx)
+                  stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
+                                "value", nv, "x", nx),
+                       domain = NA)
+              ans <- acb(real = arb(mid = Re(value),
+                                    rad = Rad(Re(x))),
+                         imag = arb(mid = Im(value),
+                                    rad = Rad(Im(x))))
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
+              ans
+          })
+
 setMethod("Ops",
           c(e1 = "ANY", e2 = "acb"),
           function (e1, e2) {

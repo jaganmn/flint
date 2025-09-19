@@ -10,8 +10,10 @@
 \alias{Den<-,fmpq-method}
 \alias{Mid}
 \alias{Mid,arb-method}
+\alias{Mid,acb-method}
 \alias{Mid<-}
 \alias{Mid<-,arb-method}
+\alias{Mid<-,acb-method}
 \alias{Rad}
 \alias{Rad,arb-method}
 \alias{Rad<-}
@@ -105,6 +107,11 @@ Imag(z) <- value
   The replacement form of \code{Imag} constructs a new \code{acf} or
   \code{acb} vector from \code{Real(z)} and \code{value} (coerced to
   \code{arf} or \code{arb}).
+
+  For convenience, \code{Mid} and its replacement form also work for
+  \code{\linkS4class{acb}} \code{x}, getting and setting the
+  complex midpoint defined by the midpoints of the real and imaginary
+  parts of \code{x}.
 }
 \seealso{
   Virtual class \code{\linkS4class{flint}}.

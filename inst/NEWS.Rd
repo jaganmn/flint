@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.0.6 (2025-09-17)}{
+\section{Changes in version 0.0.6 (2025-09-19)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -130,6 +130,10 @@
       \item It is now defined how \code{flintLength},
       \code{flintIdentical}, and \code{flintSize} handle arguments not
       inheriting from virtual class \code{flint}.
+
+      \item \code{Mid} and \code{Mid<-} are implemented for class
+      \code{acb}, getting and setting the complex midpoint.  Thanks to
+      Martin Maechler for the suggestion and patch (\GH{15}).
     }
   }
   \subsection{Bug Fixes}{
