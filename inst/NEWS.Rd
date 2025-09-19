@@ -134,7 +134,10 @@
   }
   \subsection{Bug Fixes}{
     \itemize{
-      \item .
+      \item Due to a copy-paste bug, \code{Mid(x) <- value} never worked
+      for \code{x} of class \code{arb} and \code{Imag(z) <- value}
+      never worked for \code{z} of class \code{acf} or \code{acb}.
+      Thanks to Martin Maechler for the report and patch (\GH{15}).
     }
   }
   \subsection{Internals}{

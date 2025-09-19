@@ -33,9 +33,9 @@ setMethod("Imag<-",
                                 "value", nv, "x", nz),
                        domain = NA)
               ans <- acb(real = Real(z), imag = value)
-              ans@dim <- q@dim
-              ans@dimnames <- q@dimnames
-              ans@names <- q@names
+              ans@dim <- z@dim
+              ans@dimnames <- z@dimnames
+              ans@names <- z@names
               ans
           })
 

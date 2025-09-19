@@ -46,9 +46,9 @@ setMethod("Mid<-",
                                 "value", nv, "x", nx),
                        domain = NA)
               ans <- arb(mid = value, rad = Rad(x))
-              ans@dim <- q@dim
-              ans@dimnames <- q@dimnames
-              ans@names <- q@names
+              ans@dim <- x@dim
+              ans@dimnames <- x@dimnames
+              ans@names <- x@names
               ans
           })
 
