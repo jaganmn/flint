@@ -226,8 +226,8 @@ setMethod("colSums",
 
 setMethod("format",
           c(x = "arf"),
-          function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...) {
+          function (x, base = 10L, digits = NULL,
+                    sep = NULL, rnd = flintRnd(), ...) {
               if (is.null(digits))
                   digits <- getOption("digits")
               if (is.null(sep))

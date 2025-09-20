@@ -301,10 +301,14 @@ setMethod("determinant",
 
 setMethod("format",
           c(x = "acb"),
-          function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...) {
-              r <- format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
-              i <- format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
+          function (x, base = 10L, digits = NULL, digits.mag = NULL,
+                    sep = NULL, rnd = flintRnd(), ...) {
+              r <- format(Real(x), base = base,
+                          digits = digits, digits.mag = digits.mag,
+                          sep = sep, rnd = rnd, ...)
+              i <- format(Imag(x), base = base,
+                          digits = digits, digits.mag = digits.mag,
+                          sep = sep, rnd = rnd, ...)
               r[] <- paste0(r, "+", i, "i")
               r
           })

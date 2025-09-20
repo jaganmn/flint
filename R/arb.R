@@ -285,10 +285,12 @@ setMethod("determinant",
 
 setMethod("format",
           c(x = "arb"),
-          function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...) {
-              m <- format(Mid(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
-              r <- format(Rad(x), base = base, digits = digits, sep = sep, rnd = "A", ...)
+          function (x, base = 10L, digits = NULL, digits.mag = NULL,
+                    sep = NULL, rnd = flintRnd(), ...) {
+              m <- format(Mid(x), base = base, digits = digits,
+                          sep = sep, rnd = rnd, ...)
+              r <- format(Rad(x), base = base, digits.mag = digits.mag,
+                          sep = sep, rnd = "A", ...)
               m[] <- paste0("(", m, " +/- ", r, ")")
               m
           })

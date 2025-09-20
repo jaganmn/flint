@@ -39,7 +39,7 @@
 	"dim (d[1], ..., d[length(d)])" instead of "length prod(d)",
 	but what should happen if length(d) >> 1 ... ?
 
-** TODO formatting of 'arb' with two 'digits' for midpoint, radius
+** DONE formatting of 'mag' using option 'digits.mag' instead of 'digits'
 
 
 * TODO eventually

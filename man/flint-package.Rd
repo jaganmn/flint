@@ -38,7 +38,7 @@ flintVersion()
   \item{rnd}{
     a new default value for the rounding mode of inexact floating-point
     operations, if non-\code{NULL}.  The value should be a character
-    string indicating a rounding mode for signed floating types.
+    string indicating a rounding mode for signed floating-point types.
     Valid characters are \samp{[Uu]} (towards positive infinity),
     \samp{[Dd]} (towards negative infinity), \samp{[Zz]} (towards zero),
     \samp{[Aa]} (away from zero), and \samp{[Nn]} (to nearest, with

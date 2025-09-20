@@ -236,13 +236,13 @@ setMethod("determinant",
 
 setMethod("format",
           c(x = "mag"),
-          function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...) {
-              if (is.null(digits))
-                  digits <- getOption("digits")
+          function (x, base = 10L, digits.mag = NULL,
+                    sep = NULL, rnd = flintRnd(), ...) {
+              if (is.null(digits.mag))
+                  digits.mag <- getOption("digits.mag", 4L)
               if (is.null(sep))
                   sep <- if (identical(base, 10L)) "e" else "@"
-              .Call(R_flint_mag_format, x, base, digits, sep, rnd)
+              .Call(R_flint_mag_format, x, base, digits.mag, sep, rnd)
           })
 
 setMethod("is.finite",

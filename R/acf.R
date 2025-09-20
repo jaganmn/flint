@@ -277,8 +277,8 @@ setMethod("determinant",
 
 setMethod("format",
           c(x = "acf"),
-          function (x, base = 10L, digits = NULL, sep = NULL,
-                    rnd = flintRnd(), ...) {
+          function (x, base = 10L, digits = NULL,
+                    sep = NULL, rnd = flintRnd(), ...) {
               r <- format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
               i <- format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
               if (!any(s <- startsWith(i, "-")))

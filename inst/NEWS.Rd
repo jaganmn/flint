@@ -142,6 +142,10 @@
       \item \code{Mid} and \code{Mid<-} are implemented for class
       \code{acb}, getting and setting the complex midpoint.  Thanks to
       Martin Maechler for the suggestion and patch (\GH{15}).
+
+      \item S4 methods for \code{format} gain argument \code{digits.mag}
+      and use that instead of \code{digits} to format \code{mag} and
+      \code{mag} components of \code{arb} and \code{acb}.
     }
   }
   \subsection{Bug Fixes}{
