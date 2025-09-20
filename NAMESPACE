@@ -25,7 +25,7 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               findInterval, format, identical, is.array, is.finite,
               is.infinite, is.matrix, is.na, "is.na<-", is.nan,
               isSymmetric, is.unsorted, length, "length<-", log, match,
-              mean, mtfrm, names, "names<-", print, rbind2, rep,
+              mean, mtfrm, names, "names<-", norm, print, rbind2, rep,
               rep.int, rep_len, rowMeans, rowSums, seq, sequence, solve,
               summary, t, tcrossprod, unique, xtfrm)
 ## Generic functions in 'methods':

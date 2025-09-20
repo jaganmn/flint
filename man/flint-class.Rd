@@ -95,6 +95,7 @@
 \alias{names,flint-method}
 \alias{names<-,flint,NULL-method}
 \alias{names<-,flint,character-method}
+\alias{norm,flint,ANY-method}
 \alias{print,flint-method}
 \alias{quantile,flint-method}
 \alias{rbind2,ANY,flint-method}
@@ -431,6 +432,11 @@ flint.array(class, \dots)
       \code{\link{NA_character_}} are appended to \code{value} if its
       length is less than the length of \code{x}.  An error is signaled
       if its length is greater.}
+    \item{\code{norm}}{
+      \code{signature(x = "flint")}:\cr
+      returns the matrix norm of \code{x} as a \code{flint} vector of
+      length 1.  The class of the return value can depend on the norm
+      type indicated by argument \code{type}; see \code{\link{norm}}.}
     \item{\code{print}}{
       \code{signature(x = "flint")}:\cr
       prints \code{\link{format}(x)} without quotes and returns \code{x}

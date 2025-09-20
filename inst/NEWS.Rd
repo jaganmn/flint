@@ -91,7 +91,7 @@
       \code{det}, \code{determinant}, \code{diag}, \code{diag<-},
       \code{dim}, \code{dim<-}, \code{dimnames}, \code{dimnames<-},
       \code{drop}, \code{is.array}, \code{is.matrix},
-      \code{isSymmetric}, \code{rbind2}, \code{rowMeans},
+      \code{isSymmetric}, \code{norm}, \code{rbind2}, \code{rowMeans},
       \code{rowSums}, \code{solve}, \code{t}, and \code{tcrossprod}.
       It is not a coindicence that these are all more or less
       array-specific.

@@ -1561,6 +1561,33 @@ setMethod("names<-",
               x
           })
 
+setMethod("norm",
+          c(x = "flint"),
+          function (x, type, ...) {
+              if (length(x@dim) != 2L)
+                  stop(gettextf("'%s' is not a matrix", "x"),
+                       domain = NA)
+              type <- if (missing(type)) "O" else substr(type, 1L, 1L)
+              max0 <-
+              function (x) {
+                  if (length(x))
+                      max(x)
+                  else flint(flintClass(x), length = 1L)
+              }
+              switch(EXPR = type,
+                     "1" =,
+                     "O" =, "o" = max0(colSums(abs(x))),
+                     "I" =, "i" = max0(rowSums(abs(x))),
+                     "F" =, "f" =,
+                     "E" =, "e" = sqrt(sum(x * x)),
+                     "M" =, "m" = max0(abs(x)),
+                     "2" =
+                     stop(gettextf("norm type \"%s\" is not yet implemented", type),
+                          domain = NA),
+                     stop(gettextf("norm type \"%s\" is invalid", type),
+                          domain = NA))
+          })
+
 setMethod("print",
           c(x = "flint"),
           function (x, digits = NULL, max = NULL, Rdiff = NULL, ...) {
