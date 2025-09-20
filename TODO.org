@@ -1,7 +1,26 @@
-* TODO flint 0.0.6
+* TODO flint 0.1.x
 
-** TODO arrays and methods for generic functions designed for arrays
+** TODO methods for generic functions designed for arrays
+*** TODO aperm
+*** TODO asplit
+*** TODO rcond
+*** TODO kronecker
+*** TODO scale
+*** TODO eigen
+	there are some experimental entry points in the 'acb_mat' module
+*** TODO qr
+*** TODO svd
+*** TODO norm(type = "2")
 
+** TODO function for numerical solution of systems of ODE using 'arb'
+	https://doi.org/10.1007/978-3-319-96418-8_30
+
+	
+* TODO flint 0.1.0
+
+** DONE representation of arrays
+
+** TODO methods for generic functions designed for arrays
 *** DONE dim, dim<-, dimnames, dimnames<-
 *** DONE rbind, cbind, rbind2, cbind2
 *** DONE rowSums, colSums, rowMeans, colMeans
@@ -10,24 +29,20 @@
 *** DONE diag, diag<-
 *** DONE t
 *** DONE %*%, crossprod, tcrossprod
-*** TODO kronecker, scale
 *** DONE solve, backsolve, chol2inv
-*** TODO determinant, norm, rcond
+*** DONE determinant, norm
 *** DONE is.array, is.matrix, drop
 *** DONE chol
-*** TODO eigen, qr, svd
-	FLINT does not yet provide entry points; actually, there are some
-	experimental ones in the acb_mat module that would support 'eigen'
 *** DONE isSymmetric
-*** TODO aperm, asplit
 *** TODO print
 	for arrays, provide an option, enabled by default, to print
 	"dim (d[1], ..., d[length(d)])" instead of "length prod(d)",
 	but what should happen if length(d) >> 1 ... ?
 
-** TODO function for numerical solution of systems of ODE using 'arb'
+** TODO formatting of 'arb' with two 'digits' for midpoint, radius
 
-* TODO flint 0.0.x
+
+* TODO eventually
 
 ** TODO increase coverage of standard mathematical constants
 ** TODO increase coverage of special mathematical functions
@@ -38,4 +53,3 @@
 ** TODO write a vignette
 ** TODO serialization
 ** TODO formatting of floating-point types suppressing trailing zeros
-** TODO formatting of 'arb' with two 'digits' for midpoint, radius
