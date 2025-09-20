@@ -1583,7 +1583,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP s_op,
 					for (k = 0; k < ndx; ++k) \
 						jx += ptr[k][pos[k]]; \
 					name##_set(y__ + jx, v__ + jv); \
-					for (k = 0; ++pos[k] >= ds[k]; ++k) \
+					for (k = 0; k < ndx && ++pos[k] >= ds[k]; ++k) \
 						pos[k] = 0; \
 				} \
 			} while (0)
@@ -1918,7 +1918,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_op)
 					for (k = 0; k < ndx; ++k) \
 						jx += ptr[k][pos[k]]; \
 					name##_set(y__ + js, x__ + jx); \
-					for (k = 0; ++pos[k] >= ds[k]; ++k) \
+					for (k = 0; k < ndx && ++pos[k] >= ds[k]; ++k) \
 						pos[k] = 0; \
 				} \
 			} while (0)
