@@ -236,6 +236,16 @@ setMethod("colSums",
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_ulong_ops1, "colSums", x, list(NULL, as.integer(dims))))
 
+setMethod("det",
+          c(x = "ulong"),
+          function (x, ...)
+              det(fmpz(x), ...))
+
+setMethod("determinant",
+          c(x = "ulong"),
+          function (x, logarithm = TRUE, ...)
+              determinant(fmpz(x), logarithm = logarithm, ...))
+
 setMethod("format",
           c(x = "ulong"),
           function (x, base = 10L, ...)

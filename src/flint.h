@@ -189,7 +189,7 @@ extern
 const char *R_flint_ops2[22];
 
 extern
-const char *R_flint_ops1[69];
+const char *R_flint_ops1[70];
 
 #if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP x);

@@ -232,6 +232,23 @@ setMethod("colSums",
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_fmpz_ops1, "colSums", x, list(NULL, as.integer(dims))))
 
+setMethod("det",
+          c(x = "fmpz"),
+          function (x, ...)
+              .Call(R_flint_fmpz_ops1, "det", x, NULL))
+
+setMethod("determinant",
+          c(x = "fmpz"),
+          function (x, logarithm = TRUE, ...) {
+              D <- det(x)
+              `class<-`(list(modulus =
+                                 if (logarithm)
+                                     `attr<-`(log(arf(abs(D))), "logarithm", TRUE)
+                                 else `attr<-`(D, "logarithm", FALSE),
+                             sign = if (D >= 0L) 1L else -1L),
+                        "det")
+          })
+
 setMethod("format",
           c(x = "fmpz"),
           function (x, base = 10L, ...)

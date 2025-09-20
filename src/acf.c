@@ -1660,6 +1660,43 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 #endif
+	case 69: /*        "det" */
+	{
+		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
+		const int *dx = 0;
+		if (dimx == R_NilValue || XLENGTH(dimx) != 2 ||
+		    (dx = INTEGER_RO(dimx), dx[0] != dx[1]))
+			Rf_error(_("'%s' is not a square matrix"),
+			         "x");
+		SEXP ans = PROTECT(newObject("arf"));
+		acf_ptr z = flint_calloc(1, sizeof(acf_t));
+		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_acf_finalize);
+		int i;
+		acb_mat_t mx;
+		acb_t det;
+		mx->r = mx->c = dx[0];
+		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(acb_ptr)) : 0;
+		mx->rows[0] = mx->entries = (nx) ? flint_calloc((size_t) mx->r, sizeof(acb_t)) : 0;
+		for (i = 1; i < mx->r; ++i)
+			mx->rows[i] = mx->rows[i - 1] + mx->c;
+		for (jx = 0; jx < nx; ++jx) {
+			arf_set(arb_midref(acb_realref(mx->entries + jx)),
+			        acf_realref(x + jx));
+			arf_set(arb_midref(acb_imagref(mx->entries + jx)),
+			        acf_imagref(x + jx));
+			mag_zero(arb_radref(acf_realref(mx->entries + jx)));
+			mag_zero(arb_radref(acf_imagref(mx->entries + jx)));
+		}
+		acb_init(det);
+		acb_mat_det(det, mx, prec);
+		arf_set(acf_realref(z), arb_midref(acb_realref(det)));
+		arf_set(acf_imagref(z), arb_midref(acb_imagref(det)));
+		flint_free(mx->entries);
+		flint_free(mx->rows);
+		acb_clear(det);
+		UNPROTECT(2);
+		return ans;
+	}
 	default:
 		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "acf");

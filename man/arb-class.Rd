@@ -60,6 +60,8 @@
 \alias{crossprod,arb,acf-method}
 \alias{crossprod,arb,arb-method}
 \alias{crossprod,arb,acb-method}
+\alias{det,arb-method}
+\alias{determinant,arb-method}
 \alias{is.finite,arb-method}
 \alias{is.infinite,arb-method}
 \alias{is.na,arb-method}
@@ -313,6 +315,17 @@ arb(mid=, mid=, length=)}
       returns an \code{arb} vector or array containing the column sums
       or means of \code{x}, defined as sums or means over dimensions
       \code{1:dims}.}
+    \item{\code{det}}{
+      \code{signature(x = "arb")}:\cr
+      returns the determinant of \code{x} as an \code{arb} vector of
+      length 1.}
+    \item{\code{determinant}}{
+      \code{signature(x = "arb")}:\cr
+      returns a list with components \code{modulus} and \code{sign}
+      specifying the determinant of \code{x}, following the \pkg{base}
+      function, hence see \code{\link{determinant}}.  The sign is
+      \code{NA} if the interval computed by \code{det(x)} contains both
+      negative numbers and positive numbers.}
     \item{\code{format}}{
       \code{signature(x = "arb")}:\cr
       returns a character vector suitable for printing, using string

@@ -60,6 +60,8 @@
 \alias{crossprod,mag,acf-method}
 \alias{crossprod,mag,arb-method}
 \alias{crossprod,mag,acb-method}
+\alias{det,mag-method}
+\alias{determinant,mag-method}
 \alias{is.finite,mag-method}
 \alias{is.infinite,mag-method}
 \alias{is.na,mag-method}
@@ -271,6 +273,10 @@ mag(x, length=)}
       returns a \code{mag} vector or array containing upper bounds on
       the column sums or means of \code{x}, defined as sums or means
       over dimensions \code{1:dims}.}
+    \item{\code{det}, \code{determinant}}{
+      \code{signature(x = "mag")}:\cr
+      coerces \code{x} to class \code{\linkS4class{arf}} and
+      dispatches.}
     \item{\code{format}}{
       \code{signature(x = "mag")}:\cr
       returns a character vector suitable for printing, using scientific

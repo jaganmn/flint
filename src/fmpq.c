@@ -1273,6 +1273,29 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		UNPROTECT(2);
 		return ans;
 	}
+	case 69: /*        "det" */
+	{
+		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
+		const int *dx = 0;
+		if (dimx == R_NilValue || XLENGTH(dimx) != 2 ||
+		    (dx = INTEGER_RO(dimx), dx[0] != dx[1]))
+			Rf_error(_("'%s' is not a square matrix"),
+			         "x");
+		SEXP ans = PROTECT(newObject("fmpq"));
+		fmpq *z = flint_calloc(1, sizeof(fmpq));
+		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		int i;
+		fmpq_mat_t mx;
+		mx->r = mx->c = dx[0];
+		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(fmpq *)) : 0;
+		mx->rows[0] = mx->entries = (void *) x;
+		for (i = 1; i < mx->r; ++i)
+			mx->rows[i] = mx->rows[i - 1] + mx->c;
+		fmpq_mat_det(z, mx);
+		flint_free(mx->rows);
+		UNPROTECT(2);
+		return ans;
+	}
 	default:
 		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "fmpq");

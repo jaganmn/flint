@@ -60,6 +60,8 @@
 \alias{crossprod,acb,acf-method}
 \alias{crossprod,acb,arb-method}
 \alias{crossprod,acb,acb-method}
+\alias{det,acb-method}
+\alias{determinant,acb-method}
 \alias{is.finite,acb-method}
 \alias{is.infinite,acb-method}
 \alias{is.na,acb-method}
@@ -311,6 +313,16 @@ acb(real=, imag=, length=)}
       returns an \code{acb} vector or array containing the column sums
       or means of \code{x}, defined as sums or means over dimensions
       \code{1:dims}.}
+    \item{\code{det}}{
+      \code{signature(x = "arb")}:\cr
+      returns the determinant of \code{x} as an \code{acb} vector of
+      length 1.}
+    \item{\code{determinant}}{
+      \code{signature(x = "acf")}:\cr
+      returns a list with components \code{modulus} and \code{argument}
+      specifying the determinant of \code{x}, following the \pkg{base}
+      function (except for the use of argument instead of sign), hence
+      \code{\link{determinant}}.}
     \item{\code{format}}{
       \code{signature(x = "acb")}:\cr
       returns a character vector suitable for printing, using string

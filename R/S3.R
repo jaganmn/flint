@@ -34,6 +34,10 @@ function (x, tz = "", ...)
 function (x, ...)
     chol(x, ...)
 
+.S3.determinant.flint <-
+function (x, logarithm = TRUE, ...)
+    determinant(x, logarithm = logarithm, ...)
+
 .S3.duplicated.flint <-
 function (x, incomparables = FALSE, ...)
     duplicated(x, incomparables = incomparables, ...)

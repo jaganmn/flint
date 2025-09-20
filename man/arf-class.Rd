@@ -60,6 +60,8 @@
 \alias{crossprod,arf,acf-method}
 \alias{crossprod,arf,arb-method}
 \alias{crossprod,arf,acb-method}
+\alias{det,arf-method}
+\alias{determinant,arf-method}
 \alias{is.finite,arf-method}
 \alias{is.infinite,arf-method}
 \alias{is.na,arf-method}
@@ -278,6 +280,15 @@ arf(x, length=)}
       returns an \code{arf} vector or array containing the column sums
       or means of \code{x}, defined as sums or means over dimensions
       \code{1:dims}.}
+    \item{\code{det}}{
+      \code{signature(x = "arf")}:\cr
+      returns the determinant of \code{x} as an \code{arf} vector of
+      length 1.}
+    \item{\code{determinant}}{
+      \code{signature(x = "arf")}:\cr
+      returns a list with components \code{modulus} and \code{sign}
+      specifying the determinant of \code{x}, following the \pkg{base}
+      function, hence see \code{\link{determinant}}.}
     \item{\code{format}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific

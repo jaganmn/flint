@@ -224,6 +224,16 @@ setMethod("colSums",
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_mag_ops1, "colSums", x, list(NULL, as.integer(dims))))
 
+setMethod("det",
+          c(x = "mag"),
+          function (x, ...)
+              determinant(arf(x), ...))
+
+setMethod("determinant",
+          c(x = "mag"),
+          function (x, logarithm = TRUE, ...)
+              determinant(arf(x), logarithm = logarithm, ...))
+
 setMethod("format",
           c(x = "mag"),
           function (x, base = 10L, digits = NULL, sep = NULL,

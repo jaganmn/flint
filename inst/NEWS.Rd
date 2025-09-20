@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.0 (2025-09-19)}{
+\section{Changes in version 0.1.0 (2025-09-20)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -88,12 +88,13 @@
       \item S4 methods are defined for generic (or made-generic)
       functions \code{\%*\%}, \code{backsolve}, \code{cbind2},
       \code{chol}, \code{chol2inv}, \code{colMeans}, \code{colSums},
-      \code{diag}, \code{diag<-}, \code{dim}, \code{dim<-},
-      \code{dimnames}, \code{dimnames<-}, \code{drop}, \code{is.array},
-      \code{is.matrix}, \code{isSymmetric}, \code{rbind2},
-      \code{rowMeans}, \code{rowSums}, \code{solve}, \code{t}, and
-      \code{tcrossprod}.  It is not a coindicence that these are all
-      more or less array-specific.
+      \code{det}, \code{determinant}, \code{diag}, \code{diag<-},
+      \code{dim}, \code{dim<-}, \code{dimnames}, \code{dimnames<-},
+      \code{drop}, \code{is.array}, \code{is.matrix},
+      \code{isSymmetric}, \code{rbind2}, \code{rowMeans},
+      \code{rowSums}, \code{solve}, \code{t}, and \code{tcrossprod}.
+      It is not a coindicence that these are all more or less
+      array-specific.
 
       \item S3 methods are defined for S3-turned-S4 generic functions.
       These methods call the S4 generic function so that S4 dispatch

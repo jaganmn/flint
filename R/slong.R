@@ -236,6 +236,16 @@ setMethod("colSums",
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_slong_ops1, "colSums", x, list(NULL, as.integer(dims))))
 
+setMethod("det",
+          c(x = "slong"),
+          function (x, ...)
+              det(fmpz(x), ...))
+
+setMethod("determinant",
+          c(x = "slong"),
+          function (x, logarithm = TRUE, ...)
+              determinant(fmpz(x), logarithm = logarithm, ...))
+
 setMethod("format",
           c(x = "slong"),
           function (x, base = 10L, ...)

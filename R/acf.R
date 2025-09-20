@@ -258,6 +258,23 @@ setMethod("colSums",
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_acf_ops1, "colSums", x, list(as.logical(na.rm), as.integer(dims))))
 
+setMethod("det",
+          c(x = "acf"),
+          function (x, ...)
+              .Call(R_flint_acf_ops1, "det", x, NULL))
+
+setMethod("determinant",
+          c(x = "acf"),
+          function (x, logarithm = TRUE, ...) {
+              D <- det(x)
+              `class<-`(list(modulus =
+                                 if (logarithm)
+                                     `attr<-`(log(Mod(D)), "logarithm", TRUE)
+                                 else `attr<-`(D, "logarithm", FALSE),
+                             argument = Arg(D)),
+                        "det")
+          })
+
 setMethod("format",
           c(x = "acf"),
           function (x, base = 10L, digits = NULL, sep = NULL,

@@ -1535,7 +1535,7 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 #endif
 #ifdef HAVE_ACB_MAT_CHO
-	case 67: /*       "chol" */
+	case 68: /*       "chol" */
 	{
 		SEXP dimz = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		const int *dz = 0;
@@ -1598,6 +1598,29 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 #endif
+	case 69: /*        "det" */
+	{
+		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
+		const int *dx = 0;
+		if (dimx == R_NilValue || XLENGTH(dimx) != 2 ||
+		    (dx = INTEGER_RO(dimx), dx[0] != dx[1]))
+			Rf_error(_("'%s' is not a square matrix"),
+			         "x");
+		SEXP ans = PROTECT(newObject("acb"));
+		acb_ptr z = flint_calloc(1, sizeof(acb_t));
+		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_acb_finalize);
+		int i;
+		acb_mat_t mx;
+		mx->r = mx->c = dx[0];
+		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(acb_ptr)) : 0;
+		mx->rows[0] = mx->entries = (void *) x;
+		for (i = 1; i < mx->r; ++i)
+			mx->rows[i] = mx->rows[i - 1] + mx->c;
+		acb_mat_det(z, mx, prec);
+		flint_free(mx->rows);
+		UNPROTECT(2);
+		return ans;
+	}
 	default:
 		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "acb");

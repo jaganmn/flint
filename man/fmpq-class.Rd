@@ -60,6 +60,8 @@
 \alias{crossprod,fmpq,acf-method}
 \alias{crossprod,fmpq,arb-method}
 \alias{crossprod,fmpq,acb-method}
+\alias{det,fmpq-method}
+\alias{determinant,fmpq-method}
 \alias{is.finite,fmpq-method}
 \alias{is.infinite,fmpq-method}
 \alias{is.na,fmpq-method}
@@ -297,6 +299,18 @@ fmpq(num=, den=, length=)}
       returns an \code{\linkS4class{fmpq}} vector or array containing
       the column means of \code{x}, defined as means over dimensions
       \code{1:dims}.}
+    \item{\code{det}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns the determinant of \code{x} as an \code{fmpq} vector of
+      length 1.}
+    \item{\code{determinant}}{
+      \code{signature(x = "fmpq")}:\cr
+      returns a list with components \code{modulus} and \code{sign}
+      specifying the determinant of \code{x}, following the \pkg{base}
+      function, hence see \code{\link{determinant}}.  Note that
+      \code{det(x)} and \code{determinant(x, logarithm = FALSE)} are
+      exact, but \code{determinant(x)} is not in general due to
+      rounding.}
     \item{\code{format}}{
       \code{signature(x = "fmpq")}:\cr
       returns a character vector suitable for printing, using string

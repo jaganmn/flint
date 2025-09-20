@@ -1514,7 +1514,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		arb_mat_t mc, ma;
 		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = z;
-		ma->entries = (arb_ptr) x;
+		ma->entries = (void *) x;
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		if (mc->r) {
@@ -1605,6 +1605,29 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			UNPROTECT(1);
 		}
 		UNPROTECT(4);
+		return ans;
+	}
+	case 69: /*        "det" */
+	{
+		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
+		const int *dx = 0;
+		if (dimx == R_NilValue || XLENGTH(dimx) != 2 ||
+		    (dx = INTEGER_RO(dimx), dx[0] != dx[1]))
+			Rf_error(_("'%s' is not a square matrix"),
+			         "x");
+		SEXP ans = PROTECT(newObject("arb"));
+		arb_ptr z = flint_calloc(1, sizeof(arb_t));
+		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_arb_finalize);
+		int i;
+		arb_mat_t mx;
+		mx->r = mx->c = dx[0];
+		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(arb_ptr)) : 0;
+		mx->rows[0] = mx->entries = (void *) x;
+		for (i = 1; i < mx->r; ++i)
+			mx->rows[i] = mx->rows[i - 1] + mx->c;
+		arb_mat_det(z, mx, prec);
+		flint_free(mx->rows);
+		UNPROTECT(2);
 		return ans;
 	}
 	default:

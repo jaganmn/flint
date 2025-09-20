@@ -121,6 +121,10 @@
 \alias{crossprod,slong,arb-method}
 \alias{crossprod,ulong,acb-method}
 \alias{crossprod,slong,acb-method}
+\alias{det,ulong-method}
+\alias{det,slong-method}
+\alias{determinant,ulong-method}
+\alias{determinant,slong-method}
 \alias{is.finite,ulong-method}
 \alias{is.finite,slong-method}
 \alias{is.infinite,ulong-method}
@@ -403,6 +407,11 @@ slong(x, length=)}
       returns an \code{\linkS4class{fmpq}} vector or array containing
       the column means of \code{x}, defined as means over dimensions
       \code{1:dims}.}
+    \item{\code{det}, \code{determinant}}{
+      \code{signature(x = "ulong")}:\cr
+      \code{signature(x = "slong")}:\cr
+      coerces \code{x} to class \code{\linkS4class{fmpz}} and
+      dispatches.}
     \item{\code{format}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr

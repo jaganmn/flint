@@ -62,6 +62,8 @@
 \alias{crossprod,acf,acf-method}
 \alias{crossprod,acf,arb-method}
 \alias{crossprod,acf,acb-method}
+\alias{det,acf-method}
+\alias{determinant,acf-method}
 \alias{is.finite,acf-method}
 \alias{is.infinite,acf-method}
 \alias{is.na,acf-method}
@@ -316,6 +318,16 @@ acf.(real=, imag=, length=)}
       returns an \code{acf} vector or array containing the column sums
       or means of \code{x}, defined as sums or means over dimensions
       \code{1:dims}.}
+    \item{\code{det}}{
+      \code{signature(x = "acf")}:\cr
+      returns the determinant of \code{x} as an \code{acf} vector of
+      length 1.}
+    \item{\code{determinant}}{
+      \code{signature(x = "acf")}:\cr
+      returns a list with components \code{modulus} and \code{argument}
+      specifying the determinant of \code{x}, following the \pkg{base}
+      function (except for the use of argument instead of sign), hence
+      see \code{\link{determinant}}.}
     \item{\code{format}}{
       \code{signature(x = "acf")}:\cr
       returns a character vector suitable for printing, using string

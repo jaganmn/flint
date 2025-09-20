@@ -235,6 +235,23 @@ setMethod("format",
               .Call(R_flint_arf_format, x, base, digits, sep, rnd)
           })
 
+setMethod("det",
+          c(x = "arf"),
+          function (x, ...)
+              .Call(R_flint_arf_ops1, "det", x, NULL))
+
+setMethod("determinant",
+          c(x = "arf"),
+          function (x, logarithm = TRUE, ...) {
+              D <- det(x)
+              `class<-`(list(modulus =
+                                 if (logarithm)
+                                     `attr<-`(log(abs(D)), "logarithm", TRUE)
+                                 else `attr<-`(D, "logarithm", FALSE),
+                             sign = if (D >= 0) 1L else -1L),
+                        "det")
+          })
+
 setMethod("is.finite",
           c(x = "arf"),
           function (x)
