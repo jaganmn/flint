@@ -1566,12 +1566,12 @@ setMethod("names<-",
           })
 
 setMethod("norm",
-          c(x = "flint"),
+          c(x = "flint", type = "ANY"),
           function (x, type, ...) {
               if (length(x@dim) != 2L)
                   stop(gettextf("'%s' is not a matrix", "x"),
                        domain = NA)
-              type <- if (missing(type)) "O" else substr(type, 1L, 1L)
+              type <- substr(type, 1L, 1L)
               max0 <-
               function (x) {
                   if (length(x))
@@ -1591,6 +1591,13 @@ setMethod("norm",
                      stop(gettextf("norm type \"%s\" is invalid", type),
                           domain = NA))
           })
+
+## The method with signature c(x = "ANY", type = "missing") in package
+## 'methods' seems to call base::norm, not methods:::.implicitTable$norm
+setMethod("norm",
+          c(x = "flint", type = "missing"),
+          function (x, type, ...)
+              norm(x, type = "O", ...))
 
 setMethod("print",
           c(x = "flint"),

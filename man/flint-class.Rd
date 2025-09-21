@@ -96,6 +96,7 @@
 \alias{names<-,flint,NULL-method}
 \alias{names<-,flint,character-method}
 \alias{norm,flint,ANY-method}
+\alias{norm,flint,missing-method}
 \alias{print,flint-method}
 \alias{quantile,flint-method}
 \alias{rbind2,ANY,flint-method}

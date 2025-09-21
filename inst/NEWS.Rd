@@ -54,7 +54,10 @@
   }
   \subsection{Bug Fixes}{
     \itemize{
-      \item .
+      \item Calls to \code{norm} matching signature
+      \code{c(x = "flint", type = "missing")} signaled an error due to
+      dispatch ambiguity, for some reason not detected by the call to
+      \code{testInheritedMethods} in \file{tests/ambiguity.R}.
     }
   }
   \subsection{Internals}{

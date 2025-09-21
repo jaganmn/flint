@@ -18,3 +18,12 @@ stopifnot(Z == pi + 1i)
 
 (mZ <- Mid(Z)) # newly works
 stopifnot(is(mZ, "acf"), mZ == pi + 1i)
+
+
+## Dispatch ambiguity in flint version 0.1.0
+nm <- norm(fmpz(matrix(0L, 0L, 0L))) # gave error
+## Note: method with signature 'ANY#missing' chosen for function 'norm',
+##  target signature 'fmpz#missing'.
+##  "flint#ANY" would also be valid
+## Error in norm(x, type = "O", ...) : invalid 'x': type "S4"
+stopifnot(identical(nm, fmpz(0L)))
