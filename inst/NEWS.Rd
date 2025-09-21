@@ -19,7 +19,9 @@
   }
   \subsection{Documentation}{
     \itemize{
-      \item .
+      \item There was a typo in \file{man/arb_hypgeom_bessel_j.Rd},
+      in the modified Bessel's equation, affecting only HTML and PDF
+      output.
     }
   }
   \subsection{Significant User-Visible Changes}{

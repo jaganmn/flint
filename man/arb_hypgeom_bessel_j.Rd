@@ -18,7 +18,7 @@
 Y(z; nu) = (J(z; nu) cos(nu pi) - J(z; -nu))/sin(nu pi)}
   The modified Bessel functions of the first and second kind solve the
   modified Bessel's equation
-  \deqn{z^{2} \dfrac{\text{d}^{2} w}{\text{d} z^{2}} + z \dfrac{\text{d} w}{\text{d} z} + (z^{2} - \nu^{2}) w = 0}{z^2 w''(z) + z w'(z) - (z^2 + nu^2) w(z) = 0}
+  \deqn{z^{2} \dfrac{\text{d}^{2} w}{\text{d} z^{2}} + z \dfrac{\text{d} w}{\text{d} z} - (z^{2} + \nu^{2}) w = 0}{z^2 w''(z) + z w'(z) - (z^2 + nu^2) w(z) = 0}
   and are given by
   \deqn{\begin{aligned} I_{\nu}(z) &= (\tfrac{1}{2} z)^{\nu} \sum_{k = 0}^{\infty} \frac{(\frac{1}{4} z^{2})^{k}}{k! \Gamma(\nu + k + 1)} \\ K_{\nu}(z) &= \frac{\pi}{2} \frac{I_{-\nu}(z) - I_{\nu}(z)}{\sin(\nu \pi)} \end{aligned}}{I(z; nu) = (z/2)^nu sum_{k = 0, 1, \ldots} (z^2/4)^k/(k! Gamma(nu + k + 1))
 K(z; nu) = (pi/2) (I(z; -nu) - I(z; nu))/sin(nu pi)}
