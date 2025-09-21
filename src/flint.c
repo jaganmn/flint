@@ -1428,7 +1428,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP s_op,
 				ns = R_flint_get_length(subscript);
 				break;
 			default:
-				if (subscript != R_MissingArg)
+				if (subscript != R_flint_symbol_missing)
 					Rf_error(_("should never happen ..."));
 				ns = nx;
 				break;
@@ -1448,7 +1448,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP s_op,
 				y = y__; \
 				f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
 				what = #name; \
-				if (subscript != R_MissingArg) \
+				if (subscript != R_flint_symbol_missing) \
 				for (jy = 0; jy < ny; ++jy) \
 					name##_set(y__ + jy, x__ + jy); \
 				switch (TYPEOF(subscript)) { \
@@ -1509,7 +1509,7 @@ SEXP R_flint_subassign(SEXP object, SEXP subscript, SEXP s_op,
 					r = R_flint_get_length(elt);
 					break;
 				default:
-					if (elt != R_MissingArg)
+					if (elt != R_flint_symbol_missing)
 						Rf_error(_("should never happen ..."));
 
 					r = (mp_limb_t) dx[k];
@@ -1695,7 +1695,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_op)
 				ns = R_flint_get_length(subscript);
 				break;
 			default:
-				if (subscript != R_MissingArg)
+				if (subscript != R_flint_symbol_missing)
 					Rf_error(_("should never happen ..."));
 				ns = R_flint_get_length(object);
 				break;
@@ -1703,7 +1703,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_op)
 
 			SEXP namesx = PROTECT(R_do_slot(object, R_flint_symbol_names)),
 				namesy = R_NilValue;
-			if (subscript == R_MissingArg)
+			if (subscript == R_flint_symbol_missing)
 				namesy = namesx;
 			else if (namesx != R_NilValue && ns > 0 && ns <= R_XLEN_T_MAX)
 				namesy = Rf_allocVector(STRSXP, (R_xlen_t) ns);
@@ -1800,7 +1800,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_op)
 					r = R_flint_get_length(elt);
 					break;
 				default:
-					if (elt != R_MissingArg)
+					if (elt != R_flint_symbol_missing)
 						Rf_error(_("should never happen ..."));
 
 					r = (mp_limb_t) dx[k];

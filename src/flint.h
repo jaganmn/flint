@@ -154,7 +154,8 @@ mpfr_set_emax(__emax_old); \
 
 
 extern
-SEXP R_flint_symbol_dot_xdata,
+SEXP R_flint_symbol_missing,
+	R_flint_symbol_dot_xdata,
 	R_flint_symbol_dim,
 	R_flint_symbol_dimnames,
 	R_flint_symbol_names,
