@@ -48,6 +48,9 @@
 /* Define to 1 if you have the 'fmpq_clog_ui' function. */
 #undef HAVE_FMPQ_CLOG_UI
 
+/* Define to 1 if you have struct 'fmpz_mat_struct' with member 'stride'. */
+#undef HAVE_FMPZ_MAT_STRUCT_STRIDE
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 

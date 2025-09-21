@@ -289,6 +289,14 @@ int main()
                AC_MSG_ERROR([flint vector length can overflow size_t])
               ])
 
+AC_CHECK_MEMBER([fmpz_mat_struct.stride],
+                [
+                 AC_DEFINE([HAVE_FMPZ_MAT_STRUCT_STRIDE], [1],
+                           [Define to 1 if you have struct 'fmpz_mat_struct' with member 'stride'.])
+                ],
+                [],
+                [[#include <flint/fmpz_mat.h>]])
+
 AC_CHECK_FUNC([arb_init], [],
               [AC_MSG_ERROR([FLINT missing Arb sublibrary])])
 

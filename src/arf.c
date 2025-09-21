@@ -526,30 +526,12 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
 	    mp_limb_t jx, jy, ja, jb;
 		arb_mat_t mc, ma, mb;
-		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
-		ma->entries = (ny) ? flint_calloc(ny, sizeof(arb_t)) : 0;
-		mb->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
 		mc->c = mb->c = dz[0];
 		mc->r = ma->r = dz[1];
 		ma->c = mb->r = dz[2];
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
-		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(arb_ptr)) : 0;
-		if (mc->r) {
-			mc->rows[0] = mc->entries;
-			for (i = 1; i < mc->r; ++i)
-				mc->rows[i] = mc->rows[i - 1] + mc->c;
-		}
-		if (ma->r) {
-			ma->rows[0] = ma->entries;
-			for (i = 1; i < ma->r; ++i)
-				ma->rows[i] = ma->rows[i - 1] + ma->c;
-		}
-		if (mb->r) {
-			mb->rows[0] = mb->entries;
-			for (i = 1; i < mb->r; ++i)
-				mb->rows[i] = mb->rows[i - 1] + mb->c;
-		}
+		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
+		ma->entries = (ny) ? flint_calloc(ny, sizeof(arb_t)) : 0;
+		mb->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
 		if (ty) {
 			ja = jy = 0;
 			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
@@ -568,6 +550,30 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		else
 			for (jb = 0; jb < nx; ++jb)
 				arf_set(arb_midref(mb->entries + jb), x + jb);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
+		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(arb_ptr)) : 0;
+		if (mc->r) {
+			mc->rows[0] = mc->entries;
+			for (i = 1; i < mc->r; ++i)
+				mc->rows[i] = mc->rows[i - 1] + mc->c;
+		}
+		if (ma->r) {
+			ma->rows[0] = ma->entries;
+			for (i = 1; i < ma->r; ++i)
+				ma->rows[i] = ma->rows[i - 1] + ma->c;
+		}
+		if (mb->r) {
+			mb->rows[0] = mb->entries;
+			for (i = 1; i < mb->r; ++i)
+				mb->rows[i] = mb->rows[i - 1] + mb->c;
+		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+		mb->stride = ma->c;
+#endif
 		arb_mat_approx_mul(mc, ma, mb, prec);
 		for (jz = 0; jz < nz; ++jz) {
 			arf_set(z + jz, arb_midref(mc->entries + jz));
@@ -580,9 +586,11 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->entries);
 		flint_free(ma->entries);
 		flint_free(mb->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+#endif
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -616,9 +624,6 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
 		mb->entries = (ny) ? flint_calloc(ny, sizeof(arb_t)) : 0;
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
-		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(arb_ptr)) : 0;
 		if (op == 21)
 		switch (uplo) {
 		case 'N':
@@ -663,6 +668,10 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				arf_set(arb_midref(mb->entries + jb), y + jy);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
+		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(arb_ptr)) : 0;
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
@@ -678,6 +687,11 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (i = 1; i < mb->r; ++i)
 				mb->rows[i] = mb->rows[i - 1] + mb->c;
 		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+		mb->stride = ma->c;
+#endif
 		if (uplo == 'N')
 			singular = !arb_mat_approx_solve(mc, ma, mb, prec);
 		else if ((uplo == 'U') == (op != 21)) {
@@ -701,9 +715,11 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->entries);
 		flint_free(ma->entries);
 		flint_free(mb->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+#endif
 		if (singular)
 			Rf_error(_("matrix is exactly singular or precision is insufficient"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
@@ -1275,8 +1291,6 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		if (op == 64 || op == 65)
 		switch (uplo) {
 		case 'N':
@@ -1331,6 +1345,9 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			break;
 		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
@@ -1341,6 +1358,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (i = 1; i < ma->r; ++i)
 				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+#endif
 		singular = !arb_mat_approx_inv(mc, ma, prec);
 		for (jc = 0; jc < nz; ++jc) {
 			arf_set(z + jc, arb_midref(mc->entries + jc));
@@ -1350,8 +1371,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arb_clear(ma->entries + ja);
 		flint_free(mc->entries);
 		flint_free(ma->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+#endif
 		if (singular)
 			Rf_error(_("matrix is exactly singular or precision is insufficient"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
@@ -1389,18 +1412,19 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
-		int i;
 		mp_limb_t jc, ja;
 		arb_mat_t mc, ma;
 		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		for (ja = 0; ja < nx; ++ja) {
 			arf_set(arb_midref(ma->entries + ja), x + ja);
 			mag_zero(arb_radref(ma->entries + ja));
 		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		int i;
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
@@ -1411,6 +1435,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (i = 1; i < ma->r; ++i)
 				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+#endif
 		arb_mat_inv_cho_precomp(mc, ma, prec);
 		for (jc = 0; jc < nx; ++jc) {
 			arf_set(z + jc, arb_midref(mc->entries + jc));
@@ -1420,8 +1448,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arb_clear(ma->entries + ja);
 		flint_free(mc->entries);
 		flint_free(ma->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+#endif
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
 		SEXP dimnamesx = PROTECT(R_do_slot(s_x, R_flint_symbol_dimnames)),
 			dimnamesz = R_NilValue;
@@ -1456,18 +1486,20 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
 		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
-		int i, posdef;
+		int posdef;
 		mp_limb_t jc, ja;
 		arb_mat_t mc, ma;
 		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(arb_t)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(arb_t)) : 0;
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		for (ja = 0; ja < nx; ++ja) {
 			arf_set(arb_midref(ma->entries + ja), x + ja);
 			mag_zero(arb_radref(ma->entries + ja));
 		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		int i;
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(arb_ptr)) : 0;
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
@@ -1478,6 +1510,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (i = 1; i < ma->r; ++i)
 				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+#endif
 		posdef = arb_mat_cho(mc, ma, prec);
 		for (jc = 0; jc < nx; ++jc) {
 			arf_set(z + jc, arb_midref(mc->entries + jc));
@@ -1487,8 +1523,10 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arb_clear(ma->entries + ja);
 		flint_free(mc->entries);
 		flint_free(ma->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+#endif
 		if (!posdef)
 			Rf_error(_("matrix is not positive definite or precision is insufficient"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
@@ -1523,23 +1561,30 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("arf"));
 		arf_ptr z = flint_calloc(1, sizeof(arf_t));
 		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_arf_finalize);
-		int i;
 		arb_mat_t mx;
 		arb_t det;
 		mx->r = mx->c = dx[0];
-		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(arb_ptr)) : 0;
-		mx->rows[0] = mx->entries = (nx) ? flint_calloc((size_t) mx->r, sizeof(arb_t)) : 0;
-		for (i = 1; i < mx->r; ++i)
-			mx->rows[i] = mx->rows[i - 1] + mx->c;
+		mx->entries = (nx) ? flint_calloc((size_t) mx->r, sizeof(arb_t)) : 0;
 		for (jx = 0; jx < nx; ++jx) {
 			arf_set(arb_midref(mx->entries + jx), x + jx);
 			mag_zero(arb_radref(mx->entries + jx));
 		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		int i;
+		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(arb_ptr)) : 0;
+		mx->rows[0] = mx->entries;
+		for (i = 1; i < mx->r; ++i)
+			mx->rows[i] = mx->rows[i - 1] + mx->c;
+#else
+		mx->stride = mx->c;
+#endif
 		arb_init(det);
 		arb_mat_det(det, mx, prec);
 		arf_set(z, arb_midref(det));
 		flint_free(mx->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mx->rows);
+#endif
 		arb_clear(det);
 		UNPROTECT(2);
 		return ans;

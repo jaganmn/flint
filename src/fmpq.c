@@ -547,12 +547,25 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
 		mp_limb_t jx, jy, ja, jb;
 		fmpq_mat_t mc, ma, mb;
-		mc->entries = z;
-		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(fmpq)) : 0) : (void *) y;
-		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(fmpq)) : 0) : (void *) x;
 		mc->c = mb->c = dz[0];
 		mc->r = ma->r = dz[1];
 		ma->c = mb->r = dz[2];
+		mc->entries = z;
+		ma->entries = (ty) ? ((ny) ? flint_calloc(ny, sizeof(fmpq)) : 0) : (void *) y;
+		mb->entries = (tx) ? ((nx) ? flint_calloc(nx, sizeof(fmpq)) : 0) : (void *) x;
+		if (ty) {
+			ja = jy = 0;
+			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
+				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
+					fmpq_set(ma->entries + ja, y + jy);
+		}
+		if (tx) {
+			jb = jx = 0;
+			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
+				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
+					fmpq_set(mb->entries + jb, x + jx);
+		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
 		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
 		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpq *)) : 0;
@@ -571,18 +584,11 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (i = 1; i < mb->r; ++i)
 				mb->rows[i] = mb->rows[i - 1] + mb->c;
 		}
-		if (ty) {
-			ja = jy = 0;
-			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
-				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
-					fmpq_set(ma->entries + ja, y + jy);
-		}
-		if (tx) {
-			jb = jx = 0;
-			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
-				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
-					fmpq_set(mb->entries + jb, x + jx);
-		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+		mb->stride = ma->c;
+#endif
 		fmpq_mat_mul(mc, ma, mb);
 		if (ty) {
 			for (ja = 0; ja < ny; ++ja)
@@ -594,9 +600,11 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				fmpq_clear(mb->entries + jb);
 			flint_free(mb->entries);
 		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+#endif
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -630,9 +638,6 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpq)) : 0;
 		mb->entries = (ny) ? flint_calloc(ny, sizeof(fmpq)) : 0;
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
-		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpq *)) : 0;
 		if (op == 21)
 		switch (uplo) {
 		case 'N':
@@ -677,6 +682,10 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
 			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
 				fmpq_set(mb->entries + jb, y + jy);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
+		mb->rows = (mb->r) ? flint_calloc((size_t) mb->r, sizeof(fmpq *)) : 0;
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
@@ -692,6 +701,11 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (i = 1; i < mb->r; ++i)
 				mb->rows[i] = mb->rows[i - 1] + mb->c;
 		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+		mb->stride = mb->c;
+#endif
 		singular = !fmpq_mat_solve(mc, ma, mb);
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
@@ -706,9 +720,11 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(mc->entries);
 		flint_free(ma->entries);
 		flint_free(mb->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
 		flint_free(mb->rows);
+#endif
 		if (singular)
 			Rf_error(_("matrix is exactly singular"));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
@@ -1189,8 +1205,6 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = z;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(fmpq)) : 0;
-		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
-		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
 		if (op == 64 || op == 65)
 		switch (uplo) {
 		case 'N':
@@ -1231,6 +1245,9 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					fmpq_set(ma->entries + ja, x + jx);
 			break;
 		}
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(fmpq *)) : 0;
+		ma->rows = (ma->r) ? flint_calloc((size_t) ma->r, sizeof(fmpq *)) : 0;
 		if (mc->r) {
 			mc->rows[0] = mc->entries;
 			for (i = 1; i < mc->r; ++i)
@@ -1241,12 +1258,18 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (i = 1; i < ma->r; ++i)
 				ma->rows[i] = ma->rows[i - 1] + ma->c;
 		}
+#else
+		mc->stride = mc->c;
+		ma->stride = ma->c;
+#endif
 		singular = !fmpq_mat_inv(mc, ma);
 		for (ja = 0; ja < nx; ++ja)
 			fmpq_clear(ma->entries + ja);
 		flint_free(ma->entries);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mc->rows);
 		flint_free(ma->rows);
+#endif
 		if (singular)
 			Rf_error(_("matrix is exactly singular"));
 		R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
@@ -1284,15 +1307,22 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newObject("fmpq"));
 		fmpq *z = flint_calloc(1, sizeof(fmpq));
 		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
-		int i;
 		fmpq_mat_t mx;
 		mx->r = mx->c = dx[0];
+		mx->entries = (void *) x;
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
+		int i;
 		mx->rows = (mx->r) ? flint_calloc((size_t) mx->r, sizeof(fmpq *)) : 0;
-		mx->rows[0] = mx->entries = (void *) x;
+		mx->rows[0] = mx->entries;
 		for (i = 1; i < mx->r; ++i)
 			mx->rows[i] = mx->rows[i - 1] + mx->c;
+#else
+		mx->stride = mx->c;
+#endif
 		fmpq_mat_det(z, mx);
+#ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		flint_free(mx->rows);
+#endif
 		UNPROTECT(2);
 		return ans;
 	}
