@@ -20,14 +20,14 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               as.logical, as.integer, as.numeric, as.complex, as.vector,
               as.matrix, as.array, as.data.frame, as.Date, as.POSIXct,
               as.POSIXlt, backsolve, c, cbind2, chol, chol2inv,
-              colMeans, colSums, crossprod, cut, diag, "diag<-", dim,
-              "dim<-", dimnames, "dimnames<-", drop, duplicated,
-              findInterval, format, identical, is.array, is.finite,
-              is.infinite, is.matrix, is.na, "is.na<-", is.nan,
-              isSymmetric, is.unsorted, length, "length<-", log, match,
-              mean, mtfrm, names, "names<-", norm, print, rbind2, rep,
-              rep.int, rep_len, rowMeans, rowSums, seq, sequence, solve,
-              summary, t, tcrossprod, unique, xtfrm)
+              colMeans, colSums, crossprod, cut, det, determinant, diag,
+              "diag<-", dim, "dim<-", dimnames, "dimnames<-", drop,
+              duplicated, findInterval, format, identical, is.array,
+              is.finite, is.infinite, is.matrix, is.na, "is.na<-",
+              is.nan, isSymmetric, is.unsorted, length, "length<-", log,
+              match, mean, mtfrm, names, "names<-", norm, print, rbind2,
+              rep, rep.int, rep_len, rowMeans, rowSums, seq, sequence,
+              solve, summary, t, tcrossprod, unique, xtfrm)
 ## Generic functions in 'methods':
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, show)
 ## Generic functions in 'stats':
