@@ -20,7 +20,7 @@
 
 ** DONE representation of arrays
 
-** TODO methods for generic functions designed for arrays
+** DONE methods for generic functions designed for arrays
 *** DONE dim, dim<-, dimnames, dimnames<-
 *** DONE rbind, cbind, rbind2, cbind2
 *** DONE rowSums, colSums, rowMeans, colMeans
@@ -34,7 +34,7 @@
 *** DONE is.array, is.matrix, drop
 *** DONE chol
 *** DONE isSymmetric
-*** TODO print
+*** DONE print
 	for arrays, provide an option, enabled by default, to print
 	"dim (d[1], ..., d[length(d)])" instead of "length prod(d)",
 	but what should happen if length(d) >> 1 ... ?

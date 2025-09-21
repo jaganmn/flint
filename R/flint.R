@@ -1594,32 +1594,93 @@ setMethod("norm",
 
 setMethod("print",
           c(x = "flint"),
-          function (x, digits = NULL, max = NULL, Rdiff = NULL, ...) {
+          function (x, digits = NULL, digits.mag = NULL, max = NULL,
+                    Rdiff = NULL, ...) {
               s <- flintTriple(x)
               if (is.null(Rdiff))
                   Rdiff <- getOption("flint.Rdiff", FALSE)
               Rdiff <- as.logical(Rdiff)
               if (Rdiff)
-              cat(gettextf("class \"%s\", length %s, address <pointer: %s>",
-                           s[1L], s[2L], s[3L]),
-                  "\n", sep = "")
-              else
-              cat(gettextf("class \"%s\", length %s, address %s",
-                           s[1L], s[2L], s[3L]),
-                  "\n", sep = "")
-              len <- length(x)
-              if (len > 0L) {
-                  if (is.null(max))
-                      max <- getOption("max.print", 99999L)
-                  max <- as.integer(max)
-                  if (len <= max)
-                      print.default(format(x, digits = digits), quote = FALSE, right = TRUE, max = max, ...)
-                  else {
-                      print.default(format(x[seq_len(max)], digits = digits), quote = FALSE, right = TRUE, max = max, ...)
-                      cat(gettextf(" [ reached '%s' / getOption(\"%s\") -- omitted %.0f entries ]",
-                                   "max", "max.print", len - max),
-                          "\n", sep = "")
-                  }
+                  s[3L] <- paste0("<pointer: ", s[3L], ">")
+              msg <-
+              if (is.null(d <- x@dim))
+              gettextf("class \"%s\", length %s, address %s",
+                       s[1L], s[2L], s[3L])
+              else {
+              nd <- length(d)
+              s[2L] <- paste(if (nd <= 4L) d else c(d[1L:4L], "..."),
+                             collapse = ",")
+              gettextf("class \"%s\", dim (%s), address %s",
+                       s[1L], s[2L], s[3L])
+              }
+              cat(msg, "\n", sep = "")
+              n <- flintLength(x)
+              if (n > 0L) {
+              if (is.null(max))
+                  max <- getOption("max.print")
+              max <- as.integer(max)
+              if (max < 0L)
+                  max <- 0L
+              msg <-
+              if (n <= max) {
+                  y <- x
+                  NULL
+              }
+              else if (is.null(d) || nd == 1L) {
+                  ## Omit entries
+                  y <- x[seq_len(max)]
+                  gettextf(" [ reached '%s', omitted trailing %.0f entries ]",
+                           "max",
+                           as.double(n - ulong(max)))
+              }
+              else if (max < d[2L]) {
+                  ## Omit pages then rows then columns
+                  args <- rep(list(x, 1L, seq_len(max), 1L, drop = FALSE),
+                              c(1L, 1L, 1L, nd - 2L, 1L))
+                  y <- do.call(`[`, args)
+                  if (nd == 2L)
+                  gettextf(" [ reached '%s', omitted trailing %d rows, %d columns ]",
+                           "max",
+                           d[1L] - 1L, d[2L] - max)
+                  else
+                  gettextf(" [ reached '%s', omitted trailing (%s) indices ]",
+                           "max",
+                           paste(d - rep(c(1L, max, 1L), c(1L, 1L, nd - 2L)),
+                                 collapse = ","))
+              }
+              else if (max %/% d[2L] < d[1L]) {
+                  ## Omit pages then rows
+                  k <- max %/% d[2L]
+                  args <- rep(list(x, seq_len(k), substitute(), 1L, drop = FALSE),
+                              c(1L, 1L, 1L, nd - 2L, 1L))
+                  y <- do.call(`[`, args)
+                  if (nd == 2L)
+                  gettextf(" [ reached '%s', omitted trailing %d rows ]",
+                           "max",
+                           d[1L] - k)
+                  else
+                  gettextf(" [ reached '%s', omitted trailing (%s) indices ]",
+                           "max",
+                           paste(d - rep(c(k, d[2L], 1L), c(1L, 1L, nd - 2L)),
+                                 collapse = ","))
+              }
+              else {
+                  ## Omit pages
+                  p <- cumprod(ulong(d))
+                  w <- which(p > ulong(max)); w. <- w[1L]
+                  k <- as.integer(max %/% p[[w. - 1L]])
+                  args <- rep(list(x, substitute(), seq_len(k), 1L, drop = FALSE),
+                              c(1L, w. - 1L, 1L, nd - w., 1L))
+                  y <- do.call(`[`, args)
+                  gettextf(" [ reached '%s', omitted trailing (%s) indices ]",
+                           "max",
+                           paste(d - rep(c(0L, k, 1L), c(w. - 1L, 1L, nd - w.)),
+                                 collapse = ","))
+              }
+              print.default(format(y, digits = digits, digits.mag = digits.mag),
+                            quote = FALSE, right = TRUE, max = max, ...)
+              if (!is.null(msg))
+                  cat(msg, "\n", sep = "")
               }
               invisible(x)
           })
