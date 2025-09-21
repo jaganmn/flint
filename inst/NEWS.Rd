@@ -4,22 +4,7 @@
 \section{Changes in version 0.1.0 (2025-09-21)}{
   \subsection{Description}{
     \itemize{
-      \item .
-    }
-  }
-  \subsection{Compatibility}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Installation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Documentation}{
-    \itemize{
-      \item .
+      \item Martin Maechler is a contributor.
     }
   }
   \subsection{Significant User-Visible Changes}{
@@ -47,11 +32,6 @@
       by an S4 method for made-generic function \code{identical}.
     }
   }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
   \subsection{Classes}{
     \itemize{
       \item Virtual class \code{flint} gains slots \code{dim} and
@@ -70,11 +50,6 @@
       \code{integer}, \code{list}, or \code{character}.  They are used
       for slots \code{dim}, \code{dimnames}, and \code{names} of virtual
       class \code{flint}.
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
     }
   }
   \subsection{Methods}{
@@ -156,11 +131,6 @@
       for \code{x} of class \code{arb} and \code{Imag(z) <- value}
       never worked for \code{z} of class \code{acf} or \code{acb}.
       Thanks to Martin Maechler for the report and patch (\GH{15}).
-    }
-  }
-  \subsection{Internals}{
-    \itemize{
-      \item .
     }
   }
 }
