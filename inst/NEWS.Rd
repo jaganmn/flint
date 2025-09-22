@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-09-21)}{
+\section{Changes in version 0.1.1 (2025-09-22)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -60,6 +60,10 @@
       \code{c(x = "flint", type = "missing")} signaled an error due to
       dispatch ambiguity, for some reason not detected by the call to
       \code{testInheritedMethods} in \file{tests/ambiguity.R}.
+
+      \item Calls to \code{colSums} and friends whose return value would
+      have length zero allowed undefined behaviour (divide-by-zero in
+      integer division).
     }
   }
   \subsection{Internals}{

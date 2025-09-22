@@ -1039,7 +1039,7 @@ SEXP R_flint_ulong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		nz = 1;
 		for (k = 0; k < ndz; ++k)
 			nz *= (mp_limb_t) (dz[k] = dx[(byrow) ? k : off + k]);
-		mp_limb_t jt, nt = nx/nz;
+		mp_limb_t jt, nt = (nz == 0) ? 0 : nx/nz;
 
 		SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
 			dimnamesz = R_NilValue;

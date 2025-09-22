@@ -27,3 +27,10 @@ nm <- norm(fmpz(matrix(0L, 0L, 0L))) # gave error
 ##  "flint#ANY" would also be valid
 ## Error in norm(x, type = "O", ...) : invalid 'x': type "S4"
 stopifnot(identical(nm, fmpz(0L)))
+
+
+## Undefined behaviour (divide-by-zero in integer division) in
+## colSums(<m-by-0>), rowSums(<0-by-n>), etc.; detected under x86_64
+cs <- colSums(fmpq.array(0L, c(2L, 0L)))
+rs <- rowSums(fmpq.array(0L, c(0L, 2L)))
+stopifnot(identical(cs, fmpq()), identical(rs, fmpq()))
