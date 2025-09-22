@@ -152,7 +152,7 @@ https://github.com/jaganmn/flint/issues/.
 The focus of versions 0.x.y has been the implementation of S4 classes,
 generic functions, and methods, rather than extensive coverage of C
 entry points provided by FLINT.  Nevertheless, as a starting point,
-versions 0.0.x provide an R interface to certain C entry points so that
+versions 0.x.y provide an R interface to certain C entry points so that
 users can already compute several analytically continued special
 mathematical functions (as of this writing, these include Bessel and
 modified Bessel functions, zeta functions, complete and incomplete gamma
