@@ -69,6 +69,11 @@
       \item Calls to \code{colSums} and friends whose return value would
       have length zero allowed undefined behaviour (divide-by-zero in
       integer division).
+
+      \item Calls to \code{cbind} and \code{rbind} could fill dimension
+      names incorrectly when obtaining components from the call.  Only
+      the second component of the call (corresponding to the first
+      actual argument) was \dQuote{seen}.
     }
   }
   \subsection{Internals}{

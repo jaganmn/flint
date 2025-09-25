@@ -404,7 +404,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 
 			SEXP t;
 			int pos = 0;
-			for (jargs = 0, e = exps; jargs < nargs; ++jargs, exps = CDR(exps)) {
+			for (jargs = 0, e = exps; jargs < nargs; ++jargs, e = CDR(e)) {
 				elt = VECTOR_ELT(args, jargs);
 				dimx = R_do_slot(elt, R_flint_symbol_dim);
 				if (dimx != R_NilValue && XLENGTH(dimx) == 2) {

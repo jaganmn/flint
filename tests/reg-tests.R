@@ -34,3 +34,12 @@ stopifnot(identical(nm, fmpz(0L)))
 cs <- colSums(fmpq.array(0L, c(2L, 0L)))
 rs <- rowSums(fmpq.array(0L, c(0L, 2L)))
 stopifnot(identical(cs, fmpq()), identical(rs, fmpq()))
+
+
+## Loop over 'cbind', 'rbind' *call* did not advance when filling
+## dimension names
+x <- y <- ulong(0L)
+cn <- colnames(cbind(x,     y)) # gave c("x", "x") in version 0.1.0
+rn <- rownames(rbind(x, z = y)) # ditto
+stopifnot(identical(cn, c("x", "y")),
+          identical(rn, c("x", "z")))
