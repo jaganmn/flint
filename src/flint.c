@@ -459,6 +459,82 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 	}
 }
 
+SEXP R_flint_bits(SEXP object)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	if (class == R_FLINT_CLASS_INVALID)
+		ERROR_INVALID_CLASS(object, __func__);
+	mp_limb_t j, n = R_flint_get_length(object);
+	const void *x = R_flint_get_pointer(object);
+	slong *y = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
+
+#define slong_bits(x) ((slong) FLINT_BIT_COUNT((*(x) < 0) ? (ulong) -(*(x) + 1) + 1 : (ulong) *(x)))
+#define ulong_bits(x) ((slong) FLINT_BIT_COUNT(*(x)))
+#define  fmpq_bits(x) ((slong) fmpq_height_bits(x))
+#define   mag_bits(x) (MAG_MAN(x) ? (slong) (MAG_BITS - flint_ctz(MAG_MAN(x))) : 0)
+#define   acf_bits(x) (MAX2(arf_bits(acf_realref(x)), arf_bits(acb_imagref(x))))
+
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
+		do { \
+			xptr_t x__ = x; \
+			for (j = 0; j < n; ++j) \
+				y[j] = name##_bits(x__ + j); \
+		} while (0)
+
+		R_FLINT_SWITCH(class, TEMPLATE);
+
+#undef TEMPLATE
+
+#undef slong_bits
+#undef ulong_bits
+#undef  fmpq_bits
+#undef   mag_bits
+#undef   acf_bits
+
+	SEXP ans = PROTECT(newObject("slong"));
+	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+	setDDNN1(ans, object);
+	UNPROTECT(1);
+	return ans;
+}
+
+SEXP R_flint_bits_accurate(SEXP object)
+{
+	R_flint_class_t class = R_flint_get_class(object);
+	if (class == R_FLINT_CLASS_INVALID)
+		ERROR_INVALID_CLASS(object, __func__);
+	mp_limb_t j, n = R_flint_get_length(object);
+	const void *x = R_flint_get_pointer(object);
+	slong *y = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
+
+	switch (class) {
+	case R_FLINT_CLASS_ACB:
+	{
+		acb_srcptr x__ = x;
+		for (j = 0; j < n; ++j)
+			y[j] = -acb_rel_error_bits(x__ + j);
+		break;
+	}
+	case R_FLINT_CLASS_ARB:
+	{
+		arb_srcptr x__ = x;
+		for (j = 0; j < n; ++j)
+			y[j] = -arb_rel_error_bits(x__ + j);
+		break;
+	}
+	default:
+		for (j = 0; j < n; ++j)
+			y[j] = ARF_PREC_EXACT;
+		break;
+	}
+
+	SEXP ans = PROTECT(newObject("slong"));
+	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_slong_finalize);
+	setDDNN1(ans, object);
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXP R_flint_class(SEXP object)
 {
 	int i = (TYPEOF(object) == OBJSXP)

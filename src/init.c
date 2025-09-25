@@ -70,6 +70,8 @@ const char *R_flint_ops1[] =
 
 SEXP R_flint_abi(void);
 SEXP R_flint_bind(SEXP, SEXP, SEXP, SEXP);
+SEXP R_flint_bits(SEXP);
+SEXP R_flint_bits_accurate(SEXP);
 SEXP R_flint_bits_per_limb(void);
 SEXP R_flint_class(SEXP);
 SEXP R_flint_diag(SEXP, SEXP, SEXP);
@@ -203,6 +205,8 @@ static R_CallMethodDef CallEntries[] =
 #define CALL_ENTRY(name, nargs) {#name, (DL_FUNC) &name, nargs}
 	CALL_ENTRY(R_flint_abi, 0),
 	CALL_ENTRY(R_flint_bind, 4),
+	CALL_ENTRY(R_flint_bits, 1),
+	CALL_ENTRY(R_flint_bits_accurate, 1),
 	CALL_ENTRY(R_flint_bits_per_limb, 0),
 	CALL_ENTRY(R_flint_class, 1),
 	CALL_ENTRY(R_flint_diag, 3),

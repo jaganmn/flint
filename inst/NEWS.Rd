@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-09-22)}{
+\section{Changes in version 0.1.1 (2025-09-25)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -51,7 +51,12 @@
   }
   \subsection{New Features}{
     \itemize{
-      \item .
+      \item \R{} functions \code{flintBits} and \code{flintBitsAccurate}
+      can be used to get the number of bits necessary for exact
+      representation of an integer or floating type number and the
+      number of bits of an interval midpoint whose accuracy is
+      guaranteed given the interval radius.
+      %% somewhat experimental, hence not yet completely documented
     }
   }
   \subsection{Bug Fixes}{

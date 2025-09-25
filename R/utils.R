@@ -2,6 +2,14 @@ flintABI <-
 function ()
     .Call(R_flint_abi)
 
+flintBits <-
+function (object)
+    .Call(R_flint_bits, object)
+
+flintBitsAccurate <-
+function (object)
+    .Call(R_flint_bits_accurate, object)
+
 flintBitsPerLimb <-
 function ()
     .Call(R_flint_bits_per_limb)

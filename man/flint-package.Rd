@@ -1,6 +1,8 @@
 \name{flint-package}
 \alias{flint-package}
 \alias{flintABI}
+\alias{flintBits}
+\alias{flintBitsAccurate}
 \alias{flintClass}
 \alias{flintLength}
 \alias{flintPrec}
@@ -16,6 +18,8 @@
 }
 \usage{
 flintABI()
+flintBits(object)
+flintBitsAccurate(object)
 flintClass(object)
 flintLength(object, exact = TRUE)
 flintPrec(prec = NULL)
