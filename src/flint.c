@@ -818,13 +818,11 @@ SEXP R_flint_find_interval(SEXP object, SEXP breaks,
 
 SEXP R_flint_identical(SEXP object, SEXP reference)
 {
-	R_flint_class_t class = R_flint_get_class(reference);
-	if (class == R_FLINT_CLASS_INVALID)
-		return Rf_ScalarLogical(R_compute_identical(object, reference, 16) != 0);
-	if (R_flint_get_class(object) != class)
+	R_flint_class_t class = R_flint_get_class(object);
+	if (R_flint_get_class(reference) != class)
 		return Rf_ScalarLogical(0);
-	mp_limb_t j, n = R_flint_get_length(reference);
-	if (R_flint_get_length(object) != n)
+	mp_limb_t j, n = R_flint_get_length(object);
+	if (R_flint_get_length(reference) != n)
 		return Rf_ScalarLogical(0);
 	const void
 		*x = R_flint_get_pointer(object),
@@ -843,15 +841,6 @@ SEXP R_flint_identical(SEXP object, SEXP reference)
 	R_FLINT_SWITCH(class, TEMPLATE);
 
 #undef TEMPLATE
-
-	SEXP ax, ay, symbol[3] = { R_flint_symbol_dim, R_flint_symbol_dimnames, R_flint_symbol_names };
-	for (j = 0; j < 3; ++j) {
-		PROTECT(ax = R_do_slot(   object, symbol[j]));
-		PROTECT(ay = R_do_slot(reference, symbol[j]));
-		int t = R_compute_identical(ax, ay, 16);
-		UNPROTECT(2);
-		if (!t) return Rf_ScalarLogical(0);
-	}
 
 	return Rf_ScalarLogical(1);
 }
