@@ -366,6 +366,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 						jy -= ny - 1; \
 					} \
 				} else if (nx > 0) { \
+					/* FIXME? memory is leaked if warning is caught */ \
 					if (op == 1) { \
 						if (dy[0] % nx) \
 							Rf_warning(_("number of rows of return value is not a multiple of vector argument length")); \
