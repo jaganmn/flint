@@ -3,14 +3,14 @@ library(flint)
 
 X <- arb(pi)
 stopifnot(identical(Mid(X), arf(pi)))
-X2 <- X; Mid(X2) <- 2 * pi # gave error
+X2 <- X; Mid(X2) <- 2 * pi # gave error in version 0.5.0
 ## Error in q@dim :
 ##   no applicable method for `@` applied to an object of class "function"
 stopifnot(X2 == 2 * pi)
 
 
 Z <- acb(pi)
-Imag(Z) <- 1 # gave error
+Imag(Z) <- 1 # gave error in version 0.5.0
 ## Error in q@dim :
 ##   no applicable method for `@` applied to an object of class "function"
 stopifnot(Z == pi + 1i)
@@ -20,8 +20,8 @@ stopifnot(Z == pi + 1i)
 stopifnot(is(mZ, "acf"), mZ == pi + 1i)
 
 
-## Dispatch ambiguity in flint version 0.1.0
-nm <- norm(fmpz(matrix(0L, 0L, 0L))) # gave error
+## Dispatch ambiguity
+nm <- norm(fmpz(matrix(0L, 0L, 0L))) # gave error in version 0.1.0
 ## Note: method with signature 'ANY#missing' chosen for function 'norm',
 ##  target signature 'fmpz#missing'.
 ##  "flint#ANY" would also be valid
@@ -43,3 +43,13 @@ cn <- colnames(cbind(x,     y)) # gave c("x", "x") in version 0.1.0
 rn <- rownames(rbind(x, z = y)) # ditto
 stopifnot(identical(cn, c("x", "y")),
           identical(rn, c("x", "z")))
+
+
+## Late assignment in array-handling branch of 'as.data.frame'
+J <- diag(ulong(1L), 6L)
+L <- as.data.frame(J) # gave error in version 0.1.0
+## Error in h(simpleError(msg, call)) :
+##   error in evaluating the argument 'i' in selecting a method for function '[': object 'r' not found
+L. <- as.data.frame(diag(1L, 6L))
+L.[] <- lapply(L., ulong)
+stopifnot(all.equal(L, L.)) # 'all.equal' recurses with dispatch

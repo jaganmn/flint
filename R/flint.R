@@ -1085,9 +1085,9 @@ setMethod("as.data.frame",
                   names <- if (!optional) nm[[1L]]
               } else {
                   ans <- vector("list", prod(d[-1L]))
+                  r <- d[[1L]]
                   for (i in seq_along(ans))
                       ans[[i]] <- x[seq.int(to = i * r, length.out = r)]
-                  r <- d[[1L]]
                   if (is.null(row.names))
                       row.names <- dn[[1L]]
                   names <-

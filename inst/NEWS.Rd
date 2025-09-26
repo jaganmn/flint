@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-09-25)}{
+\section{Changes in version 0.1.1 (2025-09-26)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -74,6 +74,9 @@
       names incorrectly when obtaining components from the call.  Only
       the second component of the call (corresponding to the first
       actual argument) was \dQuote{seen}.
+
+      \item \code{as.data.frame} signaled an error when its argument
+      was an array due to a \dQuote{too late} assignment.
     }
   }
   \subsection{Internals}{
