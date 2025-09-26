@@ -57,6 +57,9 @@
       number of bits of an interval midpoint whose accuracy is
       guaranteed given the interval radius.
       %% somewhat experimental, hence not yet completely documented
+
+      \item \code{summary} coerces to data frame and dispatches when its
+      argument is a matrix, following \code{summary.matrix}.
     }
   }
   \subsection{Bug Fixes}{

@@ -11,7 +11,7 @@
 *** TODO qr
 *** TODO svd
 *** TODO norm(type = "2")
-*** TODO summary
+*** DONE summary
 *** TODO duplicated
 *** TODO unique
 
