@@ -30,12 +30,15 @@ slong fmpq_clog_ui(const fmpq_t x, ulong b)
 
 void R_flint_fmpq_finalize(SEXP x)
 {
+	fmpq *p = R_ExternalPtrAddr(x);
+	if (p) {
 	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	fmpq *p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		fmpq_clear(p + j);
 	flint_free(p);
+	R_ClearExternalPtr(x);
+	}
 	return;
 }
 

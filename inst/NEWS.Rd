@@ -84,7 +84,7 @@
   }
   \subsection{Internals}{
     \itemize{
-      \item .
+      \item External pointers are cleared by their finalizers.
     }
   }
 }

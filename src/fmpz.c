@@ -2,12 +2,15 @@
 
 void R_flint_fmpz_finalize(SEXP x)
 {
+	fmpz *p = R_ExternalPtrAddr(x);
+	if (p) {
 	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	fmpz *p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		fmpz_clear(p + j);
 	flint_free(p);
+	R_ClearExternalPtr(x);
+	}
 	return;
 }
 

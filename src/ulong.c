@@ -26,7 +26,10 @@
 void R_flint_ulong_finalize(SEXP x)
 {
 	ulong *p = R_ExternalPtrAddr(x);
+	if (p) {
 	flint_free(p);
+	R_ClearExternalPtr(x);
+	}
 	return;
 }
 

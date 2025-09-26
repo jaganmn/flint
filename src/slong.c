@@ -34,7 +34,10 @@
 void R_flint_slong_finalize(SEXP x)
 {
 	slong *p = R_ExternalPtrAddr(x);
+	if (p) {
 	flint_free(p);
+	R_ClearExternalPtr(x);
+	}
 	return;
 }
 

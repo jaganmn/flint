@@ -167,12 +167,15 @@ int __local_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 
 void R_flint_acf_finalize(SEXP x)
 {
+	acf_ptr p = R_ExternalPtrAddr(x);
+	if (p) {
 	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	acf_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		acf_clear(p + j);
 	flint_free(p);
+	R_ClearExternalPtr(x);
+	}
 	return;
 }
 

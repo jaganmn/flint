@@ -4,12 +4,15 @@ arf_rnd_t remapRnd(mpfr_rnd_t);
 
 void R_flint_acb_finalize(SEXP x)
 {
+	acb_ptr p = R_ExternalPtrAddr(x);
+	if (p) {
 	mp_limb_t j, n;
 	uucopy(&n, (const unsigned int *) INTEGER_RO(R_ExternalPtrProtected(x)));
-	acb_ptr p = R_ExternalPtrAddr(x);
 	for (j = 0; j < n; ++j)
 		acb_clear(p + j);
 	flint_free(p);
+	R_ClearExternalPtr(x);
+	}
 	return;
 }
 
