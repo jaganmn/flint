@@ -1977,7 +1977,7 @@ setMethod("show",
 setMethod("summary",
           c(object = "flint"),
           function (object, triple = FALSE, quantile.type = 7L, ...) {
-              if (length(d <- x@dim) == 2L)
+              if (length(d <- object@dim) == 2L)
                   return(summary(as.data.frame(object), triple = triple, quantile.type = quantile.type, ...))
               if (triple || any(flintClass(object) == c("acf", "arb", "acb")))
                   return(`class<-`(`names<-`(flintTriple(object), c("class", "length", "address")), "noquote"))
