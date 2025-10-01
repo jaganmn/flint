@@ -53,3 +53,9 @@ L <- as.data.frame(J) # gave error in version 0.1.0
 L. <- as.data.frame(diag(1L, 6L))
 L.[] <- lapply(L., ulong)
 stopifnot(all.equal(L, L.)) # 'all.equal' recurses with dispatch
+
+
+## 'Summary' methods for 'ulong' and 'slong' kept attributes
+validObject(u <- sum(ulong(1:2, names = c("a", "b"))))
+validObject(s <- range(slong.array(1:2, dim = c(2L, 2L))))
+stopifnot(identical(u, ulong(3L)), identical(s, slong(1:2)))
