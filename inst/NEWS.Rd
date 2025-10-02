@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-10-01)}{
+\section{Changes in version 0.1.1 (2025-10-02)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -60,6 +60,9 @@
 
       \item \code{summary} coerces to data frame and dispatches when its
       argument is a matrix, following \code{summary.matrix}.
+
+      \item \code{print} gains an argument \code{base}, which it passes
+      to \code{format}.
     }
   }
   \subsection{Bug Fixes}{

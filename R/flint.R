@@ -1601,8 +1601,8 @@ setMethod("norm",
 
 setMethod("print",
           c(x = "flint"),
-          function (x, digits = NULL, digits.mag = NULL, max = NULL,
-                    Rdiff = NULL, ...) {
+          function (x, base = 10L, digits = NULL, digits.mag = NULL,
+                    max = NULL, Rdiff = NULL, ...) {
               s <- flintTriple(x)
               if (is.null(Rdiff))
                   Rdiff <- getOption("flint.Rdiff", FALSE)
@@ -1684,7 +1684,7 @@ setMethod("print",
                            paste(d - rep(c(0L, k, 1L), c(w. - 1L, 1L, nd - w.)),
                                  collapse = ","))
               }
-              print.default(format(y, digits = digits, digits.mag = digits.mag),
+              print.default(format(y, base = base, digits = digits, digits.mag = digits.mag),
                             quote = FALSE, right = TRUE, max = max, ...)
               if (!is.null(msg))
                   cat(msg, "\n", sep = "")
