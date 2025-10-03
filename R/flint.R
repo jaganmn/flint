@@ -1001,6 +1001,18 @@ setMethod("anyDuplicated",
               anyDuplicated(mtfrm(x), incomparables = incomparables, ...)
           })
 
+setMethod("aperm",
+          c(a = "flint"),
+          function (a, perm, resize = TRUE, ...) {
+              perm <-
+              if (missing(perm))
+                  NULL
+              else if (is.character(perm))
+                  match(perm, names(dimnames(a)), 0L)
+              else as.integer(perm)
+              .Call(R_flint_aperm, a, perm, as.logical(resize))
+          })
+
 setMethod("as.raw",
           c(x = "flint"),
           function (x     ) as.vector(x, "raw"))
@@ -1127,6 +1139,16 @@ setMethod("as.POSIXlt",
           c(x = "flint"),
           function (x, tz = "", ...)
               as.POSIXlt(asVector(x, "vector", FALSE), tz = tz, ...))
+
+setMethod("asplit",
+          c(x = "flint"),
+          function (x, MARGIN, drop = FALSE) {
+              MARGIN <-
+              if (is.character(MARGIN))
+                  match(MARGIN, names(dimnames(x)), 0L)
+              else as.integer(MARGIN)
+              .Call(R_flint_asplit, x, MARGIN, as.logical(drop))
+          })
 
 .bind.class <-
 function (x)

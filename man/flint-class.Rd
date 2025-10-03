@@ -48,7 +48,11 @@
 \alias{[[<-,flint,flint,ANY,flint-method}
 \alias{[[<-,flint,flint,flint,ANY-method}
 \alias{[[<-,flint,flint,flint,flint-method}
+\alias{all.equal,ANY,flint-method}
+\alias{all.equal,flint,ANY-method}
+\alias{all.equal,flint,flint-method}
 \alias{anyDuplicated,flint-method}
+\alias{aperm,flint-method}
 \alias{as.raw,flint-method}
 \alias{as.logical,flint-method}
 \alias{as.integer,flint-method}
@@ -61,9 +65,7 @@
 \alias{as.Date,flint-method}
 \alias{as.POSIXct,flint-method}
 \alias{as.POSIXlt,flint-method}
-\alias{all.equal,ANY,flint-method}
-\alias{all.equal,flint,ANY-method}
-\alias{all.equal,flint,flint-method}
+\alias{asplit,flint-method}
 \alias{c,flint-method}
 \alias{cbind2,ANY,flint-method}
 \alias{cbind2,flint,ANY-method}

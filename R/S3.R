@@ -6,6 +6,10 @@ function (target, current, ...)
 function (x, incomparables = FALSE, ...)
     anyDuplicated(x, incomparables = incomparables, ...)
 
+.S3.aperm.flint <-
+function (a, perm, ...)
+    aperm(a, perm = perm, ...)
+
 .S3.as.matrix.flint <-
 function (x, ...)
     as.matrix(x, ...)
