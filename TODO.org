@@ -18,8 +18,15 @@
 ** TODO function for numerical solution of systems of ODE using 'arb'
 	https://doi.org/10.1007/978-3-319-96418-8_30
 
-	
-* TODO flint 0.1.0
+** TODO *apply
+	lapply, sapply, mapply, replicate are fine
+	vapply seems hopeless, which is fine (it can be documented)
+	apply, simplify2array needs a patch (to use dim<-, dimnames<-)
+
+** TODO unlist
+	patch to generalize 'islistfactor' hack OR export a 'flintUnlist'
+
+* DONE flint 0.1.0
 
 ** DONE representation of arrays
 
