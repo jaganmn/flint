@@ -1548,7 +1548,7 @@ rm(.match)
 setMethod("mtfrm",
           c(x = "flint"),
           function (x)
-              format(`names<-`(x, NULL), base = 62L, digits = 0L))
+              format(x, base = 62L, digits = 0L, digits.mag = 0L))
 
 setMethod("names",
           c(x = "flint"),

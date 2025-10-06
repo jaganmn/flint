@@ -88,6 +88,9 @@
       \item \code{Summary} transferred attributes from its argument to
       its return value, in methods for classes \code{ulong} and
       \code{slong}.
+
+      \item \code{mtfrm} passes \code{digits.mag = 0L} to \code{format}
+      so that \code{mag} vectors are also formatted exactly.
     }
   }
   \subsection{Internals}{

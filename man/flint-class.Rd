@@ -430,10 +430,11 @@ flint.array(class, \dots)
       \pkg{base} function, hence see \code{\link{match}}.}
     \item{\code{mtfrm}}{
       \code{signature(x = "flint")}:\cr
-      returns \code{format(x, base = 62L, digits = 0L)}, a character
-      vector representing the elements of \code{x} exactly in base 62
-      (chosen over smaller bases to reduce the number of characters in
-      the output); see also \code{\link{format-methods}}.}
+      returns
+      \code{format(x, base = 62L, digits = 0L, digits.mag = 0L)},
+      a character vector representing the elements of \code{x} exactly
+      in base 62 (chosen over smaller bases to reduce the number of
+      characters in the output); see also \code{\link{format-methods}}.}
     \item{\code{names}}{
       \code{signature(x = "flint")}:\cr
       returns the value of the \code{names} slot.}
