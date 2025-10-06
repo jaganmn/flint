@@ -18,7 +18,7 @@ f2 <- f1[!g1$all.inside]
 for (.cl in c("ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb")) {
     x <- flint(.cl, x.); y <- flint(.cl, y.); z <- flint(.cl, z.)
-    stopifnot(identical(mtfrm(x), format(x, base = 62L, digits = 0L)),
+    stopifnot(identical(mtfrm(x), format(x, base = 62L, digits = 0L, digits.mag = 0L)),
               identical(match(x, x, 0L), x.),
               identical(match(x, y, 0L), y.),
               identical(match(x, z, 0L), z.),
