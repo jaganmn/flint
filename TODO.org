@@ -12,9 +12,9 @@
 *** TODO svd
 *** TODO norm(type = "2")
 *** DONE summary
-*** TODO duplicated
-*** TODO unique
-*** TODO anyDuplicated
+*** DONE duplicated
+*** DONE unique
+*** DONE anyDuplicated
 
 ** TODO function for numerical solution of systems of ODE using 'arb'
 	https://doi.org/10.1007/978-3-319-96418-8_30

@@ -535,7 +535,12 @@ seq(to=, by=, length.out=)}
       handling non-array \code{x} as \code{length(x)}-by-1 matrices.}
     \item{\code{unique}}{
       \code{signature(x = "flint")}:\cr
-      returns \code{x[!duplicated(x, \dots)]}.}
+      if \code{x} is not an array or \code{MARGIN} is empty, returns
+      a vector containing the unique elements of \code{x}; otherwise,
+      returns an array containing the unique splits of \code{x} by
+      margin \code{MARGIN}.  Elements (splits) of \code{x} are
+      considered distinct if the corresponding elements (splits) of
+      \code{mtfrm(x)} are not identical.}
   }
   Methods are on purpose \emph{not} defined for generic functions whose
   default methods correctly handle objects inheriting from virtual class

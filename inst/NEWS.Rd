@@ -49,6 +49,11 @@
       \item S4 methods are defined for generic (or made-generic)
       functions \code{aperm} and \code{asplit}.
 
+      \item S4 methods for \code{anyDuplicated}, \code{duplicated}, and
+      \code{unique} are amended to handle arrays \code{x}.  Accordingly
+      they all gain an argument \code{MARGIN} with default value
+      \code{1L}.
+
       \item \code{summary} coerces to data frame and dispatches when its
       argument is a matrix, following \code{summary.matrix}.
 
