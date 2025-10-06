@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-10-02)}{
+\section{Changes in version 0.1.1 (2025-10-06)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -46,7 +46,14 @@
   }
   \subsection{Methods}{
     \itemize{
-      \item .
+      \item S4 methods are defined for generic (or made-generic)
+      functions \code{aperm} and \code{asplit}.
+
+      \item \code{summary} coerces to data frame and dispatches when its
+      argument is a matrix, following \code{summary.matrix}.
+
+      \item \code{print} gains an argument \code{base}, which it passes
+      to \code{format}.
     }
   }
   \subsection{New Features}{
@@ -57,12 +64,6 @@
       number of bits of an interval midpoint whose accuracy is
       guaranteed given the interval radius.
       %% somewhat experimental, hence not yet completely documented
-
-      \item \code{summary} coerces to data frame and dispatches when its
-      argument is a matrix, following \code{summary.matrix}.
-
-      \item \code{print} gains an argument \code{base}, which it passes
-      to \code{format}.
     }
   }
   \subsection{Bug Fixes}{

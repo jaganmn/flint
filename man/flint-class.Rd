@@ -268,6 +268,12 @@ flint.array(class, \dots)
     \item{\code{anyDuplicated}}{
       \code{signature(x = "flint")}:\cr
       returns \code{anyDuplicated(mtfrm(x), \dots)}.}
+    \item{\code{aperm}}{
+      \code{signature(a = "flint")}:\cr
+      returns the array obtained by permuting the dimensions of \code{a}
+      according to a second argument \code{perm}, following the
+      documented behaviour of the S3 default method for
+      \code{\link{aperm}}.}
     \item{\code{as.raw}, \code{as.logical}, \code{as.integer}, \code{as.numeric}, \code{as.complex}}{
       \code{signature(x = "flint")}:\cr
       returns the value of \code{as.vector(x, mode = *)}.  Methods for
@@ -289,6 +295,12 @@ flint.array(class, \dots)
       containing \code{flint} vectors using \code{as.data.frame} and
       functions that call it such as \code{\link{data.frame}} and
       \code{\link{cbind.data.frame}}.}
+    \item{\code{asplit}}{
+      \code{signature(x = "flint")}:\cr
+      returns a list array containing the marginal splits of \code{x}
+      indicated by a second argument \code{MARGIN}, following the
+      documented behaviour of the \pkg{base} function, hence see
+      \code{\link{asplit}}.}
     \item{\code{c}}{
       \code{signature(x = "flint")}:\cr
       returns \code{\link{c.flint}(x, \dots)}, the concatenation of the
@@ -311,7 +323,7 @@ flint.array(class, \dots)
       \code{signature(x = "flint")}:\cr
       returns
       \code{findInterval(x=x, vec=breaks, left.open=right, rightmost.closed=include.lowest)},
-      hence see below.  The behaviour is consistent with the default
+      hence see below.  The behaviour is consistent with the S3 default
       method for \code{\link{cut}} with argument \code{labels} set to
       \code{FALSE}, provided that \code{breaks} is sorted and no element
       of \code{x} is out of bounds.}
@@ -415,7 +427,7 @@ flint.array(class, \dots)
       returns an integer vector matching \code{x} to \code{table} after
       coercing to a common class then \dQuote{match transforming} with
       \code{\link{mtfrm}}.  The behaviour is parallel to that of the
-      default method, hence see \code{\link{match}}.}
+      \pkg{base} function, hence see \code{\link{match}}.}
     \item{\code{mtfrm}}{
       \code{signature(x = "flint")}:\cr
       returns \code{format(x, base = 62L, digits = 0L)}, a character
