@@ -10,6 +10,7 @@
 \alias{flintSize}
 \alias{flintTriple}
 \alias{flintVersion}
+\alias{.initForeign}
 \docType{package}
 \title{\R{} Package \pkg{flint}}
 \description{
@@ -27,6 +28,9 @@ flintRnd(rnd = NULL)
 flintSize(object)
 flintTriple(object)
 flintVersion()
+
+.initForeign(which = c("Rmpfr", "gmp"),
+             where = topenv(parent.frame()))
 }
 \arguments{
   \item{object}{
@@ -47,6 +51,11 @@ flintVersion()
     \samp{[Dd]} (towards negative infinity), \samp{[Zz]} (towards zero),
     \samp{[Aa]} (away from zero), and \samp{[Nn]} (to nearest, with
     precedence to even significands).}
+  \item{which}{
+    a character vector listing package names.}
+  \item{where}{
+    an environment for storing methods, by default the \pkg{flint}
+    namespace.}
 }
 \details{
   To report a bug or request a feature, use
@@ -135,6 +144,22 @@ flintVersion()
   Header versions are determined at compile time.  Library versions are
   determined at compile time (static linking) or at load time (dynamic
   linking).
+
+  \code{.initForeign} defines methods for \code{\link{coerce}} enabling
+  coercion between classes in \pkg{flint} and analogous classes in the
+  packages named by \code{which}.  Packages are loaded before methods
+  are defined to ensure that \code{\link{setAs}} is able to find class
+  definitions.  A corollary is that an error is signaled if packages are
+  not installed.  Supported signatures:
+\preformatted{which="Rmpfr":
+  from="mpfr", to="arf"
+  from="arf", to="mpfr"
+which="gmp":
+  from="bigz", to="fmpz"
+  from="fmpz", to="bigz"
+  from="bigq", to="fmpq"
+  from="fmpq", to="bigq"
+}
 }
 \author{
   Mikael Jagan

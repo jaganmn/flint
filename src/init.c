@@ -95,6 +95,13 @@ SEXP R_flint_triple(SEXP);
 SEXP R_flint_valid(SEXP);
 SEXP R_flint_version(void);
 
+SEXP R_flint_coerce_bigz_fmpz(SEXP);
+SEXP R_flint_coerce_fmpz_bigz(SEXP);
+SEXP R_flint_coerce_bigq_fmpq(SEXP);
+SEXP R_flint_coerce_fmpq_bigq(SEXP);
+SEXP R_flint_coerce_mpfr_arf(SEXP);
+SEXP R_flint_coerce_arf_mpfr(SEXP);
+
 SEXP R_flint_ulong_initialize(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_ulong_atomic(SEXP);
 SEXP R_flint_ulong_format(SEXP, SEXP);
@@ -231,6 +238,12 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_transpose, 2),
 	CALL_ENTRY(R_flint_valid, 1),
 	CALL_ENTRY(R_flint_version, 0),
+	CALL_ENTRY(R_flint_coerce_bigz_fmpz, 1),
+	CALL_ENTRY(R_flint_coerce_fmpz_bigz, 1),
+	CALL_ENTRY(R_flint_coerce_bigq_fmpq, 1),
+	CALL_ENTRY(R_flint_coerce_fmpq_bigq, 1),
+	CALL_ENTRY(R_flint_coerce_mpfr_arf, 1),
+	CALL_ENTRY(R_flint_coerce_arf_mpfr, 1),
 	CALL_ENTRY(R_flint_ulong_initialize, 6),
 	CALL_ENTRY(R_flint_ulong_atomic, 1),
 	CALL_ENTRY(R_flint_ulong_format, 2),

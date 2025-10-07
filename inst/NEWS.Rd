@@ -1,10 +1,11 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-10-06)}{
+\section{Changes in version 0.1.1 (2025-10-07)}{
   \subsection{Description}{
     \itemize{
-      \item .
+      \item \code{Enhances: Rmpfr, gmp} as \code{.initForeign} defines
+      methods for their classes.
     }
   }
   \subsection{Compatibility}{
@@ -69,6 +70,10 @@
       number of bits of an interval midpoint whose accuracy is
       guaranteed given the interval radius.
       %% somewhat experimental, hence not yet completely documented
+
+      \item \R{} function \code{.initForeign} can be used to define
+      coercions between classes in \pkg{flint} and analogous classes in
+      external packages, currently \pkg{Rmpfr} or \pkg{gmp}.
     }
   }
   \subsection{Bug Fixes}{
