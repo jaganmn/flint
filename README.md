@@ -2,10 +2,10 @@ R package **flint** is an R interface to FLINT (https://flintlib.org/),
 a C library for number theory.  FLINT implements arithmetic in rings,
 including midpoint-radius interval arithmetic, also known as ball
 arithmetic, in the real and complex numbers, enabling computation in
-arbitrary precision with rigorous propagation of rounding errors.
-Notably, FLINT provides ball arithmetic implementations of many special
-mathematical functions not previously supported by R or any R package
-available on CRAN (or, where supported, not defined to arbitrary
+arbitrary precision with rigorous propagation of rounding and other
+errors.  Notably, FLINT provides ball arithmetic implementations of many
+special mathematical functions not previously supported by R or any R
+package available on CRAN (or, where supported, not defined to arbitrary
 precision, over the complex numbers, or beyond the radius of convergence
 of a power series representation).
 
@@ -23,8 +23,8 @@ subclasses named after a corresponding C type:
   `mag` | unsigned floating-point real numbers with fixed precision (30-bit) significand and `fmpz` exponent.
   `arf` | floating-point real numbers with arbitrary precision significand and `fmpz` exponent.
   `acf` | floating-point complex numbers with `arf` real and imaginary parts.
-  `arb` | real balls with `arf` midpoint and `mag` radius, of the form `(a +/- b)`.
-  `acb` | complex balls with `arb` real and imaginary parts, of the form `(a +/- b)+(c +/- d)i`.
+  `arb` | real balls with `arf` midpoint and `mag` radius, of the form `(a +/- r)`.
+  `acb` | complex balls with `arb` real and imaginary parts, of the form `(a +/- r)+(b +/- s)i`.
 
 S4 and S3 methods are defined with the aim of complete interoperability
 of `flint` vectors and traditional (atomic or recursive) vectors.  To 
@@ -33,14 +33,14 @@ argument promotion, extending R's basic hierarchy.
 
 ```
 > library(flint)
-> p <- as.environment("package:flint")
-> sort(getClasses(p))
+> ns <- getNamespace("flint")
+> sort(getClasses(ns))
  [1] "OptionalCharacter" "OptionalInteger"   "OptionalList"     
  [4] "acb"               "acf"               "arb"              
  [7] "arf"               "flint"             "fmpq"             
 [10] "fmpz"              "mag"               "slong"            
 [13] "ulong"            
-> getDataPart(getGenerics(p)) # of length 100!
+> getDataPart(getGenerics(ns)) # of length 102!
   [1] "!"             "$"             "$<-"           "%*%"          
   [5] "+"             "-"             "Complex"       "Den"          
   [9] "Den<-"         "Imag"          "Imag<-"        "Math2"        
@@ -48,30 +48,32 @@ argument promotion, extending R's basic hierarchy.
  [17] "Num<-"         "Ops"           "Rad"           "Rad<-"        
  [21] "Real"          "Real<-"        "Summary"       "["            
  [25] "[<-"           "[["            "[[<-"          "all.equal"    
- [29] "anyDuplicated" "anyNA"         "as.Date"       "as.POSIXct"   
- [33] "as.POSIXlt"    "as.array"      "as.complex"    "as.data.frame"
- [37] "as.integer"    "as.logical"    "as.matrix"     "as.numeric"   
- [41] "as.raw"        "as.vector"     "backsolve"     "c"            
- [45] "cbind2"        "chol2inv"      "chol"          "coerce"       
- [49] "colMeans"      "colSums"       "crossprod"     "cut"          
- [53] "det"           "determinant"   "diag"          "diag<-"       
- [57] "dim"           "dim<-"         "dimnames"      "dimnames<-"   
- [61] "drop"          "duplicated"    "findInterval"  "format"       
- [65] "identical"     "is.array"      "is.finite"     "is.infinite"  
- [69] "is.matrix"     "is.na"         "is.na<-"       "is.nan"       
- [73] "is.unsorted"   "isSymmetric"   "length"        "length<-"     
- [77] "log"           "match"         "mean"          "mtfrm"        
- [81] "names"         "names<-"       "norm"          "print"        
- [85] "quantile"      "rbind2"        "rep.int"       "rep"          
- [89] "rep_len"       "rowMeans"      "rowSums"       "seq"          
- [93] "sequence"      "show"          "solve"         "summary"      
- [97] "t"             "tcrossprod"    "unique"        "xtfrm"        
+ [29] "anyDuplicated" "anyNA"         "aperm"         "as.Date"      
+ [33] "as.POSIXct"    "as.POSIXlt"    "as.array"      "as.complex"   
+ [37] "as.data.frame" "as.integer"    "as.logical"    "as.matrix"    
+ [41] "as.numeric"    "as.raw"        "as.vector"     "asplit"       
+ [45] "backsolve"     "c"             "cbind2"        "chol2inv"     
+ [49] "chol"          "coerce"        "colMeans"      "colSums"      
+ [53] "crossprod"     "cut"           "det"           "determinant"  
+ [57] "diag"          "diag<-"        "dim"           "dim<-"        
+ [61] "dimnames"      "dimnames<-"    "drop"          "duplicated"   
+ [65] "findInterval"  "format"        "identical"     "is.array"     
+ [69] "is.finite"     "is.infinite"   "is.matrix"     "is.na"        
+ [73] "is.na<-"       "is.nan"        "is.unsorted"   "isSymmetric"  
+ [77] "length"        "length<-"      "log"           "match"        
+ [81] "mean"          "mtfrm"         "names"         "names<-"      
+ [85] "norm"          "print"         "quantile"      "rbind2"       
+ [89] "rep.int"       "rep"           "rep_len"       "rowMeans"     
+ [93] "rowSums"       "seq"           "sequence"      "show"         
+ [97] "solve"         "summary"       "t"             "tcrossprod"   
+[101] "unique"        "xtfrm"        
 > oprec <- flintPrec(0x1p+12L) # 2^12 = 4096 bits
 > (x <- 0:3 * arb_const_pi() / 2)
-class "arb", length 4, address 0x60000107c600
+class "arb", length 4, address 0x600001920240
 [1] (0.000000e+0 +/- 0.000e+0000) (1.570796e+0 +/- 9.575e-1234)
 [3] (3.141593e+0 +/- 1.915e-1233) (4.712389e+0 +/- 1.054e-1232)
 > (y <- exp(1i * x))
+class "acb", length 4, address 0x135f0a2f0
 [1] ( 1.000000e+0000 +/- 0.000e+0000)+( 0.000000e+0000 +/- 0.000e+0000)i
 [2] (-4.080025e-1234 +/- 9.575e-1234)+( 1.000000e+0000 +/- 9.575e-1234)i
 [3] (-1.000000e+0000 +/- 1.915e-1233)+(-8.160051e-1234 +/- 1.915e-1233)i
