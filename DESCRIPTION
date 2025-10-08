@@ -1,5 +1,5 @@
 Package: flint
-Version: 0.1.1
+Version: 0.1.2
 VersionNote: sync configure.ac, inst/NEWS.Rd
 Date: 2025-10-08
 Title: Fast Library for Number Theory
