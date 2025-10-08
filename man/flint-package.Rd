@@ -150,7 +150,7 @@ flintVersion()
   packages named by \code{which}.  Packages are loaded before methods
   are defined to ensure that \code{\link{setAs}} is able to find class
   definitions.  A corollary is that an error is signaled if packages are
-  not installed.  Supported signatures:
+  not installed in the library search path.  Supported signatures:
 \preformatted{which="Rmpfr":
   from="mpfr", to="arf"
   from="arf", to="mpfr"

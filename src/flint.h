@@ -54,6 +54,19 @@
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
 
+#define MIN2(a, b) \
+(((a) > (b)) ? (b)                    : (a))
+#define MIN3(a, b, c) \
+(((a) > (b)) ? MIN2(b, c)             : MIN2(a, c))
+#define MIN4(a, b, c, d) \
+(((a) > (b)) ? MIN3(b, c, d)          : MIN3(a, c, d))
+#define MIN5(a, b, c, d, e) \
+(((a) > (b)) ? MIN4(b, c, d, e)       : MIN4(a, c, d, e))
+#define MIN6(a, b, c, d, e, f) \
+(((a) > (b)) ? MIN5(b, c, d, e, f)    : MIN5(a, c, d, e, f))
+#define MIN7(a, b, c, d, e, f, g) \
+(((a) > (b)) ? MIN6(b, c, d, e, f, g) : MIN6(a, c, d, e, f, g))
+
 #define MAX2(a, b) \
 (((a) < (b)) ? (b)                    : (a))
 #define MAX3(a, b, c) \
@@ -155,6 +168,7 @@ mpfr_set_emax(__emax_old); \
 
 extern
 SEXP R_flint_symbol_missing,
+	R_flint_symbol_dot_data,
 	R_flint_symbol_dot_xdata,
 	R_flint_symbol_dim,
 	R_flint_symbol_dimnames,

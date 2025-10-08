@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.1 (2025-10-07)}{
+\section{Changes in version 0.1.1 (2025-10-08)}{
   \subsection{Description}{
     \itemize{
       \item \code{Enhances: Rmpfr, gmp} as \code{.initForeign} defines
