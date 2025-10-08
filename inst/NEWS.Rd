@@ -8,41 +8,11 @@
       methods for their classes.
     }
   }
-  \subsection{Compatibility}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Installation}{
-    \itemize{
-      \item .
-    }
-  }
   \subsection{Documentation}{
     \itemize{
       \item There was a typo in \file{man/arb_hypgeom_bessel_j.Rd},
       in the modified Bessel's equation, affecting only HTML and PDF
       output.
-    }
-  }
-  \subsection{Significant User-Visible Changes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Classes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
     }
   }
   \subsection{Methods}{
@@ -68,8 +38,8 @@
       can be used to get the number of bits necessary for exact
       representation of an integer or floating type number and the
       number of bits of an interval midpoint whose accuracy is
-      guaranteed given the interval radius.
-      %% somewhat experimental, hence not yet completely documented
+      guaranteed given the interval radius.  These are experimental
+      and so only partially documented.
 
       \item \R{} function \code{.initForeign} can be used to define
       coercions between classes in \pkg{flint} and analogous classes in
