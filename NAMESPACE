@@ -5,7 +5,7 @@ importClassesFrom(methods, classGeneratorFunction)
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
            callGeneric, callNextMethod, cbind2, coerce, getClassDef,
            new, "packageSlot<-", rbind2, selectMethod, setAs, setClass,
-           setClassUnion, setMethod, show)
+           setClassUnion, setGeneric, setMethod, show)
 importFrom(stats, quantile, runif)
 
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,

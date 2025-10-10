@@ -20,6 +20,7 @@ function (libname, pkgname) {
         stop(gettextf("package '%s' was configured for a %d-bit limb; GNU MP was configured for a %d-bit limb",
                       "flint", abi, bpl),
              domain = NA)
+    .init.asplit()
     return(invisible(NULL))
 }
 

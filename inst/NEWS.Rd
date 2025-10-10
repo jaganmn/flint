@@ -1,65 +1,15 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.2 (2025-10-08)}{
-  \subsection{Description}{
-    \itemize{
-      \item .
-    }
-  }
+\section{Changes in version 0.1.2 (2025-10-10)}{
   \subsection{Compatibility}{
     \itemize{
-      \item .
-    }
-  }
-  \subsection{Installation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Documentation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Significant User-Visible Changes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Classes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Methods}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{New Features}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Bug Fixes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Internals}{
-    \itemize{
-      \item .
+      \item Installation of \pkg{flint} version 0.1.1 failed under \R{}
+      versions 4.[3-4].z because the non-generic function \code{asplit}
+      in \pkg{base} did not admit a formal argument \code{drop}.
+      Compatibility is restored by conditional definition in
+      \code{.onLoad} of the S4 generic function and S4 method with
+      signature \code{c(x = "flint")}.
     }
   }
 }

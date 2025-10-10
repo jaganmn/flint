@@ -1001,7 +1001,7 @@ setMethod("anyDuplicated",
               } else {
                   if (!isFALSE(incomparables))
                       .NotYetUsed("incomparables")
-                  anyDuplicated.default(asplit(mtfrm(x), MARGIN = MARGIN, drop = TRUE), ...)
+                  anyDuplicated.default(asplit3(mtfrm(x), MARGIN = MARGIN, drop = TRUE), ...)
               }
           })
 
@@ -1144,6 +1144,10 @@ setMethod("as.POSIXlt",
           function (x, tz = "", ...)
               as.POSIXlt(asVector(x, "vector", FALSE), tz = tz, ...))
 
+.init.asplit <-
+function () {
+suppressMessages(setGeneric("asplit"))
+if (getRversion() >= "4.5.0") {
 setMethod("asplit",
           c(x = "flint"),
           function (x, MARGIN, drop = FALSE) {
@@ -1153,6 +1157,28 @@ setMethod("asplit",
               else as.integer(MARGIN)
               .Call(R_flint_asplit, x, MARGIN, as.logical(drop))
           })
+assign("asplit3", envir = topenv(parent.frame()), inherits = FALSE,
+       asplit)
+} else {
+setMethod("asplit",
+          c(x = "flint"),
+          function (x, MARGIN) {
+              MARGIN <-
+              if (is.character(MARGIN))
+                  match(MARGIN, names(x@dimnames), 0L)
+              else as.integer(MARGIN)
+              .Call(R_flint_asplit, x, MARGIN, FALSE)
+          })
+assign("asplit3", envir = topenv(parent.frame()), inherits = FALSE,
+       function (x, MARGIN, drop = FALSE) {
+           ans <- asplit(x, MARGIN)
+           if (drop)
+               lapply(ans, `dim<-`, NULL)
+           else ans
+       })
+}
+invisible(NULL)
+}
 
 .bind.class <-
 function (x)
@@ -1425,7 +1451,7 @@ setMethod("duplicated",
               } else {
                   if (!isFALSE(incomparables))
                       .NotYetUsed("incomparables")
-                  duplicated.default(y <- asplit(mtfrm(x), MARGIN = MARGIN, drop = TRUE), ...)
+                  duplicated.default(y <- asplit3(mtfrm(x), MARGIN = MARGIN, drop = TRUE), ...)
               }
               dim(ans) <- dim(y)
               dimnames(ans) <- dimnames(y)
@@ -2047,7 +2073,7 @@ setMethod("unique",
                       MARGIN <- match(MARGIN, names(x@dimnames), 0L)
                   args <- rep(c(list(x), list(substitute()), list(drop = FALSE)),
                               c(1L, length(d), 1L))
-                  args[[1L + MARGIN]] <- !duplicated.default(asplit(mtfrm(x), MARGIN = MARGIN, drop = TRUE), ...)
+                  args[[1L + MARGIN]] <- !duplicated.default(asplit3(mtfrm(x), MARGIN = MARGIN, drop = TRUE), ...)
                   do.call(`[`, args)
               }
           })
