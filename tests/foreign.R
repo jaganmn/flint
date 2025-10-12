@@ -15,7 +15,14 @@ if (requireNamespace("Rmpfr")) withAutoprint({
     (x <- Rmpfr::mpfr(w, 2^(1:6)))
     (y <- as(x, "arf"))
     (z <- as(y, "mpfr"))
+    if (FALSE)
     stopifnot(identical(z, Rmpfr::mpfr(0.75, rep(2, length(x)))))
+    else {
+    zzz <- Rmpfr::mpfr(0.75, rep(2, length(x)))
+    str(`class<-`(  z, NULL))
+    str(`class<-`(zzz, NULL))
+    stopifnot(identical(z, zzz))
+    }
 
     same <-
     function (F, ...)
