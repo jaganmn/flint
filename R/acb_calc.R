@@ -1,0 +1,40 @@
+.integrate.func <-
+function (func) {
+    if (!is.function(func) || is.primitive(func))
+        stop(gettextf("'%s' is not a closure",
+                      "func"),
+             domain = NA)
+    nf <- length(f <- formals(func))
+    if (any((if (nf <= 4L) names(f) else names(f)[seq_len(4L)]) == "..."))
+        stop(gettextf("'%s' has '%s' among first four formal arguments",
+                      "func", "..."),
+             domain = NA)
+    if (nf < 4L)
+        formals(func) <- `[<-`(alist(.__1__. =, .__2__. =, .__3__. =, .__4__. =),
+                               seq_len(nf), f)
+    func
+}
+
+.integrate.options <-
+function (deg.limit, eval.limit, depth.limit, use.heap, verbose) {
+    l <- list(if (missing(  deg.limit)) slong(0L) else as(  deg.limit, "slong"),
+              if (missing( eval.limit)) slong(0L) else as( eval.limit, "slong"),
+              if (missing(depth.limit)) slong(0L) else as(depth.limit, "slong"),
+              if (missing(use.heap)) 0L else as.integer(use.heap),
+              if (missing( verbose)) 0L else as.integer( verbose))
+    stopifnot(all(lengths(l) == 1L))
+    l
+}
+
+acb_integrate <-
+function (func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
+          options = NULL, prec = flintPrec()) {
+    res <- flintNew("acb")
+    .Call(R_flint_acb_calc_integrate, res,
+          .integrate.func(func), param, as(a, "acb"), as(b, "acb"),
+          if (!is.null(rel.tol)) as(-floor(log2(rel.tol)), "slong"),
+          if (!is.null(abs.tol)) as(abs.tol, "mag"),
+          if (!is.null(options)) do.call(.integrate.options, options),
+          as(prec, "slong"))
+    res
+}

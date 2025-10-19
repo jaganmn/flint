@@ -8,6 +8,11 @@ void CLEAR_ATTRIB(SEXP s)
 	UNSET_S4_OBJECT(s);
 	return;
 }
+
+SEXP R_ClosureEnv(SEXP s)
+{
+	return CLOENV(s);
+}
 #endif
 
 char *R_alloc_snprintf(size_t n, const char *format, ...)

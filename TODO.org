@@ -17,6 +17,7 @@
 *** DONE anyDuplicated
 
 ** TODO function for numerical solution of systems of ODE using 'arb'
+** DONE function for numerical integration of functions of one variable
 	https://doi.org/10.1007/978-3-319-96418-8_30
 
 ** TODO *apply

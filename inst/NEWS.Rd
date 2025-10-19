@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-10-10)}{
+\section{Changes in version 0.1.3 (2025-10-19)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -49,7 +49,8 @@
   }
   \subsection{New Features}{
     \itemize{
-      \item .
+      \item \R{} functions \code{arb_integrate} and \code{acb_integrate}
+      for integration of functions of one variable.
     }
   }
   \subsection{Bug Fixes}{
