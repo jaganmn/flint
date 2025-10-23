@@ -993,12 +993,26 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 52: /*   "range" */
 			fmpq_set(z, x);
+#ifdef R_FLINT_USE_NAIVE_RANGE
+			/* MJ: GCC 14 gives [-Wstringop-overread].  Why?? */
 			fmpq_set(z + 1, x);
 			for (jx = 1; jx < nx; ++jx)
 				if (fmpq_cmp(z, x + jx) > 0)
 					fmpq_set(z, x + jx);
 				else if (fmpq_cmp(z + 1, x + jx) < 0)
 					fmpq_set(z + 1, x + jx);
+#else
+			fmpq_t t;
+			fmpq_init(t);
+			fmpq_set(t, x);
+			for (jx = 1; jx < nx; ++jx)
+				if (fmpq_cmp(z, x + jx) > 0)
+					fmpq_set(z, x + jx);
+				else if (fmpq_cmp(t, x + jx) < 0)
+					fmpq_set(t, x + jx);
+			fmpq_set(z + 1, t);
+			fmpq_clear(t);
+#endif
 			break;
 		case 53: /*     "sum" */
 			fmpq_zero(z);
