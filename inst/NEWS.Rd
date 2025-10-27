@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-10-23)}{
+\section{Changes in version 0.1.3 (2025-10-27)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -9,7 +9,11 @@
   }
   \subsection{Compatibility}{
     \itemize{
-      \item .
+      \item Tests of \code{.initForeign("Rmpfr")} are skipped if
+      \pkg{Rmpfr} is too old.  Versions older than 1.1-2 did not detect
+      \code{sizeof(mpfr_exp_t) != sizeof(mp_limb_t)}, so they could
+      initialize \code{mpfr1} objects with \code{exp} slot of wrong
+      length.
     }
   }
   \subsection{Installation}{

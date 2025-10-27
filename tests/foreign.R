@@ -1,6 +1,7 @@
 library(flint)
 
-if (requireNamespace("Rmpfr")) withAutoprint({
+if (requireNamespace("Rmpfr") &&
+    packageVersion("Rmpfr") >= "1.1-2") withAutoprint({
     .initForeign("Rmpfr")
 
     ## arf->mpfr->arf will be perfect
