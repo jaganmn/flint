@@ -10,9 +10,9 @@
 }
 \usage{
 arb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
-              options = NULL, prec = flintPrec())
+              control = NULL, prec = flintPrec())
 acb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
-              options = NULL, prec = flintPrec())
+              control = NULL, prec = flintPrec())
 }
 \arguments{
   \item{func}{
@@ -31,7 +31,7 @@ acb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
     a positive real number that the absolute error in any subinterval
     should not exceed.  The value 0 indicates that convergence should
     account only for relative error.  \code{2^-prec} by default.}
-  \item{options}{
+  \item{control}{
     a named list of options for integration.}
   \item{prec}{
     a positive integer indicating the working precision as a number of
@@ -51,7 +51,7 @@ acb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
   bounded on \code{z} with branch cuts whose intersection with \code{z}
   is nonempty.
 
-  The list \code{options} admits components \code{deg.limit},
+  The list \code{control} admits components \code{deg.limit},
   \code{eval.limit}, \code{depth.limit}, \code{use.heap}, and
   \code{verbose}.  These correspond to so-named members of the
   \proglang{C} struct \code{acb_calc_integrate_opt_struct}; see the

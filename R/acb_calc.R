@@ -15,7 +15,7 @@ function (func) {
     func
 }
 
-.integrate.options <-
+.integrate.control <-
 function (deg.limit, eval.limit, depth.limit, use.heap, verbose) {
     l <- list(if (missing(  deg.limit)) slong(0L) else as(  deg.limit, "slong"),
               if (missing( eval.limit)) slong(0L) else as( eval.limit, "slong"),
@@ -28,13 +28,13 @@ function (deg.limit, eval.limit, depth.limit, use.heap, verbose) {
 
 acb_integrate <-
 function (func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
-          options = NULL, prec = flintPrec()) {
+          control = NULL, prec = flintPrec()) {
     res <- flintNew("acb")
     .Call(R_flint_acb_calc_integrate, res,
           .integrate.func(func), param, as(a, "acb"), as(b, "acb"),
           if (!is.null(rel.tol)) as(-floor(log2(rel.tol)), "slong"),
           if (!is.null(abs.tol)) as(abs.tol, "mag"),
-          if (!is.null(options)) do.call(.integrate.options, options),
+          if (!is.null(control)) do.call(.integrate.control, control),
           as(prec, "slong"))
     res
 }
