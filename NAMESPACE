@@ -3,7 +3,7 @@ useDynLib(flint, .registration = TRUE)
 importClassesFrom(methods, classGeneratorFunction)
 
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
-           callGeneric, callNextMethod, cbind2, coerce, getClassDef,
+           callGeneric, callNextMethod, cbind2, coerce, getClass,
            new, "packageSlot<-", rbind2, selectMethod, setAs, setClass,
            setClassUnion, setGeneric, setMethod, show)
 importFrom(stats, quantile, runif)
