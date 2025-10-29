@@ -9,9 +9,9 @@
   \eqn{b}.
 }
 \usage{
-arb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
+arb_integrate(func, a, b, param = NULL, rtol = NULL, atol = NULL,
               control = NULL, prec = flintPrec())
-acb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
+acb_integrate(func, a, b, param = NULL, rtol = NULL, atol = NULL,
               control = NULL, prec = flintPrec())
 }
 \arguments{
@@ -24,10 +24,10 @@ acb_integrate(func, a, b, param = NULL, rel.tol = NULL, abs.tol = NULL,
   \item{param}{
     an \R{} object typically specifying parameters of the integrand,
     passed to \code{func}.}
-  \item{rel.tol}{
+  \item{rtol}{
     a positive real number less than 1 that the relative error in any
     subinterval should not exceed.  \code{2^-prec} by default.}
-  \item{abs.tol}{
+  \item{atol}{
     a positive real number that the absolute error in any subinterval
     should not exceed.  The value 0 indicates that convergence should
     account only for relative error.  \code{2^-prec} by default.}
