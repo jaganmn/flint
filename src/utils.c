@@ -555,7 +555,7 @@ int checkConformable(SEXP x, SEXP y,
 	dz[2] = (ax == R_NilValue) ? ((tx) ? (int) nx : 1) : INTEGER_RO(ax)[!tx];
 
 	if (dz[0] > 0 && dz[1] > UWORD_MAX / dz[0])
-		Rf_error(_("value length would exceed maximum %llu"),
+		Rf_error(_("length would exceed maximum %llu"),
 		         (unsigned long long int) UWORD_MAX);
 
 	}

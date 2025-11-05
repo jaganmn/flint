@@ -130,7 +130,7 @@ do { \
 #define ERROR_TOO_LONG(n, nmax) \
 do { \
 	if ((n) > (nmax)) \
-		Rf_error(_("value length would exceed maximum %llu"), \
+		Rf_error(_("length would exceed maximum %llu"), \
 		         (unsigned long long int) (nmax)); \
 } while (0)
 

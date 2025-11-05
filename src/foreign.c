@@ -56,7 +56,7 @@ SEXP R_flint_coerce_fmpz_bigz(SEXP from)
 	R_flint_coerce_init();
 	mp_limb_t j, n = R_flint_get_length(from);
 	if (n > INT_MAX)
-		Rf_error(_("value length would exceed maximum %d"),
+		Rf_error(_("length would exceed maximum %d"),
 		         INT_MAX);
 	const fmpz *x = R_flint_get_pointer(from);
 	size_t words, count = 0;
@@ -151,7 +151,7 @@ SEXP R_flint_coerce_fmpq_bigq(SEXP from)
 	R_flint_coerce_init();
 	mp_limb_t j, n = R_flint_get_length(from);
 	if (n > INT_MAX)
-		Rf_error(_("value length would exceed maximum %d"),
+		Rf_error(_("length would exceed maximum %d"),
 		         INT_MAX);
 	const fmpq *x = R_flint_get_pointer(from);
 	size_t words[2], count[2] = { 0, 0 };
@@ -285,7 +285,7 @@ SEXP R_flint_coerce_arf_mpfr(SEXP from)
 	R_flint_coerce_init();
 	mp_limb_t j, n = R_flint_get_length(from);
 	if (n > R_XLEN_T_MAX)
-		Rf_error(_("value length would exceed maximum %lld"),
+		Rf_error(_("length would exceed maximum %lld"),
 		         (long long int) R_XLEN_T_MAX);
 	arf_srcptr x = R_flint_get_pointer(from);
 	slong fprec = 0;

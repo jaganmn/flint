@@ -425,7 +425,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 			elt = VECTOR_ELT(args, jargs);
 			nx = R_flint_get_length(elt);
 			if (nx > UWORD_MAX - ny)
-				Rf_error(_("value length would exceed maximum %llu"),
+				Rf_error(_("length would exceed maximum %llu"),
 				         (unsigned long long int) UWORD_MAX);
 			if (!anynames &&
 			    (TAG(e) != R_NilValue ||
@@ -563,7 +563,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 			dy[ op] += (int) nnull;
 		}
 		if ((unsigned int) dy[0] > UWORD_MAX / (unsigned int) dy[1])
-			Rf_error(_("value length would exceed maximum %llu"),
+			Rf_error(_("length would exceed maximum %llu"),
 			         (unsigned long long int) UWORD_MAX);
 		ny = (mp_limb_t) dy[0] * (mp_limb_t) dy[1];
 
@@ -844,7 +844,7 @@ SEXP R_flint_diag(SEXP object, SEXP s_nrow, SEXP s_ncol)
 		int i, j, k = (dy[0] < dy[1]) ? dy[0] : dy[1];
 		if (k > 0) {
 		if ((unsigned int) dy[0] > UWORD_MAX / (unsigned int) dy[1])
-			Rf_error(_("value length would exceed maximum %llu"),
+			Rf_error(_("length would exceed maximum %llu"),
 			         (unsigned long long int) UWORD_MAX);
 		if (nx == 0)
 			Rf_error(_("'%s' of length zero cannot be recycled to nonzero length"),
@@ -1355,7 +1355,7 @@ SEXP R_flint_rep_each(SEXP object, SEXP s_each, SEXP s_usenames)
 		         "each", "rep");
 	ulong i, each = ((ulong *) R_flint_get_pointer(s_each))[0];
 	if (each > 0 && nx > UWORD_MAX / each)
-		Rf_error(_("value length would exceed maximum %llu"),
+		Rf_error(_("length would exceed maximum %llu"),
 		         (unsigned long long int) UWORD_MAX);
 	ny = nx * each;;
 
@@ -1493,14 +1493,14 @@ SEXP R_flint_rep_times(SEXP object, SEXP s_times, SEXP s_usenames)
 	if (ntimes == 1) {
 		t = times[0];
 		if (t > 0 && nx > UWORD_MAX / t)
-			Rf_error(_("value length would exceed maximum %llu"),
+			Rf_error(_("length would exceed maximum %llu"),
 			         (unsigned long long int) UWORD_MAX);
 		ny = nx * t;
 	} else {
 		for (jx = 0; jx < nx; ++jx) {
 			t = times[jx];
 			if (t > UWORD_MAX - ny)
-				Rf_error(_("value length would exceed maximum %llu"),
+				Rf_error(_("length would exceed maximum %llu"),
 				         (unsigned long long int) UWORD_MAX);
 			ny += t;
 		}
@@ -2144,7 +2144,7 @@ SEXP R_flint_subscript(SEXP object, SEXP subscript, SEXP s_op)
 					Rf_error(_("dimensions would exceed maximum %d"),
 					         INT_MAX);
 				if (t > UWORD_MAX / r)
-					Rf_error(_("value length would exceed maximum %llu"),
+					Rf_error(_("length would exceed maximum %llu"),
 					         (unsigned long long int) UWORD_MAX);
 				if (!anynames && dimnamesx != R_NilValue &&
 				    VECTOR_ELT(dimnamesx, k) != R_NilValue)
