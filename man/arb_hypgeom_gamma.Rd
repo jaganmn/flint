@@ -34,8 +34,8 @@ acb_hypgeom_rgamma(z, prec = flintPrec())
 arb_hypgeom_lgamma(x, prec = flintPrec())
 acb_hypgeom_lgamma(z, prec = flintPrec())
 
-## arb_hypgeom_polygamma(s = 0, z, prec = flintPrec())
-   acb_hypgeom_polygamma(s = 0, z, prec = flintPrec())
+arb_hypgeom_polygamma(s = 0, x, prec = flintPrec())
+acb_hypgeom_polygamma(s = 0, z, prec = flintPrec())
 
 arb_hypgeom_beta(a, b, prec = flintPrec())
 acb_hypgeom_beta(a, b, prec = flintPrec())

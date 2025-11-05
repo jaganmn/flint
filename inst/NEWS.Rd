@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-10-27)}{
+\section{Changes in version 0.1.3 (2025-11-04)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -55,6 +55,11 @@
     \itemize{
       \item \R{} functions \code{arb_integrate} and \code{acb_integrate}
       for integration of functions of one variable.
+
+      \item \R{} functions \code{arb_hypgeom_polygamma} and
+      \code{arb_dirichlet_lerch_phi} are provided for symmetry with the
+      \code{acb_*} ones, which they wrap.  \acronym{FLINT} provides no
+      such entry points as of this writing.
     }
   }
   \subsection{Bug Fixes}{

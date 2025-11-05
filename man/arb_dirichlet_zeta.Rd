@@ -24,11 +24,11 @@ acb_dirichlet_zeta(s, prec = flintPrec())
 arb_dirichlet_hurwitz(s, a = 1, prec = flintPrec())
 acb_dirichlet_hurwitz(s, a = 1, prec = flintPrec())
 
-## arb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
-   acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
+arb_dirichlet_lerch_phi(x = 1, s, a = 1, prec = flintPrec())
+acb_dirichlet_lerch_phi(z = 1, s, a = 1, prec = flintPrec())
 }
 \arguments{
-  \item{z, s, a}{
+  \item{x, z, s, a}{
     numeric, complex, \code{\linkS4class{arb}}, or
     \code{\linkS4class{acb}} vectors.}
   \item{prec}{
