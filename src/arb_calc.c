@@ -29,8 +29,6 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	if (s_abs_tol != R_NilValue &&
 	    R_flint_get_length(s_abs_tol) != 1)
 		Rf_error(_("length of '%s' is not %d"), "abs.tol", 1);
-	if (R_flint_get_length(s_prec) != 1)
-		Rf_error(_("length of '%s' is not %d"), "prec", 1);
 
 	SEXP s_w = PROTECT(newObject("acb"));
 	acb_ptr w = flint_calloc(3, sizeof(arb_t));
@@ -48,7 +46,7 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	mag_ptr abs_tol;
 	acb_calc_integrate_opt_t options;
 	acb_calc_integrate_opt_init(options);
-	slong prec = ((slong *) R_flint_get_pointer(s_prec))[0];
+	slong prec = asPrec(s_prec, __func__);
 
 	arb_set(acb_realref(a), R_flint_get_pointer(s_a));
 	arb_set(acb_realref(b), R_flint_get_pointer(s_b));
