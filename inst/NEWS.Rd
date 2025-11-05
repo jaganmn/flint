@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-04)}{
+\section{Changes in version 0.1.3 (2025-11-05)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -60,6 +60,11 @@
       \code{arb_dirichlet_lerch_phi} are provided for symmetry with the
       \code{acb_*} ones, which they wrap.  \acronym{FLINT} provides no
       such entry points as of this writing.
+
+      \item The global default precision, which one gets and sets with
+      \R{} function \code{flintPrec}, may now be an object of class
+      \code{slong}.  Previously, only numeric (of type \code{integer} or
+      \code{double}) values were supported.
     }
   }
   \subsection{Bug Fixes}{

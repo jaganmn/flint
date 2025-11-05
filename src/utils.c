@@ -593,6 +593,15 @@ mpfr_prec_t asPrec(SEXP prec, const char *where)
 			return (mpfr_prec_t) s[0];
 		break;
 	}
+	case OBJSXP:
+	{
+		if (R_flint_get_class(prec) == R_FLINT_CLASS_SLONG) {
+		const slong *s = R_flint_get_pointer(prec);
+		if (R_flint_get_length(prec) >= 1 && s[0] >= 1)
+			return s[0]; /* FIXME */
+		}
+		break;
+	}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "prec", where);
 	return 0;
