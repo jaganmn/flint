@@ -30,7 +30,7 @@ function (libpath)
 
 .initBasic <-
 function (where = topenv(parent.frame())) {
-	if (is.null(getClass("pairlist")))
+	if (is.null(getClassDef("pairlist")))
         setClass("pairlist", where = where)
     if (is.null(selectMethod(coerce, c(from = "ANY", to = "pairlist"),
                              optional = TRUE,
