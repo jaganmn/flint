@@ -35,7 +35,7 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	acb_ptr work = flint_calloc(3, sizeof(arb_t));
 	R_flint_set(s_work, work, 3, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	/* func(x, param, order, prec) */
+	/* R: func(x, param, order, prec) */
 	SEXP s_a0 = s_func;
 	SEXP s_a1 = PROTECT(newObject("arb"));
 	arb_ptr a1 = flint_calloc(1, sizeof(arb_t));
@@ -46,9 +46,11 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	slong *a4 = flint_calloc(1, sizeof(slong));
 	R_flint_set(s_a4, a4, 1, (R_CFinalizer_t) &R_flint_slong_finalize);
 	a4[0] = prec;
+	SEXP call = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
 
+	/* C: acb_calc_integrate(res, func, param, a, b, rel_goal, abs_tol, options, prec) */
 	acb_calc_func_t func = (acb_calc_func_t) &R_flint_arb_calc_integrate_integrand;
-	void *param = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
+	void *param = call;
 	acb_ptr a = work + 1;
 	acb_ptr b = work + 2;
 	slong rel_goal;
