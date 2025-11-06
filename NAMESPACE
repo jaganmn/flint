@@ -3,9 +3,9 @@ useDynLib(flint, .registration = TRUE)
 importClassesFrom(methods, classGeneratorFunction)
 
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
-           callGeneric, callNextMethod, cbind2, coerce, getClassDef,
-           new, "packageSlot<-", rbind2, selectMethod, setAs, setClass,
-           setClassUnion, setGeneric, setMethod, show)
+           callGeneric, callNextMethod, cbind2, coerce, getClass,
+           getClassDef, is, new, "packageSlot<-", rbind2, selectMethod,
+           setAs, setClass, setClassUnion, setGeneric, setMethod, show)
 importFrom(stats, quantile, runif)
 
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
@@ -64,6 +64,7 @@ export(c.flint,
        arb_const_log2,
        arb_const_log10,
        arb_const_e,
+       arf_rk,
        arb_integrate,
        acb_integrate,
        arb_lambertw,

@@ -164,6 +164,8 @@ SEXP R_flint_arb_const_log2(SEXP, SEXP);
 SEXP R_flint_arb_const_log10(SEXP, SEXP);
 SEXP R_flint_arb_const_e(SEXP, SEXP);
 
+SEXP R_flint_arf_calc_rk(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 SEXP R_flint_arb_calc_integrate(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_calc_integrate(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
@@ -299,6 +301,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_arb_const_log2, 2),
 	CALL_ENTRY(R_flint_arb_const_log10, 2),
 	CALL_ENTRY(R_flint_arb_const_e, 2),
+	CALL_ENTRY(R_flint_arf_calc_rk, 14),
 	CALL_ENTRY(R_flint_arb_calc_integrate, 9),
 	CALL_ENTRY(R_flint_acb_calc_integrate, 9),
 	CALL_ENTRY(R_flint_arb_lambertw, 4),
