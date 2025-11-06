@@ -92,6 +92,6 @@ SEXP R_flint_acb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	if (status == ARB_CALC_NO_CONVERGENCE)
 		Rf_warning(_("target accuracy not reached on all subintervals"));
 
-	UNPROTECT(4);
+	UNPROTECT(5);
 	return R_NilValue;
 }
