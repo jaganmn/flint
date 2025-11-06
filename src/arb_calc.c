@@ -19,6 +19,7 @@ static int R_flint_arb_calc_integrate_integrand(acb_ptr res, const acb_ptr z, vo
 
 SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a, SEXP s_b, SEXP s_rel_goal, SEXP s_abs_tol, SEXP s_options, SEXP s_prec)
 {
+	slong prec = asPrec(s_prec, __func__);
 	if (R_flint_get_length(s_a) != 1)
 		Rf_error(_("length of '%s' is not %d"), "a", 1);
 	if (R_flint_get_length(s_b) != 1)
@@ -30,23 +31,30 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	    R_flint_get_length(s_abs_tol) != 1)
 		Rf_error(_("length of '%s' is not %d"), "abs.tol", 1);
 
-	SEXP s_w = PROTECT(newObject("acb"));
-	acb_ptr w = flint_calloc(3, sizeof(arb_t));
-	R_flint_set(s_w, w, 3, (R_CFinalizer_t) &R_flint_acb_finalize);
+	SEXP s_work = PROTECT(newObject("acb"));
+	acb_ptr work = flint_calloc(3, sizeof(arb_t));
+	R_flint_set(s_work, work, 3, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	SEXP s_x = PROTECT(newObject("arb"));
-	arb_ptr x = flint_calloc(1, sizeof(arb_t));
-	R_flint_set(s_x, x, 1, (R_CFinalizer_t) &R_flint_arb_finalize);
+	/* func(x, param, order, prec) */
+	SEXP s_a0 = s_func;
+	SEXP s_a1 = PROTECT(newObject("arb"));
+	arb_ptr a1 = flint_calloc(1, sizeof(arb_t));
+	R_flint_set(s_a1, a1, 1, (R_CFinalizer_t) &R_flint_arb_finalize);
+	SEXP s_a2 = PROTECT(Rf_allocVector(INTSXP, 1));
+	SEXP s_a3 = s_param;
+	SEXP s_a4 = PROTECT(newObject("slong"));
+	slong *a4 = flint_calloc(1, sizeof(slong));
+	R_flint_set(s_a4, a4, 1, (R_CFinalizer_t) &R_flint_slong_finalize);
+	a4[0] = prec;
 
 	acb_calc_func_t func = (acb_calc_func_t) &R_flint_arb_calc_integrate_integrand;
-	void *param = PROTECT(Rf_lang5(s_func, s_x, s_param, PROTECT(Rf_allocVector(INTSXP, 1)), s_prec));
-	acb_ptr a = w + 1;
-	acb_ptr b = w + 2;
+	void *param = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
+	acb_ptr a = work + 1;
+	acb_ptr b = work + 2;
 	slong rel_goal;
 	mag_ptr abs_tol;
 	acb_calc_integrate_opt_t options;
 	acb_calc_integrate_opt_init(options);
-	slong prec = asPrec(s_prec, __func__);
 
 	arb_set(acb_realref(a), R_flint_get_pointer(s_a));
 	arb_set(acb_realref(b), R_flint_get_pointer(s_b));
@@ -85,14 +93,14 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 		options-> verbose = t[0];
 	}
 
-	int status = acb_calc_integrate(w, func, param, a, b, rel_goal, abs_tol, options, prec);
+	int status = acb_calc_integrate(work, func, param, a, b, rel_goal, abs_tol, options, prec);
 	if (status == ARB_CALC_NO_CONVERGENCE)
 		Rf_warning(_("target accuracy not reached on all subintervals"));
 
 	arb_ptr res = flint_calloc(1, sizeof(arb_t));
 	R_flint_set(s_res, res, 1, (R_CFinalizer_t) &R_flint_arb_finalize);
-	arb_set(res, acb_realref(w));
-	
-	UNPROTECT(5);
+	arb_set(res, acb_realref(work));
+
+	UNPROTECT(6);
 	return R_NilValue;
 }

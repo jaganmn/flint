@@ -18,6 +18,7 @@ static int R_flint_acb_calc_integrate_integrand(acb_ptr res, const acb_ptr z, vo
 
 SEXP R_flint_acb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a, SEXP s_b, SEXP s_rel_goal, SEXP s_abs_tol, SEXP s_options, SEXP s_prec)
 {
+	slong prec = asPrec(s_prec, __func__);
 	if (R_flint_get_length(s_a) != 1)
 		Rf_error(_("length of '%s' is not %d"), "a", 1);
 	if (R_flint_get_length(s_b) != 1)
@@ -29,19 +30,26 @@ SEXP R_flint_acb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	    R_flint_get_length(s_abs_tol) != 1)
 		Rf_error(_("length of '%s' is not %d"), "abs.tol", 1);
 
-	SEXP s_z = PROTECT(newObject("acb"));
-	acb_ptr z = flint_calloc(1, sizeof(acb_t));
-	R_flint_set(s_z, z, 1, (R_CFinalizer_t) &R_flint_acb_finalize);
+	/* func(z, param, order, prec) */
+	SEXP s_a0 = s_func;
+	SEXP s_a1 = PROTECT(newObject("acb"));
+	acb_ptr a1 = flint_calloc(1, sizeof(acb_t));
+	R_flint_set(s_a1, a1, 1, (R_CFinalizer_t) &R_flint_acb_finalize);
+	SEXP s_a2 = PROTECT(Rf_allocVector(INTSXP, 1));
+	SEXP s_a3 = s_param;
+	SEXP s_a4 = PROTECT(newObject("slong"));
+	slong *a4 = flint_calloc(1, sizeof(slong));
+	R_flint_set(s_a4, a4, 1, (R_CFinalizer_t) &R_flint_slong_finalize);
+	a4[0] = prec;
 
 	acb_calc_func_t func = (acb_calc_func_t) &R_flint_acb_calc_integrate_integrand;
-	void *param = PROTECT(Rf_lang5(s_func, s_z, s_param, PROTECT(Rf_allocVector(INTSXP, 1)), s_prec));
+	void *param = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
 	acb_ptr a = R_flint_get_pointer(s_a);
 	acb_ptr b = R_flint_get_pointer(s_b);
 	slong rel_goal;
 	mag_ptr abs_tol;
 	acb_calc_integrate_opt_t options;
 	acb_calc_integrate_opt_init(options);
-	slong prec = asPrec(s_prec, __func__);
 
 	if (s_rel_goal != R_NilValue)
 		rel_goal = ((slong *) R_flint_get_pointer(s_rel_goal))[0];
