@@ -1,7 +1,5 @@
 #include "flint.h"
 
-arf_rnd_t remapRnd(mpfr_rnd_t);
-
 #ifndef HAVE_ACF_IS_ZERO
 static R_INLINE
 int acf_is_zero(const acf_t x)
@@ -305,8 +303,8 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		}
 		case STRSXP:
 		{
-			mpfr_prec_t prec = asPrec(R_NilValue, __func__);
-			mpfr_rnd_t rnd = asRnd(R_NilValue, __func__);
+			mpfr_prec_t prec = mpfrPrec(asPrec(R_NilValue, __func__));
+			mpfr_rnd_t rnd = mpfrRnd(asRnd(R_NilValue, __func__));
 			mpfr_t m;
 			mpfr_init2(m, prec);
 			const char *s;
@@ -388,7 +386,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			{
 				const fmpq *x = R_flint_get_pointer(s_x);
 				slong prec = asPrec(R_NilValue, __func__);
-				arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+				arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 				for (jy = 0; jy < ny; ++jy) {
 					arf_fmpz_div_fmpz(acf_realref(y + jy), fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
 					arf_zero(acf_imagref(y + jy));
@@ -459,7 +457,7 @@ SEXP R_flint_acf_atomic(SEXP object)
 {
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acf_srcptr x = R_flint_get_pointer(object);
 	Rcomplex *y = COMPLEX(ans);
@@ -510,7 +508,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	if (mop >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -874,7 +872,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	acf_srcptr x = R_flint_get_pointer(s_x);
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */

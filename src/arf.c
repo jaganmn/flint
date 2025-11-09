@@ -1,24 +1,5 @@
 #include "flint.h"
 
-arf_rnd_t remapRnd(mpfr_rnd_t rnd)
-{
-	switch (rnd) {
-	case MPFR_RNDN:
-		return ARF_RND_NEAR;
-	case MPFR_RNDZ:
-		return ARF_RND_DOWN;
-	case MPFR_RNDU:
-		return ARF_RND_CEIL;
-	case MPFR_RNDD:
-		return ARF_RND_FLOOR;
-	case MPFR_RNDA:
-		return ARF_RND_UP;
-	default:
-		Rf_error(_("should never happen ..."));
-		return (arf_rnd_t) -1;
-	}
-}
-
 void R_flint_arf_finalize(SEXP x)
 {
 	arf_ptr p = R_ExternalPtrAddr(x);
@@ -110,8 +91,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	}
 	case STRSXP:
 	{
-		mpfr_prec_t prec = asPrec(R_NilValue, __func__);
-		mpfr_rnd_t rnd = asRnd(R_NilValue, __func__);
+		mpfr_prec_t prec = mpfrPrec(asPrec(R_NilValue, __func__));
+		mpfr_rnd_t rnd = mpfrRnd(asRnd(R_NilValue, __func__));
 		mpfr_t m;
 		mpfr_init2(m, prec);
 		const char *s;
@@ -160,7 +141,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		{
 			const fmpq *x = R_flint_get_pointer(s_x);
 			slong prec = asPrec(R_NilValue, __func__);
-			arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+			arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 			for (jy = 0; jy < ny; ++jy)
 				arf_fmpz_div_fmpz(y + jy, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
 			break;
@@ -205,7 +186,7 @@ SEXP R_flint_arf_atomic(SEXP object)
 {
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arf_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
@@ -239,7 +220,7 @@ SEXP R_flint_arf_format(SEXP object, SEXP s_base,
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
-	mpfr_rnd_t rnd = asRnd(s_rnd, __func__);
+	mpfr_rnd_t rnd = mpfrRnd(asRnd(s_rnd, __func__));
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	if (n) {
 	arf_srcptr x = R_flint_get_pointer(object);
@@ -400,7 +381,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	if (mop >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -742,7 +723,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	arf_srcptr x = R_flint_get_pointer(s_x);
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = remapRnd(asRnd(R_NilValue, __func__));
+	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */

@@ -1,7 +1,5 @@
 #include "flint.h"
 
-arf_rnd_t remapRnd(mpfr_rnd_t);
-
 typedef enum {
 	RK_PASS = 0,
 	RK_FAIL_NOOP,
@@ -151,7 +149,7 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
 SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_param, SEXP s_rtol, SEXP s_atol, SEXP s_hmin, SEXP s_hmax, SEXP s_hini, SEXP s_smax, SEXP s_method, SEXP s_prec, SEXP s_rnd)
 {
 	slong prec = asPrec(s_prec, __func__);
-	arf_rnd_t rnd = remapRnd(asRnd(s_rnd, __func__));
+	arf_rnd_t rnd = asRnd(s_rnd, __func__);
 	int adapt = VECTOR_ELT(s_method, 2) != R_NilValue;
 
 	arf_srcptr a  = R_flint_get_pointer(VECTOR_ELT(s_method, 0));

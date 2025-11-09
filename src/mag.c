@@ -73,15 +73,15 @@ void mag_expm1_lower(mag_t z, const mag_t x)
 #define WRAP(op, lower, ...) \
 	(lower) ? op##_lower(__VA_ARGS__) : op(__VA_ARGS__)
 
-int isRndZ(mpfr_rnd_t rnd)
+int isRndZ(arf_rnd_t rnd)
 {
 	switch (rnd) {
-	case MPFR_RNDZ:
-	case MPFR_RNDD:
+	case ARF_RND_DOWN:
+	case ARF_RND_FLOOR:
 		return 1;
-	case MPFR_RNDN:
-	case MPFR_RNDU:
-	case MPFR_RNDA:
+	case ARF_RND_NEAR:
+	case ARF_RND_CEIL:
+	case ARF_RND_UP:
 		return 0;
 	default:
 		Rf_error(_("should never happen ..."));

@@ -563,7 +563,7 @@ int checkConformable(SEXP x, SEXP y,
 	return mop;
 }
 
-mpfr_prec_t asPrec(SEXP prec, const char *where)
+slong asPrec(SEXP prec, const char *where)
 {
 	if (prec == R_NilValue) {
 		static SEXP tag = NULL;
@@ -590,7 +590,7 @@ mpfr_prec_t asPrec(SEXP prec, const char *where)
 #else
 		    s[0] < 0x1.0p+31)
 #endif
-			return (mpfr_prec_t) s[0];
+			return (slong) s[0];
 		break;
 	}
 	case OBJSXP:
@@ -598,7 +598,7 @@ mpfr_prec_t asPrec(SEXP prec, const char *where)
 		if (R_flint_get_class(prec) == R_FLINT_CLASS_SLONG) {
 		const slong *s = R_flint_get_pointer(prec);
 		if (R_flint_get_length(prec) >= 1 && s[0] >= 1)
-			return s[0]; /* FIXME */
+			return s[0];
 		}
 		break;
 	}
@@ -607,7 +607,18 @@ mpfr_prec_t asPrec(SEXP prec, const char *where)
 	return 0;
 }
 
-mpfr_rnd_t asRnd(SEXP rnd, const char *where)
+mpfr_prec_t mpfrPrec(slong prec)
+{
+	if (prec < MPFR_PREC_MIN)
+		Rf_error(_("'%s' is less than MPFR minimum %lld"),
+		         "prec", (long long int) MPFR_PREC_MIN);
+	if (prec > MPFR_PREC_MAX)
+		Rf_error(_("'%s' is greater than MPFR maximum %lld"),
+		         "prec", (long long int) MPFR_PREC_MAX);
+	return (mpfr_prec_t) prec;
+}
+
+arf_rnd_t asRnd(SEXP rnd, const char *where)
 {
 	if (rnd == R_NilValue) {
 		static SEXP tag = NULL;
@@ -615,25 +626,44 @@ mpfr_rnd_t asRnd(SEXP rnd, const char *where)
 			tag = Rf_install("flint.rnd");
 		rnd = Rf_GetOption1(tag);
 		if (rnd == R_NilValue)
-			return MPFR_RNDN;
+			return ARF_RND_NEAR;
 	}
 	if (TYPEOF(rnd) == STRSXP && XLENGTH(rnd) > 0 &&
 	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING) {
 		switch (CHAR(rnd)[0]) {
 		case 'N': case 'n':
-			return MPFR_RNDN;
+			return ARF_RND_NEAR;
 		case 'Z': case 'z':
-			return MPFR_RNDZ;
+			return ARF_RND_DOWN;
 		case 'U': case 'u':
-			return MPFR_RNDU;
+			return ARF_RND_CEIL;
 		case 'D': case 'd':
-			return MPFR_RNDD;
+			return ARF_RND_FLOOR;
 		case 'A': case 'a':
-			return MPFR_RNDA;
+			return ARF_RND_UP;
 		}
 	}
 	Rf_error(_("invalid '%s' in '%s'"), "rnd", where);
-	return -1;
+	return (arf_rnd_t) -1;
+}
+
+mpfr_rnd_t mpfrRnd(arf_rnd_t rnd)
+{
+	switch (rnd) {
+	case ARF_RND_NEAR:
+		return MPFR_RNDN;
+	case ARF_RND_DOWN:
+		return MPFR_RNDZ;
+	case ARF_RND_CEIL:
+		return MPFR_RNDU;
+	case ARF_RND_FLOOR:
+		return MPFR_RNDD;
+	case ARF_RND_UP:
+		return MPFR_RNDA;
+	default:
+		Rf_error(_("should never happen ..."));
+		return (mpfr_rnd_t) -1;
+	}
 }
 
 int asBase(SEXP base, const char *where)

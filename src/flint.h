@@ -231,8 +231,10 @@ void setDDNN1(SEXP, SEXP);
 
 int checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t, int, int *);
 
-mpfr_prec_t asPrec(SEXP, const char *);
-mpfr_rnd_t asRnd(SEXP, const char *);
+slong asPrec(SEXP, const char *);
+mpfr_prec_t mpfrPrec(slong);
+arf_rnd_t asRnd(SEXP, const char *);
+mpfr_rnd_t mpfrRnd(arf_rnd_t);
 int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
 const char *asSep(SEXP, const char *);
