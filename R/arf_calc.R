@@ -23,7 +23,7 @@ function (a, b, bb = NULL, c, p) {
               is.null(bb) || (is(bb, fmpq) && length(bb) == d && sum(bb) == 1L),
               is(b, fmpq) && length(b) == d && sum(b) == 1L,
               is(a, fmpq) && length(a) == (d * (d - 1L)) %/% 2L)
-    list(a = arf(a), b = arf(b), bb = if (!is.null(b.)) arf(bb),
+    list(a = arf(a), b = arf(b), bb = if (!is.null(bb)) arf(bb),
          c = arf(c), d = d, p = p)
 }
 
