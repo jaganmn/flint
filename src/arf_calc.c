@@ -45,9 +45,9 @@ rk_istep(SEXP call, arf_ptr callt, arf_ptr cally,
 		arf_srcptr k = R_flint_get_pointer(value);
 		for (jy = 0; jy < ny; ++jy) {
 			arf_set(kk + i * ny + jy, k + jy);
-			arf_addmul( bk + jy,  b + jy, k + jy, prec, rnd);
+			arf_addmul( bk + jy,  b + i, k + jy, prec, rnd);
 			if (bb)
-			arf_addmul(bbk + jy, bb + jy, k + jy, prec, rnd);
+			arf_addmul(bbk + jy, bb + i, k + jy, prec, rnd);
 		}
 	}
 	for (jy = 0; jy < ny; ++jy) {
@@ -286,7 +286,7 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	for (jy = 0; jy < ny; ++jy)
 		arf_set(resy + jy * nt, y0 + jy);
 
-	rk_status_t status = RK_PASS;
+	rk_status_t status;
 	for (jt = 1; jt < nt; ++jt) {
 		status =
 		rk_estep(call, a1, a2, t + jt - 1, t + jt, &y0, &y1, &y2, ny,
@@ -295,7 +295,7 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 		         work + 1);
 		if (status == RK_PASS) {
 			for (jy = 0; jy < ny; ++jy)
-				arf_set(resy + jy * nt + jt, y1 + jy);
+				arf_set(resy + jy * nt + jt, y0 + jy);
 		} else {
 			mp_limb_t jt__ = jt;
 			for (jy = 0; jy < ny; ++jy)
@@ -320,6 +320,6 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	UNPROTECT(2);
 	}
 
-	UNPROTECT(6);
+	UNPROTECT(5);
 	return R_NilValue;
 }
