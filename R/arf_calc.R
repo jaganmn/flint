@@ -16,15 +16,15 @@ function (func) {
 }
 
 .rk.method <-
-function (a, b, b. = NULL, c, p) {
+function (a, b, bb = NULL, c, p) {
     fmpq <- getClass("fmpq")
     stopifnot(is.integer(p) && length(p) == 1L && p >= 1L,
               is(c, fmpq) && (d <- length(c)) >= p && c[[1L]] == 0L,
-              is.null(b.) || (is(b., fmpq) && length(b.) == d && sum(b.) == 1L),
+              is.null(bb) || (is(bb, fmpq) && length(bb) == d && sum(bb) == 1L),
               is(b, fmpq) && length(b) == d && sum(b) == 1L,
               is(a, fmpq) && length(a) == (d * (d - 1L)) %/% 2L)
-    list(a = arf(a), b = arf(b), e = if (!is.null(b.)) arf(b - b.),
-         c = arf(c), p = p)
+    list(a = arf(a), b = arf(b), bb = if (!is.null(b.)) arf(bb),
+         c = arf(c), d = d, p = p)
 }
 
 .rk.method.dormand.prince <-
@@ -43,12 +43,12 @@ function () {
                        384L, 1L, 1113L, 192L, 6784L, 84L))
     b  <- fmpq(num = c(35L, 0L, 500L, 125L, -2187L, 11L, 0L),
                den = c(384L, 1L, 1113L, 192L, 6784L, 84L, 1L))
-    b. <- fmpq(num = c(5179L, 0L, 7571L, 393L, -92097L, 187L, 1L),
+    bb <- fmpq(num = c(5179L, 0L, 7571L, 393L, -92097L, 187L, 1L),
                den = c(57600L, 1L, 16695L, 640L, 339200L, 2100L, 40L))
     c  <- fmpq(num = c(0L, 1L, 3L, 4L, 8L, 1L, 1L),
                den = c(1L, 5L, 10L, 5L, 9L, 1L, 1L))
     p  <- 4L
-    list(a = a, b = b, b. = b., c = c, p = p)
+    list(a = a, b = b, bb = bb, c = c, p = p)
 }
 
 arf_rk <-
