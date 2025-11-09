@@ -262,13 +262,13 @@ SEXP R_flint_coerce_mpfr_arf(SEXP from)
 		nlimb1 = (t->_mpfr_prec - 1)/mp_bits_per_limb + 1;
 		nlimb0 = nlimb - nlimb1;
 		ptr = t->_mpfr_d;
-		for (mp_limb_t l = 0; l < nlimb0; ++l)
+		for (mp_size_t l = 0; l < nlimb0; ++l)
 			*(ptr++) = 0;
 #if SIZEOF_MP_LIMB_T == 4
-		for (mp_limb_t l = 0; l < nlimb1; ++l, d += 1)
+		for (mp_size_t l = 0; l < nlimb1; ++l, d += 1)
 			*(ptr++) = d[0];
 #else
-		for (mp_limb_t l = 0; l < nlimb1; ++l, d += 2)
+		for (mp_size_t l = 0; l < nlimb1; ++l, d += 2)
 			*(ptr++) = ((mp_limb_t) d[1] << 32) | ((mp_limb_t) d[0] & 0x00000000FFFFFFFFu);
 #endif
 		}

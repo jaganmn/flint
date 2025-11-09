@@ -562,7 +562,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 				         INT_MAX);
 			dy[ op] += (int) nnull;
 		}
-		if ((unsigned int) dy[0] > UWORD_MAX / (unsigned int) dy[1])
+		if (dy[0] > UWORD_MAX / (mp_limb_t) dy[1])
 			Rf_error(_("length would exceed maximum %llu"),
 			         (unsigned long long int) UWORD_MAX);
 		ny = (mp_limb_t) dy[0] * (mp_limb_t) dy[1];
@@ -843,7 +843,7 @@ SEXP R_flint_diag(SEXP object, SEXP s_nrow, SEXP s_ncol)
 			         "ncol");
 		int i, j, k = (dy[0] < dy[1]) ? dy[0] : dy[1];
 		if (k > 0) {
-		if ((unsigned int) dy[0] > UWORD_MAX / (unsigned int) dy[1])
+		if (dy[0] > UWORD_MAX / (mp_limb_t) dy[1])
 			Rf_error(_("length would exceed maximum %llu"),
 			         (unsigned long long int) UWORD_MAX);
 		if (nx == 0)
@@ -887,7 +887,7 @@ SEXP R_flint_diag(SEXP object, SEXP s_nrow, SEXP s_ncol)
 		SEXP dimx = R_do_slot(object, R_flint_symbol_dim);
 		const int *dx = INTEGER_RO(dimx);
 		int j, k = (dx[0] < dx[1]) ? dx[0] : dx[1];
-		mp_limb_t off = (unsigned int) dx[0] + 1;
+		mp_limb_t off = (mp_limb_t) dx[0] + 1;
 		ny = (mp_limb_t) k;
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
@@ -2442,7 +2442,7 @@ SEXP R_flint_valid(SEXP object)
 			if (d[i] > UWORD_MAX / l)
 				return INVALID(_("product of '%s' exceeds maximum %llu"),
 				               "dim", UWORD_MAX);
-			l *= (unsigned int) d[i];
+			l *= (mp_limb_t) d[i];
 		}
 		if (l != n)
 			return INVALID(_("product of '%s' [%llu] is not equal to length of object [%llu]"),

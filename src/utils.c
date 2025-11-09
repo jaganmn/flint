@@ -167,7 +167,7 @@ mp_limb_t validLength(SEXP length, SEXP dim, mp_limb_t dft)
 			if (d[i] > UWORD_MAX / l)
 				Rf_error(_("product of '%s' exceeds maximum %llu"),
 				         "dim", (unsigned long long int) UWORD_MAX);
-			l *= (unsigned int) d[i];
+			l *= (mp_limb_t) d[i];
 		}
 		return l;
 	}
