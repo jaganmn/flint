@@ -15,7 +15,7 @@ arf_rnd_t remapRnd(mpfr_rnd_t rnd)
 		return ARF_RND_UP;
 	default:
 		Rf_error(_("should never happen ..."));
-		return -1;
+		return (arf_rnd_t) -1;
 	}
 }
 
@@ -538,7 +538,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		if (ty) {
 			ja = jy = 0;
 			for (i = 0; i < ma->r; ++i, jy -= ny - 1)
-				for (j = 0; j < ma->c; ++j, ++ja, jy += ma->r)
+				for (j = 0; j < ma->c; ++j, ++ja, jy += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), y + jy);
 		}
 		else
@@ -547,7 +547,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		if (tx) {
 			jb = jx = 0;
 			for (i = 0; i < mb->r; ++i, jx -= nx - 1)
-				for (j = 0; j < mb->c; ++j, ++jb, jx += mb->r)
+				for (j = 0; j < mb->c; ++j, ++jb, jx += (mp_limb_t) mb->r)
 					arf_set(arb_midref(mb->entries + jb), x + jx);
 		}
 		else
@@ -635,13 +635,13 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			break;
 		case 'U':
 			ja = 0;
-			for (i = 0; i < ma->r; ja += ma->r - (++i))
+			for (i = 0; i < ma->r; ja += (mp_limb_t) (ma->r - (++i)))
 				for (j = 0; j <= i; ++j, ++ja)
 					arf_set(arb_midref(ma->entries + ja), x + ja);
 			break;
 		case 'L':
 			ja = 0;
-			for (i = 0; i < ma->r; ja += (++i))
+			for (i = 0; i < ma->r; ja += (mp_limb_t) (++i))
 				for (j = i; j < ma->c; ++j, ++ja)
 					arf_set(arb_midref(ma->entries + ja), x + ja);
 			break;
@@ -651,25 +651,25 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		case 'N':
 			ja = jx = 0;
 			for (i = 0; i < ma->r; ++i, jx -= nx - 1)
-				for (j = 0; j < ma->c; ++j, ++ja, jx += ma->r)
+				for (j = 0; j < ma->c; ++j, ++ja, jx += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
 			break;
 		case 'U':
 			ja = jx = 0;
-			for (i = 0; i < ma->r; ja += (++i), jx = ja)
-				for (j = i; j < ma->c; ++j, ++ja, jx += ma->r)
+			for (i = 0; i < ma->r; ja += (mp_limb_t) (++i), jx = ja)
+				for (j = i; j < ma->c; ++j, ++ja, jx += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
 			break;
 		case 'L':
 			ja = jx = 0;
-			for (i = 0; i < ma->r; ja += ma->c - (++i), jx = ja)
-				for (j = 0; j <= i; ++j, ++ja, jx += ma->r)
+			for (i = 0; i < ma->r; ja += (mp_limb_t) (ma->c - (++i)), jx = ja)
+				for (j = 0; j <= i; ++j, ++ja, jx += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
 			break;
 		}
 		jb = jy = 0;
 		for (i = 0; i < mb->r; ++i, jy -= ny - 1)
-			for (j = 0; j < mb->c; ++j, ++jb, jy += mb->r)
+			for (j = 0; j < mb->c; ++j, ++jb, jy += (mp_limb_t) mb->r)
 				arf_set(arb_midref(mb->entries + jb), y + jy);
 #ifndef HAVE_FMPZ_MAT_STRUCT_STRIDE
 		mc->rows = (mc->r) ? flint_calloc((size_t) mc->r, sizeof(arb_ptr)) : 0;
@@ -707,7 +707,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		}
 		jc = jz = 0;
 		for (j = 0; j < mc->c; ++j, jc -= nz - 1)
-			for (i = 0; i < mc->r; ++i, ++jz, jc += mc->c) {
+			for (i = 0; i < mc->r; ++i, ++jz, jc += (mp_limb_t) mc->c) {
 				arf_set(z + jz, arb_midref(mc->entries + jc));
 				arb_clear(mc->entries + jc);
 			}
@@ -1324,7 +1324,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		case 'N':
 			ja = jx = 0;
 			for (i = 0; i < ma->r; ++i, jx -= nx - 1)
-				for (j = 0; j < ma->c; ++j, ++ja, jx += ma->r)
+				for (j = 0; j < ma->c; ++j, ++ja, jx += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
 			break;
 		case 'U':
@@ -1333,7 +1333,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				for (j = 0; j < i; ++j, ++ja)
 					arf_zero(arb_midref(ma->entries + ja));
 				jx = ja;
-				for (; j < ma->c; ++j, ++ja, jx += ma->r)
+				for (; j < ma->c; ++j, ++ja, jx += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
 			}
 			break;
@@ -1341,7 +1341,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			ja = jx = 0;
 			for (i = 0; i < ma->r; ++i) {
 				jx = ja;
-				for (j = 0; j <= i; ++j, ++ja, jx += ma->r)
+				for (j = 0; j <= i; ++j, ++ja, jx += (mp_limb_t) ma->r)
 					arf_set(arb_midref(ma->entries + ja), x + jx);
 				for (; j < ma->c; ++j, ++ja)
 					arf_zero(arb_midref(ma->entries + ja));

@@ -257,7 +257,7 @@ SEXP R_flint_coerce_mpfr_arf(SEXP from)
 		t->_mpfr_exp = SIGNED_EXPONENT(((mpfr_uexp_t) exp[1] << 32) | ((mpfr_uexp_t) exp[0] & 0x00000000FFFFFFFFu));
 #endif
 		if (XLENGTH(sd) == 0)
-		memset(t->_mpfr_d, 0, nlimb * sizeof(mp_limb_t));
+		memset(t->_mpfr_d, 0, (size_t) nlimb * sizeof(mp_limb_t));
 		else {
 		nlimb1 = (t->_mpfr_prec - 1)/mp_bits_per_limb + 1;
 		nlimb0 = nlimb - nlimb1;
@@ -313,8 +313,8 @@ SEXP R_flint_coerce_arf_mpfr(SEXP from)
 		SEXP elt = PROTECT(newObject("mpfr1")),
 			sprec = PROTECT(Rf_allocVector(INTSXP, 1)),
 			ssign = PROTECT(Rf_allocVector(INTSXP, 1)),
-			sexp  = PROTECT(Rf_allocVector(INTSXP, sizeof(mpfr_exp_t)/sizeof(int))),
-			sd    = PROTECT(Rf_allocVector(INTSXP, sizeof(mp_limb_t)/sizeof(int) * ((mpfr_regular_p(t)) ? (tprec - 1)/mp_bits_per_limb + 1 : 0)));
+			sexp  = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t) (sizeof(mpfr_exp_t)/sizeof(int)))),
+			sd    = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t) (sizeof(mp_limb_t)/sizeof(int)) * ((mpfr_regular_p(t)) ? (tprec - 1)/mp_bits_per_limb + 1 : 0)));
 		int
 			*prec = (void *) INTEGER(sprec),
 			*sign = (void *) INTEGER(ssign);

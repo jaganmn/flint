@@ -610,17 +610,17 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 						for (jx = 0; jx < nx; ++jx, ++jy) \
 							name##_set(y__ + jy, x__ + jx); \
 					} else { \
-						for (j = 0, jx = 0; j < dx[1]; ++j, jy += dy[0] - dx[0]) \
+						for (j = 0, jx = 0; j < dx[1]; ++j, jy += (mp_limb_t) (dy[0] - dx[0])) \
 							for (i = 0; i < dx[0]; ++i, ++jx, ++jy) \
 								name##_set(y__ + jy, x__ + jx); \
-						jy -= ny - dx[0]; \
+						jy -= ny - (mp_limb_t) dx[0]; \
 					} \
 				} else if ((nx = R_flint_get_length(elt)) == dy[!op]) { \
 					if (op == 1) \
 						for (jx = 0; jx < nx; ++jx, ++jy) \
 							name##_set(y__ + jy, x__ + jx); \
 					else { \
-						for (jx = 0; jx < nx; ++jx, jy += dy[op]) \
+						for (jx = 0; jx < nx; ++jx, jy += (mp_limb_t) dy[op]) \
 							name##_set(y__ + jy, x__ + jx); \
 						jy -= ny - 1; \
 					} \
@@ -629,21 +629,21 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 						for (i = 0; i < dy[0]; ++i, ++jy) \
 							name##_set(y__ + jy, x__); \
 					else { \
-						for (j = 0; j < dy[1]; ++j, jy += dy[0]) \
+						for (j = 0; j < dy[1]; ++j, jy += (mp_limb_t) dy[0]) \
 							name##_set(y__ + jy, x__); \
 						jy -= ny - 1; \
 					} \
 				} else if (nx > 0) { \
 					/* FIXME? memory is leaked if warning is caught */ \
 					if (op == 1) { \
-						if (dy[0] % nx) \
+						if ((mp_limb_t) dy[0] % nx) \
 							Rf_warning(_("number of rows of return value is not a multiple of vector argument length")); \
 						for (i = 0, jx = 0; i < dy[0]; ++i, jx = (++jx == nx) ? 0 : jx, ++jy) \
 							name##_set(y__ + jy, x__ + jx); \
 					} else { \
-						if (dy[1] % nx) \
+						if ((mp_limb_t) dy[1] % nx) \
 							Rf_warning(_("number of columns of return value is not a multiple of vector argument length")); \
-						for (j = 0, jx = 0; j < dy[1]; ++j, jx = (++jx == nx) ? 0 : jx, jy += dy[0]) \
+						for (j = 0, jx = 0; j < dy[1]; ++j, jx = (++jx == nx) ? 0 : jx, jy += (mp_limb_t) dy[0]) \
 							name##_set(y__ + jy, x__ + jx); \
 						jy -= ny - 1; \
 					} \
@@ -737,17 +737,17 @@ SEXP R_flint_bits(SEXP object)
 	const void *x = R_flint_get_pointer(object);
 	slong *y = (n) ? flint_calloc(n, sizeof(ulong)) : 0;
 
-#define slong_bits(x) ((slong) FLINT_BIT_COUNT((*(x) < 0) ? (ulong) -(*(x) + 1) + 1 : (ulong) *(x)))
-#define ulong_bits(x) ((slong) FLINT_BIT_COUNT(*(x)))
-#define  fmpq_bits(x) ((slong) fmpq_height_bits(x))
-#define   mag_bits(x) (MAG_MAN(x) ? (slong) (MAG_BITS - flint_ctz(MAG_MAN(x))) : 0)
+#define slong_bits(x) (FLINT_BIT_COUNT((*(x) < 0) ? (ulong) -(*(x) + 1) + 1 : (ulong) *(x)))
+#define ulong_bits(x) (FLINT_BIT_COUNT(*(x)))
+#define  fmpq_bits(x) (fmpq_height_bits(x))
+#define   mag_bits(x) (MAG_MAN(x) ? (MAG_BITS - flint_ctz(MAG_MAN(x))) : 0)
 #define   acf_bits(x) (MAX2(arf_bits(acf_realref(x)), arf_bits(acb_imagref(x))))
 
 #define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
 		do { \
 			xptr_t x__ = x; \
 			for (j = 0; j < n; ++j) \
-				y[j] = name##_bits(x__ + j); \
+				y[j] = (slong) name##_bits(x__ + j); \
 		} while (0)
 
 		R_FLINT_SWITCH(class, TEMPLATE);
@@ -2309,11 +2309,11 @@ SEXP R_flint_transpose(SEXP object, SEXP s_conjugate)
 		what = #name; \
 		if (conjugate) \
 		for (i = 0; i < dx[0]; ++i, jx -= nx - 1) \
-			for (j = 0; j < dx[1]; ++j, jx += dx[0], ++jy) \
+			for (j = 0; j < dx[1]; ++j, jx += (mp_limb_t) dx[0], ++jy) \
 				name##_conj(y__ + jy, x__ + jx); \
 		else \
 		for (i = 0; i < dx[0]; ++i, jx -= nx - 1) \
-			for (j = 0; j < dx[1]; ++j, jx += dx[0], ++jy) \
+			for (j = 0; j < dx[1]; ++j, jx += (mp_limb_t) dx[0], ++jy) \
 				name##_set (y__ + jy, x__ + jx); \
 	} while (0)
 
@@ -2465,7 +2465,7 @@ SEXP R_flint_valid(SEXP object)
 			if (elt != R_NilValue) {
 				if (TYPEOF(elt) != STRSXP)
 					return INVALID(_("invalid type \"%s\" for %s[[%d]]"),
-					               Rf_type2char(TYPEOF(elt)),
+					               Rf_type2char((SEXPTYPE) TYPEOF(elt)),
 					               "dimnames", (int) i);
 				if (XLENGTH(elt) != d[i])
 					return INVALID(_("length of %s[[%d]] [%lld] is not equal to %s[[%d]] [%lld]"),
