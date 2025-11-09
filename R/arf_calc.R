@@ -57,7 +57,7 @@ function (func, t, y0, param = NULL, rtol = 1e-6, atol = 1e-6,
           method = .rk.method.dormand.prince(),
           prec = flintPrec(), rnd = flintRnd()) {
     prec. <- flintPrec(prec)
-    rnd. <- flintPrec(rnd)
+    rnd. <- flintRnd(rnd)
     on.exit({ flintPrec(prec.); flintRnd(rnd.) })
     res <- list(t = flintNew("arf"), y = flintNew("arf"))
     .Call(R_flint_arf_calc_rk, res,
