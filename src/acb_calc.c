@@ -2,16 +2,18 @@
 #include <flint/arb_calc.h>
 #include <flint/acb_calc.h>
 
-static int R_flint_acb_calc_integrate_integrand(acb_ptr res, const acb_ptr z, void *param, slong order, slong prec)
+static int integrate_integrand(acb_ptr res, const acb_ptr z, void *param, slong order, slong prec)
 {
 	SEXP call = param;
 	acb_set(R_flint_get_pointer(CADR(call)), z);
 	INTEGER(CADDDR(call))[0] = (int) order;
 	SEXP value = Rf_eval(call, R_ClosureEnv(CAR(call)));
 	if (R_flint_get_class(value) != R_FLINT_CLASS_ACB)
-		Rf_error(_("class of integrand value is not \"%s\""), "acb");
+		Rf_error(_("class of value of '%s' call is not \"%s\""),
+		         "func", "acb");
 	if (R_flint_get_length(value) != 1)
-		Rf_error(_("length of integrand value is not %d"), 1);
+		Rf_error(_("length of value of '%s' call is not %d"),
+		         "func", 1);
 	acb_set(res, R_flint_get_pointer(value));
 	return 0;
 }
@@ -44,7 +46,7 @@ SEXP R_flint_acb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	SEXP call = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
 
 	/* C: acb_calc_integrate(res, func, param, a, b, rel_goal, abs_tol, options, prec) */
-	acb_calc_func_t func = (acb_calc_func_t) &R_flint_acb_calc_integrate_integrand;
+	acb_calc_func_t func = (acb_calc_func_t) &integrate_integrand;
 	void *param = call;
 	acb_ptr a = R_flint_get_pointer(s_a);
 	acb_ptr b = R_flint_get_pointer(s_b);
