@@ -3,7 +3,8 @@
 typedef enum {
 	RK_PASS = 0,
 	RK_FAIL_NOOP,
-	RK_FAIL_TIMEOUT,
+	RK_FAIL_HMIN,
+	RK_FAIL_SMAX,
 	RK_INVALID = -1
 } rk_status_t;
 
@@ -119,7 +120,7 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
 				else
 					arf_mul(hcur, hcur, hscl, prec, rnd);
 				if (arf_cmp(hcur, hmin) < 0)
-					arf_set(hcur, hmin);
+					return RK_FAIL_HMIN;
 				cmp = -1;
 			}
 		}
@@ -143,7 +144,7 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
 			swap = *y0; *y0 = *y1; *y1 = swap;
 		}
 	}
-	return (cmp < 0) ? RK_FAIL_TIMEOUT : RK_PASS;
+	return (cmp < 0) ? RK_FAIL_SMAX : RK_PASS;
 }
 
 SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_param, SEXP s_rtol, SEXP s_atol, SEXP s_hmin, SEXP s_hmax, SEXP s_hini, SEXP s_smax, SEXP s_method, SEXP s_prec, SEXP s_rnd)
@@ -313,23 +314,39 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 		arf_set(  y0 + jy     , y + jy);
 	}
 
-	rk_status_t status;
+	rk_status_t status = RK_PASS;
 	for (jt = 1; jt < nt; ++jt) {
 		status =
 		rk_estep(call, a1, a2, t + jt - 1, t + jt, &y0, &y1, &y2, ny,
 		         rtol, rmsk, atol, amsk, hmin, hmax, hcur, smax, &scur,
-		         a, b, bb, c, d, p, ak, bk, bbk, kk, prec, rnd,
-		         work + 1);
+		         a, b, bb, c, d, p, ak, bk, bbk, kk, prec, rnd, work);
 		if (status == RK_PASS) {
 			for (jy = 0; jy < ny; ++jy)
 				arf_set(resy + jy * nt + jt, y0 + jy);
 		} else {
-			mp_limb_t jt__ = jt;
+			mp_limb_t jt__;
 			for (jy = 0; jy < ny; ++jy)
-				for (jt = jt__; jt < nt; ++jt)
-					arf_nan(resy + jy * nt + jt);
+				for (jt__ = jt; jt__ < nt; ++jt__)
+					arf_nan(resy + jy * nt + jt__);
 			break;
 		}
+	}
+
+	switch (status) {
+	case RK_FAIL_NOOP:
+		Rf_warning(_("returning early due to t+h==t in external step from %s[%d] to %s[%d]"),
+		           "t", (int) jt, "t", (int) (jt + 1));
+		break;
+	case RK_FAIL_HMIN:
+		Rf_warning(_("returning early due to h<hmin in external step from %s[%d] to %s[%d]"),
+		           "t", (int) jt, "t", (int) (jt + 1));
+		break;
+	case RK_FAIL_SMAX:
+		Rf_warning(_("returning early due to s>smax in external step from %s[%d] to %s[%d]"),
+		           "t", (int) jt, "t", (int) (jt + 1));
+		break;
+	default:
+		break;
 	}
 
 	SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
