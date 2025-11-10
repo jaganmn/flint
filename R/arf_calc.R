@@ -10,8 +10,7 @@ function (func) {
                       "func", "..."),
              domain = NA)
     if (nf < 4L)
-        formals(func) <- `[<-`(alist(.__1__. =, .__2__. =, .__3__. =, .__4__. =),
-                               seq_len(nf), f)
+        formals(func) <- c(f, alist(.__1__. =, .__2__. =, .__3__. =, .__4__. =)[seq.int(to = 4L, by = 1L, length.out = 4L - nf)])
     func
 }
 
