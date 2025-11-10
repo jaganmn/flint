@@ -23,8 +23,8 @@ arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
 }
 \arguments{
   \item{func}{
-    a function of the form \code{function (t, y, param, prec)} computing
-    derivatives.  Unused trailing arguments can omitted.}
+    a function of the form \code{function (t, y, param, prec)}
+    specifying the system.  Unused trailing arguments can omitted.}
   \item{t}{
     an increasing numeric or \code{\linkS4class{arf}} vector storing
     time points.}
@@ -79,7 +79,30 @@ arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
     \code{NaN}.}
 }
 \details{
-  TODO.
+  \code{func(t, y, param, prec)} computes the derivative of the solution
+  at time \code{t} given the value \code{y} of the solution at time
+  \code{t} and optional parameters \code{param}, where \code{t} is an
+  \code{arf} vector of length 1 and \code{y} is (and the return value of
+  \code{func} must be) an \code{arf} vector of length equal to
+  \code{length(y0)}.
+
+  The list \code{method} must have exactly the following components
+  for a \code{d}-stage method:
+  \describe{
+    \item{\code{a}}{
+      a numeric or \code{fmpq} or \code{arf} vector of length
+      \code{d*(d-1)/2} storing coefficients.}
+    \item{\code{b, bb}}{
+      numeric or \code{fmpq} or \code{arf} vectors of length \code{d}
+      storing lower and higher order weights, each summing to 1.  Set
+      \code{bb} to \code{NULL} to specify a non-adaptive method.}
+    \item{\code{c}}{
+      a numeric or \code{fmpq} or \code{arf} vector of length \code{d}
+      storing nodes for internal steps.  The first element must be 0.}
+    \item{\code{p}}{
+      a positive integer giving the order of the method, such that the
+      global error is \eqn{O(h^{p})}{O(h^p)}.}
+  }
 }
 \seealso{
   Class \code{\linkS4class{arf}}; function \code{rk} in
