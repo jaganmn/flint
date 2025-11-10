@@ -43,13 +43,13 @@ acb_integrate(func, a, b, param = NULL, rtol = NULL, atol = NULL,
 }
 \details{
   \code{func(z, param, order, prec)} computes an enclosure for the
-  integrand on \code{z}, where \code{z} is (and the return value must
-  be) an \code{\linkS4class{arb}} or \code{\linkS4class{acb}} vector of
-  length 1.  If the integer \code{order} is nonzero, then \code{func}
-  must give a nonfinite result if the integrand is not holomorphic on
-  \code{z}, in particular if the integrand composes functions that are
-  bounded on \code{z} with branch cuts whose intersection with \code{z}
-  is nonempty.
+  integrand on \code{z}, where \code{z} is (and the return value of
+  \code{func} must be) an \code{\linkS4class{arb}} or
+  \code{\linkS4class{acb}} vector of length 1.  If the integer
+  \code{order} is nonzero, then \code{func} must give a nonfinite result
+  if the integrand is not holomorphic on \code{z}, in particular if the
+  integrand composes functions that are bounded on \code{z} with branch
+  cuts whose intersection with \code{z} is nonempty.
 
   The list \code{control} admits components \code{deg.limit},
   \code{eval.limit}, \code{depth.limit}, \code{use.heap}, and
