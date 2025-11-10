@@ -208,7 +208,7 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 
 	if (s_rtol == R_NilValue) {
 		rtol = work + 3;
-		arf_set_si_2exp_si(rtol, 1, -prec);
+		arf_set_si_2exp_si(rtol, 1, -prec/2);
 	} else {
 		rtol = R_flint_get_pointer(s_atol);
 		if ((nrtol = R_flint_get_length(s_rtol)) != 1 && nrtol != ny)
@@ -223,7 +223,7 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 
 	if (s_atol == R_NilValue) {
 		atol = work + 4;
-		arf_set_si_2exp_si(atol, 1, -prec);
+		arf_set_si_2exp_si(atol, 1, -prec/2);
 	} else {
 		atol = R_flint_get_pointer(s_atol);
 		if ((natol = R_flint_get_length(s_atol)) != 1 && natol != ny)

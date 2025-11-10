@@ -36,11 +36,11 @@ arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
     passed to \code{func}.}
   \item{rtol}{
     a positive number less than 1 controlling external step adaptation
-    in adaptive methods.  \code{2^-prec} by default, unused by
+    in adaptive methods.  \code{2^(-prec/2)} by default, unused by
     non-adaptive methods.}
   \item{atol}{
     a non-negative number less than 1 controlling external step
-    adaptation in in adaptive methods.  \code{2^-prec} by default,
+    adaptation in in adaptive methods.  \code{2^(-prec/2)} by default,
     unused by non-adaptive methods.}
   \item{hmin}{
     a non-negative number indicating a minimum external step size in
@@ -105,7 +105,7 @@ arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
   }
 }
 \seealso{
-  Class \code{\linkS4class{arf}}; function \code{rk} in
+  Class \code{\linkS4class{arf}}; function \code{rk} in package
   \CRANpkg{deSolve}.
 }
 \examples{
