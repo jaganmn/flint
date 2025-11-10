@@ -56,6 +56,9 @@
       \item \R{} functions \code{arb_integrate} and \code{acb_integrate}
       for integration of functions of one variable.
 
+      \item \R{} function \code{arf_rk} for numerical solution of
+      systems of ordinary differential equations.
+
       \item \R{} functions \code{arb_hypgeom_polygamma} and
       \code{arb_dirichlet_lerch_phi} are provided for symmetry with the
       \code{acb_*} ones, which they wrap.  \acronym{FLINT} provides no
