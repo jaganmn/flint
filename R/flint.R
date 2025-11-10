@@ -904,7 +904,7 @@ function (target, current,
         if (common == "mag")
             common <- "arf"
         target <- as(target, common)
-        current <- as(target, common)
+        current <- as(current, common)
     }
     if ((nt <- flintLengthAny(target)) != (nc <- flintLengthAny(current)))
         return(c(msg, gettextf("target length is %s, current length is %s",

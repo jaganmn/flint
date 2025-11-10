@@ -72,7 +72,9 @@
   }
   \subsection{Bug Fixes}{
     \itemize{
-      \item .
+      \item \code{all.equal(x, y, check.class = FALSE)} failed to detect
+      numerical differences between \code{x} and \code{y}, returning
+      \code{TRUE} incorrectly when it detected no other differences.
     }
   }
   \subsection{Internals}{

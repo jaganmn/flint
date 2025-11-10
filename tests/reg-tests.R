@@ -59,3 +59,7 @@ stopifnot(all.equal(L, L.)) # 'all.equal' recurses with dispatch
 validObject(u <- sum(ulong(1:2, names = c("a", "b"))))
 validObject(s <- range(slong.array(1:2, dim = c(2L, 2L))))
 stopifnot(identical(u, ulong(3L)), identical(s, slong(1:2)))
+
+
+## all.equal(check.class = FALSE) failed to detect numerical differences
+stopifnot(is.character(all.equal(0, arf(1), check.class = FALSE)))
