@@ -308,9 +308,8 @@ SEXP R_flint_fmpq_part(SEXP object, SEXP s_op)
 	mp_limb_t j, n = R_flint_get_length(object);
 	const fmpq *x = R_flint_get_pointer(object);
 	int op = INTEGER_RO(s_op)[0];
-	SEXP ans = PROTECT(newObject("fmpz"));
-	fmpz *y = (n) ? flint_calloc(n, sizeof(fmpz)) : 0;
-	R_flint_set(ans, y, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
+	SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPZ, 0, n));
+	fmpz *y = R_flint_get_pointer(ans);
 	if (op == 0)
 	for (j = 0; j < n; ++j)
 		fmpz_set(y + j, fmpq_numref(x + j));
@@ -371,9 +370,8 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case  6: /*   "/" */
 	case  7: /*   "^" */
 	{
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 1: /*   "+" */
 			for (jz = 0; jz < nz; ++jz)
@@ -543,10 +541,8 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		/*        %*%: C = Z', A = Y', B = X' */
 		/*  crossprod: C = Z', A = Y', B = X  */
 		/* tcrossprod: C = Z', A = Y , B = X' */
-
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
 		mp_limb_t jx, jy, ja, jb;
 		fmpq_mat_t mc, ma, mb;
@@ -629,9 +625,8 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
 			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
 		}
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		int i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		fmpq_mat_t mc, ma, mb;
@@ -766,9 +761,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
 		case  1: /*       "+" */
 		case  8: /*    "Conj" */
@@ -975,9 +969,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		nz = (op == 52) ? 2 : 1;
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = flint_calloc(nz, sizeof(fmpq));
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 50: /*     "min" */
 			fmpq_set(z, x);
@@ -1158,9 +1151,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		PROTECT(dimnamesz);
 
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		jx = 0;
 		if (byrow) {
 			for (jz = 0; jz < nz; ++jz)
@@ -1213,9 +1205,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
 			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
 		}
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		int i, j, singular;
 		mp_limb_t ja;
 		fmpq_mat_t mc, ma;
@@ -1321,9 +1312,8 @@ SEXP R_flint_fmpq_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		    (dx = INTEGER_RO(dimx), dx[0] != dx[1]))
 			Rf_error(_("'%s' is not a square matrix"),
 			         "x");
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = flint_calloc(1, sizeof(fmpq));
-		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, 1));
+		fmpq *z = R_flint_get_pointer(ans);
 		fmpq_mat_t mx;
 		mx->r = mx->c = dx[0];
 		mx->entries = (void *) x;

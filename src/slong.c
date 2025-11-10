@@ -502,8 +502,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			break;
 		}
 		}
-		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
+		SEXP ans = PROTECT(newFlint((over) ? R_FLINT_CLASS_FMPZ : R_FLINT_CLASS_SLONG, z, nz));
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
 		UNPROTECT(1);
 		return ans;
@@ -511,9 +510,8 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case  6: /*   "/" */
 	case  7: /*   "^" */
 	{
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
+		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 6: /*   "/" */
 			for (jz = 0; jz < nz; ++jz)
@@ -944,8 +942,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
-		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
+		SEXP ans = PROTECT(newFlint((over) ? R_FLINT_CLASS_FMPZ : R_FLINT_CLASS_SLONG, z, nz));
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
@@ -1024,9 +1021,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
-		SEXP ans = PROTECT(newObject((over) ? "fmpz" : "slong"));
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) ((over) ? &R_flint_fmpz_finalize : &R_flint_slong_finalize));
-		UNPROTECT(1);
+		SEXP ans = newFlint((over) ? R_FLINT_CLASS_FMPZ : R_FLINT_CLASS_SLONG, z, nz);
 		return ans;
 	}
 	case 55: /*    "mean" */
@@ -1034,9 +1029,8 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		if (nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
-		SEXP ans = PROTECT(newObject("fmpq"));
-		fmpq *z = flint_calloc(1, sizeof(fmpq));
-		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, 1));
+		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 55: /*    "mean" */
 		{
@@ -1172,9 +1166,8 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		PROTECT(dimnamesz);
 
+		R_flint_class_t class;
 		void *z;
-		R_CFinalizer_t f;
-		const char *what;
 		jx = 0;
 		if (domean) {
 			fmpq *z__ = (nz) ? flint_calloc(nz, sizeof(fmpq)) : 0;
@@ -1197,9 +1190,8 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					fmpq_canonicalise(z__ + jz);
 				}
 			}
+			class = R_FLINT_CLASS_FMPQ;
 			z = z__;
-			what = "fmpq";
-			f = (R_CFinalizer_t) &R_flint_fmpq_finalize;
 		} else {
 			fmpz *z__ = (nz) ? flint_calloc(nz, sizeof(fmpz)) : 0;
 			int over = 0;
@@ -1222,19 +1214,16 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				}
 			}
 			if (over) {
+				class = R_FLINT_CLASS_FMPZ;
 				z = z__;
-				what = "fmpz";
-				f = (R_CFinalizer_t) &R_flint_fmpz_finalize;
 			} else {
 				for (jz = 0; jz < nz; ++jz)
 					((slong *) z__)[jz] = fmpz_get_si(z__ + jz);
+				class = R_FLINT_CLASS_SLONG;
 				z = z__;
-				what = "slong";
-				f = (R_CFinalizer_t) &R_flint_slong_finalize;
 			}
 		}
-		SEXP ans = PROTECT(newObject(what));
-		R_flint_set(ans, z, nz, f);
+		SEXP ans = PROTECT(newFlint(class, z, nz));
 		if (ndz > 1)
 			setDDNN(ans, dimz, dimnamesz, R_NilValue);
 		else if (dimnamesz != R_NilValue)

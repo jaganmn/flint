@@ -30,9 +30,8 @@ SEXP R_flint_coerce_bigz_fmpz(SEXP from)
 	if (h < 0)
 		Rf_error(_("invalid"));
 	mp_limb_t j, n = (mp_limb_t) h;
-	fmpz *y = (n) ? flint_calloc(n, sizeof(fmpz)) : 0;
-	SEXP to = PROTECT(newObject("fmpz"));
-	R_flint_set(to, y, n, (R_CFinalizer_t) &R_flint_fmpz_finalize);
+	SEXP to = PROTECT(newFlint(R_FLINT_CLASS_FMPZ, 0, n));
+	fmpz *y = R_flint_get_pointer(to);
 	mpz_t t;
 	mpz_init(t);
 	for (j = 0; j < n; ++j) {
@@ -111,9 +110,8 @@ SEXP R_flint_coerce_bigq_fmpq(SEXP from)
 	if (h < 0 || h != *(xd++))
 		Rf_error(_("invalid"));
 	mp_limb_t j, n = (mp_limb_t) h;
-	fmpq *y = (n) ? flint_calloc(n, sizeof(fmpq)) : 0;
-	SEXP to = PROTECT(newObject("fmpq"));
-	R_flint_set(to, y, n, (R_CFinalizer_t) &R_flint_fmpq_finalize);
+	SEXP to = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, n));
+	fmpq *y = R_flint_get_pointer(to);
 	mpz_t t;
 	mpz_init(t);
 	for (j = 0; j < n; ++j) {
@@ -218,9 +216,8 @@ SEXP R_flint_coerce_mpfr_arf(SEXP from)
 {
 	R_flint_coerce_init();
 	mp_limb_t j, n = (mp_limb_t) XLENGTH(from);
-	arf_ptr y = (n) ? flint_calloc(n, sizeof(arf_t)) : 0;
-	SEXP to = PROTECT(newObject("arf"));
-	R_flint_set(to, y, n, (R_CFinalizer_t) &R_flint_arf_finalize);
+	SEXP to = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, n));
+	arf_ptr y = R_flint_get_pointer(to);
 	mpfr_prec_t tprec = MPFR_PREC_MIN;
 	for (j = 0; j < n; ++j) {
 		mpfr_prec_t tprec1 = INTEGER(R_do_slot(VECTOR_ELT(from, (R_xlen_t) j), R_Rmpfr_symbol_prec))[0];

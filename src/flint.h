@@ -54,6 +54,41 @@
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
 
+#define R_FLINT_SWITCH(class, template) \
+do { \
+	switch (class) { \
+	case R_FLINT_CLASS_ULONG: \
+		template(ulong, ulong, const ulong *, ulong *); \
+		break; \
+	case R_FLINT_CLASS_SLONG: \
+		template(slong, slong, const slong *, slong *); \
+		break; \
+	case R_FLINT_CLASS_FMPZ: \
+		template(fmpz, fmpz, const fmpz *, fmpz *); \
+		break; \
+	case R_FLINT_CLASS_FMPQ: \
+		template(fmpq, fmpq, const fmpq *, fmpq *); \
+		break; \
+	case R_FLINT_CLASS_MAG: \
+		template(mag, mag_t, mag_srcptr, mag_ptr); \
+		break; \
+	case R_FLINT_CLASS_ARF: \
+		template(arf, arf_t, arf_srcptr, arf_ptr); \
+		break; \
+	case R_FLINT_CLASS_ACF: \
+		template(acf, acf_t, acf_srcptr, acf_ptr); \
+		break; \
+	case R_FLINT_CLASS_ARB: \
+		template(arb, arb_t, arb_srcptr, arb_ptr); \
+		break; \
+	case R_FLINT_CLASS_ACB: \
+		template(acb, acb_t, acb_srcptr, acb_ptr); \
+		break; \
+	default: \
+		Rf_error(_("should never happen ...")); \
+	} \
+} while (0)
+
 #define MIN2(a, b) \
 (((a) > (b)) ? (b)                    : (a))
 #define MIN3(a, b, c) \
@@ -214,6 +249,7 @@ SEXP R_ClosureEnv(SEXP s);
 char *R_alloc_snprintf(size_t, const char *, ...);
 
 SEXP newObject(const char *);
+SEXP newFlint(R_flint_class_t, void *, mp_limb_t);
 
 SEXPTYPE checkType(SEXP, SEXPTYPE *, const char *);
 const char *checkClass(SEXP, const char **, const char *);

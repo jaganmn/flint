@@ -388,9 +388,8 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case  3: /*   "*" */
 	case  6: /*   "/" */
 	{
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 1: /*   "+" */
 			for (jz = 0; jz < nz; ++jz)
@@ -503,10 +502,8 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		/*        %*%: C = Z', A = Y', B = X' */
 		/*  crossprod: C = Z', A = Y', B = X  */
 		/* tcrossprod: C = Z', A = Y , B = X' */
-
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
 	    mp_limb_t jx, jy, ja, jb;
 		arb_mat_t mc, ma, mb;
@@ -596,9 +593,8 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
 			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
 		}
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		int i, j, singular;
 		mp_limb_t jx, jy, jc, ja, jb;
 		arb_mat_t mc, ma, mb;
@@ -745,9 +741,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case  1: /*       "+" */
 		case  8: /*    "Conj" */
@@ -958,9 +953,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
 		nz = (op == 52) ? 2 : 1;
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = flint_calloc(nz, sizeof(arf_t));
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 50: /*     "min" */
 			arf_pos_inf(z);
@@ -1194,9 +1188,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		PROTECT(dimnamesz);
 
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		jx = 0;
 		if (byrow) {
 			mp_limb_t *c = 0;
@@ -1266,9 +1259,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				         "upper.tri", CHAR(STRING_ELT(s_op, 0)));
 			uplo = (LOGICAL_RO(s_uppertri)[0]) ? 'U' : 'L';
 		}
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		int i, j, singular;
 		mp_limb_t jc, ja;
 		arb_mat_t mc, ma;
@@ -1393,9 +1385,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		    (dz = INTEGER_RO(dimz), dz[0] != dz[1]))
 			Rf_error(_("'%s' is not a square matrix"),
 			         "x");
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		mp_limb_t jc, ja;
 		arb_mat_t mc, ma;
 		mc->r = mc->c = ma->r = ma->c = dz[0];
@@ -1467,9 +1458,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		    (dz = INTEGER_RO(dimz), dz[0] != dz[1]))
 			Rf_error(_("'%s' is not a square matrix"),
 			         "x");
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = (nz) ? flint_calloc(nz, sizeof(arf_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
 		int posdef;
 		mp_limb_t jc, ja;
 		arb_mat_t mc, ma;
@@ -1542,9 +1532,8 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		    (dx = INTEGER_RO(dimx), dx[0] != dx[1]))
 			Rf_error(_("'%s' is not a square matrix"),
 			         "x");
-		SEXP ans = PROTECT(newObject("arf"));
-		arf_ptr z = flint_calloc(1, sizeof(arf_t));
-		R_flint_set(ans, z, 1, (R_CFinalizer_t) &R_flint_arf_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, 1));
+		arf_ptr z = R_flint_get_pointer(ans);
 		arb_mat_t mx;
 		arb_t det;
 		mx->r = mx->c = dx[0];

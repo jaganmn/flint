@@ -33,6 +33,28 @@ SEXP newObject(const char *what)
 	return object;
 }
 
+SEXP newFlint(R_flint_class_t class, void *p, mp_limb_t n)
+{
+	R_CFinalizer_t f;
+	const char *what;
+
+#define TEMPLATE(name, elt_t, xptr_t, yptr_t) \
+	do { \
+		p = (n && p) ? p : (n) ? flint_calloc(n, sizeof(elt_t)) : 0; \
+		f = (R_CFinalizer_t) &R_flint_##name##_finalize; \
+		what = #name; \
+	} while (0)
+
+	R_FLINT_SWITCH(class, TEMPLATE);
+
+#undef TEMPLATE
+
+	SEXP ans = PROTECT(newObject(what));
+	R_flint_set(ans, p, n, f);
+	UNPROTECT(1);
+	return ans;
+}
+
 SEXPTYPE checkType(SEXP object, SEXPTYPE *valid, const char *where)
 {
 	SEXPTYPE s = (SEXPTYPE) TYPEOF(object), t;

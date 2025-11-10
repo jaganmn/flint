@@ -477,9 +477,8 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case  6: /*   "/" */
 	case  7: /*   "^" */
 	{
-		SEXP ans = PROTECT(newObject("mag"));
-		mag_ptr z = (nz) ? flint_calloc(nz, sizeof(mag_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_mag_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_MAG, 0, nz));
+		mag_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 1: /*   "+" */
 			for (jz = 0; jz < nz; ++jz)
@@ -632,9 +631,8 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 48: /*   "round" */
 	case 49: /*  "signif" */
 	{
-		SEXP ans = PROTECT(newObject("mag"));
-		mag_ptr z = (nz) ? flint_calloc(nz, sizeof(mag_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_mag_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_MAG, 0, nz));
+		mag_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case  1: /*       "+" */
 		case  2: /*       "-" */
@@ -931,9 +929,8 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case 54: /*    "prod" */
 	{
 		nz = (op == 52) ? 2 : 1;
-		SEXP ans = PROTECT(newObject("mag"));
-		mag_ptr z = flint_calloc(nz, sizeof(mag_t));
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_mag_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_MAG, 0, nz));
+		mag_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case 50: /*     "min" */
 			mag_inf(z);
@@ -1118,9 +1115,8 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		}
 		PROTECT(dimnamesz);
 
-		SEXP ans = PROTECT(newObject("mag"));
-		mag_ptr z = (nz) ? flint_calloc(nz, sizeof(mag_t)) : 0;
-		R_flint_set(ans, z, nz, (R_CFinalizer_t) &R_flint_mag_finalize);
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_MAG, 0, nz));
+		mag_ptr z = R_flint_get_pointer(ans);
 		jx = 0;
 		if (byrow) {
 			for (jz = 0; jz < nz; ++jz)

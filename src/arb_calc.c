@@ -22,6 +22,7 @@ static int integrate_integrand(acb_ptr res, const acb_ptr z, void *param, slong 
 SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a, SEXP s_b, SEXP s_rel_goal, SEXP s_abs_tol, SEXP s_options, SEXP s_prec)
 {
 	slong prec = asPrec(s_prec, __func__);
+
 	if (R_flint_get_length(s_a) != 1)
 		Rf_error(_("length of '%s' is not %d"), "a", 1);
 	if (R_flint_get_length(s_b) != 1)
@@ -33,22 +34,18 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	    R_flint_get_length(s_abs_tol) != 1)
 		Rf_error(_("length of '%s' is not %d"), "abs.tol", 1);
 
-	SEXP s_work = PROTECT(newObject("acb"));
-	acb_ptr work = flint_calloc(3, sizeof(arb_t));
-	R_flint_set(s_work, work, 3, (R_CFinalizer_t) &R_flint_acb_finalize);
+	SEXP s_work = PROTECT(newFlint(R_FLINT_CLASS_ACB, 0, 3));
+	acb_ptr work = R_flint_get_pointer(s_work);
 
 	/* R: func(x, param, order, prec) */
 	SEXP s_a0 = s_func;
-	SEXP s_a1 = PROTECT(newObject("arb"));
-	arb_ptr a1 = flint_calloc(1, sizeof(arb_t));
-	R_flint_set(s_a1, a1, 1, (R_CFinalizer_t) &R_flint_arb_finalize);
+	SEXP s_a1 = PROTECT(newFlint(R_FLINT_CLASS_ARB, 0, 1));
 	SEXP s_a2 = PROTECT(Rf_allocVector(INTSXP, 1));
 	SEXP s_a3 = s_param;
-	SEXP s_a4 = PROTECT(newObject("slong"));
-	slong *a4 = flint_calloc(1, sizeof(slong));
-	R_flint_set(s_a4, a4, 1, (R_CFinalizer_t) &R_flint_slong_finalize);
-	a4[0] = prec;
+	SEXP s_a4 = PROTECT(newFlint(R_FLINT_CLASS_SLONG, 0, 1));
 	SEXP call = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
+
+	((slong *) R_flint_get_pointer(s_a4))[0] = prec;
 
 	/* C: acb_calc_integrate(res, func, param, a, b, rel_goal, abs_tol, options, prec) */
 	acb_calc_func_t func = (acb_calc_func_t) &integrate_integrand;
@@ -65,19 +62,18 @@ SEXP R_flint_arb_calc_integrate(SEXP s_res, SEXP s_func, SEXP s_param, SEXP s_a,
 	arb_zero(acb_imagref(a));
 	arb_zero(acb_imagref(b));
 
-	if (s_rel_goal != R_NilValue)
-		rel_goal = ((slong *) R_flint_get_pointer(s_rel_goal))[0];
-	else
+	if (s_rel_goal == R_NilValue)
 		rel_goal = prec;
+	else
+		rel_goal = ((slong *) R_flint_get_pointer(s_rel_goal))[0];
 
-	if (s_abs_tol != R_NilValue)
+	if (s_abs_tol == R_NilValue) {
+		s_abs_tol = newFlint(R_FLINT_CLASS_MAG, 0, 1);
 		abs_tol = R_flint_get_pointer(s_abs_tol);
-	else {
-		s_abs_tol = newObject("mag");
-		abs_tol = flint_calloc(1, sizeof(mag_t));
-		R_flint_set(s_abs_tol, abs_tol, 1, (R_CFinalizer_t) &R_flint_mag_finalize);
 		mag_set_ui_2exp_si(abs_tol, 1, -prec);
 	}
+	else
+		abs_tol = R_flint_get_pointer(s_abs_tol);
 	PROTECT(s_abs_tol);
 
 	if (s_options != R_NilValue) {

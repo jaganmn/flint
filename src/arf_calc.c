@@ -182,10 +182,9 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 		if (!arf_is_finite(t + jt))
 			Rf_error(_("'%s' is not finite"), "t");
 
-	SEXP s_work = PROTECT(newObject("arf"));
-	arf_ptr work = flint_calloc(nwork, sizeof(arf_t));
-	R_flint_set(s_work, work, nwork, (R_CFinalizer_t) &R_flint_arf_finalize);
-	arf_ptr y0 = work + 4, y1 = y0 + ny, y2 = (adapt) ? y1 + ny : y1,
+	SEXP s_work = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nwork));
+	arf_ptr work = R_flint_get_pointer(s_work),
+		y0 = work + 4, y1 = y0 + ny, y2 = (adapt) ? y1 + ny : y1,
 		ak = y2 + ny, bk = ak + ny, bbk = (adapt) ? bk + ny : bk,
 		kk = bbk + ny;
 
@@ -264,18 +263,15 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 
 	/* R: func(t, y, param, prec) */
 	SEXP s_a0 = s_func;
-	SEXP s_a1 = PROTECT(newObject("arf"));
-	arf_ptr a1 = flint_calloc(1, sizeof(arf_t));
-	R_flint_set(s_a1, a1, 1, (R_CFinalizer_t) &R_flint_arf_finalize);
-	SEXP s_a2 = PROTECT(newObject("arf"));
-	arf_ptr a2 = flint_calloc(ny, sizeof(arf_t));
-	R_flint_set(s_a2, a2, ny, (R_CFinalizer_t) &R_flint_arf_finalize);
+	SEXP s_a1 = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, 1));
+	SEXP s_a2 = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, ny));
 	SEXP s_a3 = s_param;
-	SEXP s_a4 = PROTECT(newObject("slong"));
-	slong *a4 = flint_calloc(1, sizeof(slong));
-	R_flint_set(s_a4, a4, 1, (R_CFinalizer_t) &R_flint_slong_finalize);
-	a4[0] = prec;
+	SEXP s_a4 = PROTECT(newFlint(R_FLINT_CLASS_SLONG, 0, 1));
 	SEXP call = PROTECT(Rf_lang5(s_a0, s_a1, s_a2, s_a3, s_a4));
+
+	arf_ptr a1 = R_flint_get_pointer(s_a1);
+	arf_ptr a2 = R_flint_get_pointer(s_a2);
+	((slong *) R_flint_get_pointer(s_a4))[0] = prec;
 
 	arf_ptr rest = flint_calloc(nt     , sizeof(arf_t));
 	arf_ptr resy = flint_calloc(nt * ny, sizeof(arf_t));
