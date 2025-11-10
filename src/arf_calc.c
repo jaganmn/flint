@@ -152,19 +152,9 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	arf_rnd_t rnd = asRnd(s_rnd, __func__);
 	int adapt = VECTOR_ELT(s_method, 2) != R_NilValue;
 
-	arf_srcptr a  = R_flint_get_pointer(VECTOR_ELT(s_method, 0));
-	arf_srcptr b  = R_flint_get_pointer(VECTOR_ELT(s_method, 1));
-	arf_srcptr bb = (adapt)
-	              ? R_flint_get_pointer(VECTOR_ELT(s_method, 2))
-	              : 0;
-	arf_srcptr c  = R_flint_get_pointer(VECTOR_ELT(s_method, 3));
-	mp_limb_t  d  = (mp_limb_t) INTEGER(VECTOR_ELT(s_method, 4))[0];
-	mp_limb_t  p  = (mp_limb_t) INTEGER(VECTOR_ELT(s_method, 5))[0];
-
 	mp_limb_t jt, jy,
 		nt = R_flint_get_length(s_t),
-		ny = R_flint_get_length(s_y0),
-		nwork = 4 + (4 + 2 * (mp_limb_t) adapt + d) * ny;
+		ny = R_flint_get_length(s_y0);
 	arf_srcptr
 		t = R_flint_get_pointer(s_t),
 		y = R_flint_get_pointer(s_y0);
@@ -177,17 +167,29 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 		         INT_MAX);
 	if (ny > UWORD_MAX / nt)
 		Rf_error(_("length would exceed maximum %llu"),
-		         (unsigned long long) UWORD_MAX);
-	for (jt = 0; jt < nt; ++jt)
-		if (!arf_is_finite(t + jt))
-			Rf_error(_("'%s' is not finite"), "t");
+		         (unsigned long long int) UWORD_MAX);
+
+	arf_srcptr
+		a  = R_flint_get_pointer(VECTOR_ELT(s_method, 0)),
+		b  = R_flint_get_pointer(VECTOR_ELT(s_method, 1)),
+		bb = (adapt)
+		   ? R_flint_get_pointer(VECTOR_ELT(s_method, 2))
+		   : 0,
+		c  = R_flint_get_pointer(VECTOR_ELT(s_method, 3));
+	mp_limb_t
+		d  = (mp_limb_t) INTEGER(VECTOR_ELT(s_method, 4))[0],
+		p  = (mp_limb_t) INTEGER(VECTOR_ELT(s_method, 5))[0],
+		nwork = 6 + (4 + 2 * (mp_limb_t) adapt + d) * ny;
 
 	SEXP s_work = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nwork));
 	arf_ptr work = R_flint_get_pointer(s_work),
-		y0 = work + 4, y1 = y0 + ny, y2 = (adapt) ? y1 + ny : y1,
+		y0 = work + 6, y1 = y0 + ny, y2 = (adapt) ? y1 + ny : y1,
 		ak = y2 + ny, bk = ak + ny, bbk = (adapt) ? bk + ny : bk,
 		kk = bbk + ny;
 
+	for (jt = 0; jt < nt; ++jt)
+		if (!arf_is_finite(t + jt))
+			Rf_error(_("'%s' is not finite"), "t");
 	arf_pos_inf(work);
 	for (jt = 1; jt < nt; ++jt) {
 		arf_sub(work + 1, t + jt, t + jt - 1, prec, rnd);
@@ -196,70 +198,97 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 		if (arf_cmp(work + 1, work) < 0)
 			arf_set(work, work + 1);
 	}
-	for (jy = 0; jy < ny; ++jy)
-		arf_set(y0 + jy, y + jy);
 
 	mp_limb_t nrtol = 1, natol = 1, rmsk = 0, amsk = 0;
+	arf_ptr rtol = 0, atol = 0, hmin = 0, hmax = 0, hcur = 0;
+	ulong smax = 0, scur = 0;
+
 	if (adapt) {
-	if ((nrtol = R_flint_get_length(s_rtol)) != 1 && nrtol != ny)
-		Rf_error(_("length of '%s' is not %d or %s"),
-		         "rtol", 1, "length(y0)");
-	if ((natol = R_flint_get_length(s_rtol)) != 1 && natol != ny)
-		Rf_error(_("length of '%s' is not %d or %s"),
-		         "atol", 1, "length(y0)");
-	if (R_flint_get_length(s_hmin) != 1)
-		Rf_error(_("length of '%s' is not %d"), "hmin", 1);
-	if (R_flint_get_length(s_hmax) != 1)
-		Rf_error(_("length of '%s' is not %d"), "hmax", 1);
+
+	if (s_rtol == R_NilValue) {
+		rtol = work + 3;
+		arf_set_si_2exp_si(rtol, 1, -prec);
+	} else {
+		rtol = R_flint_get_pointer(s_atol);
+		if ((nrtol = R_flint_get_length(s_rtol)) != 1 && nrtol != ny)
+			Rf_error(_("length of '%s' is not %d or %s"),
+			         "rtol", 1, "length(y0)");
+		for (jy = 0; jy < nrtol; ++jy)
+			if (arf_is_nan(rtol + jy) || arf_sgn(rtol + jy) < 0)
+				Rf_error(_("'%s' is not non-negative"), "rtol");
+	}
 	if (nrtol == ny)
 		rmsk = UWORD_MAX;
+
+	if (s_atol == R_NilValue) {
+		atol = work + 4;
+		arf_set_si_2exp_si(atol, 1, -prec);
+	} else {
+		atol = R_flint_get_pointer(s_atol);
+		if ((natol = R_flint_get_length(s_atol)) != 1 && natol != ny)
+			Rf_error(_("length of '%s' is not %d or %s"),
+			         "atol", 1, "length(y0)");
+		for (jy = 0; jy < natol; ++jy)
+			if (arf_is_nan(atol + jy) || arf_sgn(atol + jy) < 0)
+				Rf_error(_("'%s' is not non-negative"), "atol");
+	}
 	if (natol == ny)
 		amsk = UWORD_MAX;
-	}
-	if (s_hini != R_NilValue &&
-	    R_flint_get_length(s_hini) != 1)
-		Rf_error(_("length of '%s' is not %d"), "hini", 1);
-	if (R_flint_get_length(s_smax) != 1)
-		Rf_error(_("length of '%s' is not %d"), "smax", 1);
 
-	arf_srcptr rtol = R_flint_get_pointer(s_rtol);
-	arf_srcptr atol = R_flint_get_pointer(s_atol);
-	arf_srcptr hmin = R_flint_get_pointer(s_hmin);
-	arf_srcptr hmax = R_flint_get_pointer(s_hmax);
-	arf_ptr    hcur = work;
-	ulong      smax = ((ulong *) R_flint_get_pointer(s_smax))[0];
-	ulong      scur = 0;
-	if (nt > 1)
-	smax = (smax > UWORD_MAX / (nt - 1)) ? UWORD_MAX : smax * (nt - 1);
-
-	if (adapt) {
-	for (jy = 0; jy < nrtol; ++jy)
-		if (arf_is_nan(rtol + jy) || arf_sgn(rtol + jy) < 0)
-			Rf_error(_("'%s' is not non-negative"), "rtol");
-	for (jy = 0; jy < natol; ++jy)
-		if (arf_is_nan(atol + jy) || arf_sgn(atol + jy) < 0)
-			Rf_error(_("'%s' is not non-negative"), "atol");
+	hmin = R_flint_get_pointer(s_hmin);
+	if (R_flint_get_length(s_hmin) != 1)
+		Rf_error(_("length of '%s' is not %d"), "hmin", 1);
 	if (arf_is_nan(hmin) || arf_sgn(hmin) <  0 ||
-	    arf_cmp(hmin, hcur) > 0)
+	    arf_cmp(hmin, work) > 0)
 		Rf_error(_("'%s' is not in [%s, %s]"),
 		         "hmin",    "0", "min(diff(t))");
+
+	hmax = R_flint_get_pointer(s_hmax);
+	if (R_flint_get_length(s_hmax) != 1)
+		Rf_error(_("length of '%s' is not %d"), "hmax", 1);
 	if (arf_is_nan(hmax) || arf_sgn(hmax) <= 0 ||
 	    arf_cmp(hmax, hmin) < 0)
 		Rf_error(_("'%s' is not in [%s, %s] or not positive"),
 		         "hmax", "hmin", "Inf");
-	if (s_hini != R_NilValue)
-		arf_set(hcur, R_flint_get_pointer(s_hini));
+
+	if (s_hini == R_NilValue) {
+		hcur = work + 5;
+		arf_set(hcur, work);
+	} else {
+		hcur = R_flint_get_pointer(s_hini);
+		if (R_flint_get_length(s_hini) != 1)
+			Rf_error(_("length of '%s' is not %d"), "hini", 1);
+	}
 	if (arf_is_nan(hcur) || arf_sgn(hcur) <= 0 ||
 	    arf_cmp(hcur, hmin) < 0 || arf_cmp(hcur, hmax) > 0)
 		Rf_error(_("'%s' is not in [%s, %s] or not positive"),
 		         "hini", "hmin", "hmax");
+
 	} else {
-	if (s_hini != R_NilValue)
-		arf_set(hcur, R_flint_get_pointer(s_hini));
-	if (arf_is_nan(hcur) || arf_sgn(hcur) <= 0)
-		Rf_error(_("'%s' is not positive"),
-		         "hini");
+
+	if (s_hini == R_NilValue) {
+		hcur = work + 5;
+		arf_set(hcur, work);
+	} else {
+		hcur = R_flint_get_pointer(s_hini);
+		if (R_flint_get_length(s_hini) != 1)
+			Rf_error(_("length of '%s' is not %d"), "hini", 1);
+		if (arf_is_nan(hcur) || arf_sgn(hcur) <= 0)
+			Rf_error(_("'%s' is not positive"),
+			         "hini");
 	}
+
+	}
+
+	if (s_smax == R_NilValue)
+		smax = (prec > (UWORD_MAX >> 8)) ? UWORD_MAX : ((ulong) prec) << 8;
+	else {
+		if (R_flint_get_length(s_smax) != 1)
+			Rf_error(_("length of '%s' is not %d"), "smax", 1);
+		smax = ((ulong *) R_flint_get_pointer(s_smax))[0];
+	}
+	if (nt > 1)
+	smax = (smax > UWORD_MAX / (nt - 1)) ? UWORD_MAX : smax * (nt - 1);
 
 	/* R: func(t, y, param, prec) */
 	SEXP s_a0 = s_func;
@@ -278,9 +307,11 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	R_flint_set(VECTOR_ELT(s_res, 0), rest, nt     , (R_CFinalizer_t) &R_flint_arf_finalize);
 	R_flint_set(VECTOR_ELT(s_res, 1), resy, nt * ny, (R_CFinalizer_t) &R_flint_arf_finalize);
 	for (jt = 0; jt < nt; ++jt)
-		arf_set(rest + jt     , t  + jt);
-	for (jy = 0; jy < ny; ++jy)
-		arf_set(resy + jy * nt, y0 + jy);
+		arf_set(rest + jt     , t + jt);
+	for (jy = 0; jy < ny; ++jy) {
+		arf_set(resy + jy * nt, y + jy);
+		arf_set(  y0 + jy     , y + jy);
+	}
 
 	rk_status_t status;
 	for (jt = 1; jt < nt; ++jt) {

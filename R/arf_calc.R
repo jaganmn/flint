@@ -52,8 +52,8 @@ function () {
 }
 
 arf_rk <-
-function (func, t, y0, param = NULL, rtol = 1e-6, atol = 1e-6,
-          hmin = 0, hmax = Inf, hini = NULL, smax = 5000L,
+function (func, t, y0, param = NULL, rtol = NULL, atol = NULL,
+          hmin = 0, hmax = Inf, hini = NULL, smax = NULL,
           method = .rk.method.dormand.prince(),
           prec = flintPrec(), rnd = flintRnd()) {
     prec. <- flintPrec(prec)
@@ -62,9 +62,12 @@ function (func, t, y0, param = NULL, rtol = 1e-6, atol = 1e-6,
     res <- list(t = flintNew("arf"), y = flintNew("arf"))
     .Call(R_flint_arf_calc_rk, res,
           .rk.func(func), as(t, "arf"), as(y0, "arf"), param,
-          as(rtol, "arf"), as(atol, "arf"),
-          as(hmin, "arf"), as(hmax, "arf"),
-          if (!is.null(hini)) as(hini, "arf"), as(smax, "ulong"),
+          if (!is.null(rtol)) as(rtol, "arf"),
+          if (!is.null(atol)) as(atol, "arf"),
+                              as(hmin, "arf"),
+                              as(hmax, "arf"),
+          if (!is.null(hini)) as(hini, "arf"),
+          if (!is.null(smax)) as(smax, "ulong"),
           do.call(.rk.method, method), prec, rnd)
     res
 }
