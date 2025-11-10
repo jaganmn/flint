@@ -16,13 +16,25 @@ function (func) {
 }
 
 .rk.method <-
-function (a, b, bb = NULL, c, p) {
+function (a, b, bb = NULL, c, p, prec = flintPrec()) {
+
     fmpq <- getClass("fmpq")
+    arf <- getClass("arf")
+    isNumber <-
+    function (x)
+        is.numeric(x) || is(x, fmpq) || is(x, arf)
+    isSumOne <-
+    function (x) {
+        if (is.double(x) || is(x, arf))
+            abs(sum(x) - 1L) < 2L^(1L-fmpz(prec))
+        else sum(x) == 1L
+    }
     stopifnot(is.integer(p) && length(p) == 1L && p >= 1L,
-              is(c, fmpq) && (d <- length(c)) >= p && c[[1L]] == 0L,
-              is.null(bb) || (is(bb, fmpq) && length(bb) == d && sum(bb) == 1L),
-              is(b, fmpq) && length(b) == d && sum(b) == 1L,
-              is(a, fmpq) && length(a) == (d * (d - 1L)) %/% 2L)
+              isNumber(c) && (d <- length(c)) >= p && c[[1L]] == 0L,
+              is.null(bb) ||
+                  (isNumber(bb) && length(bb) == d && isSumOne(bb)),
+              isNumber(b) && length(b) == d && isSumOne(b),
+              isNumber(a) && length(a) == (d * (d - 1L)) %/% 2L)
     list(a = arf(a), b = arf(b), bb = if (!is.null(bb)) arf(bb),
          c = arf(c), d = d, p = p)
 }
