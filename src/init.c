@@ -201,6 +201,7 @@ SEXP R_flint_acb_hypgeom_rgamma(SEXP, SEXP, SEXP);
 SEXP R_flint_arb_hypgeom_lgamma(SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_lgamma(SEXP, SEXP, SEXP);
 
+SEXP R_flint_arb_hypgeom_polygamma(SEXP, SEXP, SEXP, SEXP);
 SEXP R_flint_acb_hypgeom_polygamma(SEXP, SEXP, SEXP, SEXP);
 
 SEXP R_flint_arb_hypgeom_gamma_lower(SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -325,6 +326,7 @@ static R_CallMethodDef CallEntries[] =
 	CALL_ENTRY(R_flint_acb_hypgeom_rgamma, 3),
 	CALL_ENTRY(R_flint_arb_hypgeom_lgamma, 3),
 	CALL_ENTRY(R_flint_acb_hypgeom_lgamma, 3),
+	CALL_ENTRY(R_flint_arb_hypgeom_polygamma, 4),
 	CALL_ENTRY(R_flint_acb_hypgeom_polygamma, 4),
 	CALL_ENTRY(R_flint_arb_hypgeom_gamma_lower, 5),
 	CALL_ENTRY(R_flint_acb_hypgeom_gamma_lower, 5),
