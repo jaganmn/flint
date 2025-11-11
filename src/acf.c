@@ -80,27 +80,7 @@ void acf_conj(acf_t res, const acf_t x)
 }
 #endif
 
-#ifndef HAVE_ACF_ABS
-static
-int acf_abs(arf_t res, const acf_t x, slong prec, arf_rnd_t rnd)
-{
-	int a;
-	arf_t u, v, w;
-	arf_init(u);
-	arf_init(v);
-	arf_init(w);
-	arf_mul(u, acf_realref(x), acf_realref(x), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(v, acf_imagref(x), acf_imagref(x), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_add(w, u, v, ARF_PREC_EXACT, ARF_RND_DOWN); /* FIXME */
-	a = arf_sqrt(res, w, prec, rnd);
-	arf_clear(u);
-	arf_clear(v);
-	arf_clear(w);
-	return a;
-}
-#endif
-
-#ifndef HAVE_ACF_DIV_FMPZ
+#ifndef HAVE_ACF_DIV_UI
 static R_INLINE
 int acf_div_ui(acf_t res, const acf_t x, ulong y, slong prec, arf_rnd_t rnd)
 {
@@ -872,12 +852,6 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	case  1: /*       "+" */
 	case  2: /*       "-" */
 	case  8: /*    "Conj" */
-#ifdef HAVE_ACF_SGN
-	case 14: /*    "sign" */
-#endif
-#ifdef HAVE_ACF_SQRT
-	case 15: /*    "sqrt" */
-#endif
 	case 21: /*  "cumsum" */
 	case 22: /* "cumprod" */
 	case 48: /*   "round" */
@@ -898,18 +872,6 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (jz = 0; jz < nz; ++jz)
 				acf_conj(z + jz, x + jz);
 			break;
-#ifdef HAVE_ACF_SGN
-		case 14: /*    "sign" */
-			for (jz = 0; jz < nz; ++jz)
-				acf_sgn(z + jz, x + jz, prec, rnd);
-			break;
-#endif
-#ifdef HAVE_ACF_SQRT
-		case 15: /*    "sqrt" */
-			for (jz = 0; jz < nz; ++jz)
-				acf_sqrt(z + jz, x + jz, prec, rnd);
-			break;
-#endif
 		case 21: /*  "cumsum" */
 			if (nz) {
 			acf_set(z, x);
@@ -1052,6 +1014,224 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		setDDNN1(ans, s_x);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 14: /*     "sign" */
+	case 15: /*     "sqrt" */
+	case 23: /*      "log" */
+	case 24: /*    "log10" */
+	case 25: /*     "log2" */
+	case 26: /*    "log1p" */
+	case 27: /*      "exp" */
+	case 28: /*    "expm1" */
+	case 29: /*      "cos" */
+	case 30: /*    "cospi" */
+	case 31: /*     "acos" */
+	case 32: /*     "cosh" */
+	case 33: /*    "acosh" */
+	case 34: /*      "sin" */
+	case 35: /*    "sinpi" */
+	case 36: /*     "asin" */
+	case 37: /*     "sinh" */
+	case 38: /*    "asinh" */
+	case 39: /*      "tan" */
+	case 40: /*    "tanpi" */
+	case 41: /*     "atan" */
+	case 42: /*     "tanh" */
+	case 43: /*    "atanh" */
+	case 44: /*    "gamma" */
+	case 45: /*   "lgamma" */
+	case 46: /*  "digamma" */
+	case 47: /* "trigamma" */
+	{
+		if (prec > ARF_PREC_EXACT - 3)
+			Rf_error(_("desired precision exceeds maximum %lld"),
+			         (long long int) (ARF_PREC_EXACT - 3));
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
+		acf_ptr z = R_flint_get_pointer(ans);
+		int status;
+		slong precb;
+		acb_t zb, xb;
+		acb_init(zb);
+		acb_init(xb);
+		mag_zero(arb_radref(acb_realref(xb)));
+		mag_zero(arb_radref(acb_imagref(xb)));
+
+#define WRAP(op, z, x, prec, rnd) \
+		do { \
+			precb = prec + 2; \
+			arf_set(arb_midref(acb_realref(xb)), acf_realref(x)); \
+			arf_set(arb_midref(acb_imagref(xb)), acf_imagref(x)); \
+			op(zb, xb, precb); \
+			while ((status = acb_rel_accuracy_bits(zb) <= prec) && \
+			       precb < ARF_PREC_EXACT - 1) { \
+				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
+				op(zb, xb, precb); \
+			} \
+			if (status) { \
+				acb_clear(zb); \
+				acb_clear(xb); \
+				Rf_error(_("failed to reach desired precision")); \
+			} \
+			arf_set_round(acf_realref(z), arb_midref(acb_realref(zb)), prec, rnd); \
+			arf_set_round(acf_imagref(z), arb_midref(acb_imagref(zb)), prec, rnd); \
+		} while (0)
+
+#ifndef HAVE_ACB_LOG_BASE
+		void acb_log_base(acb_t, const acb_t, const acb_t, slong);
+#endif
+#ifndef HAVE_ACB_LOG_BASE_UI
+		void acb_log_base_ui(acb_t, const acb_t, ulong, slong);
+#endif
+
+		switch (op) {
+		case 14: /*     "sign" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_sgn, z + jz, x + jz, prec, rnd);
+			break;
+		case 15: /*     "sqrt" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_sqrt, z + jz, x + jz, prec, rnd);
+			break;
+		case 23: /*      "log" */
+			if (s_dots == R_NilValue)
+				for (jz = 0; jz < nz; ++jz)
+					WRAP(acb_log, z + jz, x + jz, prec, rnd);
+			else {
+				SEXP s_base = VECTOR_ELT(s_dots, 0);
+				if (R_flint_get_length(s_base) == 0)
+					Rf_error(_("'%s' of length zero in '%s'"),
+					         "base", CHAR(STRING_ELT(s_op, 0)));
+				acf_srcptr base = R_flint_get_pointer(s_base);
+				acb_t b;
+				acb_init(b);
+				arf_set(arb_midref(acb_realref(b)), acf_realref(base));
+				arf_set(arb_midref(acb_imagref(b)), acf_imagref(base));
+				mag_zero(arb_radref(acb_realref(b)));
+				mag_zero(arb_radref(acb_imagref(b)));
+#define acb_logb(z, x, prec) acb_log_base(z, x, b, prec)
+				for (jz = 0; jz < nz; ++jz)
+					WRAP(acb_logb, z + jz, x + jz, prec, rnd);
+#undef acb_logb
+				acb_clear(b);
+			}
+			break;
+		case 24: /*    "log10" */
+#define acb_log10(z, x, prec) acb_log_base_ui(z, x, 10, prec)
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_log10, z + jz, x + jz, prec, rnd);
+#undef acb_log10
+			break;
+		case 25: /*     "log2" */
+#define acb_log2(z, x, prec) acb_log_base_ui(z, x, 2, prec)
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_log2, z + jz, x + jz, prec, rnd);
+#undef acb_log2
+			break;
+		case 26: /*    "log1p" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_log1p, z + jz, x + jz, prec, rnd);
+			break;
+		case 27: /*      "exp" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_exp, z + jz, x + jz, prec, rnd);
+			break;
+		case 28: /*    "expm1" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_expm1, z + jz, x + jz, prec, rnd);
+			break;
+		case 29: /*      "cos" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_cos, z + jz, x + jz, prec, rnd);
+			break;
+		case 30: /*    "cospi" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_cos_pi, z + jz, x + jz, prec, rnd);
+			break;
+		case 31: /*     "acos" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_acos, z + jz, x + jz, prec, rnd);
+			break;
+		case 32: /*     "cosh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_cosh, z + jz, x + jz, prec, rnd);
+			break;
+		case 33: /*    "acosh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_acosh, z + jz, x + jz, prec, rnd);
+			break;
+		case 34: /*      "sin" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_sin, z + jz, x + jz, prec, rnd);
+			break;
+		case 35: /*    "sinpi" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_sin_pi, z + jz, x + jz, prec, rnd);
+			break;
+		case 36: /*     "asin" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_asin, z + jz, x + jz, prec, rnd);
+			break;
+		case 37: /*     "sinh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_sinh, z + jz, x + jz, prec, rnd);
+			break;
+		case 38: /*    "asinh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_asinh, z + jz, x + jz, prec, rnd);
+			break;
+		case 39: /*      "tan" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_tan, z + jz, x + jz, prec, rnd);
+			break;
+		case 40: /*    "tanpi" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_tan_pi, z + jz, x + jz, prec, rnd);
+			break;
+		case 41: /*     "atan" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_atan, z + jz, x + jz, prec, rnd);
+			break;
+		case 42: /*     "tanh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_tanh, z + jz, x + jz, prec, rnd);
+			break;
+		case 43: /*    "atanh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_atanh, z + jz, x + jz, prec, rnd);
+			break;
+		case 44: /*    "gamma" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_gamma, z + jz, x + jz, prec, rnd);
+			break;
+		case 45: /*   "lgamma" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_lgamma, z + jz, x + jz, prec, rnd);
+			break;
+		case 46: /*  "digamma" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_digamma, z + jz, x + jz, prec, rnd);
+			break;
+		case 47: /* "trigamma" */
+		{
+			acb_t s;
+			acb_init(s);
+			acb_set_si(s, 1);
+#define acb_trigamma(z, x, prec) acb_polygamma(z, s, x, prec)
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_trigamma, z + jz, x + jz, prec, rnd);
+#undef acb_trigamma
+			acb_clear(s);
+			break;
+		}
+		}
+
+#undef WRAP
+
+		acb_clear(zb);
+		acb_clear(xb);
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
@@ -1207,11 +1387,6 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 	case  9: /*       "Re" */
 	case 10: /*       "Im" */
-	case 11: /*      "Mod" */
-#ifdef HAVE_ACF_ARG
-	case 12: /*      "Arg" */
-#endif
-	case 13: /*      "abs" */
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
 		arf_ptr z = R_flint_get_pointer(ans);
@@ -1224,18 +1399,64 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			for (jz = 0; jz < nz; ++jz)
 				arf_set(z + jz, acf_imagref(x + jz));
 			break;
+		}
+		setDDNN1(ans, s_x);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 11: /*      "Mod" */
+	case 12: /*      "Arg" */
+	case 13: /*      "abs" */
+	{
+		if (prec > ARF_PREC_EXACT - 3)
+			Rf_error(_("desired precision exceeds maximum %lld"),
+			         (long long int) (ARF_PREC_EXACT - 3));
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
+		int status;
+		slong precb;
+		arb_t zb;
+		acb_t xb;
+		arb_init(zb);
+		acb_init(xb);
+		mag_zero(arb_radref(acb_realref(xb)));
+		mag_zero(arb_radref(acb_imagref(xb)));
+
+#define WRAP(op, z, x, prec, rnd) \
+		do { \
+			precb = prec + 2; \
+			arf_set(arb_midref(acb_realref(xb)), acf_realref(x)); \
+			arf_set(arb_midref(acb_imagref(xb)), acf_imagref(x)); \
+			op(zb, xb, precb); \
+			while ((status = arb_rel_accuracy_bits(zb) <= prec) && \
+			       precb < ARF_PREC_EXACT - 1) { \
+				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
+				op(zb, xb, precb); \
+			} \
+			if (status) { \
+				arb_clear(zb); \
+				acb_clear(xb); \
+				Rf_error(_("failed to reach desired precision")); \
+			} \
+			arf_set_round(z, arb_midref(zb), prec, rnd); \
+		} while (0)
+
+		switch (op) {
 		case 11: /*      "Mod" */
 		case 13: /*      "abs" */
 			for (jz = 0; jz < nz; ++jz)
-				acf_abs(z + jz, x + jz, prec, rnd);
+				WRAP(acb_abs, z + jz, x + jz, prec, rnd);
 			break;
-#ifdef HAVE_ACF_ARG
 		case 12: /*      "Arg" */
 			for (jz = 0; jz < nz; ++jz)
-				acf_arg(z + jz, x + jz, prec, rnd);
+				WRAP(acb_arg, z + jz, x + jz, prec, rnd);
 			break;
-#endif
 		}
+
+#undef WRAP
+
+		arb_clear(zb);
+		acb_clear(xb);
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;

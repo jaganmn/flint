@@ -203,10 +203,7 @@ arf(x, length=)}
     \item{\code{Math}}{
       \code{signature(x = "arf")}:\cr
       mathematical functions of one argument; see
-      \code{\link[methods]{S4groupGeneric}}.  Notably, the logarithmic,
-      exponential, (inverse) trigonometric, (inverse) hyperbolic, and
-      gamma-related member functions are not yet implemented.  Users
-      wanting those can (for now) operate on \code{\link{arb}(x)}.}
+      \code{\link[methods]{S4groupGeneric}}.}
     \item{\code{Math2}}{
       \code{signature(x = "arf")}:\cr
       decimal rounding according to a second argument \code{digits}; see

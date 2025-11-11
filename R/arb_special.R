@@ -75,8 +75,11 @@ function (x, prec = flintPrec()) {
 }
 
 arb_hypgeom_polygamma <-
-function (s = 0, x, prec = flintPrec())
-    as(acb_hypgeom_polygamma(as(s, "arb"), as(x, "arb"), prec), "arb")
+function (s = 0, x, prec = flintPrec()) {
+    res <- flintNew("arb")
+    .Call(R_flint_arb_hypgeom_polygamma, res, as(s, "arb"), as(x, "arb"), as(prec, "slong"))
+    res
+}
 
 arb_hypgeom_gamma_lower <-
 function (s, x, flags = 0L, prec = flintPrec()) {

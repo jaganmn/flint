@@ -4811,6 +4811,18 @@ esac
 fi
 
 
+ac_fn_c_check_func "$LINENO" "acb_log_base" "ac_cv_func_acb_log_base"
+if test "x$ac_cv_func_acb_log_base" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACB_LOG_BASE 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "acb_log_base_ui" "ac_cv_func_acb_log_base_ui"
+if test "x$ac_cv_func_acb_log_base_ui" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACB_LOG_BASE_UI 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "acb_mat_cho" "ac_cv_func_acb_mat_cho"
 if test "x$ac_cv_func_acb_mat_cho" = xyes
 then :
@@ -4821,18 +4833,6 @@ ac_fn_c_check_func "$LINENO" "acb_mat_inv_cho_precomp" "ac_cv_func_acb_mat_inv_c
 if test "x$ac_cv_func_acb_mat_inv_cho_precomp" = xyes
 then :
   printf "%s\n" "#define HAVE_ACB_MAT_INV_CHO_PRECOMP 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "acf_abs" "ac_cv_func_acf_abs"
-if test "x$ac_cv_func_acf_abs" = xyes
-then :
-  printf "%s\n" "#define HAVE_ACF_ABS 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "acf_arg" "ac_cv_func_acf_arg"
-if test "x$ac_cv_func_acf_arg" = xyes
-then :
-  printf "%s\n" "#define HAVE_ACF_ARG 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "acf_conj" "ac_cv_func_acf_conj"
@@ -4887,6 +4887,18 @@ ac_fn_c_check_func "$LINENO" "acf_zero" "ac_cv_func_acf_zero"
 if test "x$ac_cv_func_acf_zero" = xyes
 then :
   printf "%s\n" "#define HAVE_ACF_ZERO 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "arb_log_base" "ac_cv_func_arb_log_base"
+if test "x$ac_cv_func_arb_log_base" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_LOG_BASE 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "arb_polygamma" "ac_cv_func_arb_polygamma"
+if test "x$ac_cv_func_arb_polygamma" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_POLYGAMMA 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "fmpq_clog_ui" "ac_cv_func_fmpq_clog_ui"

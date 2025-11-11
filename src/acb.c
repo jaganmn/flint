@@ -1,5 +1,30 @@
 #include "flint.h"
 
+#ifndef HAVE_ACB_LOG_BASE
+void acb_log_base(acb_t z, const acb_t x, const acb_t b, slong prec)
+{
+	acb_t t;
+	acb_init(t);
+	acb_log(t, b, prec);
+	acb_log(z, x, prec);
+	acb_div(z, z, t, prec);
+	acb_clear(t);
+	return;
+}
+#endif
+
+#ifndef HAVE_ACB_LOG_BASE_UI
+void acb_log_base_ui(acb_t z, const acb_t x, ulong b, slong prec)
+{
+	acb_t t;
+	acb_init(t);
+	acb_set_ui(t, b);
+	acb_log_base(z, x, t, prec);
+	acb_clear(t);
+	return;
+}
+#endif
+
 void R_flint_acb_finalize(SEXP x)
 {
 	acb_ptr p = R_ExternalPtrAddr(x);
@@ -776,28 +801,26 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				acb_mul(z + jz, z + jz - 1, x + jz, prec);
 			break;
 		case 23: /*      "log" */
-		case 24: /*    "log10" */
-		case 25: /*     "log2" */
-			for (jz = 0; jz < nz; ++jz)
-				acb_log(z + jz, x + jz, prec);
-			if (op != 23 || s_dots != R_NilValue) {
-			acb_t tmp;
-			acb_init(tmp);
-			if (op != 23)
-				acb_set_ui(tmp, (op == 24) ? 10 : 2);
+			if (s_dots == R_NilValue)
+				for (jz = 0; jz < nz; ++jz)
+					acb_log(z + jz, x + jz, prec);
 			else {
 				SEXP s_base = VECTOR_ELT(s_dots, 0);
 				if (R_flint_get_length(s_base) == 0)
 					Rf_error(_("'%s' of length zero in '%s'"),
 					         "base", CHAR(STRING_ELT(s_op, 0)));
 				acb_srcptr base = R_flint_get_pointer(s_base);
-				acb_set(tmp, base);
+				for (jz = 0; jz < nz; ++jz)
+					acb_log_base(z + jz, x + jz, base, prec);
 			}
-			acb_log(tmp, tmp, prec);
+			break;
+		case 24: /*    "log10" */
 			for (jz = 0; jz < nz; ++jz)
-				acb_div(z + jz, z + jz, tmp, prec);
-			acb_clear(tmp);
-			}
+				acb_log_base_ui(z + jz, x + jz, 10, prec);
+			break;
+		case 25: /*     "log2" */
+			for (jz = 0; jz < nz; ++jz)
+				acb_log_base_ui(z + jz, x + jz, 2, prec);
 			break;
 		case 26: /*    "log1p" */
 			for (jz = 0; jz < nz; ++jz)
@@ -885,12 +908,12 @@ SEXP R_flint_acb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 47: /* "trigamma" */
 		{
-			acb_t tmp;
-			acb_init(tmp);
-			acb_set_si(tmp, 1);
+			acb_t s;
+			acb_init(s);
+			acb_set_si(s, 1);
 			for (jz = 0; jz < nz; ++jz)
-				acb_polygamma(z + jz, tmp, x + jz, prec);
-			acb_clear(tmp);
+				acb_polygamma(z + jz, s, x + jz, prec);
+			acb_clear(s);
 			break;
 		}
 		case 48: /*    "round" */

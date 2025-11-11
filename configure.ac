@@ -300,7 +300,7 @@ AC_CHECK_MEMBER([fmpz_mat_struct.stride],
 AC_CHECK_FUNC([arb_init], [],
               [AC_MSG_ERROR([FLINT missing Arb sublibrary])])
 
-AC_CHECK_FUNCS([acb_mat_cho acb_mat_inv_cho_precomp acf_abs acf_arg acf_conj acf_div_ui acf_is_finite acf_is_inf acf_is_nan acf_is_zero acf_nan acf_one acf_zero fmpq_clog_ui mag_div_ui_lower mag_expm1_lower mag_get_d_lower mag_log1p_lower], [], [])
+AC_CHECK_FUNCS([acb_log_base acb_log_base_ui acb_mat_cho acb_mat_inv_cho_precomp acf_conj acf_div_ui acf_is_finite acf_is_inf acf_is_nan acf_is_zero acf_nan acf_one acf_zero arb_log_base arb_polygamma fmpq_clog_ui mag_div_ui_lower mag_expm1_lower mag_get_d_lower mag_log1p_lower], [], [])
 
 dnl 'd_mul_2exp' availability must be tested specially as it is declared
 dnl static in flint/double_extras.h

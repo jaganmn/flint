@@ -1,5 +1,38 @@
 #include "flint.h"
 
+#ifndef HAVE_ARB_LOG_BASE
+void arb_log_base(arb_t z, const arb_t x, const arb_t b, slong prec)
+{
+	arb_t t;
+	arb_init(t);
+	arb_log(t, b, prec);
+	arb_log(z, x, prec);
+	arb_div(z, z, t, prec);
+	arb_clear(t);
+	return;
+}
+#endif
+
+#ifndef HAVE_ARB_POLYGAMMA
+void arb_polygamma(arb_t z, const arb_t s, const arb_t x, slong prec)
+{
+	acb_t z0, s0, x0;
+	acb_init(z0);
+	acb_init(s0);
+	acb_init(x0);
+	arb_set(acb_realref(s0), s);
+	arb_set(acb_realref(x0), x);
+	arb_zero(acb_imagref(s0));
+	arb_zero(acb_imagref(x0));
+	acb_polygamma(z0, s0, x0, prec);
+	arb_set(z, acb_realref(z0));
+	acb_clear(z0);
+	acb_clear(s0);
+	acb_clear(x0);
+	return;
+}
+#endif
+
 void R_flint_arb_finalize(SEXP x)
 {
 	arb_ptr p = R_ExternalPtrAddr(x);
@@ -826,28 +859,26 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arb_mul(z + jz, z + jz - 1, x + jz, prec);
 			break;
 		case 23: /*      "log" */
-		case 24: /*    "log10" */
-		case 25: /*     "log2" */
-			for (jz = 0; jz < nz; ++jz)
-				arb_log(z + jz, x + jz, prec);
-			if (op != 23 || s_dots != R_NilValue) {
-			arb_t tmp;
-			arb_init(tmp);
-			if (op != 23)
-				arb_set_ui(tmp, (op == 24) ? 10 : 2);
+			if (s_dots == R_NilValue)
+				for (jz = 0; jz < nz; ++jz)
+					arb_log(z + jz, x + jz, prec);
 			else {
 				SEXP s_base = VECTOR_ELT(s_dots, 0);
 				if (R_flint_get_length(s_base) == 0)
 					Rf_error(_("'%s' of length zero in '%s'"),
 					         "base", CHAR(STRING_ELT(s_op, 0)));
 				arb_srcptr base = R_flint_get_pointer(s_base);
-				arb_set(tmp, base);
+				for (jz = 0; jz < nz; ++jz)
+					arb_log_base(z + jz, x + jz, base, prec);
 			}
-			arb_log(tmp, tmp, prec);
+			break;
+		case 24: /*    "log10" */
 			for (jz = 0; jz < nz; ++jz)
-				arb_div(z + jz, z + jz, tmp, prec);
-			arb_clear(tmp);
-			}
+				arb_log_base_ui(z + jz, x + jz, 10, prec);
+			break;
+		case 25: /*     "log2" */
+			for (jz = 0; jz < nz; ++jz)
+				arb_log_base_ui(z + jz, x + jz, 2, prec);
 			break;
 		case 26: /*    "log1p" */
 			for (jz = 0; jz < nz; ++jz)
@@ -935,20 +966,12 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 47: /* "trigamma" */
 		{
-			acb_t tmp0, tmp1, tmp2;
-			acb_init(tmp0);
-			acb_init(tmp1);
-			acb_init(tmp2);
-			acb_set_si(tmp1, 1);
-			arb_zero(acb_imagref(tmp2));
-			for (jz = 0; jz < nz; ++jz) {
-				arb_set(acb_realref(tmp2), x + jz);
-				acb_polygamma(tmp0, tmp1, tmp2, prec);
-				arb_set(z + jz, acb_realref(tmp0));
-			}
-			acb_clear(tmp0);
-			acb_clear(tmp1);
-			acb_clear(tmp2);
+			arb_t s;
+			arb_init(s);
+			arb_set_si(s, 1);
+			for (jz = 0; jz < nz; ++jz)
+				arb_polygamma(z + jz, s, x + jz, prec);
+			arb_clear(s);
 			break;
 		}
 		case 48: /*    "round" */

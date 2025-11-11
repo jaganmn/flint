@@ -765,17 +765,26 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 12: /*     "Arg" */
 		{
-			arb_t pi;
-			arb_init(pi);
-			arb_const_pi(pi, prec);
+			if (prec > ARF_PREC_EXACT - 3)
+				Rf_error(_("desired precision exceeds maximum %lld"),
+				         (long long int) (ARF_PREC_EXACT - 3));
+			arb_t pib;
+			arb_init(pib);
+			arb_const_pi(pib, prec + 2);
+			if (arb_rel_accuracy_bits(pib) <= prec) {
+				/* FIXME: Does this ever happen ... ? */
+				arb_clear(pib);
+				Rf_error(_("failed to reach desired precision")); \
+			}
+			arf_set_round(arb_midref(pib), arb_midref(pib), prec, rnd);
 			for (jz = 0; jz < nz; ++jz)
 				if (arf_is_nan(x + jz) || arf_is_zero(x + jz))
 					arf_set(z + jz, x + jz);
 				else if (arf_sgn(x + jz) > 0)
-					arf_set(z + jz, arb_midref(pi));
+					arf_set(z + jz, arb_midref(pib));
 				else
-					arf_neg(z + jz, arb_midref(pi));
-			arb_clear(pi);
+					arf_neg(z + jz, arb_midref(pib));
+			arb_clear(pib);
 			break;
 		}
 		case 14: /*    "sign" */
@@ -940,12 +949,215 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		UNPROTECT(1);
 		return ans;
 	}
-	case 50: /*     "min" */
-	case 51: /*     "max" */
-	case 52: /*   "range" */
-	case 53: /*     "sum" */
-	case 54: /*    "prod" */
-	case 55: /*    "mean" */
+	case 23: /*      "log" */
+	case 24: /*    "log10" */
+	case 25: /*     "log2" */
+	case 26: /*    "log1p" */
+	case 27: /*      "exp" */
+	case 28: /*    "expm1" */
+	case 29: /*      "cos" */
+	case 30: /*    "cospi" */
+	case 31: /*     "acos" */
+	case 32: /*     "cosh" */
+	case 33: /*    "acosh" */
+	case 34: /*      "sin" */
+	case 35: /*    "sinpi" */
+	case 36: /*     "asin" */
+	case 37: /*     "sinh" */
+	case 38: /*    "asinh" */
+	case 39: /*      "tan" */
+	case 40: /*    "tanpi" */
+	case 41: /*     "atan" */
+	case 42: /*     "tanh" */
+	case 43: /*    "atanh" */
+	case 44: /*    "gamma" */
+	case 45: /*   "lgamma" */
+	case 46: /*  "digamma" */
+	case 47: /* "trigamma" */
+	{
+		if (prec > ARF_PREC_EXACT - 3)
+			Rf_error(_("desired precision exceeds maximum %lld"),
+			         (long long int) (ARF_PREC_EXACT - 3));
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
+		int status;
+		slong precb;
+		arb_t zb, xb;
+		arb_init(zb);
+		arb_init(xb);
+		mag_zero(arb_radref(xb));
+
+#define WRAP(op, z, x, prec, rnd) \
+		do { \
+			precb = prec + 2; \
+			arf_set(arb_midref(xb), x); \
+			op(zb, xb, precb); \
+			while ((status = arb_rel_accuracy_bits(zb) <= prec) && \
+			       precb < ARF_PREC_EXACT - 1) { \
+				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
+				op(zb, xb, precb); \
+			} \
+			if (status) { \
+				arb_clear(zb); \
+				arb_clear(xb); \
+				Rf_error(_("failed to reach desired precision")); \
+			} \
+			arf_set_round(z, arb_midref(zb), prec, rnd); \
+		} while (0)
+
+#ifndef HAVE_ARB_LOG_BASE
+		void arb_log_base(arb_t, const arb_t, const arb_t, slong);
+#endif
+#ifndef HAVE_ARB_POLYGAMMA
+		void arb_polygamma(arb_t, const arb_t, const arb_t, slong);
+#endif
+
+		switch (op) {
+		case 23: /*      "log" */
+			if (s_dots == R_NilValue)
+				for (jz = 0; jz < nz; ++jz)
+					WRAP(arb_log, z + jz, x + jz, prec, rnd);
+			else {
+				SEXP s_base = VECTOR_ELT(s_dots, 0);
+				if (R_flint_get_length(s_base) == 0)
+					Rf_error(_("'%s' of length zero in '%s'"),
+					         "base", CHAR(STRING_ELT(s_op, 0)));
+				arf_srcptr base = R_flint_get_pointer(s_base);
+				arb_t b;
+				arb_init(b);
+				arf_set(arb_midref(b), base);
+				mag_zero(arb_radref(b));
+#define arb_logb(z, x, prec) arb_log_base(z, x, b, prec)
+				for (jz = 0; jz < nz; ++jz)
+					WRAP(arb_logb, z + jz, x + jz, prec, rnd);
+#undef arb_logb
+				arb_clear(b);
+			}
+			break;
+		case 24: /*    "log10" */
+#define arb_log10(z, x, prec) arb_log_base_ui(z, x, 10, prec)
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_log10, z + jz, x + jz, prec, rnd);
+#undef arb_log10
+			break;
+		case 25: /*     "log2" */
+#define arb_log2(z, x, prec) arb_log_base_ui(z, x, 2, prec)
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_log2, z + jz, x + jz, prec, rnd);
+#undef arb_log2
+			break;
+		case 26: /*    "log1p" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_log1p, z + jz, x + jz, prec, rnd);
+			break;
+		case 27: /*      "exp" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_exp, z + jz, x + jz, prec, rnd);
+			break;
+		case 28: /*    "expm1" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_expm1, z + jz, x + jz, prec, rnd);
+			break;
+		case 29: /*      "cos" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_cos, z + jz, x + jz, prec, rnd);
+			break;
+		case 30: /*    "cospi" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_cos_pi, z + jz, x + jz, prec, rnd);
+			break;
+		case 31: /*     "acos" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_acos, z + jz, x + jz, prec, rnd);
+			break;
+		case 32: /*     "cosh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_cosh, z + jz, x + jz, prec, rnd);
+			break;
+		case 33: /*    "acosh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_acosh, z + jz, x + jz, prec, rnd);
+			break;
+		case 34: /*      "sin" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_sin, z + jz, x + jz, prec, rnd);
+			break;
+		case 35: /*    "sinpi" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_sin_pi, z + jz, x + jz, prec, rnd);
+			break;
+		case 36: /*     "asin" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_asin, z + jz, x + jz, prec, rnd);
+			break;
+		case 37: /*     "sinh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_sinh, z + jz, x + jz, prec, rnd);
+			break;
+		case 38: /*    "asinh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_asinh, z + jz, x + jz, prec, rnd);
+			break;
+		case 39: /*      "tan" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_tan, z + jz, x + jz, prec, rnd);
+			break;
+		case 40: /*    "tanpi" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_tan_pi, z + jz, x + jz, prec, rnd);
+			break;
+		case 41: /*     "atan" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_atan, z + jz, x + jz, prec, rnd);
+			break;
+		case 42: /*     "tanh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_tanh, z + jz, x + jz, prec, rnd);
+			break;
+		case 43: /*    "atanh" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_atanh, z + jz, x + jz, prec, rnd);
+			break;
+		case 44: /*    "gamma" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_gamma, z + jz, x + jz, prec, rnd);
+			break;
+		case 45: /*   "lgamma" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_lgamma, z + jz, x + jz, prec, rnd);
+			break;
+		case 46: /*  "digamma" */
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_digamma, z + jz, x + jz, prec, rnd);
+			break;
+		case 47: /* "trigamma" */
+		{
+			arb_t s;
+			arb_init(s);
+			arb_set_si(s, 1);
+#define arb_trigamma(z, x, prec) arb_polygamma(z, s, x, prec)
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_trigamma, z + jz, x + jz, prec, rnd);
+#undef arb_trigamma
+			arb_clear(s);
+			break;
+		}
+		}
+
+#undef WRAP
+
+		arb_clear(zb);
+		arb_clear(xb);
+		setDDNN1(ans, s_x);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 50: /*      "min" */
+	case 51: /*      "max" */
+	case 52: /*    "range" */
+	case 53: /*      "sum" */
+	case 54: /*     "prod" */
+	case 55: /*     "mean" */
 	{
 		SEXP s_narm = VECTOR_ELT(s_dots, 0);
 		if (XLENGTH(s_narm) == 0)
