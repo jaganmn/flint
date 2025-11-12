@@ -19,7 +19,8 @@
 \usage{
 arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
        hmin = 0, hmax = Inf, hini = NULL, smax = NULL,
-       method = .rk.method.dormand.prince(), prec = flintPrec())
+       method = .rk.method.dormand.prince(), progress = 0L,
+       prec = flintPrec())
 }
 \arguments{
   \item{func}{
@@ -64,6 +65,11 @@ arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
     default.}
   \item{method}{
     a list specifying a Runge-Kutta method.}
+  \item{progress}{
+    an integer flag determining how progress is indicated.  \samp{.}
+    is printed after each external step if \code{progress >= 1};
+    \samp{o} and \samp{x} are printed after each accepted and rejected
+    internal step if \code{progress >= 2}.}
   \item{prec}{
     a positive integer indicating the working precision as a number of
     bits, passed to \code{func}.}

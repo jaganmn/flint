@@ -1,5 +1,17 @@
 #include "flint.h"
 
+#define PROGRESS_MAX 60
+#define PROGRESS(p, s, n) \
+do { \
+	if (progress >= (p)) { \
+		Rprintf((s)); \
+		if ((n)++ == PROGRESS_MAX) { \
+			Rprintf("\n"); \
+			(n) = 0; \
+		} \
+	} \
+} while (0)
+
 typedef enum {
 	RK_PASS = 0,
 	RK_FAIL_NOOP,
@@ -74,6 +86,7 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
          arf_srcptr a, arf_srcptr b, arf_srcptr bb, arf_srcptr c,
          mp_limb_t d, mp_limb_t p,
          arf_ptr ak, arf_ptr bk, arf_ptr bbk, arf_ptr kk,
+         int progress, unsigned int *count,
          slong prec, arf_rnd_t rnd, arf_ptr work)
 {
 	int cmp = -1;
@@ -114,6 +127,7 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
 					arf_set(hcur, hmax);
 				swap =  w0;  w0 =  w1;  w1 = swap;
 				swap = *y0; *y0 = *y1; *y1 = swap;
+				PROGRESS(2, "o", *count);
 			} else {
 				if (arf_cmp_2exp_si(hscl, -4) <= 0)
 					arf_mul_2exp_si(hcur, hcur, -4);
@@ -122,6 +136,7 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
 				if (arf_cmp(hcur, hmin) < 0)
 					return RK_FAIL_HMIN;
 				cmp = -1;
+				PROGRESS(2, "x", *count);
 			}
 		}
 	} else {
@@ -142,12 +157,13 @@ rk_estep(SEXP call, arf_ptr callt, arf_ptr cally,
 			*scur += 1;
 			swap =  w0;  w0 =  w1;  w1 = swap;
 			swap = *y0; *y0 = *y1; *y1 = swap;
+			PROGRESS(2, "o", *count);
 		}
 	}
 	return (cmp < 0) ? RK_FAIL_SMAX : RK_PASS;
 }
 
-SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_param, SEXP s_rtol, SEXP s_atol, SEXP s_hmin, SEXP s_hmax, SEXP s_hini, SEXP s_smax, SEXP s_method, SEXP s_prec, SEXP s_rnd)
+SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_param, SEXP s_rtol, SEXP s_atol, SEXP s_hmin, SEXP s_hmax, SEXP s_hini, SEXP s_smax, SEXP s_method, SEXP s_progress, SEXP s_prec, SEXP s_rnd)
 {
 	slong prec = asPrec(s_prec, __func__);
 	arf_rnd_t rnd = asRnd(s_rnd, __func__);
@@ -203,6 +219,7 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	mp_limb_t nrtol = 1, natol = 1, rmsk = 0, amsk = 0;
 	arf_ptr rtol = 0, atol = 0, hmin = 0, hmax = 0, hcur = 0;
 	ulong smax = 0, scur = 0;
+	int progress = 0;
 
 	if (adapt) {
 
@@ -291,6 +308,10 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	if (nt > 1)
 	smax = (smax > UWORD_MAX / (nt - 1)) ? UWORD_MAX : smax * (nt - 1);
 
+	if (XLENGTH(s_progress) != 1)
+		Rf_error(_("length of '%s' is not %d"), "progress", 1);
+	progress = INTEGER(s_progress)[0];
+
 	/* R: func(t, y, param, prec) */
 	SEXP s_a0 = s_func;
 	SEXP s_a1 = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, 1));
@@ -315,14 +336,17 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 	}
 
 	rk_status_t status = RK_PASS;
+	unsigned int count = 0;
 	for (jt = 1; jt < nt; ++jt) {
 		status =
 		rk_estep(call, a1, a2, t + jt - 1, t + jt, &y0, &y1, &y2, ny,
 		         rtol, rmsk, atol, amsk, hmin, hmax, hcur, smax, &scur,
-		         a, b, bb, c, d, p, ak, bk, bbk, kk, prec, rnd, work);
+		         a, b, bb, c, d, p, ak, bk, bbk, kk, progress, &count,
+		         prec, rnd, work);
 		if (status == RK_PASS) {
 			for (jy = 0; jy < ny; ++jy)
 				arf_set(resy + jy * nt + jt, y0 + jy);
+			PROGRESS(1, ".", count);
 		} else {
 			mp_limb_t jt__;
 			for (jy = 0; jy < ny; ++jy)
@@ -331,6 +355,8 @@ SEXP R_flint_arf_calc_rk(SEXP s_res, SEXP s_func, SEXP s_t, SEXP s_y0, SEXP s_pa
 			break;
 		}
 	}
+	if (progress > 0 && count > 0)
+		Rprintf("\n");
 
 	switch (status) {
 	case RK_FAIL_NOOP:

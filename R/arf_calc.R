@@ -65,7 +65,8 @@ function () {
 arf_rk <-
 function (func, t, y0, param = NULL, rtol = NULL, atol = NULL,
           hmin = 0, hmax = Inf, hini = NULL, smax = NULL,
-          method = .rk.method.dormand.prince(), prec = flintPrec()) {
+          method = .rk.method.dormand.prince(), progress = 0L,
+          prec = flintPrec()) {
     prec. <- flintPrec(prec)
     rnd. <- flintRnd("N")
     on.exit({ flintPrec(prec.); flintRnd(rnd.) })
@@ -78,6 +79,6 @@ function (func, t, y0, param = NULL, rtol = NULL, atol = NULL,
                               as(hmax, "arf"),
           if (!is.null(hini)) as(hini, "arf"),
           if (!is.null(smax)) as(smax, "ulong"),
-          do.call(.rk.method, method), prec, "N")
+          do.call(.rk.method, method), as.integer(progress), prec, "N")
     res
 }
