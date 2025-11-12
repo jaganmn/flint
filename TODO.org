@@ -16,7 +16,7 @@
 *** DONE unique
 *** DONE anyDuplicated
 
-** TODO function for numerical solution of systems of ODE using 'arb'
+** DONE function for numerical solution of systems of ODE using 'arf'
 ** DONE function for numerical integration of functions of one variable
 	https://doi.org/10.1007/978-3-319-96418-8_30
 
@@ -61,7 +61,7 @@
 ** TODO random number generation, something like 'sample', 'runif'
 ** TODO rounding to 'prec' bits
 ** TODO plotting ... ??
-** TODO work around missing 'arf', 'acf' functionality
+** DONE work around missing 'arf', 'acf' functionality
 ** TODO write a vignette
 ** TODO serialization
 ** TODO formatting of floating-point types suppressing trailing zeros
