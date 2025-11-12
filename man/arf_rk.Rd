@@ -3,7 +3,7 @@
 \title{Numerical Solution of Systems of Ordinary Differential Equations}
 \description{
   Solves numerically the initial value problem
-  \deqn{y'(t) = f(t, y(t)), y(0) = y_{0}}{y'(t) = f(t, y(t)), y(0) = y_0}
+  \deqn{y'(t) = f(t, y(t)),\quad y(0) = y_{0},}{y'(t) = f(t, y(t)),  y(0) = y_0,}
   using an explicit, adaptive or non-adaptive Runge-Kutta method,
   by default the Dormand-Prince method.
 
@@ -109,6 +109,11 @@ arf_rk(func, t, y0, param = NULL, rtol = NULL, atol = NULL,
   \CRANpkg{deSolve}.
 }
 \examples{
-## TODO
+F.linexp <- function (t, y) c(arf(1), -y[2L])
+tt <- 0:10
+y0 <- c(u = 1, v = 1)
+L <- arf_rk(F.linexp, tt, y0)
+L. <- list(t = tt, y = cbind(u = y0[1] + tt, v = y0[2] * exp(-tt)))
+stopifnot(all.equal(L, L., check.class = FALSE))
 }
 \keyword{math}
