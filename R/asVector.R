@@ -66,3 +66,29 @@ function (x, mode = "any", strict = TRUE)
            },
            stop(gettextf("invalid mode \"%s\"", mode),
                 domain = NA))
+
+asMatrix <-
+function (x) {
+    if (is.matrix(x))
+        x
+    else {
+        y <- asVector(x)
+        dim(y) <- c(length(x), 1L)
+        if (!is.null(a <- names(x)))
+            dimnames(y) <- list(names, NULL)
+        y
+    }
+}
+
+asArray <-
+function (x) {
+    if (is.array(x))
+        x
+    else {
+        y <- asVector(x)
+        dim(y) <- length(x)
+        if (!is.null(a <- names(x)))
+            dimnames(y) <- list(names)
+        y
+    }
+}

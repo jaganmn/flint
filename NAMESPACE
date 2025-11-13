@@ -26,8 +26,8 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               is.finite, is.infinite, is.matrix, is.na, "is.na<-",
               is.nan, isSymmetric, is.unsorted, length, "length<-", log,
               match, mean, mtfrm, names, "names<-", norm, print, rbind2,
-              rep, rep.int, rep_len, rowMeans, rowSums, seq, sequence,
-              solve, summary, t, tcrossprod, unique, xtfrm)
+              rep, rep.int, rep_len, rowMeans, rowSums, scale, seq,
+              sequence, solve, summary, t, tcrossprod, unique, xtfrm)
 ## Generic functions in 'methods':
 exportMethods(Complex, Math, Math2, Ops, Summary, coerce, show)
 ## Generic functions in 'stats':
@@ -127,6 +127,7 @@ S3method(quantile, flint, .S3.quantile.flint)
 S3method(rbind, flint)
 S3method(rep.int, flint, .S3.rep.int.flint)
 S3method(rep_len, flint, .S3.rep_len.flint)
+S3method(scale, flint, .S3.scale.flint)
 S3method(seq, flint, .S3.seq.flint)
 S3method(sequence, flint, .S3.sequence.flint)
 S3method(solve, flint, .S3.solve.flint)

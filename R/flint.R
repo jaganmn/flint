@@ -1890,6 +1890,51 @@ setMethod("rep_len",
           function (x, length.out)
               .Call(R_flint_rep_lengthout, x, as(length.out, "ulong"), FALSE))
 
+setMethod("scale",
+          c(x = "flint"),
+          function (x, center = TRUE, scale = TRUE) {
+              x <- asMatrix(x)
+              d <- x@dim
+              m <- d[1L]
+              n <- d[2L]
+              if (is.logical(center)) {
+                  if (center) {
+                      center <- colMeans(x, na.rm = TRUE)
+                      x <- x - rep(center, each = m)
+                  }
+              } else {
+                  if (length(center) == n)
+                      x <- x - rep(center, each = m)
+                  else stop(gettextf("length of '%s' does not equal number of columns of '%s'",
+                                     "center", "x"),
+                            domain = NA)
+              }
+              if (is.logical(scale)) {
+                  if (scale) {
+                      scale <-
+                      do.call(c.flint,
+                              lapply((0L:(n - 1L)) * m,
+                                     function (h) {
+                                         y <- if (m) x[(h + 1L):(h + m)] else x[0L]
+                                         sqrt(sum(y * y, na.rm = TRUE)/
+                                              max(1L, m - sum(is.na(y)) - 1L))
+                                     }))
+                      x <- x/rep(scale, each = m)
+                  }
+              } else {
+                  if (length(scale) == n)
+                      x <- x/rep(scale, each = m)
+                  else stop(gettextf("length of '%s' does not equal number of columns of '%s'",
+                                     "scale", "x"),
+                            domain = NA)
+              }
+              if (!is.logical(center))
+                  attr(x, "scaled:center") <- center
+              if (!is.logical(scale))
+                  attr(x, "scaled:scale") <- scale
+              x
+          })
+
 setMethod("seq",
           c("..." = "flint"),
           function (from, to, by, length.out, along.with, ...) {

@@ -86,6 +86,10 @@ function (x, times)
 function (x, length.out)
     rep_len(x, length.out)
 
+.S3.scale.flint <-
+function (x, center = TRUE, scale = TRUE)
+    scale(x, center = center, scale = scale)
+
 .S3.seq.flint <-
 function (...)
     seq(...)
