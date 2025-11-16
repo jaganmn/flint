@@ -1,13 +1,21 @@
 \name{asVector}
 \alias{asVector}
+\alias{asMatrix}
+\alias{asArray}
 \title{Coerce an Object to a Vector Class}
 \description{
-  A generalization of \code{\link{as.vector}} enabling coercion from and
-  to \code{\linkS4class{flint}} vector classes (in addition to basic
-  vector classes) and providing more uniform handling of attributes.
+  \code{asVector} is a generalization of \code{\link{as.vector}}
+  enabling coercion from and to \code{\linkS4class{flint}} vector
+  classes (in addition to basic vector classes) and providing more
+  uniform handling of attributes.
+
+  \code{asMatrix} and \code{asArray} are analogues generalizing
+  \code{\link{as.matrix}} and \code{\link{as.array}}.
 }
 \usage{
 asVector(x, mode = "any", strict = TRUE)
+asMatrix(x, mode = "any", strict = TRUE)
+asArray (x, mode = "any", strict = TRUE)
 }
 \arguments{
   \item{x}{

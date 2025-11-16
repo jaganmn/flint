@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-12)}{
+\section{Changes in version 0.1.3 (2025-11-15)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -55,6 +55,9 @@
   }
   \subsection{New Features}{
     \itemize{
+      \item \R{} functions \code{asMatrix} and \code{asArray}, analogues
+      of \code{asVector}.
+
       \item \R{} functions \code{arb_integrate} and \code{acb_integrate}
       for integration of functions of one variable.
 
@@ -77,6 +80,9 @@
       \item \code{all.equal(x, y, check.class = FALSE)} failed to detect
       numerical differences between \code{x} and \code{y}, returning
       \code{TRUE} incorrectly when it detected no other differences.
+
+      \item \code{asVector(x, strict = FALSE)} did not correctly handle
+      data frames \code{x}.
     }
   }
   \subsection{Internals}{

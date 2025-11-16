@@ -7,3 +7,9 @@ function (signature, definition, where = topenv(parent.frame())) {
     setMethod("tcrossprod", signature, definition, where)
     invisible("matrixOps")
 }
+
+updateBody <-
+function (F, ...) {
+    body(F) <- do.call(substitute, list(body(F), as.list(sys.call())[-1L]))
+    F
+}
