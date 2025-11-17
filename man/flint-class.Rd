@@ -82,6 +82,7 @@
 \alias{dimnames<-,flint,list-method}
 \alias{drop,flint-method}
 \alias{duplicated,flint-method}
+\alias{eigen,flint-method}
 \alias{findInterval,flint-method}
 \alias{identical,flint,flint-method}
 \alias{is.array,flint-method}
@@ -106,10 +107,12 @@
 \alias{outer,flint,ANY-method}
 \alias{outer,flint,flint-method}
 \alias{print,flint-method}
+\alias{qr,flint-method}
 \alias{quantile,flint-method}
 \alias{rbind2,ANY,flint-method}
 \alias{rbind2,flint,ANY-method}
 \alias{rbind2,flint,flint-method}
+\alias{rcond,flint-method}
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
 \alias{rep_len,flint-method}
@@ -118,6 +121,7 @@
 \alias{sequence,flint-method}
 \alias{show,flint-method}
 \alias{summary,flint-method}
+\alias{svd,flint-method}
 \alias{t,flint-method}
 \alias{unique,flint-method}
 \docType{class}

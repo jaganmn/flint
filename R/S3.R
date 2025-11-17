@@ -74,6 +74,10 @@ function (x)
 function (x, ...)
     print(x, ...)
 
+.S3.qr.flint <-
+function (x, ...)
+    qr(x, ...)
+
 .S3.quantile.flint <-
 function (x, ...)
     quantile(x, ...)

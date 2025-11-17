@@ -1458,6 +1458,11 @@ setMethod("duplicated",
               ans
           })
 
+setMethod("eigen",
+          c(x = "flint"),
+          function (x, symmetric, only.values = FALSE, EISPACK = FALSE)
+              .NotYetImplemented())
+
 setMethod("findInterval",
           c(x = "flint"),
           function (x, vec,
@@ -1649,22 +1654,20 @@ setMethod("norm",
                   stop(gettextf("'%s' is not a matrix", "x"),
                        domain = NA)
               type <- substr(type, 1L, 1L)
-              max0 <-
-              function (x) {
+              norm0 <-
+              function (x, value) {
                   if (length(x))
-                      max(x)
-                  else flint(flintClass(x), length = 1L)
+                      value
+                  else flint(flintClass(abs(x)), length = 1L) # zero
               }
               switch(EXPR = type,
                      "1" =,
-                     "O" =, "o" = max0(colSums(abs(x))),
-                     "I" =, "i" = max0(rowSums(abs(x))),
+                     "O" =, "o" = norm0(x, max(colSums(abs(x)))),
+                     "I" =, "i" = norm0(x, max(rowSums(abs(x)))),
                      "F" =, "f" =,
                      "E" =, "e" = sqrt(sum(x * x)),
-                     "M" =, "m" = max0(abs(x)),
-                     "2" =
-                     stop(gettextf("norm type \"%s\" is not yet implemented", type),
-                          domain = NA),
+                     "M" =, "m" = norm0(x, max(abs(x))),
+                     "2" = norm0(x, svd(x, nu = 0L, nv = 0L)$d[1L]),
                      stop(gettextf("norm type \"%s\" is invalid", type),
                           domain = NA))
           })
@@ -1786,6 +1789,11 @@ setMethod("print",
               invisible(x)
           })
 
+setMethod("qr",
+          c(x = "flint"),
+          function (x, ...)
+              .NotYetImplemented())
+
 setMethod("quantile",
           c(x = "flint"),
           function (x, probs = fmpq(num = 0L:4L, den = 4L), type = 7L,
@@ -1901,6 +1909,11 @@ setMethod("rbind2",
           c(x = "flint", y = "flint"),
           function (x, y, ...)
               rbind.flint(x, y, deparse.level = 0L))
+
+setMethod("rcond",
+          c(x = "flint"),
+          function (x, norm, ...)
+              .NotYetImplemented())
 
 setMethod("rep",
           c(x = "flint"),
@@ -2127,6 +2140,11 @@ setMethod("summary",
               qq@names <- c("Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", "Max.")
               if (anyna) c(qq, "NaN" = sum(isna)) else qq
           })
+
+setMethod("svd",
+          c(x = "flint"),
+          function (x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE)
+              .NotYetImplemented())
 
 setMethod("t",
           c(x = "flint"),
