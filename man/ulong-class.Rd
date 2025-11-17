@@ -5,6 +5,9 @@
 \alias{slong}
 \alias{ulong.array}
 \alias{slong.array}
+\alias{ULONG_MAX}
+\alias{SLONG_MIN}
+\alias{SLONG_MAX}
 \alias{!,ulong-method}
 \alias{!,slong-method}
 \alias{\%*\%,ANY,ulong-method}
