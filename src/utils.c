@@ -554,7 +554,7 @@ int checkConformable(SEXP x, SEXP y,
 			Rf_error(_("non-conformable arguments"));
 		if (!ty) ty = k == 1;
 	} else if (ay != R_NilValue || (ax == R_NilValue && ty)) {
-		int k = (ay != R_NilValue) ? INTEGER_RO(ay)[ ty] : (int) ny;
+		int k = (ay != R_NilValue) ? INTEGER_RO(ay)[ ty] :        1;
 		if ((tx) ? k != nx : k != 1 && k != nx)
 			Rf_error(_("non-conformable arguments"));
 		if (!tx) tx = k != 1;

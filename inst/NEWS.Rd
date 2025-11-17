@@ -86,6 +86,10 @@
 
       \item \code{asVector(x, strict = FALSE)} did not correctly handle
       data frames \code{x}.
+
+      \item \code{tcrossprod(x, y)} misbehaved when neither \code{x} nor
+      \code{y} was a matrix, throwing an error when the lengths were not
+      equal and triggering a segfault when they were.
     }
   }
   \subsection{Internals}{

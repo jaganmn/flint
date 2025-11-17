@@ -63,3 +63,12 @@ stopifnot(identical(u, ulong(3L)), identical(s, slong(1:2)))
 
 ## all.equal(check.class = FALSE) failed to detect numerical differences
 stopifnot(is.character(all.equal(0, arf(1), check.class = FALSE)))
+
+
+## tcrossprod(<vector>, <vector>) determined inner dimension incorrectly
+stopifnot(identical(fmpz(tcrossprod(1:6, 1:8)),
+                    ## below gave "non-conformable arguments":
+                    tcrossprod(fmpz(1:6), fmpz(1:8))),
+          identical(fmpq(tcrossprod(1:6, 1:6)),
+                    ## below could trigger a segfault:
+                    tcrossprod(fmpq(1:6), fmpq(1:6))))
