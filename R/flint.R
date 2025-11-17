@@ -1144,8 +1144,8 @@ setMethod("as.POSIXlt",
           function (x, tz = "", ...)
               as.POSIXlt(asVector(x, "vector", FALSE), tz = tz, ...))
 
-.init.asplit <-
-function () {
+.initAsplit <-
+function (where = topenv(parent.frame())) {
 suppressMessages(setGeneric("asplit"))
 if (getRversion() >= "4.5.0") {
 setMethod("asplit",
@@ -1156,8 +1156,9 @@ setMethod("asplit",
                   match(MARGIN, names(x@dimnames), 0L)
               else as.integer(MARGIN)
               .Call(R_flint_asplit, x, MARGIN, as.logical(drop))
-          })
-assign("asplit3", envir = topenv(parent.frame()), inherits = FALSE,
+          },
+          where = where)
+assign("asplit3", envir = where, inherits = FALSE,
        asplit)
 } else {
 setMethod("asplit",
@@ -1168,8 +1169,9 @@ setMethod("asplit",
                   match(MARGIN, names(x@dimnames), 0L)
               else as.integer(MARGIN)
               .Call(R_flint_asplit, x, MARGIN, FALSE)
-          })
-assign("asplit3", envir = topenv(parent.frame()), inherits = FALSE,
+          },
+          where = where)
+assign("asplit3", envir = where, inherits = FALSE,
        function (x, MARGIN, drop = FALSE) {
            ans <- asplit(x, MARGIN)
            if (drop)
