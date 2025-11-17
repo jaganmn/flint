@@ -174,10 +174,10 @@ mag(x, length=)}
 }
 \section{Methods}{
   \describe{
-    \item{\code{!}}{
+    \item{\code{\link{!}}}{
       \code{signature(x = "mag")}:\cr
       equivalent to (but faster than) \code{x == 0}.}
-    \item{\code{\%*\%}, \code{crossprod}, \code{tcrossprod}}{
+    \item{\code{\link{\%*\%}}, \code{\link{crossprod}}, \code{\link{tcrossprod}}}{
       \code{signature(x = "mag", y = "mag")}:\cr
       \code{signature(x = "mag", y = "ANY")}:\cr
       \code{signature(x = "ANY", y = "mag")}:\cr
@@ -188,34 +188,34 @@ mag(x, length=)}
       necessary and must be conformable (have compatible dimensions).
       Non-array operands of length \code{k} are handled as 1-by-\code{k}
       or \code{k}-by-1 matrices depending on the call.}
-    \item{\code{+}}{
+    \item{\code{\link{+}}}{
       \code{signature(e1 = "mag", e2 = "missing")}:\cr
       returns a copy of the argument.}
-    \item{\code{-}}{
+    \item{\code{\link{-}}}{
       \code{signature(e1 = "mag", e2 = "missing")}:\cr
       returns a copy of the argument, to be consistent with the binary
       operation which returns an upper bound for the absolute value of
       the difference.}
-    \item{\code{Complex}}{
+    \item{\code{\link[methods]{Complex}}}{
       \code{signature(z = "mag")}:\cr
       mathematical functions of one argument; see
       \code{\link[methods]{S4groupGeneric}}.  The return value is an
       upper bound for the absolute value of the exact answer.}
-    \item{\code{Math}}{
+    \item{\code{\link[methods]{Math}}}{
       \code{signature(x = "mag")}:\cr
       mathematical functions of one argument; see
       \code{\link[methods]{S4groupGeneric}}.  The return value is an
       upper bound for the absolute value of the exact answer.  Notably,
       the (inverse) trigonometric, (inverse) hyperbolic, and
       gamma-related member functions are not yet implemented.  Users
-      wanting those can (for now) operate on \code{\link{arb}(x)}.}
-    \item{\code{Math2}}{
+      wanting those can (for now) operate on \code{\link{arf}(x)}.}
+    \item{\code{\link[methods]{Math2}}}{
       \code{signature(x = "mag")}:\cr
       decimal rounding according to a second argument \code{digits}; see
       \code{\link[methods]{S4groupGeneric}}.  There are just two member
       functions: \code{\link{round}}, \code{\link{signif}}.  The return
       value is an upper bound for the exact answer.}
-    \item{\code{Ops}}{
+    \item{\code{\link[methods]{Ops}}}{
       \code{signature(e1 = "mag", e2 = "mag")}:\cr
       \code{signature(e1 = "mag", e2 = "ANY")}:\cr
       \code{signature(e1 = "ANY", e2 = "mag")}:\cr
@@ -230,7 +230,7 @@ mag(x, length=)}
       absolute value of the exact answer.  Users wanting
       \dQuote{standard} floating-point arithmetic must ensure that at
       least one operand is not a \code{mag} vector.}
-    \item{\code{Summary}}{
+    \item{\code{\link[methods]{Summary}}}{
       \code{signature(x = "mag")}:\cr
       univariate summary statistics; see
       \code{\link[methods]{S4groupGeneric}}.  The return value is a
@@ -239,11 +239,11 @@ mag(x, length=)}
       \code{min}, \code{max}, \code{range}).  For \code{sum} and
       \code{prod}, the return value is an upper bound for the exact
       answer.}
-    \item{\code{anyNA}}{
+    \item{\code{\link{anyNA}}}{
       \code{signature(x = "mag")}:\cr
       returns \code{FALSE}, as \code{mag} has no representation for
       \code{NaN}.}
-    \item{\code{as.vector}}{
+    \item{\code{\link{as.vector}}}{
       \code{signature(x = "mag")}:\cr
       returns \code{as.vector(y, mode)}, where \code{y} is a double
       vector containing the result of converting each element of
@@ -253,7 +253,7 @@ mag(x, length=)}
       \code{"pairlist"}, \code{"list"}, and \code{"expression"}, which
       are not \dQuote{number-like}, is handled specially.  See also
       \code{\link{asVector}}.}
-    \item{\code{backsolve}}{
+    \item{\code{\link{backsolve}}}{
       \code{signature(r = "mag", x = "mag")}:\cr
       \code{signature(r = "mag", x = "ANY")}:\cr
       \code{signature(r = "ANY", x = "mag")}:\cr
@@ -261,58 +261,58 @@ mag(x, length=)}
       \code{\linkS4class{acf}}, \code{\linkS4class{arb}}, or
       \code{\linkS4class{acb}} (depending on the class of the other
       operand) and dispatches.}
-    \item{\code{chol}, \code{chol2inv}}{
+    \item{\code{\link{chol}}, \code{\link{chol2inv}}}{
       \code{signature(x = "mag")}:\cr
       coerces \code{x} to class \code{\linkS4class{arf}} and
       dispatches.}
-    \item{\code{coerce}}{
+    \item{\code{\link[methods]{coerce}}}{
       \code{signature(from = "ANY", to = "mag")}:\cr
       returns the value of \code{mag(from)}.}
-    \item{\code{colSums}, \code{colMeans}}{
+    \item{\code{\link{colSums}}, \code{\link{colMeans}}}{
       \code{signature(x = "mag")}:\cr
       returns a \code{mag} vector or array containing upper bounds on
       the column sums or means of \code{x}, defined as sums or means
       over dimensions \code{1:dims}.}
-    \item{\code{det}, \code{determinant}}{
+    \item{\code{\link{det}}, \code{\link{determinant}}}{
       \code{signature(x = "mag")}:\cr
       coerces \code{x} to class \code{\linkS4class{arf}} and
       dispatches.}
-    \item{\code{format}}{
+    \item{\code{\link{format}}}{
       \code{signature(x = "mag")}:\cr
       returns a character vector suitable for printing, using scientific
       format.  Optional arguments control the output; see
       \code{\link{format-methods}}.}
-    \item{\code{is.finite}}{
+    \item{\code{\link{is.finite}}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector indicating which elements of \code{x}
       are not \code{Inf}.}
-    \item{\code{is.infinite}}{
+    \item{\code{\link{is.infinite}}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector indicating which elements of \code{x}
       are \code{Inf}.}
-    \item{\code{is.na}, \code{is.nan}}{
+    \item{\code{\link{is.na}}, \code{\link{is.nan}}}{
       \code{signature(x = "mag")}:\cr
       returns a logical vector whose elements are all \code{FALSE}, as
       \code{mag} has no representation for \code{NaN}.}
-    \item{\code{is.unsorted}}{
+    \item{\code{\link{is.unsorted}}}{
       \code{signature(x = "mag")}:\cr
       returns a logical indicating if \code{x} is not sorted in
       nondecreasing order (increasing order if optional argument
       \code{strictly} is set to \code{TRUE}).}
-    \item{\code{log}}{
+    \item{\code{\link{log}}}{
       \code{signature(x = "mag")}:\cr
       returns an upper bound for the absolute value of the logarithm of
       the argument.  The natural logarithm is computed by default (when
       optional argument \code{base} is unset).}
-    \item{\code{mean}}{
+    \item{\code{\link{mean}}}{
       \code{signature(x = "mag")}:\cr
       returns an upper bound for the arithmetic mean.}
-    \item{\code{rowSums}, \code{rowMeans}}{
+    \item{\code{\link{rowSums}}, \code{\link{rowMeans}}}{
       \code{signature(x = "mag")}:\cr
       returns a \code{mag} vector or array containing upper bounds on
       the row sums or means of \code{x}, defined as sums or means over
       dimensions \code{(dims+1):length(dim(x))}.}
-    \item{\code{solve}}{
+    \item{\code{\link{solve}}}{
       \code{signature(a = "mag", b = "mag")}:\cr
       \code{signature(a = "mag", b = "ANY")}:\cr
       \code{signature(a = "ANY", b = "mag")}:\cr
