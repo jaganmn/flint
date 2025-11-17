@@ -2143,8 +2143,10 @@ setMethod("summary",
 
 setMethod("svd",
           c(x = "flint"),
-          function (x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE)
-              .NotYetImplemented())
+          function (x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE) {
+              n <- p <- NULL
+              .NotYetImplemented()
+          })
 
 setMethod("t",
           c(x = "flint"),
