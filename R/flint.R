@@ -1716,7 +1716,7 @@ setMethod("print",
               }
               cat(msg, "\n", sep = "")
               n <- flintLength(x)
-              if (n > 0L) {
+              if (any(if (is.null(d)) n else d)) {
               if (is.null(max))
                   max <- getOption("max.print")
               max <- as.integer(max)

@@ -90,6 +90,9 @@
       \item \code{tcrossprod(x, y)} misbehaved when neither \code{x} nor
       \code{y} was a matrix, throwing an error when the lengths were not
       equal and triggering a segfault when they were.
+
+      \item Row and column labels were not printed for arrays of length
+      zero.
     }
   }
   \subsection{Internals}{
