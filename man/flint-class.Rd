@@ -107,6 +107,7 @@
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
 \alias{rep_len,flint-method}
+\alias{scale,flint-method}
 \alias{seq,flint-method}
 \alias{sequence,flint-method}
 \alias{show,flint-method}
@@ -495,6 +496,11 @@ flint.array(class, \dots)
       analogues of \code{rep(x, times=)} and
       \code{rep(x, length.out=)} not preserving names, faster than
       \code{rep} when \code{x} has names.}
+    \item{\code{scale}}{
+      \code{signature(x = "flint")}:\cr
+      returns the result of optionally centering and optionally scaling
+      the columns of \code{x}, following the documented behaviour of the
+      S3 default method for \code{\link{scale}}.}
     \item{\code{seq}}{
       \code{signature(\dots = "flint")}:\cr
       generates \code{flint} vectors whose elements are equally spaced.
