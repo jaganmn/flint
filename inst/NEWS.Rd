@@ -76,6 +76,10 @@
       \R{} function \code{flintPrec}, may now be an object of class
       \code{slong}.  Previously, only numeric (of type \code{integer} or
       \code{double}) values were supported.
+
+      \item The limits of \code{ulong} and \code{slong} are available as
+      objects \code{ULONG_MAX}, \code{SLONG_MIN}, and \code{SLONG_MAX},
+      defined at load time according to the ABI.
     }
   }
   \subsection{Bug Fixes}{
@@ -97,6 +101,9 @@
   }
   \subsection{Internals}{
     \itemize{
+      \item \proglang{C} function \code{newObject} is modified so that
+      it finds class definitions also when called from \code{.onLoad}.
+
       \item \proglang{C} function \code{newFlint}, simplifying low level
       instantiation of \code{flint} objects.
     }

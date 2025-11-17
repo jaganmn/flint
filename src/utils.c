@@ -27,10 +27,16 @@ char *R_alloc_snprintf(size_t n, const char *format, ...)
 
 SEXP newObject(const char *what)
 {
-	SEXP class = PROTECT(R_do_MAKE_CLASS(what)),
-		object = R_do_new_object(class);
-	UNPROTECT(1);
-	return object;
+	static SEXP s_getClass = NULL;
+	if (!s_getClass)
+		s_getClass = Rf_install("getClass");
+	SEXP t;
+	PROTECT(t = Rf_mkString(what));
+	PROTECT(t = Rf_lang4(s_getClass, t, R_MissingArg, R_flint_namespace));
+	PROTECT(t = Rf_eval(t, R_flint_namespace));
+	t = R_do_new_object(t);
+	UNPROTECT(3);
+	return t;
 }
 
 SEXP newFlint(R_flint_class_t class, void *p, mp_limb_t n)

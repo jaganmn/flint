@@ -36,6 +36,10 @@ exportMethods(Complex, Math, Math2, Ops, Summary, cbind2, coerce,
 ## Generic functions in 'stats':
 exportMethods(quantile)
 
+export(ULONG_MAX,
+       SLONG_MIN,
+       SLONG_MAX)
+
 export(flint, flint.array,
        ulong, ulong.array,
        slong, slong.array,

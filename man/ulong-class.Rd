@@ -202,6 +202,12 @@ slong(x = 0L, length = 0L, names = NULL)
 
 ulong.array(x = 0L, dim = length(x), dimnames = NULL)
 slong.array(x = 0L, dim = length(x), dimnames = NULL)
+
+## Limits
+
+ULONG_MAX
+SLONG_MIN
+SLONG_MAX
 }
 \arguments{
   \item{x}{
@@ -252,6 +258,13 @@ slong(x, length=)}
 
   Usage of \code{ulong.array} and \code{slong.array} is modelled after
   \code{\link{array}}.
+
+  \code{ULONG_MAX} is a \code{ulong} vector of length 1 storing the
+  greatest integer representable by \code{ulong}, namely
+  \eqn{2^{n}-1}, where \eqn{n} is the value of \code{\link{flintABI}()}.
+  \code{SLONG_MIN} and \code{SLONG_MAX} are \code{slong} vectors of
+  length 1 storing the least and greatest integers representable by
+  \code{slong}, namely \eqn{-2^{n-1}} and \eqn{2^{n-1}-1}.
 }
 \section{Conversion}{
   Real numbers and real parts of complex numbers are rounded in the

@@ -21,6 +21,7 @@ function (libname, pkgname) {
                       "flint", abi, bpl),
              domain = NA)
     .initAsplit()
+    .initLimits()
     return(invisible(NULL))
 }
 
@@ -42,5 +43,24 @@ function (where = topenv(parent.frame())) {
                              useInherited = c(from = TRUE, to = FALSE))))
         setAs("ANY", "raw", function (from) as.raw(from),
               where = where)
+    invisible(NULL)
+}
+
+.initLimits <-
+function (where = topenv(parent.frame())) {
+    switch(flintABI() %/% 32L,
+           {
+               umax <-           "4294967295"
+               smin <-          "-2147483648"
+               smax <-           "2147483647"
+           },
+           {
+               umax <- "18446744073709551615"
+               smin <- "-9223372036854775808"
+               smax <-  "9223372036854775807"
+           })
+    assign("ULONG_MAX", envir = where, inherits = FALSE, ulong(umax))
+    assign("SLONG_MIN", envir = where, inherits = FALSE, slong(smin))
+    assign("SLONG_MAX", envir = where, inherits = FALSE, slong(smax))
     invisible(NULL)
 }
