@@ -4,8 +4,9 @@ importClassesFrom(methods, classGeneratorFunction)
 
 importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
            callGeneric, callNextMethod, cbind2, coerce, getClass,
-           getClassDef, is, new, "packageSlot<-", rbind2, selectMethod,
-           setAs, setClass, setClassUnion, setGeneric, setMethod, show)
+           getClassDef, is, kronecker, new, "packageSlot<-", rbind2,
+           selectMethod, setAs, setClass, setClassUnion, setGeneric,
+           setMethod, show)
 importFrom(stats, quantile, runif)
 
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
@@ -19,17 +20,18 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               "[[<-", all.equal, anyDuplicated, anyNA, aperm, as.raw,
               as.logical, as.integer, as.numeric, as.complex, as.vector,
               as.matrix, as.array, as.data.frame, as.Date, as.POSIXct,
-              as.POSIXlt, asplit, backsolve, c, cbind2, chol, chol2inv,
+              as.POSIXlt, asplit, backsolve, c, chol, chol2inv,
               colMeans, colSums, crossprod, cut, det, determinant, diag,
               "diag<-", dim, "dim<-", dimnames, "dimnames<-", drop,
               duplicated, findInterval, format, identical, is.array,
               is.finite, is.infinite, is.matrix, is.na, "is.na<-",
               is.nan, isSymmetric, is.unsorted, length, "length<-", log,
-              match, mean, mtfrm, names, "names<-", norm, print, rbind2,
+              match, mean, mtfrm, names, "names<-", norm, outer, print,
               rep, rep.int, rep_len, rowMeans, rowSums, scale, seq,
               sequence, solve, summary, t, tcrossprod, unique, xtfrm)
 ## Generic functions in 'methods':
-exportMethods(Complex, Math, Math2, Ops, Summary, coerce, show)
+exportMethods(Complex, Math, Math2, Ops, Summary, cbind2, coerce,
+              kronecker, rbind2, show)
 ## Generic functions in 'stats':
 exportMethods(quantile)
 

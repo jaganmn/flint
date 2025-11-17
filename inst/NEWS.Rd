@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-15)}{
+\section{Changes in version 0.1.3 (2025-11-17)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -48,6 +48,9 @@
   }
   \subsection{Methods}{
     \itemize{
+      \item S4 methods are defined for generic (or made-generic)
+      functions \code{outer} and \code{kronecker}.
+
       \item Methods for S4 group generic functions \code{Complex} and
       \code{Math} are more completely implemented for classes \code{arf}
       and \code{acf}, for parity with classes \code{arb} and \code{acb}.

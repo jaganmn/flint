@@ -1547,6 +1547,23 @@ setMethod("isSymmetric",
                                       tolerance = tol, ...))
           })
 
+.kronecker <- updateBody(.kronecker, as.array = asArray)
+environment(.kronecker) <- environment()
+
+setMethod("kronecker",
+          c(X =   "ANY", Y = "flint"),
+          .kronecker)
+
+setMethod("kronecker",
+          c(X = "flint", Y =   "ANY"),
+          .kronecker)
+
+setMethod("kronecker",
+          c(X = "flint", Y = "flint"),
+          .kronecker)
+
+rm(.kronecker)
+
 setMethod("length",
           c(x = "flint"),
           function (x)
@@ -1658,6 +1675,23 @@ setMethod("norm",
           c(x = "flint", type = "missing"),
           function (x, type, ...)
               norm(x, type = "O", ...))
+
+.outer <- updateBody(outer, as.vector = asVector)
+environment(.outer) <- environment()
+
+setMethod("outer",
+          c(X =   "ANY", Y = "flint"),
+          .outer)
+
+setMethod("outer",
+          c(X = "flint", Y =   "ANY"),
+          .outer)
+
+setMethod("outer",
+          c(X = "flint", Y = "flint"),
+          .outer)
+
+rm(.outer)
 
 setMethod("print",
           c(x = "flint"),

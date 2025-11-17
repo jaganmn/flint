@@ -88,6 +88,9 @@
 \alias{is.matrix,flint-method}
 \alias{is.na<-,flint-method}
 \alias{isSymmetric,flint-method}
+\alias{kronecker,ANY,flint-method}
+\alias{kronecker,flint,ANY-method}
+\alias{kronecker,flint,flint-method}
 \alias{length,flint-method}
 \alias{length<-,flint-method}
 \alias{match,ANY,flint-method}
@@ -99,6 +102,9 @@
 \alias{names<-,flint,character-method}
 \alias{norm,flint,ANY-method}
 \alias{norm,flint,missing-method}
+\alias{outer,ANY,flint-method}
+\alias{outer,flint,ANY-method}
+\alias{outer,flint,flint-method}
 \alias{print,flint-method}
 \alias{quantile,flint-method}
 \alias{rbind2,ANY,flint-method}
@@ -407,6 +413,14 @@ flint.array(class, \dots)
       if \code{x} is a symmetric matrix, depending on optional argument
       \code{trans}, following the documented behaviour of the S3 method
       for traditional matrices.}
+    \item{\code{\link{kronecker}}}{
+      \code{signature(X = "flint", Y = "flint")}:\cr
+      \code{signature(X = "flint", Y = "ANY")}:\cr
+      \code{signature(X = "ANY", Y = "flint")}:\cr
+      these methods are copies of the \pkg{base} function
+      \code{\link{.kronecker}} with calls to \code{\link{as.array}}
+      substituted for calls to \code{\link{asArray}}, as only
+      \code{asArray} preserves \code{flint} subclass inheritance.}
     \item{\code{\link{length}}}{
       \code{signature(x = "flint")}:\cr
       returns \code{\link{flintLength}(x, exact = FALSE)}.}
@@ -449,6 +463,14 @@ flint.array(class, \dots)
       returns the matrix norm of \code{x} as a \code{flint} vector of
       length 1.  The class of the return value can depend on the norm
       type indicated by argument \code{type}; see \code{\link{norm}}.}
+    \item{\code{\link{outer}}}{
+      \code{signature(X = "flint", Y = "flint")}:\cr
+      \code{signature(X = "flint", Y = "ANY")}:\cr
+      \code{signature(X = "ANY", Y = "flint")}:\cr
+      these methods are copies of the \pkg{base} function
+      \code{\link{outer}} with calls to \code{\link{as.vector}}
+      substituted for calls to \code{\link{asVector}}, as only
+      \code{asVector} preserves \code{flint} subclass inheritance.}
     \item{\code{\link{print}}}{
       \code{signature(x = "flint")}:\cr
       prints \code{\link{format}(x)} without quotes and returns \code{x}

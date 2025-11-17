@@ -4,8 +4,9 @@
 *** DONE aperm
 *** DONE asplit
 *** TODO rcond
-*** TODO kronecker
-*** TODO scale
+*** DONE outer
+*** DONE kronecker
+*** DONE scale
 *** TODO eigen
 	there are some experimental entry points in the 'acb_mat' module
 *** TODO qr
