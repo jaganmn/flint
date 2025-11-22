@@ -500,5 +500,49 @@ slong(x, length=)}
 showClass("ulong")
 showClass("slong")
 showMethods(classes = c("ulong", "slong"))
+
+(zu <- ulong(length = 12L))
+stopifnot(flintSize(zu) * 8L == length(zu) * flintABI())
+
+## Conversion of data not representable in target type/class depends on
+## existence of NA value
+as.integer(SLONG_MIN)
+try(ulong(-1L))
+try(slong(NA_integer_))
+
+## Overflow in +, -, *, \%/\% promotes to arbitrary precision
+ulong(0L) - ulong(1L)
+ULONG_MAX + ulong(1L)
+
+## Mixture of unsigned and signed promotes to signed arbitrary precision
+## ("raw" is unsigned, "logical" and "integer" are signed)
+c(ulong(1L), as.raw(0L))
+c(ulong(1L), FALSE)
+c(ulong(1L), 0L)
+c(ulong(1L), slong(0L))
+
+## Quotients are rational
+SLONG_MAX/seq_len(8L)
+mean(slong(c(1L, 1L, 2L)))
+
+## A sequence
+d <- 3L
+(s <- seq.int(from = SLONG_MIN + 1L, by = SLONG_MAX, length.out = d))
+stopifnot(all(s == c(-SLONG_MAX, 0L, SLONG_MAX)),
+          identical(s \%/\% SLONG_MAX, fmpz(-1L:1L)),
+          identical(s  /  SLONG_MAX, fmpq(-1L:1L)))
+
+## An array
+(Xs <- diag(s, d))
+(Iu <- cbind(j <- ulong(1L:d), j))
+stopifnot(identical(Xs[Iu], s), identical(diag(Xs), s))
+
+## Exact rational solution of linear systems with integer coefficients
+try(solve(Xs))
+solve(Xs1 <- Xs + 1L)
+stopifnot(identical(solve(solve(Xs1)),
+                    fmpq(Xs1)),
+          identical(solve(solve(Xs1, diag(1L, d)), rep(1L, d)),
+                    fmpq(Xs1 \%*\% rep(1L, d))))
 }
 \keyword{classes}
