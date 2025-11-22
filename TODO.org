@@ -1,5 +1,7 @@
 * TODO flint 0.1.x
 
+** TODO '%%' for floating types
+
 ** TODO methods for generic functions designed for arrays
 *** DONE aperm
 *** DONE asplit
@@ -64,4 +66,4 @@
 ** DONE work around missing 'arf', 'acf' functionality
 ** TODO write a vignette
 ** TODO serialization
-** TODO formatting of floating-point types suppressing trailing zeros
+** TODO formatting of floating types suppressing trailing zeros
