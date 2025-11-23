@@ -276,6 +276,18 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_ulong_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
+setMethod("isComplex",
+          c(x = "ulong"),
+          function (x) FALSE)
+
+setMethod("isFloating",
+          c(x = "ulong"),
+          function (x) FALSE)
+
+setMethod("isSigned",
+          c(x = "ulong"),
+          function (x) FALSE)
+
 setMatrixOpsMethod(
           c(x = "ANY", y = "ulong"),
           function (x, y) {

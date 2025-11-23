@@ -270,6 +270,18 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_mag_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
+setMethod("isComplex",
+          c(x = "mag"),
+          function (x) FALSE)
+
+setMethod("isFloating",
+          c(x = "mag"),
+          function (x) TRUE)
+
+setMethod("isSigned",
+          c(x = "mag"),
+          function (x) FALSE)
+
 setMethod("log",
           c(x = "mag"),
           function (x, base, ...)

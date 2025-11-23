@@ -325,6 +325,18 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_fmpq_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
+setMethod("isComplex",
+          c(x = "fmpq"),
+          function (x) FALSE)
+
+setMethod("isFloating",
+          c(x = "fmpq"),
+          function (x) FALSE)
+
+setMethod("isSigned",
+          c(x = "fmpq"),
+          function (x) TRUE)
+
 setMatrixOpsMethod(
           c(x = "ANY", y = "fmpq"),
           function (x, y) {

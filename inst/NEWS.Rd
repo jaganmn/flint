@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-22)}{
+\section{Changes in version 0.1.3 (2025-11-23)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -43,7 +43,10 @@
   }
   \subsection{Generic Functions}{
     \itemize{
-      \item .
+      \item S4 generic functions \code{isSigned}, \code{isComplex}, and
+      \code{isFloating} for testing whether the type or class of the
+      argument represents signed, complex, and floating-point numbers,
+      respectively.
     }
   }
   \subsection{Methods}{
@@ -51,9 +54,12 @@
       \item S4 methods are defined for generic (or made-generic)
       functions \code{outer} and \code{kronecker}.
 
-      \item Methods for S4 group generic functions \code{Complex} and
+      \item S4 methods for group generic functions \code{Complex} and
       \code{Math} are more completely implemented for classes \code{arf}
       and \code{acf}, for parity with classes \code{arb} and \code{acb}.
+
+      \item S4 generic functions \code{Real}, \code{Real<-},
+      \code{Imag}, and \code{Imag<-} gain sensible default methods.
     }
   }
   \subsection{New Features}{

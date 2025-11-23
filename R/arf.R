@@ -277,6 +277,18 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_arf_ops1, "is.unsorted", x, list(as.logical(na.rm), as.logical(strictly))))
 
+setMethod("isComplex",
+          c(x = "arf"),
+          function (x) FALSE)
+
+setMethod("isFloating",
+          c(x = "arf"),
+          function (x) TRUE)
+
+setMethod("isSigned",
+          c(x = "arf"),
+          function (x) TRUE)
+
 setMatrixOpsMethod(
           c(x = "ANY", y = "arf"),
           function (x, y) {

@@ -14,7 +14,8 @@ exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
 
 ## Generic functions in this package:
 exportMethods(Num, "Num<-", Den, "Den<-", Mid, "Mid<-", Rad, "Rad<-",
-              Real, "Real<-", Imag, "Imag<-")
+              Real, "Real<-", Imag, "Imag<-", isComplex, isFloating,
+              isSigned)
 ## Generic functions in 'base':
 exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
               "[[<-", all.equal, anyDuplicated, anyNA, aperm, as.raw,

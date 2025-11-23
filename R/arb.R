@@ -320,6 +320,18 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               stop(.error.notTotalOrder()))
 
+setMethod("isComplex",
+          c(x = "arb"),
+          function (x) FALSE)
+
+setMethod("isFloating",
+          c(x = "arb"),
+          function (x) TRUE)
+
+setMethod("isSigned",
+          c(x = "arb"),
+          function (x) TRUE)
+
 setMethod("log",
           c(x = "arb"),
           function (x, base, ...)

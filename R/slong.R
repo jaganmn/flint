@@ -276,6 +276,18 @@ setMethod("is.unsorted",
           function (x, na.rm = FALSE, strictly = FALSE)
               .Call(R_flint_slong_ops1, "is.unsorted", x, list(NULL, as.logical(strictly))))
 
+setMethod("isComplex",
+          c(x = "slong"),
+          function (x) FALSE)
+
+setMethod("isFloating",
+          c(x = "slong"),
+          function (x) FALSE)
+
+setMethod("isSigned",
+          c(x = "slong"),
+          function (x) TRUE)
+
 setMatrixOpsMethod(
           c(x = "ANY", y = "ulong"),
           function (x, y) {

@@ -66,10 +66,10 @@ setMethod("Mid<-",
                   stop(gettextf("length of '%s' [%.0f] is not equal to 1 or length of '%s' [%.0f]",
                                 "value", nv, "x", nx),
                        domain = NA)
-              ans <- acb(real = arb(mid = Re(value),
-                                    rad = Rad(Re(x))),
-                         imag = arb(mid = Im(value),
-                                    rad = Rad(Im(x))))
+              ans <- acb(real = arb(mid = Real(value),
+                                    rad = Rad(Real(x))),
+                         imag = arb(mid = Imag(value),
+                                    rad = Rad(Imag(x))))
               ans@dim <- x@dim
               ans@dimnames <- x@dimnames
               ans@names <- x@names
@@ -337,6 +337,18 @@ setMethod("is.unsorted",
           c(x = "acb"),
           function (x, na.rm = FALSE, strictly = FALSE)
               stop(.error.notTotalOrder()))
+
+setMethod("isComplex",
+          c(x = "acb"),
+          function (x) TRUE)
+
+setMethod("isFloating",
+          c(x = "acb"),
+          function (x) TRUE)
+
+setMethod("isSigned",
+          c(x = "acb"),
+          function (x) TRUE)
 
 setMethod("log",
           c(x = "acb"),
