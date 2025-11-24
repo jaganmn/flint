@@ -349,5 +349,21 @@ fmpz(x, length=)}
 \examples{
 showClass("fmpz")
 showMethods(classes = "fmpz")
+
+    fmpz(0x1p+1023)  # with(.Machine, 2L^(double.max.exp-1L))
+try(fmpz(0x1p+1024)) # no representation for Inf after overflow
+
+    fmpz(2L)^1024L  # '^' is rational in general (exponent is signed)
+Num(fmpz(2L)^1024L) # get the numerator
+
+## Conversion of decimal format strings
+fmpz(       "1234567890"        )
+fmpz(strrep("1234567890", 1L:6L))
+
+## Conversion of hexadecimal format strings
+hs <- paste0("-0x1", strrep("0", 256L))
+hz <- fmpz(hs)
+stopifnot(identical(hz, Num(-fmpz(2L)^1024L)),
+          identical(format(hz, base = 16L), sub("0x", "", hs)))
 }
 \keyword{classes}

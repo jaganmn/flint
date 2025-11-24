@@ -524,18 +524,20 @@ c(ulong(1L), slong(0L))
 ## Quotients are rational
 SLONG_MAX/seq_len(8L)
 mean(slong(c(1L, 1L, 2L)))
+summary(slong(c(1L, 1L, 2L, 3L, 5L, 8L, 13L, 21L)))
 
 ## A sequence
 d <- 3L
 (s <- seq.int(from = SLONG_MIN + 1L, by = SLONG_MAX, length.out = d))
-stopifnot(all(s == c(-SLONG_MAX, 0L, SLONG_MAX)),
-          identical(s \%/\% SLONG_MAX, fmpz(-1L:1L)),
+stopifnot(identical(s, c(-SLONG_MAX, 0L, SLONG_MAX)),
+          identical(s \%/\% SLONG_MAX, slong(-1L:1L)),
           identical(s  /  SLONG_MAX, fmpq(-1L:1L)))
 
 ## An array
 (Xs <- diag(s, d))
-(Iu <- cbind(j <- ulong(1L:d), j))
-stopifnot(identical(Xs[Iu], s), identical(diag(Xs), s))
+(Iu <- cbind(ulong(1L:d), ulong(1L:d)))
+stopifnot(identical(Xs, s * slong.array(rep(c(1L, 0L), c(1L, d)), c(d, d))),
+          identical(Xs[Iu], s), identical(diag(Xs), s))
 
 ## Exact rational solution of linear systems with integer coefficients
 try(solve(Xs))
