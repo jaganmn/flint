@@ -1987,6 +1987,10 @@ setMethod("scale",
 setMethod("seq",
           c("..." = "flint"),
           function (from, to, by, length.out, along.with, ...) {
+               isSlongLike <-
+               function (x)
+                   any(flintClassAny(x) == c("slong", "integer", "logical"))
+               maybeSlong <- TRUE
                if (!missing(from)) {
                if (length(from) != 1L)
                    stop(gettextf("length of '%s' is not %d",
@@ -1996,6 +2000,7 @@ setMethod("seq",
                    stop(gettextf("'%s' is not a finite number",
                                  "from"),
                         domain = NA)
+               maybeSlong <- maybeSlong && isSlongLike(from)
                }
                if (!missing(to)) {
                if (length(to) != 1L)
@@ -2006,6 +2011,7 @@ setMethod("seq",
                    stop(gettextf("'%s' is not a finite number",
                                  "to"),
                         domain = NA)
+               maybeSlong <- maybeSlong && isSlongLike(to)
                }
                if (!missing(by)) {
                if (length(by) != 1L)
@@ -2021,6 +2027,7 @@ setMethod("seq",
                    stop(gettextf("sign of to-from and sign of '%s' are not equal",
                                  "by"),
                         domain = NA)
+               maybeSlong <- maybeSlong && isSlongLike(by)
                }
                if (!missing(length.out)) {
                if (length(length.out) != 1L)
@@ -2031,11 +2038,11 @@ setMethod("seq",
                    stop(gettextf("'%s' is not a nonnegative number",
                                  "length.out"),
                         domain = NA)
-               else if (length.out >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
+               else if (length.out >= ULONG_MAX + 1L)
                    stop(gettextf("value length would exceed maximum 2^%d-1",
                                  flintABI()),
                         domain = NA)
-               length.out <- as(length.out, "ulong")
+               length.out <- ulong(length.out)
                }
                if (!missing(along.with)) {
                if (!missing(length.out))
@@ -2044,18 +2051,17 @@ setMethod("seq",
                         domain = NA)
                length.out <- flintLengthAny(along.with)
                }
-               .seq <-
+               seqUlong <-
                function (from, length.out, reverse = FALSE)
-                   .Call(R_flint_ulong_seq, from, length.out, reverse)
-               zero <- ulong(0L)
-               unit <- ulong(1L)
+                   .Call(R_flint_ulong_seq, ulong(from), ulong(length.out), reverse)
+               ans <-
                switch(nargs() - ...length(),
                {
                    if (missing(length.out))
                        stop(gettextf("usage seq(%s=) is not yet implemented",
                                      if (missing(from)) if (missing(to)) "by" else "to" else "from"),
                             domain = NA)
-                   .seq(ulong(1L), length.out)
+                   seqUlong(1L, length.out)
                },
                {
                    if (missing(length.out) != missing(by))
@@ -2064,40 +2070,48 @@ setMethod("seq",
                             domain = NA)
                    if (missing(length.out)) {
                        d <- if (from <= to) { op <- `+`; to - from } else { op <- `-`; from - to }
-                       d. <- as(d, "fmpz")
-                       if (d. == d)
-                           d. <- d. + unit
-                       if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
+                       length.out <- fmpz(d)
+                       if (length.out == d)
+                           length.out <- length.out + 1L
+                       if (length.out >= ULONG_MAX + 1L)
                            stop(gettextf("value length would exceed maximum 2^%d-1",
                                          flintABI()),
                                 domain = NA)
-                       op(from, .seq(zero, as(d., "ulong")))
+                       op(from, seqUlong(0L, length.out))
                    }
-                   else unit + by * .seq(zero, length.out)
+                   else 1L + by * seqUlong(zero, length.out)
                },
                {
                    if (missing(length.out)) {
                        d <- if (from == to) 0L else (to - from)/by
-                       d. <- as(d, "fmpz")
-                       if (d. == d)
-                           d. <- d. + unit
-                       if (d. >= if (flintABI() == 64L) 0x1p+64 else 0x1p+32)
+                       length.out <- fmpz(d)
+                       if (length.out == d)
+                           length.out <- length.out + 1L
+                       if (length.out >= ULONG_MAX + 1L)
                            stop(gettextf("value length would exceed maximum 2^%d-1",
                                          flintABI()),
                                 domain = NA)
-                       from + by * .seq(zero, as(d., "ulong"))
+                       from + by * seqUlong(0L, length.out)
                    }
                    else if (missing(by)) {
-                       by <- if (length.out <= unit) zero else (to - from)/(length.out - unit)
-                       from + by * .seq(zero, length.out)
+                       by <- if (length.out <= 1L) 0L else (to - from)/(length.out - 1L)
+                       from + by * seqUlong(0L, length.out)
                    }
                    else if (missing(to))
-                       from + by * .seq(zero, length.out)
-                   else to - by * .seq(zero, length.out, reverse = TRUE)
+                       from + by * seqUlong(0L, length.out)
+                   else to - by * seqUlong(0L, length.out, reverse = TRUE)
                },
                stop(gettextf("usage seq(%s=, %s=, %s=, %s=) is not yet implemented",
                              "from", "to", "by", if (missing(along.with)) "length.out" else "along.with"),
                     domain = NA))
+               if (maybeSlong && is(ans, "fmpz") &&
+                   (length.out == 0L ||
+                    {
+                        r <- ans[c.flint(1L, length.out)]
+                        all(r >= SLONG_MIN, r <= SLONG_MAX)
+                    }))
+                   slong(ans)
+               else ans
           })
 
 setMethod("sequence",
