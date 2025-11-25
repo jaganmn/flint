@@ -2079,7 +2079,7 @@ setMethod("seq",
                                 domain = NA)
                        op(from, seqUlong(0L, length.out))
                    }
-                   else 1L + by * seqUlong(zero, length.out)
+                   else 1L + by * seqUlong(0L, length.out)
                },
                {
                    if (missing(length.out)) {
