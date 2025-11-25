@@ -11,7 +11,7 @@ usage <- list(c(                    "length.out"),
               c("from", "to",       "length.out"),
               c("from",       "by", "length.out"),
               c(        "to", "by", "length.out"))
-value <- rep(c("ulong", "fmpz", "fmpq"), c(1L, 1L, 5L))
+value <- rep(c("ulong", "slong", "fmpq"), c(1L, 1L, 5L))
 
 for (i in seq_along(usage)) {
     u <- usage[[i]]
