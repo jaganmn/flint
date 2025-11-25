@@ -340,7 +340,9 @@ fmpz(x, length=)}
   }
 }
 \seealso{
-  Virtual class \code{\linkS4class{flint}}.
+  Virtual class \code{\linkS4class{flint}} and its nonvirtual subclass
+  \code{\linkS4class{fmpq}}, the latter representing rational numbers as
+  constrained pairs of \code{fmpz}.
 }
 \references{
   The \acronym{FLINT} documentation of the underlying \proglang{C}
@@ -351,10 +353,18 @@ showClass("fmpz")
 showMethods(classes = "fmpz")
 
     fmpz(0x1p+1023)  # with(.Machine, 2L^(double.max.exp-1L))
-try(fmpz(0x1p+1024)) # no representation for Inf after overflow
+try(fmpz(0x1p+1024)) # no representation for Inf after
+                     # floating-point overflow
 
-    fmpz(2L)^1024L  # '^' is rational in general (exponent is signed)
+    fmpz(2L)^1024L  # powers are rational in general (signed exponent)
 Num(fmpz(2L)^1024L) # get the numerator
+
+## Allocation in bytes as a function of the most significant bit (B)
+##     B <= M - 2: a limb
+##     B >  M - 2: a limb, an 'mpz' struct, and N more limbs
+## where M := flintABI(), N := floor((B - 1)/M) + 1
+B <- seq_len(1024L)
+rle(vapply(as.list(Num(fmpz(2L)^(B - 1L))), flintSize, 0))
 
 ## Conversion of decimal format strings
 fmpz(       "1234567890"        )
@@ -365,5 +375,17 @@ hs <- paste0("-0x1", strrep("0", 256L))
 hz <- fmpz(hs)
 stopifnot(identical(hz, Num(-fmpz(2L)^1024L)),
           identical(format(hz, base = 16L), sub("0x", "", hs)))
+
+## Exact rational solution of linear systems with integer coefficients
+(A3 <- diag(c(0x1p+53, 1, 1)))
+try(solve(A3)) # system is computationally singular
+(A3 <- diag(Num(fmpz(2L)^c(53L, 0L, 0L))))
+(A3inv <- solve(A3))
+(I3 <- diag(1L, 3L, 3L))
+(b3 <- -1L:1L)
+stopifnot(identical(solve(A3, I3), A3inv),
+          identical(solve(A3, b3), A3inv \%*\% b3),
+          identical(solve(A3inv), fmpq(A3)),
+          identical(A3 \%*\% A3inv, fmpq(I3)))
 }
 \keyword{classes}

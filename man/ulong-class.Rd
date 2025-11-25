@@ -538,13 +538,5 @@ stopifnot(identical(s, c(-SLONG_MAX, 0L, SLONG_MAX)),
 (Iu <- cbind(ulong(1L:d), ulong(1L:d)))
 stopifnot(identical(Xs, s * slong.array(rep(c(1L, 0L), c(1L, d)), c(d, d))),
           identical(Xs[Iu], s), identical(diag(Xs), s))
-
-## Exact rational solution of linear systems with integer coefficients
-try(solve(Xs))
-solve(Xs1 <- Xs + 1L)
-stopifnot(identical(solve(solve(Xs1)),
-                    fmpq(Xs1)),
-          identical(solve(solve(Xs1, diag(1L, d)), rep(1L, d)),
-                    fmpq(Xs1 \%*\% rep(1L, d))))
 }
 \keyword{classes}
