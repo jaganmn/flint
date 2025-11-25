@@ -376,6 +376,26 @@ hz <- fmpz(hs)
 stopifnot(identical(hz, Num(-fmpz(2L)^1024L)),
           identical(format(hz, base = 16L), sub("0x", "", hs)))
 
+## Exact 'sqrt' preserves class, hence requires perfect squares
+    sqrt(fmpz(81L))  # ok
+try(sqrt(fmpz(80L))) # error
+sqrt(arf(fmpz(80L))) # ok, thanks to coercion to floating-point type
+
+## Quotients are formally rational
+(J <- fmpz.array(0L:11L, c(6L, 2L), list(NULL, col = c("aa", "bb"))))
+J/2L
+J/1L
+try(J/0L) # NaN, -Inf, and Inf have no representation
+rowMeans(J)
+colMeans(J)
+summary(J)
+summary(J, quantile.type = 6L) # types 1 through 9 are all implemented
+
+## Floored integer division
+p <- fmpz(-127L)
+q <- c(-(3L:1L), 1L:3L)
+stopifnot(identical(p \%/\% q * q + p \%\% q, rep(p, 6L)))
+
 ## Exact rational solution of linear systems with integer coefficients
 (A3 <- diag(c(0x1p+53, 1, 1)))
 try(solve(A3)) # system is computationally singular

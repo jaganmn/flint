@@ -521,10 +521,15 @@ c(ulong(1L), FALSE)
 c(ulong(1L), 0L)
 c(ulong(1L), slong(0L))
 
-## Quotients are rational
+## Quotients are formally rational
 SLONG_MAX/seq_len(8L)
 mean(slong(c(1L, 1L, 2L)))
 summary(slong(c(1L, 1L, 2L, 3L, 5L, 8L, 13L, 21L)))
+
+## Floored integer division
+p <- slong(-127L)
+q <- c(-(3L:1L), 1L:3L)
+stopifnot(identical(p \%/\% q * q + p \%\% q, rep(p, 6L)))
 
 ## A sequence
 d <- 3L
