@@ -78,7 +78,8 @@ isFloating(x)
 \examples{
 try(isSigned(NULL)) # an error if 'x' does not represent numbers
 
-L <- sapply(c("raw", "logical", "integer", "double", "complex",
+L <- sapply(c(if (getRversion() >= "4.5") "raw", # for as(NULL, "raw")
+              "logical", "integer", "double", "complex",
               "ulong", "slong", "fmpz", "fmpq", "mag", "arf", "acf",
               "arb", "acb"),
             as, object = NULL, simplify = FALSE)
