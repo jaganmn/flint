@@ -60,8 +60,8 @@
   \item{rnd}{
     a nonempty character string whose first character indicates a
     rounding mode.  Methods for \code{\linkS4class{arb}} and
-    \code{\linkS4class{acb}} require \code{rnd} of length 2, specifying
-    rounding modes separately for midpoints and radii.  See
+    \code{\linkS4class{acb}} use \code{rnd} only to round midpoints;
+    they round radii away from zero unconditionally.  See
     \code{\link{flintRnd}} for information about valid character
     strings.}
   \item{\dots}{

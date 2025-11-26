@@ -26,6 +26,10 @@
       \item Topic \code{flint-class} wrongly stated that the S3 default
       method for \code{diff} works for \code{x} inheriting from virtual
       class \code{flint}.
+
+      \item Topic \code{format-methods} wrongly stated that methods
+      for \code{x} inheriting from \code{arb} or \code{acb} required
+      \code{rnd} of length 2.
     }
   }
   \subsection{Significant User-Visible Changes}{
