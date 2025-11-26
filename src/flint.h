@@ -272,6 +272,7 @@ slong asPrec(SEXP, const char *);
 mpfr_prec_t mpfrPrec(slong);
 arf_rnd_t asRnd(SEXP, const char *);
 mpfr_rnd_t mpfrRnd(arf_rnd_t);
+int isRndZ(arf_rnd_t);
 int asBase(SEXP, const char *);
 size_t asDigits(SEXP, const char *);
 const char *asSep(SEXP, const char *);
