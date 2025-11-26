@@ -2,6 +2,8 @@
 
 ** TODO '%%' for floating types
 
+** TODO diffinv
+
 ** TODO methods for generic functions designed for arrays
 *** DONE aperm
 *** DONE asplit

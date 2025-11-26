@@ -1357,6 +1357,11 @@ setMethod("diff",
               x
           })
 
+setMethod("diffinv",
+          c(x = "flint"),
+          function (x, lag = 1L, differences = 1L, xi, ...)
+              .NotYetImplemented())
+
 setMethod("dim",
           c(x = "flint"),
           function (x)

@@ -7,7 +7,7 @@ importFrom(methods, .slotNames, Complex, Math, Math2, Ops, Summary, as,
            getClassDef, is, kronecker, new, "packageSlot<-", rbind2,
            selectMethod, setAs, setClass, setClassUnion, setGeneric,
            setMethod, show)
-importFrom(stats, quantile, runif)
+importFrom(stats, diffinv, quantile, runif)
 
 exportClasses(flint, ulong, slong, fmpz, fmpq, mag, arf, acf, arb, acb,
               OptionalInteger, OptionalList, OptionalCharacter)
@@ -35,7 +35,7 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
 exportMethods(Complex, Math, Math2, Ops, Summary, cbind2, coerce,
               kronecker, rbind2, show)
 ## Generic functions in 'stats':
-exportMethods(quantile)
+exportMethods(diffinv, quantile)
 
 export(ULONG_MAX,
        SLONG_MIN,
@@ -124,6 +124,7 @@ S3method(cbind, flint)
 S3method(chol, flint, .S3.chol.flint)
 S3method(determinant, flint, .S3.determinant.flint)
 S3method(diff, flint, .S3.diff.flint)
+S3method(diffinv, flint, .S3.diffinv.flint)
 S3method(duplicated, flint, .S3.duplicated.flint)
 S3method(format, flint, .S3.format.flint)
 S3method("is.na<-", flint, ".S3.is.na<-.flint")
