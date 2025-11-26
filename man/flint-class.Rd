@@ -74,6 +74,7 @@
 \alias{cut,flint-method}
 \alias{diag,flint-method}
 \alias{diag<-,flint-method}
+\alias{diff,flint-method}
 \alias{dim,flint-method}
 \alias{dim<-,flint,NULL-method}
 \alias{dim<-,flint,numeric-method}
@@ -348,6 +349,12 @@ flint.array(class, \dots)
       length of \code{x}.  Arguments \code{x} and \code{value} are
       coerced to a common class following the rules used for general
       subassignment; see the methods for \code{[<-} and \code{[[<-}.}
+    \item{\code{\link{diff}}}{
+      \code{signature(x = "flint")}:\cr
+      returns a vector storing lagged differences of the elements of
+      \code{x} or (if \code{x} is a matrix) a matrix storing lagged
+      differences of the rows of \code{x}, following the documented
+      behaviour of the S3 default method.}
     \item{\code{\link{dim}}}{
       \code{signature(x = "flint")}:\cr
       returns the \code{dim} slot of \code{x}.}
@@ -574,9 +581,8 @@ seq(to=, by=, length.out=)}
   default methods correctly handle objects inheriting from virtual class
   \code{flint}, typically by calling \emph{other} generic functions for
   which methods \emph{are} defined.  Examples are
-  \code{\link{as.character}}, \code{\link{as.list}}, \code{\link{diff}},
-  \code{\link{rev}}, \code{\link{seq.int}}, \code{\link{sort}}, and
-  \code{\link{split}}.
+  \code{\link{as.character}}, \code{\link{as.list}}, \code{\link{rev}},
+  \code{\link{seq.int}}, \code{\link{sort}}, and \code{\link{split}}.
 }
 \seealso{
   The nonvirtual subclasses:

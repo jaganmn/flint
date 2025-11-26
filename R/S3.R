@@ -42,6 +42,10 @@ function (x, ...)
 function (x, logarithm = TRUE, ...)
     determinant(x, logarithm = logarithm, ...)
 
+.S3.diff.flint <-
+function (x, ...)
+    diff(x, ...)
+
 .S3.duplicated.flint <-
 function (x, incomparables = FALSE, ...)
     duplicated(x, incomparables = incomparables, ...)

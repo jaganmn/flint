@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-23)}{
+\section{Changes in version 0.1.3 (2025-11-26)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -23,7 +23,9 @@
   }
   \subsection{Documentation}{
     \itemize{
-      \item .
+      \item Topic \code{flint-class} wrongly stated that the S3 default
+      method for \code{diff} works for \code{x} inheriting from virtual
+      class \code{flint}.
     }
   }
   \subsection{Significant User-Visible Changes}{
@@ -52,7 +54,7 @@
   \subsection{Methods}{
     \itemize{
       \item S4 methods are defined for generic (or made-generic)
-      functions \code{outer} and \code{kronecker}.
+      functions \code{diff}, \code{kronecker}, and \code{outer}.
 
       \item S4 methods for group generic functions \code{Complex} and
       \code{Math} are more completely implemented for classes \code{arf}
