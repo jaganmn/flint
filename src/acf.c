@@ -42,57 +42,57 @@ int acf_is_finite(const acf_t x)
 
 #ifndef HAVE_ACF_ZERO
 static R_INLINE
-void acf_zero(acf_t res)
+void acf_zero(acf_t z)
 {
-	arf_zero(acf_realref(res));
-	arf_zero(acf_imagref(res));
+	arf_zero(acf_realref(z));
+	arf_zero(acf_imagref(z));
 	return;
 }
 #endif
 
 #ifndef HAVE_ACF_ONE
 static R_INLINE
-void acf_one(acf_t res)
+void acf_one(acf_t z)
 {
-	arf_one (acf_realref(res));
-	arf_zero(acf_imagref(res));
+	arf_one (acf_realref(z));
+	arf_zero(acf_imagref(z));
 	return;
 }
 #endif
 
 #ifndef HAVE_ACF_NAN
 static R_INLINE
-void acf_nan(acf_t res)
+void acf_nan(acf_t z)
 {
-	arf_nan(acf_realref(res));
-	arf_nan(acf_imagref(res));
+	arf_nan(acf_realref(z));
+	arf_nan(acf_imagref(z));
 	return;
 }
 #endif
 
 #ifndef HAVE_ACF_CONJ
 static R_INLINE
-void acf_conj(acf_t res, const acf_t x)
+void acf_conj(acf_t z, const acf_t x)
 {
-	arf_set(acf_realref(res), acf_realref(x));
-	arf_neg(acf_imagref(res), acf_imagref(x));
+	arf_set(acf_realref(z), acf_realref(x));
+	arf_neg(acf_imagref(z), acf_imagref(x));
 	return;
 }
 #endif
 
 #ifndef HAVE_ACF_DIV_UI
 static R_INLINE
-int acf_div_ui(acf_t res, const acf_t x, ulong y, slong prec, arf_rnd_t rnd)
+int acf_div_ui(acf_t z, const acf_t x, ulong y, slong prec, arf_rnd_t rnd)
 {
 	int a, b;
-	a = arf_div_ui(acf_realref(res), acf_realref(x), y, prec, rnd);
-	b = arf_div_ui(acf_imagref(res), acf_imagref(x), y, prec, rnd);
+	a = arf_div_ui(acf_realref(z), acf_realref(x), y, prec, rnd);
+	b = arf_div_ui(acf_imagref(z), acf_imagref(x), y, prec, rnd);
 	return a | (b << 1);
 }
 #endif
 
 static R_INLINE
-int __local_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int __local_acf_mul(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
 	int a, b;
 	arf_t t, u, v, w;
@@ -104,8 +104,8 @@ int __local_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 	arf_mul(u, acf_realref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
 	arf_mul(v, acf_imagref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
 	arf_mul(w, acf_imagref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	a = arf_sub(acf_realref(res), t, w, prec, rnd);
-	b = arf_add(acf_imagref(res), u, v, prec, rnd);
+	a = arf_sub(acf_realref(z), t, w, prec, rnd);
+	b = arf_add(acf_imagref(z), u, v, prec, rnd);
 	arf_clear(t);
 	arf_clear(u);
 	arf_clear(v);
@@ -115,7 +115,7 @@ int __local_acf_mul(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 
 #if 0
 static R_INLINE
-int __local_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+int __local_acf_div(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
 	/* FIXME: the result is not correctly rounded here ... */
 	int a, b;
@@ -129,11 +129,11 @@ int __local_acf_div(acf_t res, const acf_t x, const acf_t y, slong prec, arf_rnd
 	arf_mul(u, acf_realref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
 	arf_mul(v, acf_imagref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
 	arf_mul(w, acf_imagref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	a = arf_sub(acf_realref(res), t, w, prec, rnd);
-	b = arf_add(acf_imagref(res), u, v, prec, rnd);
+	a = arf_sub(acf_realref(z), t, w, prec, rnd);
+	b = arf_add(acf_imagref(z), u, v, prec, rnd);
 	c = arf_sosq(s, acf_realref(y), acf_imagref(y), prec, rnd);
-	a |= arf_div(acf_realref(res), acf_realref(res), s, prec, rnd);
-	b |= arf_div(acf_imagref(res), acf_imagref(res), s, prec, rnd);
+	a |= arf_div(acf_realref(z), acf_realref(z), s, prec, rnd);
+	b |= arf_div(acf_imagref(z), acf_imagref(z), s, prec, rnd);
 	arf_clear(s);
 	arf_clear(t);
 	arf_clear(u);
