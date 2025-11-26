@@ -75,6 +75,7 @@
 \alias{diag,flint-method}
 \alias{diag<-,flint-method}
 \alias{diff,flint-method}
+\alias{diffinv,flint-method}
 \alias{dim,flint-method}
 \alias{dim<-,flint,NULL-method}
 \alias{dim<-,flint,numeric-method}
