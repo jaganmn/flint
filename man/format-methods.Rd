@@ -20,7 +20,7 @@
 \S4method{format}{fmpz}(x, base = 10L, \dots)
 \S4method{format}{fmpq}(x, base = 10L, \dots)
 \S4method{format}{mag}(x, base = 10L,                digits.mag = NULL,
-       sep = NULL, rnd = flintRnd(), \dots)
+       sep = NULL, rnd = "A", \dots)
 \S4method{format}{arf}(x, base = 10L, digits = NULL,
        sep = NULL, rnd = flintRnd(), \dots)
 \S4method{format}{acf}(x, base = 10L, digits = NULL,

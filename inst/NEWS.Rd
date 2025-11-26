@@ -34,7 +34,9 @@
   }
   \subsection{Significant User-Visible Changes}{
     \itemize{
-      \item .
+      \item The S4 method for generic function \code{format} with
+      signature \code{c(x = "mag")} rounds away from zero by default, no
+      longer using the global default rounding mode.
     }
   }
   \subsection{Deprecated and Defunct}{

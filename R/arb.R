@@ -290,7 +290,7 @@ setMethod("format",
               m <- format(Mid(x), base = base, digits = digits,
                           sep = sep, rnd = rnd, ...)
               r <- format(Rad(x), base = base, digits.mag = digits.mag,
-                          sep = sep, rnd = "A", ...)
+                          sep = sep, ...)
               m[] <- paste0("(", m, " +/- ", r, ")")
               m
           })

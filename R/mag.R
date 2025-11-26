@@ -124,7 +124,7 @@ setMethod("as.vector",
                      "pairlist" =, "list" =, "expression" =
                          .Call(R_flint_list, x, mode),
                      "symbol" =, "name" =, "character" =
-                         as.vector(format(x, digits = 15L, rnd = "A"), mode),
+                         as.vector(format(x, digits = 15L), mode),
                      as.vector(.Call(R_flint_mag_atomic, x), mode)))
 
 setMethod("backsolve",
@@ -237,7 +237,7 @@ setMethod("determinant",
 setMethod("format",
           c(x = "mag"),
           function (x, base = 10L, digits.mag = NULL,
-                    sep = NULL, rnd = flintRnd(), ...) {
+                    sep = NULL, rnd = "A", ...) {
               if (is.null(digits.mag))
                   digits.mag <- getOption("digits.mag", 4L)
               if (is.null(sep))
