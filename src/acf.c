@@ -40,6 +40,16 @@ int acf_is_finite(const acf_t x)
 }
 #endif
 
+#ifndef HAVE_ACF_SET_ROUND
+static R_INLINE
+void acf_set_round(acf_t z, const acf_t x, slong prec, arf_rnd_t rnd)
+{
+	arf_set_round(acf_realref(z), acf_realref(x), prec, rnd);
+	arf_set_round(acf_imagref(z), acf_imagref(x), prec, rnd);
+	return;
+}
+#endif
+
 #ifndef HAVE_ACF_ZERO
 static R_INLINE
 void acf_zero(acf_t z)

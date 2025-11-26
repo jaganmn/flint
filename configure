@@ -4883,6 +4883,12 @@ then :
   printf "%s\n" "#define HAVE_ACF_ONE 1" >>confdefs.h
 
 fi
+ac_fn_c_check_func "$LINENO" "acf_set_round" "ac_cv_func_acf_set_round"
+if test "x$ac_cv_func_acf_set_round" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_SET_ROUND 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "acf_zero" "ac_cv_func_acf_zero"
 if test "x$ac_cv_func_acf_zero" = xyes
 then :

@@ -36,6 +36,9 @@
 /* Define to 1 if you have the 'acf_one' function. */
 #undef HAVE_ACF_ONE
 
+/* Define to 1 if you have the 'acf_set_round' function. */
+#undef HAVE_ACF_SET_ROUND
+
 /* Define to 1 if you have the 'acf_zero' function. */
 #undef HAVE_ACF_ZERO
 
