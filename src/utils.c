@@ -694,6 +694,22 @@ mpfr_rnd_t mpfrRnd(arf_rnd_t rnd)
 	}
 }
 
+int isRndZ(arf_rnd_t rnd)
+{
+	switch (rnd) {
+	case ARF_RND_DOWN:
+	case ARF_RND_FLOOR:
+		return 1;
+	case ARF_RND_NEAR:
+	case ARF_RND_CEIL:
+	case ARF_RND_UP:
+		return 0;
+	default:
+		Rf_error(_("should never happen ..."));
+		return -1;
+	}
+}
+
 int asBase(SEXP base, const char *where)
 {
 	switch (TYPEOF(base)) {
