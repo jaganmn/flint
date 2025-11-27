@@ -368,5 +368,45 @@ fmpq(num=, den=, length=)}
 \examples{
 showClass("fmpq")
 showMethods(classes = "fmpq")
+
+## Only the canonical representation is stored
+(h <- fmpq(num = c(0L, 2L), den = -4L))
+stopifnot(identical(Num(h), fmpz(c(0L, -1L))),
+          identical(Den(h), fmpz(c(1L,  2L))))
+try(fmpq(num = -1L:1L, den = 0L)) # canonical => nonzero denominator
+
+## All floating-point numbers are rational
+(xm <- fmpq(xm. <- exp(-100)))
+(xp <- fmpq(xp. <- exp( 100)))
+stopifnot(identical(xp. + xm. - xp.,  0), # floating-point arithmetic
+          identical(xp  + xm  - xp , xm)) # exact rational arithmetic
+
+## Exactness isn't free: higher precision => bigger allocations
+x3 <- c(xm, xp, xm + xp)
+flintBits(Num(x3))
+flintBits(Den(x3))
+
+## Conversion of "p/q" format strings
+(pq <- fmpq(c("0/1", " -1/2", "2 /3", "-3/ 4", "4/5 ", "  -5  /  6  ")))
+stopifnot(identical(fmpq(format(pq)), pq)) # always
+
+## Conversion to "double" rounds towards zero
+(z <- 1L - fmpz(2L)^-128L)
+stopifnot(as.double(z) < 1)
+as.double(z) == 1 - .Machine$double.neg.eps # typically
+
+## Conversion to "arf" depends on precision and rounding mode
+c4 <- c(fmpq(arf(z, prec = 128L, rnd = "Z")),
+        fmpq(arf(z, prec = 127L, rnd = "Z")),
+        fmpq(arf(z, prec = 128L, rnd = "A")),
+        fmpq(arf(z, prec = 127L, rnd = "A")))
+\dontshow{
+.oo <- options(width = 90L)
+}
+fmpq.array(z - c4, c(2L, 2L), list(c("128", "127"), c("Z", "A")))
+\dontshow{
+options(.oo)
+rm(.oo)
+}
 }
 \keyword{classes}

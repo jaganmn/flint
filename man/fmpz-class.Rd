@@ -407,5 +407,15 @@ stopifnot(identical(solve(A3, I3), A3inv),
           identical(solve(A3, b3), A3inv \%*\% b3),
           identical(solve(A3inv), fmpq(A3)),
           identical(A3 \%*\% A3inv, fmpq(I3)))
+
+## Conversion to "double" rounds towards zero
+(z <- Num(fmpz(2L)^54L))
+(off <- fmpz(0L:8L))
+(offZ <- 4L * (off \%/\% 4L))
+stopifnot(identical(fmpz(as.double(z + off)) - z, offZ))
+
+## Conversion to "arf" is exact *by default*
+stopifnot(identical(fmpz(arf(z + off)) - z, off),
+          identical(fmpz(arf(z + off, prec = 53L, rnd = "Z")) - z, offZ))
 }
 \keyword{classes}
