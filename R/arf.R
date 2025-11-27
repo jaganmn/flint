@@ -212,7 +212,7 @@ setMethod("chol2inv",
 setAs("ANY", "arf",
       function (from)
           .Call(R_flint_arf_initialize, flintNew("arf"), from, NULL,
-                dim(from), dimnames(from), names(from)))
+                dim(from), dimnames(from), names(from), NULL, NULL))
 
 setMethod("colMeans",
           c(x = "arf"),

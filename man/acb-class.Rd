@@ -108,9 +108,11 @@
 \usage{
 ## Class generator functions
 
-acb(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
+acb(x = 0i, length = 0L, names = NULL, real = 0, imag = 0,
+    prec = NULL)
 
-acb.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
+acb.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0,
+          prec = NULL)
 }
 \arguments{
   \item{x}{
@@ -139,6 +141,11 @@ acb.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
     atomic or \code{\linkS4class{flint}} vectors containing data for
     conversion to \code{\linkS4class{arb}}.  Use these for
     initialization \dQuote{by parts} (real and imaginary).}
+  \item{prec}{
+    the precision used for conversion of midpoints.  \code{NULL} means
+    to convert exactly if possible and to round to the global default
+    precision otherwise; see \code{\link{flintPrec}}.  By convention,
+    rounding is always towards zero.}
 }
 \value{
   An \code{acb} vector, possibly an array; see \sQuote{Details}.
@@ -168,10 +175,10 @@ acb(real=, imag=, length=)}
 }
 \section{Conversion}{
   Real numbers and real and imaginary parts of complex numbers are
-  rounded according to the default precision and rounding mode set by
-  \code{\link{flintPrec}} and \code{\link{flintRnd}}.  Ball midpoints
-  are the numbers obtained by rounding.  Ball radii are upper bounds on
-  the absolute errors incurred by rounding.
+  rounded according to the precision set by \code{prec}, always in the
+  direction of zero.  Ball midpoints are the numbers obtained by
+  rounding.  Ball radii are upper bounds on the absolute errors incurred
+  by rounding.
 
   Character strings are scanned first for a real part then for an
   imaginary part.  They can use any of three formats:
@@ -189,10 +196,7 @@ acb(real=, imag=, length=)}
 
   The sequences \code{\var{k}\var{m}} and \code{\var{r}} are converted
   using function \code{mpfr_strtofr} from the \acronym{GNU}
-  \acronym{MPFR} library with argument \code{base} set to 0 and argument
-  \code{rnd} set according to the default rounding mode (for the
-  midpoint, whereas the radius is always rounded towards \code{Inf});
-  see
+  \acronym{MPFR} library with argument \code{base} set to 0; see
   \url{https://www.mpfr.org/mpfr-current/mpfr.html#Assignment-Functions}.
 }
 \section{Slots}{

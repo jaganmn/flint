@@ -104,9 +104,11 @@
 \usage{
 ## Class generator functions
 
-arf(x = 0, length = 0L, names = NULL)
+arf(x = 0, length = 0L, names = NULL,
+    prec = NULL, rnd = NULL)
 
-arf.array(x = 0, dim = length(x), dimnames = NULL)
+arf.array(x = 0, dim = length(x), dimnames = NULL,
+          prec = NULL, rnd = NULL)
 }
 \arguments{
   \item{x}{
@@ -131,6 +133,14 @@ arf.array(x = 0, dim = length(x), dimnames = NULL)
     are either \code{NULL} or character vectors of length given by
     \code{dim}.  Non-character vector components of \code{dimnames} are
     coerced to character.}
+  \item{prec}{
+    the precision used for conversion.  \code{NULL} means to convert
+    exactly if possible and to round to the global default precision
+    otherwise; see \code{\link{flintPrec}}.}
+  \item{rnd}{
+    the rounding mode used for inexact conversion.  \code{NULL} means to
+    round according to the global default rounding mode; see
+    \code{\link{flintRnd}}.}
 }
 \value{
   A \code{arf} vector, possibly an array; see \sQuote{Details}.
@@ -153,14 +163,12 @@ arf(x, length=)}
 }
 \section{Conversion}{
   Real numbers and real parts of complex numbers are rounded according
-  to the default precision and rounding mode set by
-  \code{\link{flintPrec}} and \code{\link{flintRnd}}.  Imaginary parts
-  of complex numbers are discarded.
+  to the precision and rounding mode set by \code{prec} and \code{rnd}.
+  Imaginary parts of complex numbers are discarded.
 
   Character strings are converted using function \code{mpfr_strtofr}
   from the \acronym{GNU} \acronym{MPFR} library with argument
-  \code{base} set to 0 and argument \code{rnd} set according to the
-  default rounding mode; see
+  \code{base} set to 0; see
   \url{https://www.mpfr.org/mpfr-current/mpfr.html#Assignment-Functions}.
 }
 \section{Slots}{

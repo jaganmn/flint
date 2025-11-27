@@ -212,7 +212,7 @@ setMethod("chol2inv",
 setAs("ANY", "mag",
       function (from)
           .Call(R_flint_mag_initialize, flintNew("mag"), from, NULL,
-                dim(from), dimnames(from), names(from)))
+                dim(from), dimnames(from), names(from), "A"))
 
 setMethod("colMeans",
           c(x = "mag"),

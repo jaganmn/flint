@@ -270,7 +270,8 @@ setMethod("chol2inv",
 setAs("ANY", "acb",
       function (from)
           .Call(R_flint_acb_initialize, flintNew("acb"), from, NULL,
-                dim(from), dimnames(from), names(from), NULL, NULL))
+                dim(from), dimnames(from), names(from), NULL, NULL,
+                NULL))
 
 setMethod("colMeans",
           c(x = "acb"),

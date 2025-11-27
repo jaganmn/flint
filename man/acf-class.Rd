@@ -120,9 +120,11 @@
 \usage{
 ## Class generator functions
 
-ACF(x = 0i, length = 0L, names = NULL, real = 0, imag = 0)
+ACF(x = 0i, length = 0L, names = NULL, real = 0, imag = 0,
+    prec = NULL, rnd = NULL)
 
-ACF.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
+ACF.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0,
+          prec = NULL, rnd = NULL)
 }
 \arguments{
   \item{x}{
@@ -151,6 +153,14 @@ ACF.array(x = 0i, dim = length(x), dimnames = NULL, real = 0, imag = 0)
     atomic or \code{\linkS4class{flint}} vectors containing data for
     conversion to \code{\linkS4class{arf}}.  Use these instead of
     \code{x} for initialization \dQuote{by parts} (real and imaginary).}
+  \item{prec}{
+    the precision used for conversion.  \code{NULL} means to convert
+    exactly if possible and to round to the global default precision
+    otherwise; see \code{\link{flintPrec}}.}
+  \item{rnd}{
+    the rounding mode used for inexact conversion.  \code{NULL} means to
+    round according to the global default rounding mode; see
+    \code{\link{flintRnd}}.}
 }
 \value{
   An \code{acf} vector, possibly an array; see \sQuote{Details}.
@@ -180,8 +190,8 @@ acf.(real=, imag=, length=)}
 }
 \section{Conversion}{
   Real numbers and real and imaginary parts of complex numbers are
-  rounded according to the default precision and rounding mode set by
-  \code{\link{flintPrec}} and \code{\link{flintRnd}}.
+  rounded according to the precision and rounding mode set by
+  \code{prec} and \code{rnd}.
 
   Character strings are scanned first for a real part then for an
   imaginary part.  They can use any of three formats:
@@ -196,8 +206,7 @@ acf.(real=, imag=, length=)}
 
   The sequences \code{\var{s}\var{a}} and \code{\var{t}\var{b}} are
   converted using function \code{mpfr_strtofr} from the \acronym{GNU}
-  \acronym{MPFR} library with argument \code{base} set to 0 and argument
-  \code{rnd} set according to the default rounding mode; see
+  \acronym{MPFR} library with argument \code{base} set to 0; see
   \url{https://www.mpfr.org/mpfr-current/mpfr.html#Assignment-Functions}.
 }
 \section{Slots}{

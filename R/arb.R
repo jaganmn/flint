@@ -254,7 +254,8 @@ setMethod("chol2inv",
 setAs("ANY", "arb",
       function (from)
           .Call(R_flint_arb_initialize, flintNew("arb"), from, NULL,
-                dim(from), dimnames(from), names(from), NULL, NULL))
+                dim(from), dimnames(from), names(from), NULL, NULL,
+                NULL))
 
 setMethod("colMeans",
           c(x = "arb"),

@@ -15,10 +15,14 @@ void R_flint_arf_finalize(SEXP x)
 }
 
 SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
-                            SEXP s_dim, SEXP s_dimnames, SEXP s_names)
+                            SEXP s_dim, SEXP s_dimnames, SEXP s_names,
+                            SEXP s_prec, SEXP s_rnd)
 {
 	mp_limb_t jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
+	int exact = s_prec == R_NilValue;
+	slong prec = asPrec(s_prec, __func__);
+	arf_rnd_t rnd = asRnd(s_rnd, __func__);
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
 	if (s_x != R_NilValue) {
@@ -50,56 +54,67 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	{
 		const Rbyte *x = RAW_RO(s_x);
 		for (jy = 0; jy < ny; ++jy)
-			arf_set_ui(y + jy, x[jy % nx]);
+			if (exact)
+			arf_set_ui      (y + jy, x[jy % nx]);
+			else
+			arf_set_round_ui(y + jy, x[jy % nx], prec, rnd);
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
+		for (jy = 0; jy < ny; ++jy)
 			if (x[jy % nx] == NA_LOGICAL)
 			arf_nan(y + jy);
+			else if (exact)
+			arf_set_si      (y + jy, x[jy % nx]);
 			else
-			arf_set_si(y + jy, x[jy % nx]);
-		}
+			arf_set_round_si(y + jy, x[jy % nx], prec, rnd);
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
+		for (jy = 0; jy < ny; ++jy)
 			if (x[jy % nx] == NA_INTEGER)
 			arf_nan(y + jy);
+			else if (exact)
+			arf_set_si      (y + jy, x[jy % nx]);
 			else
-			arf_set_si(y + jy, x[jy % nx]);
-		}
+			arf_set_round_si(y + jy, x[jy % nx], prec, rnd);
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
+		for (jy = 0; jy < ny; ++jy) {
 			arf_set_d(y + jy, x[jy % nx]);
+			if (!exact)
+			arf_set_round(y + jy, y + jy, prec, rnd);
+		}
 		break;
 	}
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
+		for (jy = 0; jy < ny; ++jy) {
 			arf_set_d(y + jy, x[jy % nx].r);
+			if (!exact)
+			arf_set_round(y + jy, y + jy, prec, rnd);
+		}
 		break;
 	}
 	case STRSXP:
 	{
-		mpfr_prec_t prec = mpfrPrec(asPrec(R_NilValue, __func__));
-		mpfr_rnd_t rnd = mpfrRnd(asRnd(R_NilValue, __func__));
+		mpfr_prec_t prec__ = mpfrPrec(prec);
+		mpfr_rnd_t rnd__ = mpfrRnd(rnd);
 		mpfr_t m;
-		mpfr_init2(m, prec);
+		mpfr_init2(m, prec__);
 		const char *s;
 		char *t;
 		for (jy = 0; jy < ny; ++jy) {
 			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
-			mpfr_strtofr(m, s, &t, 0, rnd);
+			mpfr_strtofr(m, s, &t, 0, rnd__);
 			if (t <= s)
 				break;
 			s = t;
@@ -120,28 +135,35 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy)
-				arf_set_ui(y + jy, x[jy % nx]);
+				if (exact)
+				arf_set_ui      (y + jy, x[jy % nx]);
+				else
+				arf_set_round_ui(y + jy, x[jy % nx], prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy)
-				arf_set_si(y + jy, x[jy % nx]);
+				if (exact)
+				arf_set_si      (y + jy, x[jy % nx]);
+				else
+				arf_set_round_si(y + jy, x[jy % nx], prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy)
-				arf_set_fmpz(y + jy, x + jy % nx);
+				if (exact)
+				arf_set_fmpz      (y + jy, x + jy % nx);
+				else
+				arf_set_round_fmpz(y + jy, x + jy % nx, prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
 		{
 			const fmpq *x = R_flint_get_pointer(s_x);
-			slong prec = asPrec(R_NilValue, __func__);
-			arf_rnd_t rnd = asRnd(R_NilValue, __func__);
 			for (jy = 0; jy < ny; ++jy)
 				arf_fmpz_div_fmpz(y + jy, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
 			break;
@@ -149,22 +171,31 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_MAG:
 		{
 			mag_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
+			for (jy = 0; jy < ny; ++jy) {
 				arf_set_mag(y + jy, x + jy % nx);
+				if (!exact)
+				arf_set_round(y + jy, y + jy, prec, rnd);
+			}
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
 		{
 			arf_srcptr x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy)
-				arf_set(y + jy, x + jy % nx);
+				if (exact)
+				arf_set      (y + jy, x + jy % nx);
+				else
+				arf_set_round(y + jy, x + jy % nx, prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			for (jy = 0; jy < ny; ++jy)
-				arf_set(y + jy, acf_realref(x + jy % nx));
+				if (exact)
+				arf_set      (y + jy, acf_realref(x + jy % nx));
+				else
+				arf_set_round(y + jy, acf_realref(x + jy % nx), prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_ARB:

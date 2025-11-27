@@ -18,11 +18,12 @@ void R_flint_mag_finalize(SEXP x)
 }
 
 SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
-                            SEXP s_dim, SEXP s_dimnames, SEXP s_names)
+                            SEXP s_dim, SEXP s_dimnames, SEXP s_names,
+                            SEXP s_rnd)
 {
 	mp_limb_t jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
-	int lower = isRndZ(asRnd(R_NilValue, __func__));
+	int lower = isRndZ(asRnd(s_rnd, __func__));
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
 	if (s_x != R_NilValue) {

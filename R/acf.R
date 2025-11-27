@@ -246,7 +246,8 @@ setMethod("chol2inv",
 setAs("ANY", "acf",
       function (from)
           .Call(R_flint_acf_initialize, flintNew("acf"), from, NULL,
-                dim(from), dimnames(from), names(from), NULL, NULL))
+                dim(from), dimnames(from), names(from), NULL, NULL,
+                NULL, NULL))
 
 setMethod("colMeans",
           c(x = "acf"),

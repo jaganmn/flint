@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-26)}{
+\section{Changes in version 0.1.3 (2025-11-27)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -34,9 +34,17 @@
   }
   \subsection{Significant User-Visible Changes}{
     \itemize{
-      \item The S4 method for generic function \code{format} with
-      signature \code{c(x = "mag")} rounds away from zero by default, no
-      longer using the global default rounding mode.
+      \item The class generator functions \code{mag} and
+      \code{mag.array} (and likewise the S4 method for generic function
+      \code{format} with signature \code{c(x = "mag")}) round values
+      away from zero by default, no longer consulting the global default
+      rounding mode.  This change is mirrored by coercions
+      \code{as(., "mag")}.
+
+      \item The class generator functions \code{arb}, \code{arb.array},
+      \code{acb}, and \code{acb.array} round midpoints towards zero
+      unconditionally, no longer consulting the global default rounding
+      mode.  This change is mirrored by coercions \code{as(., "arb")}.
     }
   }
   \subsection{Deprecated and Defunct}{
@@ -72,6 +80,12 @@
   }
   \subsection{New Features}{
     \itemize{
+      \item Class generator functions gain arguments \code{prec} and
+      \code{rnd} where appropriate providing users with greater control
+      over conversions.  For example, by passing non-\code{NULL}
+      \code{prec}, one can convert inexactly even if exact conversion
+      is possible.
+
       \item \R{} functions \code{asMatrix} and \code{asArray}, analogues
       of \code{asVector}.
 
