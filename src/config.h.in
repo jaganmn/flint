@@ -36,9 +36,6 @@
 /* Define to 1 if you have the 'acf_one' function. */
 #undef HAVE_ACF_ONE
 
-/* Define to 1 if you have the 'acf_set_round' function. */
-#undef HAVE_ACF_SET_ROUND
-
 /* Define to 1 if you have the 'acf_zero' function. */
 #undef HAVE_ACF_ZERO
 
@@ -47,6 +44,15 @@
 
 /* Define to 1 if you have the 'arb_polygamma' function. */
 #undef HAVE_ARB_POLYGAMMA
+
+/* Define to 1 if you have the 'arb_set_mag' function. */
+#undef HAVE_ARB_SET_MAG
+
+/* Define to 1 if you have the 'arb_set_round_si' function. */
+#undef HAVE_ARB_SET_ROUND_SI
+
+/* Define to 1 if you have the 'arb_set_round_ui' function. */
+#undef HAVE_ARB_SET_ROUND_UI
 
 /* Define to 1 if you have the 'd_mul_2exp' function. */
 #undef HAVE_D_MUL_2EXP

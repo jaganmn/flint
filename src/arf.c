@@ -1005,13 +1005,6 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_set_round(z, arb_midref(zb), prec, rnd); \
 		} while (0)
 
-#ifndef HAVE_ARB_LOG_BASE
-		void arb_log_base(arb_t, const arb_t, const arb_t, slong);
-#endif
-#ifndef HAVE_ARB_POLYGAMMA
-		void arb_polygamma(arb_t, const arb_t, const arb_t, slong);
-#endif
-
 		switch (op) {
 		case 23: /*      "log" */
 			if (s_dots == R_NilValue)

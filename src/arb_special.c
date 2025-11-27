@@ -54,9 +54,6 @@ SEXP R_flint_arb_hypgeom_lgamma(SEXP s_res, SEXP s_x, SEXP s_prec)
 
 SEXP R_flint_arb_hypgeom_polygamma(SEXP s_res, SEXP s_s, SEXP s_x, SEXP s_prec)
 {
-#ifndef HAVE_ARB_POLYGAMMA
-	void arb_polygamma(arb_t, const arb_t, const arb_t, slong);
-#endif
 	return R_flint_arb_2ary(&arb_polygamma, s_res, s_s, s_x, s_prec);
 }
 

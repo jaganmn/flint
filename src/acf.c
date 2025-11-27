@@ -1,106 +1,5 @@
 #include "flint.h"
 
-#ifndef HAVE_ACF_IS_ZERO
-static R_INLINE
-int acf_is_zero(const acf_t x)
-{
-	return
-		arf_is_zero(acf_realref(x)) &&
-		arf_is_zero(acf_imagref(x));
-}
-#endif
-
-#ifndef HAVE_ACF_IS_NAN
-static R_INLINE
-int acf_is_nan(const acf_t x)
-{
-	return
-		arf_is_nan(acf_realref(x)) ||
-		arf_is_nan(acf_imagref(x));
-}
-#endif
-
-#ifndef HAVE_ACF_IS_INF
-static R_INLINE
-int acf_is_inf(const acf_t x)
-{
-	return
-		arf_is_inf(acf_realref(x)) ||
-		arf_is_inf(acf_imagref(x));
-}
-#endif
-
-#ifndef HAVE_ACF_IS_FINITE
-static R_INLINE
-int acf_is_finite(const acf_t x)
-{
-	return
-		arf_is_finite(acf_realref(x)) &&
-		arf_is_finite(acf_imagref(x));
-}
-#endif
-
-#ifndef HAVE_ACF_SET_ROUND
-static R_INLINE
-void acf_set_round(acf_t z, const acf_t x, slong prec, arf_rnd_t rnd)
-{
-	arf_set_round(acf_realref(z), acf_realref(x), prec, rnd);
-	arf_set_round(acf_imagref(z), acf_imagref(x), prec, rnd);
-	return;
-}
-#endif
-
-#ifndef HAVE_ACF_ZERO
-static R_INLINE
-void acf_zero(acf_t z)
-{
-	arf_zero(acf_realref(z));
-	arf_zero(acf_imagref(z));
-	return;
-}
-#endif
-
-#ifndef HAVE_ACF_ONE
-static R_INLINE
-void acf_one(acf_t z)
-{
-	arf_one (acf_realref(z));
-	arf_zero(acf_imagref(z));
-	return;
-}
-#endif
-
-#ifndef HAVE_ACF_NAN
-static R_INLINE
-void acf_nan(acf_t z)
-{
-	arf_nan(acf_realref(z));
-	arf_nan(acf_imagref(z));
-	return;
-}
-#endif
-
-#ifndef HAVE_ACF_CONJ
-static R_INLINE
-void acf_conj(acf_t z, const acf_t x)
-{
-	arf_set(acf_realref(z), acf_realref(x));
-	arf_neg(acf_imagref(z), acf_imagref(x));
-	return;
-}
-#endif
-
-#ifndef HAVE_ACF_DIV_UI
-static R_INLINE
-int acf_div_ui(acf_t z, const acf_t x, ulong y, slong prec, arf_rnd_t rnd)
-{
-	int a, b;
-	a = arf_div_ui(acf_realref(z), acf_realref(x), y, prec, rnd);
-	b = arf_div_ui(acf_imagref(z), acf_imagref(x), y, prec, rnd);
-	return a | (b << 1);
-}
-#endif
-
 static R_INLINE
 int __local_acf_mul(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
 {
@@ -1088,13 +987,6 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_set_round(acf_realref(z), arb_midref(acb_realref(zb)), prec, rnd); \
 			arf_set_round(acf_imagref(z), arb_midref(acb_imagref(zb)), prec, rnd); \
 		} while (0)
-
-#ifndef HAVE_ACB_LOG_BASE
-		void acb_log_base(acb_t, const acb_t, const acb_t, slong);
-#endif
-#ifndef HAVE_ACB_LOG_BASE_UI
-		void acb_log_base_ui(acb_t, const acb_t, ulong, slong);
-#endif
 
 		switch (op) {
 		case 14: /*     "sign" */

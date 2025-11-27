@@ -32,6 +32,7 @@
 #include <flint/acb.h>
 #include <flint/acb_mat.h>
 #include "revertnoreturn.h"
+#include "fallback.h"
 #include <Rconfig.h> /* R_INLINE, ENABLE_NLS */
 #include <R_ext/Arith.h> /* R_FINITE, ISNAN, ... */
 #include <R_ext/Complex.h> /* Rcomplex */

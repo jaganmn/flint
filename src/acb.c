@@ -1,30 +1,5 @@
 #include "flint.h"
 
-#ifndef HAVE_ACB_LOG_BASE
-void acb_log_base(acb_t z, const acb_t x, const acb_t b, slong prec)
-{
-	acb_t t;
-	acb_init(t);
-	acb_log(t, b, prec);
-	acb_log(z, x, prec);
-	acb_div(z, z, t, prec);
-	acb_clear(t);
-	return;
-}
-#endif
-
-#ifndef HAVE_ACB_LOG_BASE_UI
-void acb_log_base_ui(acb_t z, const acb_t x, ulong b, slong prec)
-{
-	acb_t t;
-	acb_init(t);
-	acb_set_ui(t, b);
-	acb_log_base(z, x, t, prec);
-	acb_clear(t);
-	return;
-}
-#endif
-
 void R_flint_acb_finalize(SEXP x)
 {
 	acb_ptr p = R_ExternalPtrAddr(x);

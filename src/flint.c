@@ -49,26 +49,6 @@ do { \
 #define arf_conj(rop, op) arf_set(rop, op)
 #define arb_conj(rop, op) arb_set(rop, op)
 
-#ifndef HAVE_ACF_ZERO
-static R_INLINE
-void acf_zero(acf_t res)
-{
-	arf_zero(acf_realref(res));
-	arf_zero(acf_imagref(res));
-	return;
-}
-#endif
-
-#ifndef HAVE_ACF_CONJ
-static R_INLINE
-void acf_conj(acf_t res, const acf_t x)
-{
-	arf_set(acf_realref(res), acf_realref(x));
-	arf_neg(acf_imagref(res), acf_imagref(x));
-	return;
-}
-#endif
-
 #if __FLINT_RELEASE < 30100
 FLINT_NORETURN
 #endif

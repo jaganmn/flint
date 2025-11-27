@@ -4883,12 +4883,6 @@ then :
   printf "%s\n" "#define HAVE_ACF_ONE 1" >>confdefs.h
 
 fi
-ac_fn_c_check_func "$LINENO" "acf_set_round" "ac_cv_func_acf_set_round"
-if test "x$ac_cv_func_acf_set_round" = xyes
-then :
-  printf "%s\n" "#define HAVE_ACF_SET_ROUND 1" >>confdefs.h
-
-fi
 ac_fn_c_check_func "$LINENO" "acf_zero" "ac_cv_func_acf_zero"
 if test "x$ac_cv_func_acf_zero" = xyes
 then :
@@ -4905,6 +4899,24 @@ ac_fn_c_check_func "$LINENO" "arb_polygamma" "ac_cv_func_arb_polygamma"
 if test "x$ac_cv_func_arb_polygamma" = xyes
 then :
   printf "%s\n" "#define HAVE_ARB_POLYGAMMA 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "arb_set_round_si" "ac_cv_func_arb_set_round_si"
+if test "x$ac_cv_func_arb_set_round_si" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_SET_ROUND_SI 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "arb_set_round_ui" "ac_cv_func_arb_set_round_ui"
+if test "x$ac_cv_func_arb_set_round_ui" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_SET_ROUND_UI 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "arb_set_mag" "ac_cv_func_arb_set_mag"
+if test "x$ac_cv_func_arb_set_mag" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_SET_MAG 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "fmpq_clog_ui" "ac_cv_func_fmpq_clog_ui"

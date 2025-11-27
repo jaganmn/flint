@@ -120,6 +120,10 @@
 
       \item \proglang{C} function \code{newFlint}, simplifying low level
       instantiation of \code{flint} objects.
+
+      \item Conditional definitions of functions tested by macro
+      \code{AC_CHECK_FUNCS} are centralized in \file{src/fallback.c}.
+      Declarations are provided by \file{src/fallback.h}.
     }
   }
 }
