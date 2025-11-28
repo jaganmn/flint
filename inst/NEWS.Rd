@@ -125,6 +125,11 @@
 
       \item Row and column labels were not printed for arrays of length
       zero.
+
+      \item Segments of \code{names(c(\dots))} corresponding to a tagged
+      argument of \code{c} were not constructed correctly when the
+      tagged argument was named or when it was unnamed and of unit
+      length.
     }
   }
   \subsection{Internals}{

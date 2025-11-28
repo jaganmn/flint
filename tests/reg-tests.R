@@ -72,3 +72,11 @@ stopifnot(identical(fmpz(tcrossprod(1:6, 1:8)),
           identical(fmpq(tcrossprod(1:6, 1:6)),
                     ## below could trigger a segfault:
                     tcrossprod(fmpq(1:6), fmpq(1:6))))
+
+
+## names(c(...)) was constructed incorrectly
+x <- 1L
+y <- 1L:2L
+z <- `names<-`(1L:3L, c("z", "zz", "zzz"))
+stopifnot(identical(c(slong(), a = x, b = y, c = z),
+                    slong(c(a = x, b = y, c = z))))

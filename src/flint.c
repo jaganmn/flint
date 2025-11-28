@@ -461,7 +461,13 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 			} else {
 				sa = Rf_translateCharUTF8(PRINTNAME(TAG(e)));
 				la = strlen(sa);
-				if (namesx == R_NilValue)
+				if (namesx == R_NilValue && nx == 1) {
+					snprintf(buf, la + 1, "%s", sa);
+					SET_STRING_ELT(namesy, (R_xlen_t) jy,
+					               Rf_mkCharCE(buf, CE_UTF8));
+					jy += 1;
+				}
+				else if (namesx == R_NilValue)
 					for (jx = 0; jx < nx; ++jx, ++jy) {
 						lb = (size_t) log10((double) (jx + 1)) + 1;
 						snprintf(buf, la + lb + 1, "%s%llu",
@@ -473,7 +479,7 @@ SEXP R_flint_bind(SEXP s_op, SEXP s_usenames, SEXP args, SEXP exps)
 					for (jx = 0; jx < nx; ++jx, ++jy) {
 						sb = Rf_translateCharUTF8(STRING_ELT(namesx, (R_xlen_t) jx));
 						lb = strlen(sb);
-						snprintf(buf, la + lb + 1, "%s.%s",
+						snprintf(buf, la + 1 + lb + 1, "%s.%s",
 						         sa, sb);
 						SET_STRING_ELT(namesy, (R_xlen_t) jy,
 						               Rf_mkCharCE(buf, CE_UTF8));
