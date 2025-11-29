@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-27)}{
+\section{Changes in version 0.1.3 (2025-11-29)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -34,17 +34,7 @@
   }
   \subsection{Significant User-Visible Changes}{
     \itemize{
-      \item The class generator functions \code{mag} and
-      \code{mag.array} (and likewise the S4 method for generic function
-      \code{format} with signature \code{c(x = "mag")}) round values
-      away from zero by default, no longer consulting the global default
-      rounding mode.  This change is mirrored by coercions
-      \code{as(., "mag")}.
-
-      \item The class generator functions \code{arb}, \code{arb.array},
-      \code{acb}, and \code{acb.array} round midpoints towards zero
-      unconditionally, no longer consulting the global default rounding
-      mode.  This change is mirrored by coercions \code{as(., "arb")}.
+      \item .
     }
   }
   \subsection{Deprecated and Defunct}{
@@ -81,10 +71,15 @@
   \subsection{New Features}{
     \itemize{
       \item Class generator functions gain arguments \code{prec} and
-      \code{rnd} where appropriate providing users with greater control
-      over conversions.  For example, by passing non-\code{NULL}
-      \code{prec}, one can convert inexactly even if exact conversion
-      is possible.
+      \code{rnd} (or \code{rnd.mag}) where appropriate providing users
+      with greater control over conversions.  For example, by passing
+      non-\code{NULL} \code{prec}, one can convert inexactly even if
+      exact conversion is possible.
+
+      \item \R{} function \code{flintRndMag} for getting and setting
+      the global default rounding mode for \code{mag}.  S4 methods for
+      \code{format} gain a new argument \code{rnd.mag}, parallel to
+      \code{digits.mag}.
 
       \item \R{} functions \code{asMatrix} and \code{asArray}, analogues
       of \code{asVector}.
@@ -130,6 +125,10 @@
       argument of \code{c} were not constructed correctly when the
       tagged argument was named or when it was unnamed and of unit
       length.
+
+      \item \code{as.character} passes \code{digits.mag = 8L} to
+      \code{format}.  One method gave too many digits and others gave
+      too few.
     }
   }
   \subsection{Internals}{
@@ -635,7 +634,7 @@
 
       \item \R{} functions \code{flintPrec} and \code{flintRnd} for
       getting and setting the global default precision and rounding
-      modes.
+      mode.
 
       \item \R{} function \code{flintSize} for calculating the number of
       bytes used by a \code{flint} vector.

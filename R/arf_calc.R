@@ -68,8 +68,7 @@ function (func, t, y0, param = NULL, rtol = NULL, atol = NULL,
           method = .rk.method.dormand.prince(), progress = 0L,
           prec = flintPrec()) {
     prec. <- flintPrec(prec)
-    rnd. <- flintRnd("N")
-    on.exit({ flintPrec(prec.); flintRnd(rnd.) })
+    on.exit(flintPrec(prec.))
     res <- list(t = flintNew("arf"), y = flintNew("arf"))
     .Call(R_flint_arf_calc_rk, res,
           .rk.func(func), as(t, "arf"), as(y0, "arf"), param,
@@ -79,6 +78,6 @@ function (func, t, y0, param = NULL, rtol = NULL, atol = NULL,
                               as(hmax, "arf"),
           if (!is.null(hini)) as(hini, "arf"),
           if (!is.null(smax)) as(smax, "ulong"),
-          do.call(.rk.method, method), as.integer(progress), prec, "N")
+          do.call(.rk.method, method), as.integer(progress), prec)
     res
 }

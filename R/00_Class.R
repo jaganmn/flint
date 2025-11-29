@@ -175,7 +175,8 @@ new("classGeneratorFunction",
 
 mag <-
 new("classGeneratorFunction",
-    function (x = 0, length = 0L, names = NULL, rnd = "A") {
+    function (x = 0, length = 0L, names = NULL,
+              rnd.mag = NULL) {
         simple <- nargs() == 1L && !missing(x)
         .Call(R_flint_mag_initialize,
               flintNew("mag"),
@@ -184,14 +185,15 @@ new("classGeneratorFunction",
               if (simple) dim(x),
               if (simple) dimnames(x),
               if (simple) names(x) else names,
-              rnd)
+              rnd.mag)
     },
     className = "mag",
     package = "flint")
 
 mag.array <-
 new("classGeneratorFunction",
-    function (x = 0, dim = length(x), dimnames = NULL, rnd = "A")
+    function (x = 0, dim = length(x), dimnames = NULL,
+              rnd.mag = NULL)
         .Call(R_flint_mag_initialize,
               flintNew("mag"),
               if (!missing(x)) x,
@@ -199,7 +201,7 @@ new("classGeneratorFunction",
               if (is.null(dim)) integer(0L) else dim,
               dimnames,
               NULL,
-              rnd),
+              rnd.mag),
     className = "mag",
     package = "flint")
 
@@ -284,7 +286,7 @@ new("classGeneratorFunction",
               if (simple) dimnames(x),
               if (simple) names(x) else names,
               if (!missing(mid)) arf(mid, prec = prec, rnd = "Z"),
-              if (!missing(rad)) mag(rad, rnd = "A"),
+              if (!missing(rad)) mag(rad, rnd.mag = "A"),
               prec)
     },
     className = "arb",
@@ -302,7 +304,7 @@ new("classGeneratorFunction",
               dimnames,
               NULL,
               if (!missing(mid)) arf(mid, prec = prec, rnd = "Z"),
-              if (!missing(rad)) mag(rad, rnd = "A"),
+              if (!missing(rad)) mag(rad, rnd.mag = "A"),
               prec),
     className = "arb",
     package = "flint")

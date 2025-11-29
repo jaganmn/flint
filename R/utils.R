@@ -106,6 +106,16 @@ function (rnd = NULL) {
     else oop
 }
 
+flintRndMag <-
+function (rnd.mag = NULL) {
+    default <- "A"
+    if (is.null(rnd.mag))
+        getOption("flint.rnd.mag", default)
+    else if (is.null(oop <- options(flint.rnd.mag = rnd.mag)[["flint.rnd.mag"]]))
+        default
+    else oop
+}
+
 flintSize <-
 function (object)
     `class<-`(.Call(R_flint_size, object), "object_size")

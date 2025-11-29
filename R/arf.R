@@ -226,13 +226,13 @@ setMethod("colSums",
 
 setMethod("format",
           c(x = "arf"),
-          function (x, base = 10L, digits = NULL,
-                    sep = NULL, rnd = flintRnd(), ...) {
-              if (is.null(digits))
-                  digits <- getOption("digits")
+          function (x, base = 10L, sep = NULL,
+                    digits = NULL, rnd = NULL, ...) {
               if (is.null(sep))
                   sep <- if (identical(base, 10L)) "e" else "@"
-              .Call(R_flint_arf_format, x, base, digits, sep, rnd)
+              if (is.null(digits))
+                  digits <- getOption("digits")
+              .Call(R_flint_arf_format, x, base, sep, digits, rnd)
           })
 
 setMethod("det",

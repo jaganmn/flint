@@ -186,7 +186,7 @@ setMethod("as.vector",
                      "pairlist" =, "list" =, "expression" =
                          .Call(R_flint_list, x, mode),
                      "symbol" =, "name" =, "character" =
-                         as.vector(format(x, digits = 15L, rnd = "N"), mode),
+                         as.vector(format(x, digits = 15L, digits.mag = 8L, rnd = "N", rnd.mag = "A"), mode),
                      as.vector(.Call(R_flint_acb_atomic, x), mode)))
 
 setMethod("backsolve",
@@ -302,14 +302,15 @@ setMethod("determinant",
 
 setMethod("format",
           c(x = "acb"),
-          function (x, base = 10L, digits = NULL, digits.mag = NULL,
-                    sep = NULL, rnd = flintRnd(), ...) {
-              r <- format(Real(x), base = base,
+          function (x, base = 10L, sep = NULL,
+                    digits = NULL, digits.mag = NULL,
+                    rnd = NULL, rnd.mag = "A", ...) {
+              r <- format(Real(x), base = base, sep = sep,
                           digits = digits, digits.mag = digits.mag,
-                          sep = sep, rnd = rnd, ...)
-              i <- format(Imag(x), base = base,
+                          rnd = rnd, rnd.mag = rnd.mag, ...)
+              i <- format(Imag(x), base = base, sep = sep,
                           digits = digits, digits.mag = digits.mag,
-                          sep = sep, rnd = rnd, ...)
+                          rnd = rnd, rnd.mag = rnd.mag, ...)
               r[] <- paste0(r, "+", i, "i")
               r
           })

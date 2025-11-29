@@ -19,16 +19,18 @@
 \S4method{format}{slong}(x, base = 10L, \dots)
 \S4method{format}{fmpz}(x, base = 10L, \dots)
 \S4method{format}{fmpq}(x, base = 10L, \dots)
-\S4method{format}{mag}(x, base = 10L,                digits.mag = NULL,
-       sep = NULL, rnd = "A", \dots)
-\S4method{format}{arf}(x, base = 10L, digits = NULL,
-       sep = NULL, rnd = flintRnd(), \dots)
-\S4method{format}{acf}(x, base = 10L, digits = NULL,
-       sep = NULL, rnd = flintRnd(), \dots)
-\S4method{format}{arb}(x, base = 10L, digits = NULL, digits.mag = NULL,
-       sep = NULL, rnd = flintRnd(), \dots)
-\S4method{format}{acb}(x, base = 10L, digits = NULL, digits.mag = NULL,
-       sep = NULL, rnd = flintRnd(), \dots)
+\S4method{format}{mag}(x, base = 10L, sep = NULL,
+       digits.mag = NULL, rnd.mag = NULL, \dots)
+\S4method{format}{arf}(x, base = 10L, sep = NULL,
+       digits = NULL, rnd = NULL, \dots)
+\S4method{format}{acf}(x, base = 10L, sep = NULL,
+       digits = NULL, rnd = NULL, \dots)
+\S4method{format}{arb}(x, base = 10L, sep = NULL,
+       digits = NULL, digits.mag = NULL,
+       rnd = NULL, rnd.mag = "A", \dots)
+\S4method{format}{arb}(x, base = 10L, sep = NULL,
+       digits = NULL, digits.mag = NULL,
+       rnd = NULL, rnd.mag = "A", \dots)
 }
 \arguments{
   \item{x}{
@@ -38,34 +40,40 @@
     and 16 correspond to binary, decimal, and hexadecimal output.
     Digits are represented by characters \samp{[0-9A-Za-z]}, in that
     significance order, hence the maximum 10+26+26=62.}
-  \item{digits, digits.mag}{
-    an integer indicating how many digits of the significand are
-    reported when formatting floating-point numbers.
-    \code{\linkS4class{arf}} and \code{arf} components of
-    \code{\linkS4class{acf}}, \code{\linkS4class{arb}}, and
-    \code{\linkS4class{acb}} use \code{digits}.
-    \code{\linkS4class{mag}} and \code{mag} components of
-    \code{\linkS4class{arb}} and \code{\linkS4class{acb}} use
-    \code{digits.mag}.  When more than one digit is printed, a radix
-    point is inserted after the first digit.  Value 0 is equivalent to
-    the minimum integer \code{d} such that all elements of \code{x} are
-    represented exactly by \code{d} digits in the specified base.  The
-    default values \code{NULL} are equivalent to
-    \code{getOption("digits")} and \code{getOption("digits.mag", 4L)}.}
   \item{sep}{
     a nonempty character string used to separate the significand from
     the exponent.  The default value \code{NULL} is a equivalent to
     \code{"e"} for \code{base} equal to 10 and to \code{"@"} for all
     other bases.}
-  \item{rnd}{
-    a nonempty character string whose first character indicates a
-    rounding mode.  Methods for \code{\linkS4class{arb}} and
-    \code{\linkS4class{acb}} use \code{rnd} only to round midpoints;
-    they round radii away from zero unconditionally.  See
-    \code{\link{flintRnd}} for information about valid character
-    strings.}
+  \item{digits, digits.mag}{
+    integers indicating how many digits of the significand are reported
+    when formatting floating-point numbers.  When more than one digit is
+    printed, a radix point is inserted after the first digit.  Value 0
+    is equivalent to the minimum integer \code{d} such that all elements
+    of \code{x} are represented exactly by \code{d} digits in the
+    specified base.  The default values \code{NULL} are equivalent to
+    \code{getOption("digits")} and \code{getOption("digits.mag", 4L)}.}
+  \item{rnd, rnd.mag}{
+    character strings indicating the rounding modes used when formatting
+    floating-point numbers.  The default values \code{NULL} are
+    equivalent to \code{\link{flintRnd}()} and
+    \code{\link{flintRndMag}()}; see there for a description of valid
+    character strings and the corresponding rounding modes.}
   \item{\dots}{
     further optional arguments, though these are currently unused.}
+}
+\details{
+  Formatting of \code{\linkS4class{arf}} and \code{arf} midpoints of
+  \code{\linkS4class{acf}}, \code{\linkS4class{arb}}, and
+  \code{\linkS4class{acb}} uses arguments \code{digits} and \code{rnd}.
+  Formatting of \code{\linkS4class{mag}} and \code{mag} radii of
+  \code{\linkS4class{arb}} and \code{\linkS4class{acb}} uses
+  arguments \code{digits.mag} and \code{rnd.mag}.
+
+  Note that radii are \emph{not} incremented to account for error
+  introduced by rounding of midpoints.  Hence it is possible that the
+  enclosure obtained by formatting does not contain the enclosure
+  represented in memory.
 }
 \value{
   A character vector containing \acronym{ASCII} strings of equal length,

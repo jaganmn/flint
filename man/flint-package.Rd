@@ -7,6 +7,7 @@
 \alias{flintLength}
 \alias{flintPrec}
 \alias{flintRnd}
+\alias{flintRndMag}
 \alias{flintSize}
 \alias{flintTriple}
 \alias{flintVersion}
@@ -25,6 +26,7 @@ flintClass(object)
 flintLength(object, exact = TRUE)
 flintPrec(prec = NULL)
 flintRnd(rnd = NULL)
+flintRndMag(rnd.mag = NULL)
 flintSize(object)
 flintTriple(object)
 flintVersion()
@@ -46,11 +48,17 @@ flintVersion()
   \item{rnd}{
     a new default value for the rounding mode of inexact floating-point
     operations, if non-\code{NULL}.  The value should be a character
-    string indicating a rounding mode for signed floating-point types.
-    Valid characters are \samp{[Uu]} (towards positive infinity),
-    \samp{[Dd]} (towards negative infinity), \samp{[Zz]} (towards zero),
+    string with exactly one character indicating a rounding direction.
+    Valid characters are \samp{[Dd]} (towards negative infinity),
+    \samp{[Uu]} (towards positive infinity), \samp{[Zz]} (towards zero),
     \samp{[Aa]} (away from zero), and \samp{[Nn]} (to nearest, with
     precedence to even significands).}
+  \item{rnd.mag}{
+    as \code{rnd}, but used exclusively for operations returning
+    \code{\linkS4class{mag}}.  Note that since \code{mag} is unsigned,
+    \samp{[Dd]} and \samp{[Uu]} are equivalent to \samp{[Zz]} and
+    \samp{[Aa]}, respectively.  \samp{[Nn]} is invalid as (by design)
+    \code{mag} does not support rounding to nearest.}
   \item{which}{
     a character vector listing package names.}
   \item{where}{
@@ -108,9 +116,12 @@ flintVersion()
   virtual class \code{flint}, then the return value is
   \code{\link{NA_integer_}}.
 
-  \code{flintPrec} returns the previous default precision.
+  \code{flintPrec} returns the previous default precision, where the
+  so-called factory setting is \code{\link{.Machine}$double.digits}.
 
-  \code{flintRnd} returns the previous default rounding mode.
+  \code{flintRnd} and \code{flintRndMag} return the previous default
+  rounding modes, where the so-called factory settings are \code{"N"}
+  and \code{"A"}, respectively.
 
   \code{flintSize} returns an upper bound for the number of bytes used
   by \code{object}, as an object of class \code{object_size} (following
@@ -160,6 +171,15 @@ which="gmp":
   from="bigq", to="fmpq"
   from="fmpq", to="bigq"
 }
+}
+\note{
+  Whether and how the global default precision and rounding modes
+  (set by \code{flintPrec}, \code{flintRnd}, and \code{flintRndMag}) are
+  actually used depends on conventions defined in the floating-point
+  class documentation, hence see \code{\linkS4class{mag}},
+  \code{\linkS4class{arf}}, \code{\linkS4class{acf}},
+  \code{\linkS4class{arb}}, and \code{\linkS4class{acb}}.  These
+  conventions are partly inherited from the \proglang{C} library.
 }
 \author{
   Mikael Jagan

@@ -278,10 +278,12 @@ setMethod("determinant",
 
 setMethod("format",
           c(x = "acf"),
-          function (x, base = 10L, digits = NULL,
-                    sep = NULL, rnd = flintRnd(), ...) {
-              r <- format(Real(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
-              i <- format(Imag(x), base = base, digits = digits, sep = sep, rnd = rnd, ...)
+          function (x, base = 10L, sep = NULL,
+                    digits = NULL, rnd = NULL, ...) {
+              r <- format(Real(x), base = base, sep = sep,
+                          digits = digits, rnd = rnd, ...)
+              i <- format(Imag(x), base = base, sep = sep,
+                          digits = digits, rnd = rnd, ...)
               if (!any(s <- startsWith(i, "-")))
                   r[] <- paste0(r, "+", i, "i")
               else {

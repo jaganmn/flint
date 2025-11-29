@@ -646,20 +646,26 @@ mpfr_prec_t mpfrPrec(slong prec)
 	return (mpfr_prec_t) prec;
 }
 
-arf_rnd_t asRnd(SEXP rnd, const char *where)
+arf_rnd_t asRnd(SEXP rnd, int useNn, const char *where)
 {
 	if (rnd == R_NilValue) {
-		static SEXP tag = NULL;
-		if (!tag)
-			tag = Rf_install("flint.rnd");
-		rnd = Rf_GetOption1(tag);
+		static SEXP nm0 = NULL, nm1 = NULL;
+		if (!nm0)
+			nm0 = Rf_install("flint.rnd.mag");
+		if (!nm1)
+			nm1 = Rf_install("flint.rnd");
+		rnd = Rf_GetOption1((useNn) ? nm1 : nm0);
 		if (rnd == R_NilValue)
-			return ARF_RND_NEAR;
+			return (useNn) ? ARF_RND_NEAR : ARF_RND_UP;
 	}
 	if (TYPEOF(rnd) == STRSXP && XLENGTH(rnd) > 0 &&
-	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING) {
+	    (rnd = STRING_ELT(rnd, 0)) != NA_STRING &&
+	    CHAR(rnd)[0] != '\0' && CHAR(rnd)[1] == '\0') {
 		switch (CHAR(rnd)[0]) {
 		case 'N': case 'n':
+			if (!useNn)
+			Rf_error(_("class \"%s\" does not support rounding to nearest"),
+			         "mag");
 			return ARF_RND_NEAR;
 		case 'Z': case 'z':
 			return ARF_RND_DOWN;
@@ -671,7 +677,7 @@ arf_rnd_t asRnd(SEXP rnd, const char *where)
 			return ARF_RND_UP;
 		}
 	}
-	Rf_error(_("invalid '%s' in '%s'"), "rnd", where);
+	Rf_error(_("invalid '%s' in '%s'"), (useNn) ? "rnd" : "rnd.mag", where);
 	return (arf_rnd_t) -1;
 }
 
@@ -700,7 +706,6 @@ int isRndZ(arf_rnd_t rnd)
 	case ARF_RND_DOWN:
 	case ARF_RND_FLOOR:
 		return 1;
-	case ARF_RND_NEAR:
 	case ARF_RND_CEIL:
 	case ARF_RND_UP:
 		return 0;

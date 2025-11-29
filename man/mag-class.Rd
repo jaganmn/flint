@@ -105,9 +105,9 @@
 \usage{
 ## Class generator functions
 
-mag(x = 0, length = 0L, names = NULL, rnd = "A")
+mag(x = 0, length = 0L, names = NULL, rnd.mag = NULL)
 
-mag.array(x = 0, dim = length(x), dimnames = NULL, rnd = "A")
+mag.array(x = 0, dim = length(x), dimnames = NULL, rnd.mag = NULL)
 }
 \arguments{
   \item{x}{
@@ -132,10 +132,10 @@ mag.array(x = 0, dim = length(x), dimnames = NULL, rnd = "A")
     are either \code{NULL} or character vectors of length given by
     \code{dim}.  Non-character vector components of \code{dimnames} are
     coerced to character.}
-  \item{rnd}{
-    the rounding mode used for conversion.  Character strings with first
-    character in \samp{[AaUu]} indicate away from zero; ones with first
-    character in \samp{[ZzDd]} indicate towards zero.}
+  \item{rnd.mag}{
+    the rounding mode used for inexact conversion.  \code{NULL} means to
+    round according to the global default rounding mode; see
+    \code{\link{flintRndMag}}.}
 }
 \value{
   A \code{mag} vector, possibly an array; see \sQuote{Details}.
@@ -162,16 +162,6 @@ mag(x, length=)}
   rounding mode set by \code{rnd}.  Imaginary parts of complex numbers
   are discarded.
 
-  It is guaranteed that the result of conversion is a lower or upper
-  bound on the converted value.  It is not guaranteed that the bound is
-  optimal; in particular, the result of conversion can be inexact even
-  if the converted value is exactly representable.  Indeed, the computed
-  bound and the optimal bound can differ by several ulps.  If that seems
-  unusual, note that \code{mag} exists primarily to represent the radii
-  of \code{\linkS4class{arb}} and \code{\linkS4class{acb}}.  Arithmetic
-  involving \code{arb} or \code{acb} benefits from fast and
-  \dQuote{precise enough} operations on the radii.
-
   Character strings are converted using function \code{mpfr_strtofr}
   from the \acronym{GNU} \acronym{MPFR} library with argument
   \code{base} set to 0; see
@@ -186,6 +176,9 @@ mag(x, length=)}
   }
 }
 \section{Methods}{
+  Methods that return a \code{mag} vector give lower or upper bounds
+  on the absolute value of the exact answer, depending on the global
+  default rounding mode; see \code{\link{flintRnd}}.
   \describe{
     \item{\code{\link{!}}}{
       \code{signature(x = "mag")}:\cr

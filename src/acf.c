@@ -75,7 +75,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	int exact = s_prec == R_NilValue;
 	slong prec = asPrec(s_prec, __func__);
-	arf_rnd_t rnd = asRnd(s_rnd, __func__);
+	arf_rnd_t rnd = asRnd(s_rnd, 1, __func__);
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
 	if (s_real != R_NilValue || s_imag != R_NilValue) {
@@ -380,7 +380,7 @@ SEXP R_flint_acf_atomic(SEXP object)
 {
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
+	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acf_srcptr x = R_flint_get_pointer(object);
 	Rcomplex *y = COMPLEX(ans);
@@ -431,7 +431,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
 	if (mop >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
+	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -791,7 +791,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	acf_srcptr x = R_flint_get_pointer(s_x);
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
+	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */

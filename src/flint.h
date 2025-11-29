@@ -271,7 +271,7 @@ int checkConformable(SEXP, SEXP, mp_limb_t, mp_limb_t, int, int *);
 
 slong asPrec(SEXP, const char *);
 mpfr_prec_t mpfrPrec(slong);
-arf_rnd_t asRnd(SEXP, const char *);
+arf_rnd_t asRnd(SEXP, int, const char *);
 mpfr_rnd_t mpfrRnd(arf_rnd_t);
 int isRndZ(arf_rnd_t);
 int asBase(SEXP, const char *);

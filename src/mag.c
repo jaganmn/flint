@@ -23,7 +23,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 {
 	mp_limb_t jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
-	int lower = isRndZ(asRnd(s_rnd, __func__));
+	int lower = isRndZ(asRnd(s_rnd, 0, __func__));
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
 	if (s_x != R_NilValue) {
@@ -214,7 +214,7 @@ SEXP R_flint_mag_atomic(SEXP object)
 {
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	int lower = isRndZ(asRnd(R_NilValue, __func__));
+	int lower = isRndZ(asRnd(R_NilValue, 0, __func__));
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	mag_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
@@ -236,14 +236,14 @@ SEXP R_flint_mag_atomic(SEXP object)
 }
 
 SEXP R_flint_mag_format(SEXP object, SEXP s_base,
-                        SEXP s_digits, SEXP s_sep, SEXP s_rnd)
+                        SEXP s_sep, SEXP s_digits, SEXP s_rnd)
 {
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
 	int base = asBase(s_base, __func__), abase = (base < 0) ? -base : base;
 	size_t digits = asDigits(s_digits, __func__);
 	const char *sep = asSep(s_sep, __func__);
-	int lower = isRndZ(asRnd(s_rnd, __func__));
+	int lower = isRndZ(asRnd(s_rnd, 0, __func__));
 	mpfr_rnd_t rnd = (lower) ? MPFR_RNDZ : MPFR_RNDA;
 	SEXP ans = PROTECT(Rf_allocVector(STRSXP, (R_xlen_t) n));
 	if (n) {
@@ -384,7 +384,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		y = R_flint_get_pointer(s_y);
 	int dz[3];
 	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
-	int lower = isRndZ(asRnd(R_NilValue, __func__));
+	int lower = isRndZ(asRnd(R_NilValue, 0, __func__));
 	switch (op) {
 	case  1: /*   "+" */
 	case  2: /*   "-" */
@@ -518,7 +518,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	mag_srcptr x = R_flint_get_pointer(s_x);
-	int lower = isRndZ(asRnd(R_NilValue, __func__));
+	int lower = isRndZ(asRnd(R_NilValue, 0, __func__));
 	switch (op) {
 	case  1: /*       "+" */
 	case  2: /*       "-" */

@@ -329,7 +329,7 @@ SEXP R_flint_arb_atomic(SEXP object)
 {
 	mp_limb_t j, n = R_flint_get_length(object);
 	ERROR_TOO_LONG(n, R_XLEN_T_MAX);
-	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
+	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arb_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
@@ -715,7 +715,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	arb_srcptr x = R_flint_get_pointer(s_x);
 	slong prec = asPrec(R_NilValue, __func__);
-	arf_rnd_t rnd = asRnd(R_NilValue, __func__);
+	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	switch (op) {
 	case  1: /*        "+" */
 	case  2: /*        "-" */
