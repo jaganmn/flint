@@ -559,9 +559,6 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				mag_set(z + jz, x + jz);
 			break;
 		case 10: /*      "Im" */
-			for (jz = 0; jz < nz; ++jz)
-				mag_zero(z + jz);
-			break;
 		case 12: /*     "Arg" */
 			for (jz = 0; jz < nz; ++jz)
 				mag_zero(z + jz);
