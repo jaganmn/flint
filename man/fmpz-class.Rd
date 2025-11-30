@@ -171,7 +171,7 @@ fmpz(x, length=)}
   \describe{
     \item{\code{\link{!}}}{
       \code{signature(x = "fmpz")}:\cr
-      equivalent to (but faster than) \code{x == 0}.}
+      equivalent to (but faster than) \code{x == 0L}.}
     \item{\code{\link{\%*\%}}, \code{\link{crossprod}}, \code{\link{tcrossprod}}}{
       \code{signature(x = "fmpz", y = "fmpz")}:\cr
       \code{signature(x = "fmpz", y = "ANY")}:\cr

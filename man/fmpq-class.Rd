@@ -186,7 +186,7 @@ fmpq(num=, den=, length=)}
   \describe{
     \item{\code{\link{!}}}{
       \code{signature(x = "fmpq")}:\cr
-      equivalent to (but faster than) \code{x == 0}.}
+      equivalent to (but faster than) \code{x == 0L}.}
     \item{\code{\link{\%*\%}}, \code{\link{crossprod}}, \code{\link{tcrossprod}}}{
       \code{signature(x = "fmpq", y = "fmpq")}:\cr
       \code{signature(x = "fmpq", y = "ANY")}:\cr

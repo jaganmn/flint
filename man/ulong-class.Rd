@@ -294,7 +294,7 @@ slong(x, length=)}
     \item{\code{\link{!}}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr
-      equivalent to (but faster than) \code{x == 0}.}
+      equivalent to (but faster than) \code{x == 0L}.}
     \item{\code{\link{\%*\%}}, \code{\link{crossprod}}, \code{\link{tcrossprod}}}{
       \code{signature(x = "ulong", y = "ulong")}:\cr
       \code{signature(x = "slong", y = "slong")}:\cr
