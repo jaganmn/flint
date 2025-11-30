@@ -799,22 +799,20 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (prec > ARF_PREC_EXACT - 3)
 				Rf_error(_("desired precision exceeds maximum %lld"),
 				         (long long int) (ARF_PREC_EXACT - 3));
+			arf_t pi;
 			arb_t pib;
+			arf_init(pi);
 			arb_init(pib);
 			arb_const_pi(pib, prec + 2);
-			if (arb_rel_accuracy_bits(pib) <= prec) {
-				/* FIXME: Does this ever happen ... ? */
-				arb_clear(pib);
-				Rf_error(_("failed to reach desired precision")); \
-			}
-			arf_set_round(arb_midref(pib), arb_midref(pib), prec, rnd);
+			arf_set_round(pi, arb_midref(pib), prec, rnd);
 			for (jz = 0; jz < nz; ++jz)
-				if (arf_is_nan(x + jz) || arf_is_zero(x + jz))
-					arf_set(z + jz, x + jz);
-				else if (arf_sgn(x + jz) > 0)
-					arf_set(z + jz, arb_midref(pib));
+				if (arf_is_nan(x + jz))
+					arf_nan(z + jz);
+				else if (arf_sgn(x + jz) >= 0)
+					arf_zero(z + jz);
 				else
-					arf_neg(z + jz, arb_midref(pib));
+					arf_set(z + jz, pi);
+			arf_clear(pi);
 			arb_clear(pib);
 			break;
 		}

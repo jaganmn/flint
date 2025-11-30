@@ -785,28 +785,9 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arb_nonnegative_abs(z + jz, x + jz);
 			break;
 		case 12: /*      "Arg" */
-		{
-			arb_t pi;
-			arb_init(pi);
-			arb_const_pi(pi, prec);
-			for (jz = 0; jz < nz; ++jz) {
-				if (arf_is_nan(arb_midref(x + jz)) ||
-				    mag_is_inf(arb_radref(x + jz)) ||
-				    arf_cmpabs_mag(arb_midref(x + jz), arb_radref(x + jz)) < 0) {
-					arf_zero(arb_midref(z + jz));
-					mag_const_pi(arb_radref(z + jz));
-				}
-				else if (arf_is_zero(arb_midref(x + jz)))
-					arb_zero(z + jz);
-				else {
-					arb_set(z + jz, pi);
-					if (arf_sgn(arb_midref(x + jz)) < 0)
-					arb_neg(z + jz, z + jz);
-				}
-			}
-			arb_clear(pi);
+			for (jz = 0; jz < nz; ++jz)
+				arb_arg(z + jz, x + jz, prec);
 			break;
-		}
 		case 14: /*     "sign" */
 			for (jz = 0; jz < nz; ++jz)
 				arb_sgn(z + jz, x + jz);

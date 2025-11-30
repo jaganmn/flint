@@ -206,6 +206,19 @@ void arb_set_mag(arb_t z, const mag_t x)
 }
 #endif
 
+#ifndef HAVE_ARB_ARG
+void arb_arg(arb_t z, const arb_t x, slong prec)
+{
+	acb_t t;
+	acb_init(t);
+	arb_set(acb_realref(t), x);
+	arb_zero(acb_imagref(t));
+	acb_arg(z, t, prec);
+	acb_clear(t);
+	return;
+}
+#endif
+
 #ifndef HAVE_ARB_LOG_BASE
 void arb_log_base(arb_t z, const arb_t x, const arb_t b, slong prec)
 {

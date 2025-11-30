@@ -564,10 +564,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 12: /*     "Arg" */
 			for (jz = 0; jz < nz; ++jz)
-				if (mag_is_zero(x + jz))
-					mag_zero(z + jz);
-				else
-					WRAP(mag_const_pi, lower, z + jz);
+				mag_zero(z + jz);
 			break;
 		case 14: /*    "sign" */
 			for (jz = 0; jz < nz; ++jz)

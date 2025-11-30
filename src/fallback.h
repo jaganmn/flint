@@ -23,6 +23,7 @@ int acf_div_ui(acf_t, const acf_t, ulong, slong, arf_rnd_t);
 void arb_set_round_ui(arb_t, ulong, slong);
 void arb_set_round_si(arb_t, slong, slong);
 void arb_set_mag(arb_t, const mag_t);
+void arb_arg(arb_t, const arb_t, slong);
 void arb_log_base(arb_t, const arb_t, const arb_t, slong);
 void arb_polygamma(arb_t, const arb_t, const arb_t, slong);
 

@@ -4889,6 +4889,12 @@ then :
   printf "%s\n" "#define HAVE_ACF_ZERO 1" >>confdefs.h
 
 fi
+ac_fn_c_check_func "$LINENO" "arb_arg" "ac_cv_func_arb_arg"
+if test "x$ac_cv_func_arb_arg" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_ARG 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "arb_log_base" "ac_cv_func_arb_log_base"
 if test "x$ac_cv_func_arb_log_base" = xyes
 then :

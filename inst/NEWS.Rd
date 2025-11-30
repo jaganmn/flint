@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-29)}{
+\section{Changes in version 0.1.3 (2025-11-30)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -129,6 +129,9 @@
       \item \code{as.character} passes \code{digits.mag = 8L} to
       \code{format}.  One method gave too many digits and others gave
       too few.
+
+      \item \code{Arg(x)} wrongly gave \code{sign(x)} times \eqn{pi}
+      for \code{x} of class \code{mag}, \code{arf}, or \code{arb},
     }
   }
   \subsection{Internals}{

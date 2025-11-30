@@ -39,6 +39,9 @@
 /* Define to 1 if you have the 'acf_zero' function. */
 #undef HAVE_ACF_ZERO
 
+/* Define to 1 if you have the 'arb_arg' function. */
+#undef HAVE_ARB_ARG
+
 /* Define to 1 if you have the 'arb_log_base' function. */
 #undef HAVE_ARB_LOG_BASE
 
