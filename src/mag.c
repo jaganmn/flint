@@ -411,8 +411,14 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				WRAP(mag_mul, lower, z + jz, x + jz % nx, y + jz % ny);
 			break;
 		case 6: /*   "/" */
-			for (jz = 0; jz < nz; ++jz)
+			for (jz = 0; jz < nz; ++jz) {
+				if (mag_is_special(x + jz % nx) &&
+				    mag_is_special(y + jz % ny) &&
+				    (mag_is_zero(x + jz % nx) != 0) ==
+				    (mag_is_zero(y + jz % ny) != 0))
+					Rf_error(_("NaN is not representable by \"%s\""), "mag");
 				WRAP(mag_div, lower, z + jz, x + jz % nx, y + jz % ny);
+			}
 			break;
 		case 7: /*   "^" */
 		{
@@ -645,63 +651,68 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				WRAP(mag_mul, lower, z + jz, z + jz - 1, x + jz);
 			}
 			break;
-		case 23: /*     "log" */
-		case 24: /*   "log10" */
-		case 25: /*    "log2" */
-			for (jz = 0; jz < nz; ++jz)
+		case 23: /*      "log" */
+			if (s_dots == R_NilValue)
+			for (jz = 0; jz < nz; ++jz) {
 				if (mag_cmp_2exp_si(x + jz, 0) >= 0)
-					WRAP(mag_log, lower, z + jz, x + jz);
+					WRAP(mag_log    , lower, z + jz, x + jz);
 				else
 					WRAP(mag_neg_log, lower, z + jz, x + jz);
-			if (op != 23 || s_dots != R_NilValue) {
-			mag_t tmp;
-			mag_init(tmp);
-			if (op != 23)
-				WRAP(mag_set_ui, !lower, tmp, (op == 24) ? 10 : 2);
+			}
 			else {
-				SEXP s_base = VECTOR_ELT(s_dots, 0);
-				if (R_flint_get_length(s_base) == 0)
-					Rf_error(_("'%s' of length zero in '%s'"),
-					         "base", CHAR(STRING_ELT(s_op, 0)));
-				arf_srcptr base = R_flint_get_pointer(s_base);
-				if (arf_is_nan(base) || arf_sgn(base) < 0) {
-					mag_clear(tmp);
-					Rf_error(_("NaN is not representable by \"%s\""), "mag");
-				}
-				if (arf_cmp_2exp_si(base, 0) >= 0)
-					WRAP(arf_get_mag, !lower, tmp, base);
+			SEXP s_base = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_base) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "base", CHAR(STRING_ELT(s_op, 0)));
+			arf_srcptr base = R_flint_get_pointer(s_base);
+			int status = arf_is_nan(base) || arf_sgn(base) < 0;
+			if (status)
+				Rf_error(_("NaN is not representable by \"%s\""), "mag");
+			mag_t t;
+			mag_init(t);
+			if (arf_cmp_2exp_si(base, 0) >= 0) {
+				WRAP(arf_get_mag, !lower, t, base);
+				WRAP(mag_log    , !lower, t, t);
+			} else {
+				WRAP(arf_get_mag,  lower, t, base);
+				WRAP(mag_neg_log, !lower, t, t);
+			}
+			for (jz = 0; jz < nz; ++jz) {
+				if (mag_cmp_2exp_si(x + jz, 0) >= 0)
+					WRAP(mag_log    , lower, z + jz, x + jz);
 				else
-					WRAP(arf_get_mag, lower, tmp, base);
+					WRAP(mag_neg_log, lower, z + jz, x + jz);
+				if (mag_is_special(z + jz) &&
+				    mag_is_special(t     ) &&
+				    (mag_is_zero(z + jz) != 0) ==
+				    (mag_is_zero(t     ) != 0)) {
+					status = 1;
+					break;
+				}
+				WRAP(mag_div, lower, z + jz, z + jz, t);
 			}
-			if (mag_cmp_2exp_si(tmp, 0) >= 0)
-				WRAP(mag_log, !lower, tmp, tmp);
-			else
-				WRAP(mag_neg_log, !lower, tmp, tmp);
-			if (mag_is_special(tmp)) {
-				for (jz = 0; jz < nz; ++jz)
-					if (mag_is_inf(z + jz)) {
-					mag_clear(tmp);
-					Rf_error(_("NaN is not representable by \"%s\""), "mag");
-					}
-					else
-					mag_zero(z + jz);
-			}
-			else if (mag_cmp_2exp_si(tmp, 0) == 0) {
-				for (jz = 0; jz < nz; ++jz)
-					if (mag_is_zero(z + jz)) {
-					mag_clear(tmp);
-					Rf_error(_("NaN is not representable by \"%s\""), "mag");
-					}
-					else
-					mag_inf(z + jz);
-			}
-			else {
-				for (jz = 0; jz < nz; ++jz)
-					WRAP(mag_div, lower, z + jz, z + jz, tmp);
-			}
-			mag_clear(tmp);
+			mag_clear(t);
+			if (status)
+				Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			}
 			break;
+		case 24: /*    "log10" */
+		case 25: /*     "log2" */
+		{
+			mag_t t;
+			mag_init(t);
+			WRAP(mag_set_ui, !lower, t, (op == 24) ? 10 : 2);
+			WRAP(mag_log   , !lower, t, t);
+			for (jz = 0; jz < nz; ++jz) {
+				if (mag_cmp_2exp_si(x + jz, 0) >= 0)
+					WRAP(mag_log    , lower, z + jz, x + jz);
+				else
+					WRAP(mag_neg_log, lower, z + jz, x + jz);
+				WRAP(mag_div, lower, z + jz, z + jz, t);
+			}
+			mag_clear(t);
+			break;
+		}
 		case 26: /*   "log1p" */
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(mag_log1p, lower, z + jz, x + jz);

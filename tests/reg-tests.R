@@ -86,3 +86,8 @@ stopifnot(identical(c(slong(), a = x, b = y, c = z),
 stopifnot(all.equal(Arg(mag(c(    0, 1))), mag(c(    0, 0))),
           all.equal(Arg(arf(c(-1, 0, 1))), arf(c(pi, 0, 0))),
           all.equal(Arg(arb(c(-1, 0, 1))), arb(c(pi, 0, 0))))
+
+
+## 0/0, Inf/Inf returned Inf for operands of class 'mag'
+stopifnot(tryCatch(mag(  0)/mag(  0), error = function (e) TRUE),
+          tryCatch(mag(Inf)/mag(Inf), error = function (e) TRUE))

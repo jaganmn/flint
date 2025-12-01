@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-11-30)}{
+\section{Changes in version 0.1.3 (2025-12-01)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -131,7 +131,10 @@
       too few.
 
       \item \code{Arg(x)} wrongly gave \code{sign(x)} times \eqn{pi}
-      for \code{x} of class \code{mag}, \code{arf}, or \code{arb},
+      for \code{x} of class \code{mag}, \code{arf}, or \code{arb}.
+
+      \item \code{mag(0)/mag(0)} and \code{mag(Inf)/mag(Inf)} wrongly
+      returned \code{mag(Inf)}.  Now they signal an error.
     }
   }
   \subsection{Internals}{
