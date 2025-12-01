@@ -289,6 +289,12 @@ setMethod("isSigned",
           c(x = "arf"),
           function (x) TRUE)
 
+setMethod("log",
+          c(x = "arf"),
+          function (x, base, ...)
+              .Call(R_flint_arf_ops1, "log", x,
+                    if (!missing(base)) list(as(base, "arf"))))
+
 setMatrixOpsMethod(
           c(x = "ANY", y = "arf"),
           function (x, y) {

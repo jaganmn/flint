@@ -69,6 +69,7 @@
 \alias{is.na,acf-method}
 \alias{is.nan,acf-method}
 \alias{is.unsorted,acf-method}
+\alias{log,acf-method}
 \alias{mean,acf-method}
 \alias{rowMeans,acf-method}
 \alias{rowSums,acf-method}
@@ -362,6 +363,11 @@ acf.(real=, imag=, length=)}
       nondecreasing order (increasing order if optional argument
       \code{strictly} is set to \code{TRUE}) by real part then by
       imaginary part.}
+    \item{\code{\link{log}}}{
+      \code{signature(x = "acf")}:\cr
+      returns the logarithm of the argument.  The natural logarithm is
+      computed by default (when optional argument \code{base} is
+      unset).}
     \item{\code{\link{mean}}}{
       \code{signature(x = "acf")}:\cr
       returns the arithmetic mean.}

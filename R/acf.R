@@ -330,6 +330,12 @@ setMethod("isSigned",
           c(x = "acf"),
           function (x) TRUE)
 
+setMethod("log",
+          c(x = "acf"),
+          function (x, base, ...)
+              .Call(R_flint_acf_ops1, "log", x,
+                    if (!missing(base)) list(as(base, "acf"))))
+
 setMatrixOpsMethod(
           c(x = "ANY", y = "acf"),
           function (x, y) {

@@ -67,6 +67,7 @@
 \alias{is.na,arf-method}
 \alias{is.nan,arf-method}
 \alias{is.unsorted,arf-method}
+\alias{log,arf-method}
 \alias{mean,arf-method}
 \alias{rowMeans,arf-method}
 \alias{rowSums,arf-method}
@@ -316,6 +317,11 @@ arf(x, length=)}
       returns a logical indicating if \code{x} is not sorted in
       nondecreasing order (increasing order if optional argument
       \code{strictly} is set to \code{TRUE}).}
+    \item{\code{\link{log}}}{
+      \code{signature(x = "arf")}:\cr
+      returns the logarithm of the argument.  The natural logarithm is
+      computed by default (when optional argument \code{base} is
+      unset).}
     \item{\code{\link{mean}}}{
       \code{signature(x = "arf")}:\cr
       returns the arithmetic mean.}
