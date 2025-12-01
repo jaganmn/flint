@@ -1057,17 +1057,15 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			break;
 		case 24: /*    "log10" */
-#define arb_log10(z, x, prec) arb_log_base_ui(z, x, 10, prec)
-			for (jz = 0; jz < nz; ++jz)
-				WRAP(arb_log10, z + jz, x + jz, prec, rnd);
-#undef arb_log10
-			break;
 		case 25: /*     "log2" */
-#define arb_log2(z, x, prec) arb_log_base_ui(z, x, 2, prec)
+		{
+			ulong b = (op == 24) ? 10 : 2;
+#define arb_logb(z, x, prec) arb_log_base_ui(z, x, b, prec)
 			for (jz = 0; jz < nz; ++jz)
-				WRAP(arb_log2, z + jz, x + jz, prec, rnd);
-#undef arb_log2
+				WRAP(arb_logb, z + jz, x + jz, prec, rnd);
+#undef arb_logb
 			break;
+		}
 		case 26: /*    "log1p" */
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(arb_log1p, z + jz, x + jz, prec, rnd);
