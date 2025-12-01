@@ -677,18 +677,17 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				TERN(arf_get_mag,  lower, t, base);
 				TERN(mag_neg_log, !lower, t, t);
 			}
-			for (jz = 0; jz < nz; ++jz) {
+			for (jz = 0; jz < nz && !status; ++jz) {
 				if (mag_cmp_2exp_si(x + jz, 0) >= 0)
 					TERN(mag_log    , lower, z + jz, x + jz);
 				else
 					TERN(mag_neg_log, lower, z + jz, x + jz);
-				if (mag_is_special(z + jz) &&
-				    mag_is_special(t     ) &&
-				    (mag_is_zero(z + jz) != 0) ==
-				    (mag_is_zero(t     ) != 0)) {
-					status = 1;
-					break;
-				}
+				status =
+					mag_is_special(z + jz) &&
+					mag_is_special(t     ) &&
+					(mag_is_zero(z + jz) != 0) ==
+					(mag_is_zero(t     ) != 0);
+				if (!status)
 				TERN(mag_div, lower, z + jz, z + jz, t);
 			}
 			mag_clear(t);
@@ -834,6 +833,139 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		}
+		setDDNN1(ans, s_x);
+		UNPROTECT(1);
+		return ans;
+	}
+	case 29: /*      "cos" */
+	case 30: /*    "cospi" */
+	case 31: /*     "acos" */
+	case 32: /*     "cosh" */
+	case 33: /*    "acosh" */
+	case 34: /*      "sin" */
+	case 35: /*    "sinpi" */
+	case 36: /*     "asin" */
+	case 37: /*     "sinh" */
+	case 38: /*    "asinh" */
+	case 39: /*      "tan" */
+	case 40: /*    "tanpi" */
+	case 41: /*     "atan" */
+	case 42: /*     "tanh" */
+	case 43: /*    "atanh" */
+	case 44: /*    "gamma" */
+	case 45: /*   "lgamma" */
+	case 46: /*  "digamma" */
+	case 47: /* "trigamma" */
+	{
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_MAG, 0, nz));
+		mag_ptr z = R_flint_get_pointer(ans);
+		int status = 0;
+		arb_t zb, xb;
+		arb_init(zb);
+		arb_init(xb);
+
+#define WRAP(op, z, x) \
+		do { \
+			arf_set_mag(arb_midref(xb), x); \
+			op(zb, xb, MAG_BITS << 1); \
+			status = arf_is_nan(arb_midref(zb)); \
+			if (!status) \
+			TERN(arf_get_mag, lower, z, arb_midref(zb)); \
+		} while (0)
+
+		switch (op) {
+		case 29: /*      "cos" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_cos, z + jz, x + jz);
+			break;
+		case 30: /*    "cospi" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_cos_pi, z + jz, x + jz);
+			break;
+		case 31: /*     "acos" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_acos, z + jz, x + jz);
+			break;
+		case 32: /*     "cosh" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_cosh, z + jz, x + jz);
+			break;
+		case 33: /*    "acosh" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_acosh, z + jz, x + jz);
+			break;
+		case 34: /*      "sin" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_sin, z + jz, x + jz);
+			break;
+		case 35: /*    "sinpi" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_sin_pi, z + jz, x + jz);
+			break;
+		case 36: /*     "asin" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_asin, z + jz, x + jz);
+			break;
+		case 37: /*     "sinh" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_sinh, z + jz, x + jz);
+			break;
+		case 38: /*    "asinh" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_asinh, z + jz, x + jz);
+			break;
+		case 39: /*      "tan" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_tan, z + jz, x + jz);
+			break;
+		case 40: /*    "tanpi" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_tan_pi, z + jz, x + jz);
+			break;
+		case 41: /*     "atan" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_atan, z + jz, x + jz);
+			break;
+		case 42: /*     "tanh" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_tanh, z + jz, x + jz);
+			break;
+		case 43: /*    "atanh" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_atanh, z + jz, x + jz);
+			break;
+		case 44: /*    "gamma" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_gamma, z + jz, x + jz);
+			break;
+		case 45: /*   "lgamma" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_lgamma, z + jz, x + jz);
+			break;
+		case 46: /*  "digamma" */
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_digamma, z + jz, x + jz);
+			break;
+		case 47: /* "trigamma" */
+		{
+			arb_t s;
+			arb_init(s);
+			arb_set_si(s, 1);
+#define arb_trigamma(z, x, prec) arb_polygamma(z, s, x, prec)
+			for (jz = 0; jz < nz && !status; ++jz)
+				WRAP(arb_trigamma, z + jz, x + jz);
+#undef arb_trigamma
+			arb_clear(s);
+			break;
+		}
+		}
+
+#undef WRAP
+
+		arb_clear(zb);
+		arb_clear(xb);
+		if (!status)
+			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;

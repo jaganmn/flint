@@ -1014,7 +1014,6 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		arb_t zb, xb;
 		arb_init(zb);
 		arb_init(xb);
-		mag_zero(arb_radref(xb));
 
 #define WRAP(op, z, x, prec, rnd) \
 		do { \

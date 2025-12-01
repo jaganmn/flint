@@ -1000,8 +1000,6 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		acb_t zb, xb;
 		acb_init(zb);
 		acb_init(xb);
-		mag_zero(arb_radref(acb_realref(xb)));
-		mag_zero(arb_radref(acb_imagref(xb)));
 
 #define WRAP(op, z, x, prec, rnd) \
 		do { \

@@ -61,8 +61,9 @@
       functions \code{diff}, \code{kronecker}, and \code{outer}.
 
       \item S4 methods for group generic functions \code{Complex} and
-      \code{Math} are more completely implemented for classes \code{arf}
-      and \code{acf}, for parity with classes \code{arb} and \code{acb}.
+      \code{Math} are more completely implemented for classes
+      \code{mag}, \code{arf}, and \code{acf}, for parity with classes
+      \code{arb} and \code{acb}.
 
       \item S4 generic functions \code{Real}, \code{Real<-},
       \code{Imag}, and \code{Imag<-} gain sensible default methods.
