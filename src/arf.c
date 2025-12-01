@@ -1037,23 +1037,23 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		switch (op) {
 		case 23: /*      "log" */
 			if (s_dots == R_NilValue)
-				for (jz = 0; jz < nz; ++jz)
-					WRAP(arb_log, z + jz, x + jz, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_log, z + jz, x + jz, prec, rnd);
 			else {
-				SEXP s_base = VECTOR_ELT(s_dots, 0);
-				if (R_flint_get_length(s_base) == 0)
-					Rf_error(_("'%s' of length zero in '%s'"),
-					         "base", CHAR(STRING_ELT(s_op, 0)));
-				arf_srcptr base = R_flint_get_pointer(s_base);
-				arb_t b;
-				arb_init(b);
-				arf_set(arb_midref(b), base);
-				mag_zero(arb_radref(b));
+			SEXP s_base = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_base) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "base", CHAR(STRING_ELT(s_op, 0)));
+			arf_srcptr base = R_flint_get_pointer(s_base);
+			arb_t b;
+			arb_init(b);
+			arf_set(arb_midref(b), base);
+			mag_zero(arb_radref(b));
 #define arb_logb(z, x, prec) arb_log_base(z, x, b, prec)
-				for (jz = 0; jz < nz; ++jz)
-					WRAP(arb_logb, z + jz, x + jz, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_logb, z + jz, x + jz, prec, rnd);
 #undef arb_logb
-				arb_clear(b);
+			arb_clear(b);
 			}
 			break;
 		case 24: /*    "log10" */

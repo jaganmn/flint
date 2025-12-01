@@ -841,16 +841,16 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 23: /*      "log" */
 			if (s_dots == R_NilValue)
-				for (jz = 0; jz < nz; ++jz)
-					arb_log(z + jz, x + jz, prec);
+			for (jz = 0; jz < nz; ++jz)
+				arb_log(z + jz, x + jz, prec);
 			else {
-				SEXP s_base = VECTOR_ELT(s_dots, 0);
-				if (R_flint_get_length(s_base) == 0)
-					Rf_error(_("'%s' of length zero in '%s'"),
-					         "base", CHAR(STRING_ELT(s_op, 0)));
-				arb_srcptr base = R_flint_get_pointer(s_base);
-				for (jz = 0; jz < nz; ++jz)
-					arb_log_base(z + jz, x + jz, base, prec);
+			SEXP s_base = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_base) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "base", CHAR(STRING_ELT(s_op, 0)));
+			arb_srcptr base = R_flint_get_pointer(s_base);
+			for (jz = 0; jz < nz; ++jz)
+				arb_log_base(z + jz, x + jz, base, prec);
 			}
 			break;
 		case 24: /*    "log10" */

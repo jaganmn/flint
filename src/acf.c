@@ -1034,25 +1034,25 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		case 23: /*      "log" */
 			if (s_dots == R_NilValue)
-				for (jz = 0; jz < nz; ++jz)
-					WRAP(acb_log, z + jz, x + jz, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_log, z + jz, x + jz, prec, rnd);
 			else {
-				SEXP s_base = VECTOR_ELT(s_dots, 0);
-				if (R_flint_get_length(s_base) == 0)
-					Rf_error(_("'%s' of length zero in '%s'"),
-					         "base", CHAR(STRING_ELT(s_op, 0)));
-				acf_srcptr base = R_flint_get_pointer(s_base);
-				acb_t b;
-				acb_init(b);
-				arf_set(arb_midref(acb_realref(b)), acf_realref(base));
-				arf_set(arb_midref(acb_imagref(b)), acf_imagref(base));
-				mag_zero(arb_radref(acb_realref(b)));
-				mag_zero(arb_radref(acb_imagref(b)));
+			SEXP s_base = VECTOR_ELT(s_dots, 0);
+			if (R_flint_get_length(s_base) == 0)
+				Rf_error(_("'%s' of length zero in '%s'"),
+				         "base", CHAR(STRING_ELT(s_op, 0)));
+			acf_srcptr base = R_flint_get_pointer(s_base);
+			acb_t b;
+			acb_init(b);
+			arf_set(arb_midref(acb_realref(b)), acf_realref(base));
+			arf_set(arb_midref(acb_imagref(b)), acf_imagref(base));
+			mag_zero(arb_radref(acb_realref(b)));
+			mag_zero(arb_radref(acb_imagref(b)));
 #define acb_logb(z, x, prec) acb_log_base(z, x, b, prec)
-				for (jz = 0; jz < nz; ++jz)
-					WRAP(acb_logb, z + jz, x + jz, prec, rnd);
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_logb, z + jz, x + jz, prec, rnd);
 #undef acb_logb
-				acb_clear(b);
+			acb_clear(b);
 			}
 			break;
 		case 24: /*    "log10" */
