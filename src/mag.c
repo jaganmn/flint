@@ -964,7 +964,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 
 		arb_clear(zb);
 		arb_clear(xb);
-		if (!status)
+		if (status)
 			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
