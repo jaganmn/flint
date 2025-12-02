@@ -344,5 +344,40 @@ mag(x, length=)}
 \examples{
 showClass("mag")
 showMethods(classes = "mag")
+
+(ornd <- flintRndMag()) # getting the original rounding mode
+
+## Output gives 4 significant digits by default
+(magpi <- mag(pi))
+
+## Number of reliable digits is 8 == floor((30 - 1) * log10(2))
+as.character(magpi)
+
+## Integers in range of 30-bit unsigned type are converted exactly
+(x0 <- -1L:1L * (0x1p+30L - 1L))
+mag(x0) == abs(x0) #     all TRUE
+(x1 <- -1L:1L * (0x1p+30L - 0L))
+mag(x1) == abs(x1) # not all TRUE
+
+## Conversion of most other input is influenced by the rounding mode
+flintRndMag("A")
+mag( 1) >  1
+mag(pi) > pi
+flintRndMag("Z")
+mag( 1) <  1
+mag(pi) < pi
+
+## Computing bounds on composite functions needs care;
+## e.g., for an upper bound on abs(tan(2)) = sin(2)/abs(cos(2)):
+tt <- mag(2L) # exact
+flintRndMag("Z") # some quantities must be rounded towards 0
+cos2 <- cos(tt)
+flintRndMag("A") # others must be rounded away from 0
+sin2 <- sin(tt)
+tan2 <- sin2/cos2
+tan2    - abs(tan(2))
+tan(tt) - abs(tan(2)) # direct hence sharper
+
+flintRndMag(ornd) # resetting the original rounding mode
 }
 \keyword{classes}
