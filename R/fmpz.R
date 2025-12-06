@@ -76,7 +76,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "fmpz", e2 = "fmpz"),
           function (e1, e2)
-              .Call(R_flint_fmpz_ops2, .Generic, e1, e2, list()))
+              .Call(R_flint_fmpz_ops2, .Generic, e1, e2, NULL))
 
 setMethod("Ops",
           c(e1 = "fmpz", e2 = "fmpq"),
@@ -311,7 +311,7 @@ setMatrixOpsMethod(
           c(x = "fmpz", y = "ANY"),
           function (x, y) {
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(.Call(R_flint_fmpz_ops2, .Generic, x, x, list()))
+                  return(.Call(R_flint_fmpz_ops2, .Generic, x, x, NULL))
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =
@@ -338,7 +338,7 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "fmpz", y = "fmpz"),
           function (x, y)
-              .Call(R_flint_fmpz_ops2, .Generic, x, y, list()))
+              .Call(R_flint_fmpz_ops2, .Generic, x, y, NULL))
 
 setMatrixOpsMethod(
           c(x = "fmpz", y = "fmpq"),
@@ -406,7 +406,7 @@ setMethod("solve",
           c(a = "fmpz", b = "ANY"),
           function (a, b, ...) {
               if (missing(b))
-                  return(.Call(R_flint_fmpz_ops1, "solve", a, list()))
+                  return(.Call(R_flint_fmpz_ops1, "solve", a, NULL))
               switch(typeof(b),
                      "NULL" =, "raw" =, "logical" =, "integer" =
                          solve(a, fmpz(b), ...),
@@ -432,7 +432,7 @@ setMethod("solve",
 setMethod("solve",
           c(a = "fmpz", b = "fmpz"),
           function (a, b, ...)
-              .Call(R_flint_fmpz_ops2, "solve", a, b, list()))
+              .Call(R_flint_fmpz_ops2, "solve", a, b, NULL))
 
 setMethod("solve",
           c(a = "fmpz", b = "fmpq"),

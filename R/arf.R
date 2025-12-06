@@ -87,7 +87,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "arf", e2 = "arf"),
           function (e1, e2)
-              .Call(R_flint_arf_ops2, .Generic, e1, e2, list()))
+              .Call(R_flint_arf_ops2, .Generic, e1, e2, NULL))
 
 setMethod("Ops",
           c(e1 = "arf", e2 = "acf"),
@@ -202,12 +202,12 @@ setMethod("backsolve",
 setMethod("chol",
           c(x = "arf"),
           function (x, ...)
-              .Call(R_flint_arf_ops1, "chol", x, list()))
+              .Call(R_flint_arf_ops1, "chol", x, NULL))
 
 setMethod("chol2inv",
           c(x = "arf"),
           function (x, ...)
-              .Call(R_flint_arf_ops1, "chol2inv", x, list()))
+              .Call(R_flint_arf_ops1, "chol2inv", x, NULL))
 
 setAs("ANY", "arf",
       function (from)
@@ -313,7 +313,7 @@ setMatrixOpsMethod(
           c(x = "arf", y = "ANY"),
           function (x, y) {
               if (.Generic != "%*%" && (missing(y) || is.null(y)))
-                  return(.Call(R_flint_arf_ops2, .Generic, x, x, list()))
+                  return(.Call(R_flint_arf_ops2, .Generic, x, x, NULL))
               g <- get(.Generic, mode = "function")
               switch(typeof(y),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
@@ -353,7 +353,7 @@ setMatrixOpsMethod(
 setMatrixOpsMethod(
           c(x = "arf", y = "arf"),
           function (x, y)
-              .Call(R_flint_arf_ops2, .Generic, x, y, list()))
+              .Call(R_flint_arf_ops2, .Generic, x, y, NULL))
 
 setMatrixOpsMethod(
           c(x = "arf", y = "acf"),
@@ -404,7 +404,7 @@ setMethod("solve",
           c(a = "arf", b = "ANY"),
           function (a, b, ...) {
               if (missing(b))
-                  return(.Call(R_flint_arf_ops1, "solve", a, list()))
+                  return(.Call(R_flint_arf_ops1, "solve", a, NULL))
               switch(typeof(b),
                      "NULL" =, "raw" =, "logical" =, "integer" =, "double" =
                          solve(a, arf(b), ...),
@@ -443,7 +443,7 @@ setMethod("solve",
 setMethod("solve",
           c(a = "arf", b = "arf"),
           function (a, b, ...)
-              .Call(R_flint_arf_ops2, "solve", a, b, list()))
+              .Call(R_flint_arf_ops2, "solve", a, b, NULL))
 
 setMethod("solve",
           c(a = "arf", b = "acf"),

@@ -82,7 +82,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "mag", e2 = "mag"),
           function (e1, e2)
-              .Call(R_flint_mag_ops2, .Generic, e1, e2, list()))
+              .Call(R_flint_mag_ops2, .Generic, e1, e2, NULL))
 
 setMethod("Ops",
           c(e1 = "mag", e2 = "arf"),

@@ -75,7 +75,7 @@ setMethod("Ops",
 setMethod("Ops",
           c(e1 = "slong", e2 = "slong"),
           function (e1, e2)
-              .Call(R_flint_slong_ops2, .Generic, e1, e2, list()))
+              .Call(R_flint_slong_ops2, .Generic, e1, e2, NULL))
 
 setMethod("Ops",
           c(e1 = "slong", e2 = "fmpz"),
