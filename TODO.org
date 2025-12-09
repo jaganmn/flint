@@ -1,7 +1,7 @@
 * TODO flint 0.1.x
 
 ** TODO '%/%', '%%' for floating types
-** TODO '^' for arf, acf
+** TODO '^' for arf, acf; '*', '/' for acf
 ** TODO diffinv
 
 ** TODO methods for generic functions designed for arrays
