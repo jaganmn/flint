@@ -346,7 +346,8 @@ SEXP R_flint_slong_format(SEXP object, SEXP s_base)
 
 SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
-	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
+	R_flint_ops2_t op = ops2match(CHAR(STRING_ELT(s_op, 0)));
+	int info = ops2info(op);
 	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y),
@@ -355,19 +356,19 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		*x = R_flint_get_pointer(s_x),
 		*y = R_flint_get_pointer(s_y);
 	int dz[3];
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
+	info = checkConformable(s_x, s_y, nx, ny, info, dz);
 	switch (op) {
-	case  1: /*   "+" */
-	case  2: /*   "-" */
-	case  3: /*   "*" */
-	case  4: /*  "%%" */
-	case  5: /* "%/%" */
+	case R_FLINT_OPS2_ADD:
+	case R_FLINT_OPS2_SUB:
+	case R_FLINT_OPS2_MUL:
+	case R_FLINT_OPS2_MOD:
+	case R_FLINT_OPS2_FID:
 	{
 		slong *z = (nz) ? flint_calloc(nz, sizeof(slong)) : 0;
 		slong a, b;
 		int over = 0;
 		switch (op) {
-		case 1: /*   "+" */
+		case R_FLINT_OPS2_ADD:
 			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
 				a = x[jz % nx];
@@ -393,7 +394,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			}
 			break;
-		case 2: /*   "-" */
+		case R_FLINT_OPS2_SUB:
 			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
 				a = x[jz % nx];
@@ -419,7 +420,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			}
 			break;
-		case 3: /*   "*" */
+		case R_FLINT_OPS2_MUL:
 			for (jz = 0; jz < nz; ++jz) {
 #if !defined(__GNUC__)
 				if (z_mul_checked(&z[jz], x[jz % nx], y[jz % ny]))
@@ -442,7 +443,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			}
 			break;
-		case 4: /*  "%%" */
+		case R_FLINT_OPS2_MOD:
 		{
 			slong t;
 			for (jz = 0; jz < nz; ++jz) {
@@ -462,7 +463,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			break;
 		}
-		case 5: /* "%/%" */
+		case R_FLINT_OPS2_FID:
 		{
 			slong t;
 			for (jz = 0; jz < nz; ++jz) {
@@ -501,19 +502,20 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		SEXP ans = PROTECT(newFlint((over) ? R_FLINT_CLASS_FMPZ : R_FLINT_CLASS_SLONG, z, nz));
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
-	case  6: /*   "/" */
-	case  7: /*   "^" */
+	case R_FLINT_OPS2_DIV:
+	case R_FLINT_OPS2_POW:
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, nz));
 		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
-		case 6: /*   "/" */
+		case R_FLINT_OPS2_DIV:
 			for (jz = 0; jz < nz; ++jz)
 				if (y[jz % ny]) {
 				fmpz_set_si(fmpq_numref(z + jz), x[jz % nx]);
@@ -523,7 +525,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				else
 				Rf_error(_("quotient with 0 is undefined"));
 			break;
-		case 7: /*   "^" */
+		case R_FLINT_OPS2_POW:
 		{
 			slong b, e;
 			fmpz_t t;
@@ -549,58 +551,60 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			fmpz_clear(t);
 			break;
 		}
+		default: /* -Wswitch */
 		}
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
-	case  8: /*  "==" */
-	case  9: /*  "!=" */
-	case 10: /*   "<" */
-	case 11: /*   ">" */
-	case 12: /*  "<=" */
-	case 13: /*  ">=" */
-	case 14: /*   "&" */
-	case 15: /*   "|" */
+	case R_FLINT_OPS2_EQ:
+	case R_FLINT_OPS2_NEQ:
+	case R_FLINT_OPS2_L:
+	case R_FLINT_OPS2_G:
+	case R_FLINT_OPS2_LEQ:
+	case R_FLINT_OPS2_GEQ:
+	case R_FLINT_OPS2_AND:
+	case R_FLINT_OPS2_OR:
 	{
 		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
 		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case  8: /*  "==" */
+		case R_FLINT_OPS2_EQ:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] == y[jz % ny];
 			break;
-		case  9: /*  "!=" */
+		case R_FLINT_OPS2_NEQ:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] != y[jz % ny];
 			break;
-		case 10: /*   "<" */
+		case R_FLINT_OPS2_L:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] < y[jz % ny];
 			break;
-		case 11: /*   ">" */
+		case R_FLINT_OPS2_G:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] > y[jz % ny];
 			break;
-		case 12: /*  "<=" */
+		case R_FLINT_OPS2_LEQ:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] <= y[jz % ny];
 			break;
-		case 13: /*  ">=" */
+		case R_FLINT_OPS2_GEQ:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] >= y[jz % ny];
 			break;
-		case 14: /*   "&" */
+		case R_FLINT_OPS2_AND:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] && y[jz % ny];
 			break;
-		case 15: /*   "|" */
+		case R_FLINT_OPS2_OR:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz % nx] || y[jz % ny];
 			break;
+		default: /* -Wswitch */
 		}
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -613,42 +617,43 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 
 SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
-	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
+	R_flint_ops1_t op = ops1match(CHAR(STRING_ELT(s_op, 0)));
+	int info = ops1info(op);
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	const slong *x = R_flint_get_pointer(s_x);
 	switch (op) {
-	case  1: /*       "+" */
-	case  2: /*       "-" */
-	case  8: /*    "Conj" */
-	case  9: /*      "Re" */
-	case 10: /*      "Im" */
-	case 11: /*     "Mod" */
-	case 13: /*     "abs" */
-	case 14: /*    "sign" */
-	case 15: /*    "sqrt" */
-	case 16: /*   "floor" */
-	case 17: /* "ceiling" */
-	case 18: /*   "trunc" */
-	case 19: /*  "cummin" */
-	case 20: /*  "cummax" */
-	case 21: /*  "cumsum" */
-	case 22: /* "cumprod" */
-	case 48: /*   "round" */
-	case 49: /*  "signif" */
+	case R_FLINT_OPS1_PLUS:
+	case R_FLINT_OPS1_MINUS:
+	case R_FLINT_OPS1_CONJ:
+	case R_FLINT_OPS1_REAL:
+	case R_FLINT_OPS1_IMAG:
+	case R_FLINT_OPS1_MOD:
+	case R_FLINT_OPS1_ABS:
+	case R_FLINT_OPS1_SIGN:
+	case R_FLINT_OPS1_SQRT:
+	case R_FLINT_OPS1_FLOOR:
+	case R_FLINT_OPS1_CEILING:
+	case R_FLINT_OPS1_TRUNC:
+	case R_FLINT_OPS1_CUMMIN:
+	case R_FLINT_OPS1_CUMMAX:
+	case R_FLINT_OPS1_CUMSUM:
+	case R_FLINT_OPS1_CUMPROD:
+	case R_FLINT_OPS1_ROUND:
+	case R_FLINT_OPS1_SIGNIF:
 	{
 		slong *z = (nz) ? flint_calloc(nz, sizeof(slong)) : 0;
 		int over = 0;
 		switch (op) {
-		case  1: /*       "+" */
-		case  8: /*    "Conj" */
-		case  9: /*      "Re" */
-		case 16: /*   "floor" */
-		case 17: /* "ceiling" */
-		case 18: /*   "trunc" */
+		case R_FLINT_OPS1_PLUS:
+		case R_FLINT_OPS1_CONJ:
+		case R_FLINT_OPS1_REAL:
+		case R_FLINT_OPS1_FLOOR:
+		case R_FLINT_OPS1_CEILING:
+		case R_FLINT_OPS1_TRUNC:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = x[jz];
 			break;
-		case  2: /*       "-" */
+		case R_FLINT_OPS1_MINUS:
 			for (jz = 0; jz < nz; ++jz) {
 				if (x[jz] == WORD_MIN)
 					break;
@@ -665,12 +670,12 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_set_si(Z + jz, -x[jz]);
 			}
 			break;
-		case 10: /*      "Im" */
+		case R_FLINT_OPS1_IMAG:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = 0;
 			break;
-		case 11: /*     "Mod" */
-		case 13: /*     "abs" */
+		case R_FLINT_OPS1_MOD:
+		case R_FLINT_OPS1_ABS:
 			for (jz = 0; jz < nz; ++jz) {
 				if (x[jz] == WORD_MIN)
 					break;
@@ -684,11 +689,11 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				fmpz_set_ui(Z + jz, (x[jz] < 0) ? (ulong) -1 - (ulong) WORD_MIN + 1 : (ulong) x[jz]);
 			}
 			break;
-		case 14: /*    "sign" */
+		case R_FLINT_OPS1_SIGN:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = (x[jz] < 0) ? -1 : (x[jz] > 0);
 			break;
-		case 15: /*    "sqrt" */
+		case R_FLINT_OPS1_SQRT:
 		{
 			ulong r;
 			for (jz = 0; jz < nz; ++jz) {
@@ -704,21 +709,21 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			break;
 		}
-		case 19: /*  "cummin" */
+		case R_FLINT_OPS1_CUMMIN:
 			if (nz) {
 			z[0] = x[0];
 			for (jz = 1; jz < nz; ++jz)
 				z[jz] = (z[jz - 1] <= x[jz]) ? z[jz - 1] : x[jz];
 			}
 			break;
-		case 20: /*  "cummax" */
+		case R_FLINT_OPS1_CUMMAX:
 			if (nz) {
 			z[0] = x[0];
 			for (jz = 1; jz < nz; ++jz)
 				z[jz] = (z[jz - 1] >= x[jz]) ? z[jz - 1] : x[jz];
 			}
 			break;
-		case 21: /*  "cumsum" */
+		case R_FLINT_OPS1_CUMSUM:
 			if (nz) {
 			z[0] = x[0];
 			for (jz = 1; jz < nz; ++jz) {
@@ -744,7 +749,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			}
 			break;
-		case 22: /* "cumprod" */
+		case R_FLINT_OPS1_CUMPROD:
 			if (nz && x[0]) {
 			z[0] = x[0];
 			for (jz = 1; jz < nz; ++jz) {
@@ -778,7 +783,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			}
 			break;
-		case 48: /*   "round" */
+		case R_FLINT_OPS1_ROUND:
 		{
 			SEXP s_digits = VECTOR_ELT(s_dots, 0);
 			if (R_flint_get_length(s_digits) == 0)
@@ -869,7 +874,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			break;
 		}
-		case 49: /*  "signif" */
+		case R_FLINT_OPS1_SIGNIF:
 		{
 			SEXP s_digits = VECTOR_ELT(s_dots, 0);
 			if (R_flint_get_length(s_digits) == 0)
@@ -941,38 +946,39 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			}
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		SEXP ans = PROTECT(newFlint((over) ? R_FLINT_CLASS_FMPZ : R_FLINT_CLASS_SLONG, z, nz));
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
-	case 50: /*     "min" */
-	case 51: /*     "max" */
-	case 52: /*   "range" */
+	case R_FLINT_OPS1_MIN:
+	case R_FLINT_OPS1_MAX:
+	case R_FLINT_OPS1_RANGE:
 		if (nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "x", CHAR(STRING_ELT(s_op, 0)));
-	case 53: /*     "sum" */
-	case 54: /*    "prod" */
+	case R_FLINT_OPS1_SUM:
+	case R_FLINT_OPS1_PROD:
 	{
-		nz = (op == 52) ? 2 : 1;
+		nz = (op == R_FLINT_OPS1_RANGE) ? 2 : 1;
 		slong *z = flint_calloc(nz, sizeof(slong));
 		int over = 0;
 		switch (op) {
-		case 50: /*     "min" */
+		case R_FLINT_OPS1_MIN:
 			z[0] = x[0];
 			for (jx = 1; jx < nx; ++jx)
 				if (z[0] > x[jx])
 					z[0] = x[jx];
 			break;
-		case 51: /*     "max" */
+		case R_FLINT_OPS1_MAX:
 			z[0] = x[0];
 			for (jx = 1; jx < nx; ++jx)
 				if (z[0] < x[jx])
 					z[0] = x[jx];
 			break;
-		case 52: /*   "range" */
+		case R_FLINT_OPS1_RANGE:
 			z[0] = z[1] = x[0];
 			for (jx = 1; jx < nx; ++jx)
 				if (z[0] > x[jx])
@@ -980,7 +986,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				else if (z[1] < x[jx])
 					z[1] = x[jx];
 			break;
-		case 53: /*     "sum" */
+		case R_FLINT_OPS1_SUM:
 		{
 			fmpz_t t;
 			fmpz_init(t);
@@ -997,7 +1003,7 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(t);
 			break;
 		}
-		case 54: /*    "prod" */
+		case R_FLINT_OPS1_PROD:
 		{
 			fmpz_t t;
 			fmpz_init(t);
@@ -1020,11 +1026,12 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(t);
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		SEXP ans = newFlint((over) ? R_FLINT_CLASS_FMPZ : R_FLINT_CLASS_SLONG, z, nz);
 		return ans;
 	}
-	case 55: /*    "mean" */
+	case R_FLINT_OPS1_MEAN:
 	{
 		if (nx == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
@@ -1032,39 +1039,38 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPQ, 0, 1));
 		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
-		case 55: /*    "mean" */
-		{
+		case R_FLINT_OPS1_MEAN:
 			fmpq_zero(z);
 			for (jx = 0; jx < nx; ++jx)
 				fmpz_add_si(fmpq_numref(z), fmpq_numref(z), x[jx]);
 			fmpz_set_ui(fmpq_denref(z), nx);
 			fmpq_canonicalise(z);
 			break;
-		}
+		default: /* -Wswitch */
 		}
 		UNPROTECT(1);
 		return ans;
 	}
-	case 56: /*         "any" */
-	case 57: /*         "all" */
-	case 58: /*       "anyNA" */
-	case 59: /* "is.unsorted" */
+	case R_FLINT_OPS1_ANY:
+	case R_FLINT_OPS1_ALL:
+	case R_FLINT_OPS1_ANYNA:
+	case R_FLINT_OPS1_ISUNS:
 	{
 		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, 1));
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 56: /*         "any" */
+		case R_FLINT_OPS1_ANY:
 			for (jx = 0; jx < nx && x[jx] == 0; ++jx) ;
 			z[0] = jx <  nx;
 			break;
-		case 57: /*         "all" */
+		case R_FLINT_OPS1_ALL:
 			for (jx = 0; jx < nx && x[jx] != 0; ++jx) ;
 			z[0] = jx >= nx;
 			break;
-		case 58: /*       "anyNA" */
+		case R_FLINT_OPS1_ANYNA:
 			z[0] = 0;
 			break;
-		case 59: /* "is.unsorted" */
+		case R_FLINT_OPS1_ISUNS:
 		{
 			SEXP s_strict = VECTOR_ELT(s_dots, 1);
 			if (XLENGTH(s_strict) == 0)
@@ -1078,45 +1084,47 @@ SEXP R_flint_slong_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			z[0] = jx <  nx;
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		UNPROTECT(1);
 		return ans;
 	}
-	case  3: /*       "is.na" */
-	case  4: /*      "is.nan" */
-	case  5: /* "is.infinite" */
-	case  6: /*   "is.finite" */
-	case  7: /*           "!" */
+	case R_FLINT_OPS1_ISNA:
+	case R_FLINT_OPS1_ISNAN:
+	case R_FLINT_OPS1_ISINF:
+	case R_FLINT_OPS1_ISNUM:
+	case R_FLINT_OPS1_NOT:
 	{
 		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
 		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case  3: /*       "is.na" */
-		case  4: /*      "is.nan" */
-		case  5: /* "is.infinite" */
+		case R_FLINT_OPS1_ISNA:
+		case R_FLINT_OPS1_ISNAN:
+		case R_FLINT_OPS1_ISINF:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = 0;
 			break;
-		case  6: /*   "is.finite" */
+		case R_FLINT_OPS1_ISNUM:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = 1;
 			break;
-		case  7: /*           "!" */
+		case R_FLINT_OPS1_NOT:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = !x[jz];
 			break;
+		default: /* -Wswitch */
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
-	case 60: /*     "colSums" */
-	case 61: /*     "rowSums" */
-	case 62: /*    "colMeans" */
-	case 63: /*    "rowMeans" */
+	case R_FLINT_OPS1_COLSUM:
+	case R_FLINT_OPS1_ROWSUM:
+	case R_FLINT_OPS1_COLMEAN:
+	case R_FLINT_OPS1_ROWMEAN:
 	{
-		int byrow = op == 61 || op == 63, domean = op == 62 || op == 63;
+		int byrow = (info & 1) != 0, domean = (info & 2) != 0;
 
 		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		if (dimx == R_NilValue || XLENGTH(dimx) < 2)

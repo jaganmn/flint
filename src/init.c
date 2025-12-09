@@ -28,9 +28,9 @@ const char *R_flint_classes[] =
 const char *R_flint_ops2[] =
 {
 	/* Arith (7) : */
-	"+", "-", "*", "%%", "%/%", "/", "^",
+	"+", "-", "*", "/", "^", "%%", "%/%",
 	/* Compare (6) : */
-	"==", "!=", "<", ">", "<=", ">=",
+	"==", "!=", "<", "<=", ">", ">=",
 	/* Logic (2) : */
 	"&", "|",
 	/* matrixOps (6) : */
@@ -53,7 +53,7 @@ const char *R_flint_ops1[] =
 	"abs", "sign", "sqrt",
 	"floor", "ceiling", "trunc",
 	"cummin", "cummax", "cumsum", "cumprod",
-	"log", "log10", "log2", "log1p", "exp", "expm1",
+	"log", "log2", "log10", "log1p", "exp", "expm1",
 	"cos", "cospi", "acos", "cosh", "acosh",
 	"sin", "sinpi", "asin", "sinh", "asinh",
 	"tan", "tanpi", "atan", "tanh", "atanh",
@@ -64,9 +64,11 @@ const char *R_flint_ops1[] =
 	"min", "max", "range",
 	"sum", "prod", "mean",
 	"any", "all", "anyNA", "is.unsorted",
-	"colSums", "rowSums", "colMeans", "rowMeans",
+	"rowSums", "colSums", "rowMeans", "colMeans",
 	/* matrixOps (8) : */
-	"solve", "backsolve", "tbacksolve", "chol2inv", "chol", "det",
+	"crossprod", "tcrossprod",
+	"solve", "backsolve", "tbacksolve", "chol2inv",
+	"chol", "det",
 	NULL
 };
 

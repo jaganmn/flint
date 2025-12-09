@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-12-01)}{
+\section{Changes in version 0.1.3 (2025-12-09)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -149,6 +149,11 @@
       \item Conditional definitions of functions tested by macro
       \code{AC_CHECK_FUNCS} are centralized in \file{src/fallback.c}.
       Declarations are provided by \file{src/fallback.h}.
+
+      \item Enumerated types \code{R_flint_ops2_t} and
+      \code{R_flint_ops1_t} designating binary and unary operations,
+      used by \code{R_flint_*_op2} and \code{R_flint_*_ops1} as indices
+      of \code{switch} statements.
     }
   }
 }

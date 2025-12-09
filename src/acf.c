@@ -419,7 +419,8 @@ SEXP R_flint_acf_atomic(SEXP object)
 
 SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
-	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops2);
+	R_flint_ops2_t op = ops2match(CHAR(STRING_ELT(s_op, 0)));
+	int info = ops2info(op);
 	mp_limb_t jz,
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y),
@@ -428,68 +429,69 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		x = R_flint_get_pointer(s_x),
 		y = R_flint_get_pointer(s_y);
 	int dz[3];
-	int mop = checkConformable(s_x, s_y, nx, ny, matrixop(op), dz);
-	if (mop >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
+	info = checkConformable(s_x, s_y, nx, ny, info, dz);
+	if (info >= 0) nz = (mp_limb_t) dz[0] * (mp_limb_t) dz[1];
 	slong prec = asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	switch (op) {
-	case  1: /*   "+" */
-	case  2: /*   "-" */
-	case  3: /*   "*" */
+	case R_FLINT_OPS2_ADD:
+	case R_FLINT_OPS2_SUB:
+	case R_FLINT_OPS2_MUL:
 #if 0
-	case  6: /*   "/" */
+	case R_FLINT_OPS2_DIV:
 #endif
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
 		acf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
-		case 1: /*   "+" */
+		case R_FLINT_OPS2_ADD:
 			for (jz = 0; jz < nz; ++jz)
 				acf_add(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
-		case 2: /*   "-" */
+		case R_FLINT_OPS2_SUB:
 			for (jz = 0; jz < nz; ++jz)
 				acf_sub(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
-		case 3: /*   "*" */
+		case R_FLINT_OPS2_MUL:
 			for (jz = 0; jz < nz; ++jz)
 				__local_acf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 #if 0
-		case 6: /*   "/" */
+		case R_FLINT_OPS2_DIV:
 			for (jz = 0; jz < nz; ++jz)
 				__local_acf_div(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 #endif
+		default: /* -Wswitch */
 		}
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
-	case  8: /*  "==" */
-	case  9: /*  "!=" */
-	case 14: /*   "&" */
-	case 15: /*   "|" */
+	case R_FLINT_OPS2_EQ:
+	case R_FLINT_OPS2_NEQ:
+	case R_FLINT_OPS2_AND:
+	case R_FLINT_OPS2_OR:
 	{
 		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
 		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case  8: /*  "==" */
+		case R_FLINT_OPS2_EQ:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] =
 				(acf_is_nan(x + jz % nx) || acf_is_nan(y + jz % ny))
 				? NA_LOGICAL
 				: acf_equal(x + jz % nx, y + jz % ny) != 0;
 			break;
-		case  9: /*  "!=" */
+		case R_FLINT_OPS2_NEQ:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] =
 				(acf_is_nan(x + jz % nx) || acf_is_nan(y + jz % ny))
 				? NA_LOGICAL
 				: acf_equal(x + jz % nx, y + jz % ny) == 0;
 			break;
-		case 14: /*   "&" */
+		case R_FLINT_OPS2_AND:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] =
 				(acf_is_zero(x + jz % nx) || acf_is_zero(y + jz % ny))
@@ -499,7 +501,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				? NA_LOGICAL
 				: 1;
 			break;
-		case 15: /*   "|" */
+		case R_FLINT_OPS2_OR:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] =
 				(!(acf_is_nan(x + jz % nx) || acf_is_zero(x + jz % nx)) ||
@@ -510,14 +512,15 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				? NA_LOGICAL
 				: 0;
 			break;
+		default: /* -Wswitch */
 		}
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
-	case 16: /*        "%*%" */
-	case 17: /*  "crossprod" */
-	case 18: /* "tcrossprod" */
+	case R_FLINT_OPS2_PROD:
+	case R_FLINT_OPS2_CROSSPROD:
+	case R_FLINT_OPS2_TCROSSPROD:
 	{
 		/* C = A B                            */
 		/*                                    */
@@ -526,7 +529,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		/* tcrossprod: C = Z', A = Y , B = X' */
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
 		acf_ptr z = R_flint_get_pointer(ans);
-		int tx = (mop & 1) != 0, ty = (mop & 2) != 0, i, j;
+		int tx = (info & 1) != 0, ty = (info & 2) != 0, i, j;
 		mp_limb_t jx, jy, ja, jb;
 		acb_mat_t mc, ma, mb;
 		mc->c = mb->c = dz[0];
@@ -613,13 +616,13 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		flint_free(ma->rows);
 		flint_free(mb->rows);
 #endif
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
-	case 19: /*      "solve" */
-	case 20: /*  "backsolve" */
-	case 21: /* "tbacksolve" */
+	case R_FLINT_OPS2_SOLVE:
+	case R_FLINT_OPS2_BACKSOLVE:
+	case R_FLINT_OPS2_TBACKSOLVE:
 	{
 		/* A C = B                          */
 		/*                                  */
@@ -627,7 +630,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		/*  backsolve: C = Z, A = X , B = Y */
 		/* tbacksolve: C = Z, A = X', B = Y */
 		int uplo = 'N';
-		if (op == 20 || op == 21) {
+		if (op != R_FLINT_OPS2_SOLVE) {
 			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);
 			if (XLENGTH(s_uppertri) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
@@ -645,7 +648,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(acb_t)) : 0;
 		mb->entries = (ny) ? flint_calloc(ny, sizeof(acb_t)) : 0;
-		if (op == 21)
+		if (op == R_FLINT_OPS2_TBACKSOLVE)
 		switch (uplo) {
 		case 'N':
 			for (ja = 0; ja < nx; ++ja) {
@@ -743,7 +746,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 #endif
 		if (uplo == 'N')
 			singular = !acb_mat_approx_solve(mc, ma, mb, prec);
-		else if ((uplo == 'U') == (op != 21)) {
+		else if ((uplo == 'U') == (op != R_FLINT_OPS2_TBACKSOLVE)) {
 			acb_mat_approx_solve_triu(mc, ma, mb, 0, prec);
 			singular = 0;
 		}
@@ -774,7 +777,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 #endif
 		if (singular)
 			Rf_error(_("matrix is exactly singular or precision is insufficient"));
-		setDDNN2(ans, s_x, s_y, nz, nx, ny, mop);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
 		return ans;
 	}
@@ -787,49 +790,50 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 
 SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 {
-	size_t op = strmatch(CHAR(STRING_ELT(s_op, 0)), R_flint_ops1);
+	R_flint_ops1_t op = ops1match(CHAR(STRING_ELT(s_op, 0)));
+	int info = ops1info(op);
 	mp_limb_t jx, jz, nx = R_flint_get_length(s_x), nz = nx;
 	acf_srcptr x = R_flint_get_pointer(s_x);
 	slong prec = asPrec(R_NilValue, __func__);
 	arf_rnd_t rnd = asRnd(R_NilValue, 1, __func__);
 	switch (op) {
-	case  1: /*       "+" */
-	case  2: /*       "-" */
-	case  8: /*    "Conj" */
-	case 21: /*  "cumsum" */
-	case 22: /* "cumprod" */
-	case 48: /*   "round" */
-	case 49: /*  "signif" */
+	case R_FLINT_OPS1_PLUS:
+	case R_FLINT_OPS1_MINUS:
+	case R_FLINT_OPS1_CONJ:
+	case R_FLINT_OPS1_CUMSUM:
+	case R_FLINT_OPS1_CUMPROD:
+	case R_FLINT_OPS1_ROUND:
+	case R_FLINT_OPS1_SIGNIF:
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
 		acf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
-		case  1: /*       "+" */
+		case R_FLINT_OPS1_PLUS:
 			for (jz = 0; jz < nz; ++jz)
 				acf_set(z + jz, x + jz);
 			break;
-		case  2: /*       "-" */
+		case R_FLINT_OPS1_MINUS:
 			for (jz = 0; jz < nz; ++jz)
 				acf_neg(z + jz, x + jz);
 			break;
-		case  8: /*    "Conj" */
+		case R_FLINT_OPS1_CONJ:
 			for (jz = 0; jz < nz; ++jz)
 				acf_conj(z + jz, x + jz);
 			break;
-		case 21: /*  "cumsum" */
+		case R_FLINT_OPS1_CUMSUM:
 			if (nz) {
 			acf_set(z, x);
 			for (jz = 1; jz < nz; ++jz)
 				acf_add(z + jz, z + jz - 1, x + jz, prec, rnd);
 			}
 			break;
-		case 22: /* "cumprod" */
+		case R_FLINT_OPS1_CUMPROD:
 			if (nz)
 			acf_set(z, x);
 			for (jz = 1; jz < nz; ++jz)
 				__local_acf_mul(z + jz, z + jz - 1, x + jz, prec, rnd);
 			break;
-		case 48: /*   "round" */
+		case R_FLINT_OPS1_ROUND:
 		{
 			SEXP s_digits = VECTOR_ELT(s_dots, 0);
 			if (R_flint_get_length(s_digits) == 0)
@@ -891,7 +895,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_clear(s);
 			break;
 		}
-		case 49: /*  "signif" */
+		case R_FLINT_OPS1_SIGNIF:
 		{
 			slong fmpq_clog_ui(const fmpq_t, ulong);
 			SEXP s_digits = VECTOR_ELT(s_dots, 0);
@@ -957,38 +961,39 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			fmpz_clear(r);
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
-	case 14: /*     "sign" */
-	case 15: /*     "sqrt" */
-	case 23: /*      "log" */
-	case 24: /*    "log10" */
-	case 25: /*     "log2" */
-	case 26: /*    "log1p" */
-	case 27: /*      "exp" */
-	case 28: /*    "expm1" */
-	case 29: /*      "cos" */
-	case 30: /*    "cospi" */
-	case 31: /*     "acos" */
-	case 32: /*     "cosh" */
-	case 33: /*    "acosh" */
-	case 34: /*      "sin" */
-	case 35: /*    "sinpi" */
-	case 36: /*     "asin" */
-	case 37: /*     "sinh" */
-	case 38: /*    "asinh" */
-	case 39: /*      "tan" */
-	case 40: /*    "tanpi" */
-	case 41: /*     "atan" */
-	case 42: /*     "tanh" */
-	case 43: /*    "atanh" */
-	case 44: /*    "gamma" */
-	case 45: /*   "lgamma" */
-	case 46: /*  "digamma" */
-	case 47: /* "trigamma" */
+	case R_FLINT_OPS1_SIGN:
+	case R_FLINT_OPS1_SQRT:
+	case R_FLINT_OPS1_LOG:
+	case R_FLINT_OPS1_LOG10:
+	case R_FLINT_OPS1_LOG2:
+	case R_FLINT_OPS1_LOG1P:
+	case R_FLINT_OPS1_EXP:
+	case R_FLINT_OPS1_EXPM1:
+	case R_FLINT_OPS1_COS:
+	case R_FLINT_OPS1_COSPI:
+	case R_FLINT_OPS1_ACOS:
+	case R_FLINT_OPS1_COSH:
+	case R_FLINT_OPS1_ACOSH:
+	case R_FLINT_OPS1_SIN:
+	case R_FLINT_OPS1_SINPI:
+	case R_FLINT_OPS1_ASIN:
+	case R_FLINT_OPS1_SINH:
+	case R_FLINT_OPS1_ASINH:
+	case R_FLINT_OPS1_TAN:
+	case R_FLINT_OPS1_TANPI:
+	case R_FLINT_OPS1_ATAN:
+	case R_FLINT_OPS1_TANH:
+	case R_FLINT_OPS1_ATANH:
+	case R_FLINT_OPS1_GAMMA:
+	case R_FLINT_OPS1_LGAMMA:
+	case R_FLINT_OPS1_2GAMMA:
+	case R_FLINT_OPS1_3GAMMA:
 	{
 		if (prec > ARF_PREC_EXACT - 3)
 			Rf_error(_("desired precision exceeds maximum %lld"),
@@ -1022,15 +1027,15 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		} while (0)
 
 		switch (op) {
-		case 14: /*     "sign" */
+		case R_FLINT_OPS1_SIGN:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_sgn, z + jz, x + jz, prec, rnd);
 			break;
-		case 15: /*     "sqrt" */
+		case R_FLINT_OPS1_SQRT:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_sqrt, z + jz, x + jz, prec, rnd);
 			break;
-		case 23: /*      "log" */
+		case R_FLINT_OPS1_LOG:
 			if (s_dots == R_NilValue)
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_log, z + jz, x + jz, prec, rnd);
@@ -1053,103 +1058,101 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			acb_clear(b);
 			}
 			break;
-		case 24: /*    "log10" */
-#define acb_log10(z, x, prec) acb_log_base_ui(z, x, 10, prec)
+		case R_FLINT_OPS1_LOG10:
+		case R_FLINT_OPS1_LOG2:
+		{
+			ulong b = (op == R_FLINT_OPS1_LOG10) ? 10 : 2;
+#define acb_logb(z, x, prec) acb_log_base_ui(z, x, b, prec)
 			for (jz = 0; jz < nz; ++jz)
-				WRAP(acb_log10, z + jz, x + jz, prec, rnd);
-#undef acb_log10
+				WRAP(acb_logb, z + jz, x + jz, prec, rnd);
+#undef acb_logb
 			break;
-		case 25: /*     "log2" */
-#define acb_log2(z, x, prec) acb_log_base_ui(z, x, 2, prec)
-			for (jz = 0; jz < nz; ++jz)
-				WRAP(acb_log2, z + jz, x + jz, prec, rnd);
-#undef acb_log2
-			break;
-		case 26: /*    "log1p" */
+		}
+		case R_FLINT_OPS1_LOG1P:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_log1p, z + jz, x + jz, prec, rnd);
 			break;
-		case 27: /*      "exp" */
+		case R_FLINT_OPS1_EXP:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_exp, z + jz, x + jz, prec, rnd);
 			break;
-		case 28: /*    "expm1" */
+		case R_FLINT_OPS1_EXPM1:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_expm1, z + jz, x + jz, prec, rnd);
 			break;
-		case 29: /*      "cos" */
+		case R_FLINT_OPS1_COS:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_cos, z + jz, x + jz, prec, rnd);
 			break;
-		case 30: /*    "cospi" */
+		case R_FLINT_OPS1_COSPI:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_cos_pi, z + jz, x + jz, prec, rnd);
 			break;
-		case 31: /*     "acos" */
+		case R_FLINT_OPS1_ACOS:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_acos, z + jz, x + jz, prec, rnd);
 			break;
-		case 32: /*     "cosh" */
+		case R_FLINT_OPS1_COSH:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_cosh, z + jz, x + jz, prec, rnd);
 			break;
-		case 33: /*    "acosh" */
+		case R_FLINT_OPS1_ACOSH:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_acosh, z + jz, x + jz, prec, rnd);
 			break;
-		case 34: /*      "sin" */
+		case R_FLINT_OPS1_SIN:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_sin, z + jz, x + jz, prec, rnd);
 			break;
-		case 35: /*    "sinpi" */
+		case R_FLINT_OPS1_SINPI:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_sin_pi, z + jz, x + jz, prec, rnd);
 			break;
-		case 36: /*     "asin" */
+		case R_FLINT_OPS1_ASIN:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_asin, z + jz, x + jz, prec, rnd);
 			break;
-		case 37: /*     "sinh" */
+		case R_FLINT_OPS1_SINH:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_sinh, z + jz, x + jz, prec, rnd);
 			break;
-		case 38: /*    "asinh" */
+		case R_FLINT_OPS1_ASINH:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_asinh, z + jz, x + jz, prec, rnd);
 			break;
-		case 39: /*      "tan" */
+		case R_FLINT_OPS1_TAN:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_tan, z + jz, x + jz, prec, rnd);
 			break;
-		case 40: /*    "tanpi" */
+		case R_FLINT_OPS1_TANPI:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_tan_pi, z + jz, x + jz, prec, rnd);
 			break;
-		case 41: /*     "atan" */
+		case R_FLINT_OPS1_ATAN:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_atan, z + jz, x + jz, prec, rnd);
 			break;
-		case 42: /*     "tanh" */
+		case R_FLINT_OPS1_TANH:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_tanh, z + jz, x + jz, prec, rnd);
 			break;
-		case 43: /*    "atanh" */
+		case R_FLINT_OPS1_ATANH:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_atanh, z + jz, x + jz, prec, rnd);
 			break;
-		case 44: /*    "gamma" */
+		case R_FLINT_OPS1_GAMMA:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_gamma, z + jz, x + jz, prec, rnd);
 			break;
-		case 45: /*   "lgamma" */
+		case R_FLINT_OPS1_LGAMMA:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_lgamma, z + jz, x + jz, prec, rnd);
 			break;
-		case 46: /*  "digamma" */
+		case R_FLINT_OPS1_2GAMMA:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_digamma, z + jz, x + jz, prec, rnd);
 			break;
-		case 47: /* "trigamma" */
+		case R_FLINT_OPS1_3GAMMA:
 		{
 			acb_t s;
 			acb_init(s);
@@ -1161,6 +1164,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			acb_clear(s);
 			break;
 		}
+		default: /* -Wswitch */
 		}
 
 #undef WRAP
@@ -1171,32 +1175,31 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		UNPROTECT(1);
 		return ans;
 	}
-	case 53: /*     "sum" */
-	case 54: /*    "prod" */
-	case 55: /*    "mean" */
+	case R_FLINT_OPS1_SUM:
+	case R_FLINT_OPS1_PROD:
+	case R_FLINT_OPS1_MEAN:
 	{
 		SEXP s_narm = VECTOR_ELT(s_dots, 0);
 		if (XLENGTH(s_narm) == 0)
 			Rf_error(_("'%s' of length zero in '%s'"),
 			         "na.rm", CHAR(STRING_ELT(s_op, 0)));
 		int narm = LOGICAL_RO(s_narm)[0];
-		nz = (op == 52) ? 2 : 1;
-		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, 1));
 		acf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
-		case 53: /*     "sum" */
+		case R_FLINT_OPS1_SUM:
 			acf_zero(z);
 			for (jx = 0; jx < nx; ++jx)
 				if (!(narm && acf_is_nan(x + jx)))
 				acf_add(z, z, x + jx, prec, rnd);
 			break;
-		case 54: /*    "prod" */
+		case R_FLINT_OPS1_PROD:
 			acf_one(z);
 			for (jx = 0; jx < nx; ++jx)
 				if (!(narm && acf_is_nan(x + jx)))
 				acf_mul(z, z, x + jx, prec, rnd);
 			break;
-		case 55: /*    "mean" */
+		case R_FLINT_OPS1_MEAN:
 		{
 			mp_limb_t c = nx;
 			acf_zero(z);
@@ -1211,14 +1214,15 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			acf_div_ui(z, z, c, prec, rnd);
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		UNPROTECT(1);
 		return ans;
 	}
-	case 56: /*         "any" */
-	case 57: /*         "all" */
-	case 58: /*       "anyNA" */
-	case 59: /* "is.unsorted" */
+	case R_FLINT_OPS1_ANY:
+	case R_FLINT_OPS1_ALL:
+	case R_FLINT_OPS1_ANYNA:
+	case R_FLINT_OPS1_ISUNS:
 	{
 		SEXP s_narm = VECTOR_ELT(s_dots, 0);
 		if (XLENGTH(s_narm) == 0)
@@ -1228,7 +1232,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, 1));
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case 56: /*         "any" */
+		case R_FLINT_OPS1_ANY:
 			for (jx = 0; jx < nx; ++jx)
 				if (acf_is_nan(x + jx))
 					anyna = 1;
@@ -1236,7 +1240,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (jx < nx) ? 1 : (!narm && anyna) ? NA_LOGICAL : 0;
 			break;
-		case 57: /*         "all" */
+		case R_FLINT_OPS1_ALL:
 			for (jx = 0; jx < nx; ++jx)
 				if (acf_is_nan(x + jx))
 					anyna = 1;
@@ -1244,13 +1248,13 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					break;
 			z[0] = (jx < nx) ? 0 : (!narm && anyna) ? NA_LOGICAL : 1;
 			break;
-		case 58: /*       "anyNA" */
+		case R_FLINT_OPS1_ANYNA:
 			for (jx = 0; jx < nx; ++jx)
 				if (acf_is_nan(x + jx))
 					break;
 			z[0] = jx < nx;
 			break;
-		case 59: /* "is.unsorted" */
+		case R_FLINT_OPS1_ISUNS:
 		{
 			SEXP s_strict = VECTOR_ELT(s_dots, 1);
 			if (XLENGTH(s_strict) == 0)
@@ -1281,67 +1285,70 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			z[0] = (jx < nx) ? 0 : (!narm && anyna && nx > 1) ? NA_LOGICAL : 1;
 			break;
 		}
+		default: /* -Wswitch */
 		}
 		UNPROTECT(1);
 		return ans;
 	}
-	case  3: /*       "is.na" */
-	case  4: /*      "is.nan" */
-	case  5: /* "is.infinite" */
-	case  6: /*   "is.finite" */
-	case  7: /*           "!" */
+	case R_FLINT_OPS1_ISNA:
+	case R_FLINT_OPS1_ISNAN:
+	case R_FLINT_OPS1_ISINF:
+	case R_FLINT_OPS1_ISNUM:
+	case R_FLINT_OPS1_NOT:
 	{
 		ERROR_TOO_LONG(nz, R_XLEN_T_MAX);
 		SEXP ans = PROTECT(Rf_allocVector(LGLSXP, (R_xlen_t) nz));
 		int *z = LOGICAL(ans);
 		switch (op) {
-		case  3: /*       "is.na" */
-		case  4: /*      "is.nan" */
+		case R_FLINT_OPS1_ISNA:
+		case R_FLINT_OPS1_ISNAN:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = acf_is_nan(x + jz) != 0;
 			break;
-		case  5: /* "is.infinite" */
+		case R_FLINT_OPS1_ISINF:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = acf_is_inf(x + jz) != 0;
 			break;
-		case  6: /*   "is.finite" */
+		case R_FLINT_OPS1_ISNUM:
 			for (jz = 0; jz < nz; ++jz)
 				z[jz] = acf_is_finite(x + jz) != 0;
 			break;
-		case  7: /*           "!" */
+		case R_FLINT_OPS1_NOT:
 			for (jz = 0; jz < nz; ++jz)
 				if (acf_is_nan(x + jz))
 				z[jz] = NA_LOGICAL;
 				else
 				z[jz] = acf_is_zero(x + jz) != 0;
 			break;
+		default: /* -Wswitch */
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
-	case  9: /*       "Re" */
-	case 10: /*       "Im" */
+	case R_FLINT_OPS1_REAL:
+	case R_FLINT_OPS1_IMAG:
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
 		arf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
-		case  9: /*       "Re" */
+		case R_FLINT_OPS1_REAL:
 			for (jz = 0; jz < nz; ++jz)
 				arf_set(z + jz, acf_realref(x + jz));
 			break;
-		case 10: /*       "Im" */
+		case R_FLINT_OPS1_IMAG:
 			for (jz = 0; jz < nz; ++jz)
 				arf_set(z + jz, acf_imagref(x + jz));
 			break;
+		default: /* -Wswitch */
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
 		return ans;
 	}
-	case 11: /*      "Mod" */
-	case 12: /*      "Arg" */
-	case 13: /*      "abs" */
+	case R_FLINT_OPS1_MOD:
+	case R_FLINT_OPS1_ARG:
+	case R_FLINT_OPS1_ABS:
 	{
 		if (prec > ARF_PREC_EXACT - 3)
 			Rf_error(_("desired precision exceeds maximum %lld"),
@@ -1377,15 +1384,16 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		} while (0)
 
 		switch (op) {
-		case 11: /*      "Mod" */
-		case 13: /*      "abs" */
+		case R_FLINT_OPS1_MOD:
+		case R_FLINT_OPS1_ABS:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_abs, z + jz, x + jz, prec, rnd);
 			break;
-		case 12: /*      "Arg" */
+		case R_FLINT_OPS1_ARG:
 			for (jz = 0; jz < nz; ++jz)
 				WRAP(acb_arg, z + jz, x + jz, prec, rnd);
 			break;
+		default: /* -Wswitch */
 		}
 
 #undef WRAP
@@ -1396,12 +1404,12 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		UNPROTECT(1);
 		return ans;
 	}
-	case 60: /*     "colSums" */
-	case 61: /*     "rowSums" */
-	case 62: /*    "colMeans" */
-	case 63: /*    "rowMeans" */
+	case R_FLINT_OPS1_COLSUM:
+	case R_FLINT_OPS1_ROWSUM:
+	case R_FLINT_OPS1_COLMEAN:
+	case R_FLINT_OPS1_ROWMEAN:
 	{
-		int byrow = op == 61 || op == 63, domean = op == 62 || op == 63;
+		int byrow = (info & 1) != 0, domean = (info & 2) != 0;
 
 		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		if (dimx == R_NilValue || XLENGTH(dimx) < 2)
@@ -1503,9 +1511,9 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		UNPROTECT(4);
 		return ans;
 	}
-	case 64: /*      "solve" */
-	case 65: /*  "backsolve" */
-	case 66: /* "tbacksolve" */
+	case R_FLINT_OPS1_SOLVE:
+	case R_FLINT_OPS1_BACKSOLVE:
+	case R_FLINT_OPS1_TBACKSOLVE:
 	{
 		/* A C = I                    */
 		/*                            */
@@ -1518,7 +1526,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		    (dz = INTEGER_RO(dimz), dz[0] != dz[1]))
 			Rf_error(_("first argument is not a square matrix"));
 		int uplo = 'N';
-		if (op == 65 || op == 66) {
+		if (op != R_FLINT_OPS1_SOLVE) {
 			SEXP s_uppertri = VECTOR_ELT(s_dots, 0);
 			if (XLENGTH(s_uppertri) == 0)
 				Rf_error(_("'%s' of length zero in '%s'"),
@@ -1533,7 +1541,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		mc->r = mc->c = ma->r = ma->c = dz[0];
 		mc->entries = (nz) ? flint_calloc(nz, sizeof(acb_t)) : 0;
 		ma->entries = (nx) ? flint_calloc(nx, sizeof(acb_t)) : 0;
-		if (op == 64 || op == 65)
+		if (op != R_FLINT_OPS1_TBACKSOLVE)
 		switch (uplo) {
 		case 'N':
 			for (ja = 0; ja < nx; ++ja) {
@@ -1679,7 +1687,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 #ifdef HAVE_ACB_MAT_INV_CHO_PRECOMP
-	case 67: /*   "chol2inv" */
+	case R_FLINT_OPS1_CHOL2INV:
 	{
 		SEXP dimz = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		const int *dz = 0;
@@ -1761,7 +1769,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 	}
 #endif
 #ifdef HAVE_ACB_MAT_CHO
-	case 68: /*       "chol" */
+	case R_FLINT_OPS1_CHOL:
 	{
 		SEXP dimz = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		const int *dz = 0;
@@ -1842,7 +1850,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		return ans;
 	}
 #endif
-	case 69: /*        "det" */
+	case R_FLINT_OPS1_DET:
 	{
 		SEXP dimx = PROTECT(R_do_slot(s_x, R_flint_symbol_dim));
 		const int *dx = 0;

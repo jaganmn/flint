@@ -400,7 +400,7 @@ void setDDNN(SEXP z, SEXP dim, SEXP dimnames, SEXP names)
 }
 
 void setDDNN2(SEXP z, SEXP x, SEXP y,
-              mp_limb_t nz, mp_limb_t nx, mp_limb_t ny, int mop)
+              mp_limb_t nz, mp_limb_t nx, mp_limb_t ny, int info)
 {
 	SEXP (*setz)(SEXP, SEXP, SEXP) =
 		(Rf_isS4(z)) ? &R_do_slot_assign : &Rf_setAttrib;
@@ -411,7 +411,7 @@ void setDDNN2(SEXP z, SEXP x, SEXP y,
 	SEXP ax, ay;
 	PROTECT(ax = getx(x, R_DimSymbol));
 	PROTECT(ay = gety(y, R_DimSymbol));
-	if (mop < 0) {
+	if (info < 0) {
 
 	if (ax != R_NilValue && (ny > 0 || ay != R_NilValue)) {
 		setz(z, R_DimSymbol, ax);
@@ -439,7 +439,7 @@ void setDDNN2(SEXP z, SEXP x, SEXP y,
 
 	} else {
 
-	int tx = (mop & 1) != 0, ty = (mop & 2) != 0;
+	int tx = (info & 1) != 0, ty = (info & 2) != 0;
 
 	SEXP dim = PROTECT(Rf_allocVector(INTSXP, 2));
 	int *dz = INTEGER(dim);
@@ -515,7 +515,7 @@ void setDDNN1(SEXP z, SEXP x)
 }
 
 int checkConformable(SEXP x, SEXP y,
-                     mp_limb_t nx, mp_limb_t ny, int mop, int *dz)
+                     mp_limb_t nx, mp_limb_t ny, int info, int *dz)
 {
 	SEXP (*getx)(SEXP, SEXP) =
 		(Rf_isS4(x)) ? &R_do_slot : &Rf_getAttrib;
@@ -524,7 +524,7 @@ int checkConformable(SEXP x, SEXP y,
 	SEXP ax, ay;
 	PROTECT(ax = getx(x, R_DimSymbol));
 	PROTECT(ay = gety(y, R_DimSymbol));
-	if (mop < 0) {
+	if (info < 0) {
 
 	R_xlen_t n;
 	if (ax != R_NilValue && ay != R_NilValue &&
@@ -536,11 +536,11 @@ int checkConformable(SEXP x, SEXP y,
 		Rf_error(_("non-array argument length exceeds array argument length"));
 	if (nx > 0 && ny > 0 && ((nx < ny) ? ny % nx : nx % ny))
 		Rf_warning(_("longer argument length is not a multiple of shorter argument length"));
-	mop = -1;
+	info = -1;
 
 	} else {
 
-	int tx = (mop & 1) != 0, ty = (mop & 2) != 0, sq = (mop & 4) != 0;
+	int tx = (info & 1) != 0, ty = (info & 2) != 0, sq = (info & 4) != 0;
 
 	if ((ax != R_NilValue && XLENGTH(ax) != 2) ||
 	    (ay != R_NilValue && XLENGTH(ay) != 2))
@@ -576,7 +576,7 @@ int checkConformable(SEXP x, SEXP y,
 		else
 			Rf_error(_("non-conformable arguments"));
 	}
-	mop = (sq << 2) | (ty << 1) | tx;
+	info = (sq << 2) | (ty << 1) | tx;
 
 	dz[0] = (ax == R_NilValue) ? ((tx) ? 1 : (int) nx) : INTEGER_RO(ax)[ tx];
 	dz[1] = (ay == R_NilValue) ? ((ty) ? (int) ny : 1) : INTEGER_RO(ay)[!ty];
@@ -588,7 +588,7 @@ int checkConformable(SEXP x, SEXP y,
 
 	}
 	UNPROTECT(2);
-	return mop;
+	return info;
 }
 
 slong asPrec(SEXP prec, const char *where)
@@ -808,20 +808,48 @@ size_t strmatch(const char *s, const char **ss)
 	return 0;
 }
 
-int matrixop(size_t op)
+R_flint_ops2_t ops2match(const char *s)
+{
+	size_t pos = strmatch(s, R_flint_ops2);
+	return (pos) ? (int) (pos - 1) : R_FLINT_OPS2_INVALID;
+}
+
+R_flint_ops1_t ops1match(const char *s)
+{
+	size_t pos = strmatch(s, R_flint_ops1);
+	return (pos) ? (int) (pos - 1) : R_FLINT_OPS1_INVALID;
+}
+
+int ops2info(R_flint_ops2_t op)
 {
 	switch (op) {
-	case 16: /*        "%*%" */
+	case R_FLINT_OPS2_PROD:
 		return  0;
-	case 17: /*  "crossprod" */
+	case R_FLINT_OPS2_CROSSPROD:
 		return  1;
-	case 18: /* "tcrossprod" */
+	case R_FLINT_OPS2_TCROSSPROD:
 		return  2;
-	case 19: /*      "solve" */
-	case 20: /*  "backsolve" */
+	case R_FLINT_OPS2_SOLVE:
+	case R_FLINT_OPS2_BACKSOLVE:
 		return  5;
-	case 21: /* "tbacksolve" */
+	case R_FLINT_OPS2_TBACKSOLVE:
 		return  4;
+	default:
+		return -1;
+	}
+}
+
+int ops1info(R_flint_ops1_t op)
+{
+	switch (op) {
+	case R_FLINT_OPS1_ROWSUM:
+		return  1;
+	case R_FLINT_OPS1_COLSUM:
+		return  0;
+	case R_FLINT_OPS1_ROWMEAN:
+		return  3;
+	case R_FLINT_OPS1_COLMEAN:
+		return  2;
 	default:
 		return -1;
 	}

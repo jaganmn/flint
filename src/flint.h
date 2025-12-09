@@ -231,6 +231,106 @@ typedef enum {
 	R_FLINT_CLASS_INVALID = -1
 } R_flint_class_t;
 
+typedef enum {
+	R_FLINT_OPS2_ADD = 0, /*    x  +  y    */
+	R_FLINT_OPS2_SUB,     /*    x  -  y    */
+	R_FLINT_OPS2_MUL,     /*    x  *  y    */
+	R_FLINT_OPS2_DIV,     /*    x  /  y    */
+	R_FLINT_OPS2_POW,     /*    x  ^  y    */
+	R_FLINT_OPS2_MOD,     /*    x  %% y    */
+	R_FLINT_OPS2_FID,     /*    x %/% y    */
+	R_FLINT_OPS2_EQ,      /*    x  == y    */
+	R_FLINT_OPS2_NEQ,     /*    x  != y    */
+	R_FLINT_OPS2_L,       /*    x  <  y    */
+	R_FLINT_OPS2_LEQ,     /*    x  <= y    */
+	R_FLINT_OPS2_G,       /*    x  >  y    */
+	R_FLINT_OPS2_GEQ,     /*    x  >= y    */
+	R_FLINT_OPS2_AND,     /*    x  &  y    */
+	R_FLINT_OPS2_OR,      /*    x  |  y    */
+	R_FLINT_OPS2_PROD,       /*             x %*% y    */
+	R_FLINT_OPS2_CROSSPROD,  /*     crossprod(x, y)    */
+	R_FLINT_OPS2_TCROSSPROD, /*    tcrossprod(x, y)    */
+	R_FLINT_OPS2_SOLVE,      /*         solve(x, y)    */
+	R_FLINT_OPS2_BACKSOLVE,  /*     backsolve(x, y)    */
+	R_FLINT_OPS2_TBACKSOLVE, /*    tbacksolve(x, y)    */
+	R_FLINT_OPS2_INVALID = -1
+} R_flint_ops2_t;
+
+typedef enum {
+	R_FLINT_OPS1_PLUS = 0, /*                +z    */
+	R_FLINT_OPS1_MINUS,    /*                -z    */
+	R_FLINT_OPS1_ISNA,     /*          is.na(z)    */
+	R_FLINT_OPS1_ISNAN,    /*         is.nan(z)    */
+	R_FLINT_OPS1_ISINF,    /*    is.infinite(z)    */
+	R_FLINT_OPS1_ISNUM,    /*      is.finite(z)    */
+	R_FLINT_OPS1_NOT,      /*                !z    */
+	R_FLINT_OPS1_CONJ,     /*           Conj(z)    */
+	R_FLINT_OPS1_REAL,     /*             Re(z)    */
+	R_FLINT_OPS1_IMAG,     /*             Im(z)    */
+	R_FLINT_OPS1_MOD,      /*            Mod(z)    */
+	R_FLINT_OPS1_ARG,      /*            Arg(z)    */
+	R_FLINT_OPS1_ABS,      /*            abs(z)    */
+	R_FLINT_OPS1_SIGN,     /*           sign(z)    */
+	R_FLINT_OPS1_SQRT,     /*           sqrt(z)    */
+	R_FLINT_OPS1_FLOOR,    /*          floor(z)    */
+	R_FLINT_OPS1_CEILING,  /*        ceiling(z)    */
+	R_FLINT_OPS1_TRUNC,    /*          trunc(z)    */
+	R_FLINT_OPS1_CUMMIN,   /*         cummin(z)    */
+	R_FLINT_OPS1_CUMMAX,   /*         cummax(z)    */
+	R_FLINT_OPS1_CUMSUM,   /*         cumsum(z)    */
+	R_FLINT_OPS1_CUMPROD,  /*        cumprod(z)    */
+	R_FLINT_OPS1_LOG,      /*            log(z)    */
+	R_FLINT_OPS1_LOG2,     /*           log2(z)    */
+	R_FLINT_OPS1_LOG10,    /*          log10(z)    */
+	R_FLINT_OPS1_LOG1P,    /*          log1p(z)    */
+	R_FLINT_OPS1_EXP,      /*            exp(z)    */
+	R_FLINT_OPS1_EXPM1,    /*          expm1(z)    */
+	R_FLINT_OPS1_COS,      /*            cos(z)    */
+	R_FLINT_OPS1_COSPI,    /*          cospi(z)    */
+	R_FLINT_OPS1_ACOS,     /*           acos(z)    */
+	R_FLINT_OPS1_COSH,     /*           cosh(z)    */
+	R_FLINT_OPS1_ACOSH,    /*          acosh(z)    */
+	R_FLINT_OPS1_SIN,      /*            sin(z)    */
+	R_FLINT_OPS1_SINPI,    /*          sinpi(z)    */
+	R_FLINT_OPS1_ASIN,     /*           asin(z)    */
+	R_FLINT_OPS1_SINH,     /*           sinh(z)    */
+	R_FLINT_OPS1_ASINH,    /*          asinh(z)    */
+	R_FLINT_OPS1_TAN,      /*            tan(z)    */
+	R_FLINT_OPS1_TANPI,    /*          tanpi(z)    */
+	R_FLINT_OPS1_ATAN,     /*           atan(z)    */
+	R_FLINT_OPS1_TANH,     /*           tanh(z)    */
+	R_FLINT_OPS1_ATANH,    /*          atanh(z)    */
+	R_FLINT_OPS1_GAMMA,    /*          gamma(z)    */
+	R_FLINT_OPS1_LGAMMA,   /*         lgamma(z)    */
+	R_FLINT_OPS1_2GAMMA,   /*        digamma(z)    */
+	R_FLINT_OPS1_3GAMMA,   /*       trigamma(z)    */
+	R_FLINT_OPS1_ROUND,    /*          round(z)    */
+	R_FLINT_OPS1_SIGNIF,   /*         signif(z)    */
+	R_FLINT_OPS1_MIN,      /*            min(z)    */
+	R_FLINT_OPS1_MAX,      /*            max(z)    */
+	R_FLINT_OPS1_RANGE,    /*          range(z)    */
+	R_FLINT_OPS1_SUM,      /*            sum(z)    */
+	R_FLINT_OPS1_PROD,     /*           prod(z)    */
+	R_FLINT_OPS1_MEAN,     /*           mean(z)    */
+	R_FLINT_OPS1_ANY,      /*            any(z)    */
+	R_FLINT_OPS1_ALL,      /*            all(z)    */
+	R_FLINT_OPS1_ANYNA,    /*          anyNA(z)    */
+	R_FLINT_OPS1_ISUNS,    /*    is.unsorted(z)    */
+	R_FLINT_OPS1_ROWSUM,   /*        rowSums(z)    */
+	R_FLINT_OPS1_COLSUM,   /*        colSums(z)    */
+	R_FLINT_OPS1_ROWMEAN,  /*       rowMeans(z)    */
+	R_FLINT_OPS1_COLMEAN,  /*       colMeans(z)    */
+	R_FLINT_OPS1_CROSSPROD,  /*      crossprod(z)    */
+	R_FLINT_OPS1_TCROSSPROD, /*     tcrossprod(z)    */
+	R_FLINT_OPS1_SOLVE,      /*          solve(z)    */
+	R_FLINT_OPS1_BACKSOLVE,  /*      backsolve(z)    */
+	R_FLINT_OPS1_TBACKSOLVE, /*     tbacksolve(z)    */
+	R_FLINT_OPS1_CHOL2INV,   /*       chol2inv(z)    */
+	R_FLINT_OPS1_CHOL,       /*           chol(z)    */
+	R_FLINT_OPS1_DET,        /*            det(z)    */
+	R_FLINT_OPS1_INVALID = -1
+} R_flint_ops1_t;
+
 extern
 SEXPTYPE R_flint_sexptypes[8];
 
@@ -241,7 +341,7 @@ extern
 const char *R_flint_ops2[22];
 
 extern
-const char *R_flint_ops1[70];
+const char *R_flint_ops1[72];
 
 #if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP s);
@@ -282,7 +382,10 @@ void  ucopy(unsigned int *, const mp_limb_t *);
 void uucopy(mp_limb_t *, const unsigned int *);
 
 size_t strmatch(const char *, const char **);
-int matrixop(size_t);
+R_flint_ops2_t ops2match(const char *);
+R_flint_ops1_t ops1match(const char *);
+int ops2info(R_flint_ops2_t);
+int ops1info(R_flint_ops1_t);
 
 void *R_flint_get_pointer(SEXP);
 mp_limb_t R_flint_get_length(SEXP);
