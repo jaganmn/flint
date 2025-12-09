@@ -247,7 +247,7 @@ SEXP R_flint_coerce_mpfr_arf(SEXP from)
 		(((u) <= ((utype) -1 >> 1)) ? (stype) u : -(stype) ~(u) - 1)
 #define SIGNED_EXPONENT(u) \
 		SIGNED((u), mpfr_uexp_t, mpfr_exp_t)
-		
+
 #if SIZEOF_MPFR_EXP_T == 4
 		t->_mpfr_exp = SIGNED_EXPONENT(exp[0]);
 #else
