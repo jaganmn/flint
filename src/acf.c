@@ -1,27 +1,5 @@
 #include "flint.h"
 
-static R_INLINE
-int __local_acf_mul(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
-{
-	int a, b;
-	arf_t t, u, v, w;
-	arf_init(t);
-	arf_init(u);
-	arf_init(v);
-	arf_init(w);
-	arf_mul(t, acf_realref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(u, acf_realref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(v, acf_imagref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(w, acf_imagref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	a = arf_sub(acf_realref(z), t, w, prec, rnd);
-	b = arf_add(acf_imagref(z), u, v, prec, rnd);
-	arf_clear(t);
-	arf_clear(u);
-	arf_clear(v);
-	arf_clear(w);
-	return a | (b << 1);
-}
-
 #if 0
 static R_INLINE
 int __local_acf_div(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
@@ -454,7 +432,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			break;
 		case R_FLINT_OPS2_MUL:
 			for (jz = 0; jz < nz; ++jz)
-				__local_acf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+				acf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
 #if 0
 		case R_FLINT_OPS2_DIV:
@@ -831,7 +809,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			if (nz)
 			acf_set(z, x);
 			for (jz = 1; jz < nz; ++jz)
-				__local_acf_mul(z + jz, z + jz - 1, x + jz, prec, rnd);
+				acf_mul(z + jz, z + jz - 1, x + jz, prec, rnd);
 			break;
 		case R_FLINT_OPS1_ROUND:
 		{
