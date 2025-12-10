@@ -15,6 +15,9 @@
 /* Define to 1 if you have the 'acf_conj' function. */
 #undef HAVE_ACF_CONJ
 
+/* Define to 1 if you have the 'acf_div' function. */
+#undef HAVE_ACF_DIV
+
 /* Define to 1 if you have the 'acf_div_ui' function. */
 #undef HAVE_ACF_DIV_UI
 

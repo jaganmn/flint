@@ -1,35 +1,5 @@
 #include "flint.h"
 
-#if 0
-static R_INLINE
-int __local_acf_div(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
-{
-	/* FIXME: the result is not correctly rounded here ... */
-	int a, b;
-	arf_t s, t, u, v, w;
-	arf_init(s);
-	arf_init(t);
-	arf_init(u);
-	arf_init(v);
-	arf_init(w);
-	arf_mul(t, acf_realref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(u, acf_realref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(v, acf_imagref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	arf_mul(w, acf_imagref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
-	a = arf_sub(acf_realref(z), t, w, prec, rnd);
-	b = arf_add(acf_imagref(z), u, v, prec, rnd);
-	c = arf_sosq(s, acf_realref(y), acf_imagref(y), prec, rnd);
-	a |= arf_div(acf_realref(z), acf_realref(z), s, prec, rnd);
-	b |= arf_div(acf_imagref(z), acf_imagref(z), s, prec, rnd);
-	arf_clear(s);
-	arf_clear(t);
-	arf_clear(u);
-	arf_clear(v);
-	arf_clear(w);
-	return a | (b << 1);
-}
-#endif
-
 void R_flint_acf_finalize(SEXP x)
 {
 	acf_ptr p = R_ExternalPtrAddr(x);
@@ -415,9 +385,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_ADD:
 	case R_FLINT_OPS2_SUB:
 	case R_FLINT_OPS2_MUL:
-#if 0
 	case R_FLINT_OPS2_DIV:
-#endif
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
 		acf_ptr z = R_flint_get_pointer(ans);
@@ -434,12 +402,10 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (jz = 0; jz < nz; ++jz)
 				acf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
-#if 0
 		case R_FLINT_OPS2_DIV:
 			for (jz = 0; jz < nz; ++jz)
-				__local_acf_div(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+				acf_div(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
 			break;
-#endif
 		default: /* -Wswitch */
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);

@@ -4841,6 +4841,12 @@ then :
   printf "%s\n" "#define HAVE_ACF_CONJ 1" >>confdefs.h
 
 fi
+ac_fn_c_check_func "$LINENO" "acf_div" "ac_cv_func_acf_div"
+if test "x$ac_cv_func_acf_div" = xyes
+then :
+  printf "%s\n" "#define HAVE_ACF_DIV 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "acf_div_ui" "ac_cv_func_acf_div_ui"
 if test "x$ac_cv_func_acf_div_ui" = xyes
 then :

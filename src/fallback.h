@@ -18,6 +18,7 @@ void acf_zero(acf_t);
 void acf_one(acf_t);
 void acf_nan(acf_t);
 void acf_conj(acf_t, const acf_t);
+int acf_div(acf_t, const acf_t, const acf_t, slong, arf_rnd_t);
 int acf_div_ui(acf_t, const acf_t, ulong, slong, arf_rnd_t);
 
 void arb_set_round_ui(arb_t, ulong, slong);

@@ -167,6 +167,29 @@ void acf_conj(acf_t z, const acf_t x)
 }
 #endif
 
+#ifndef HAVE_ACF_DIV
+int acf_div(acf_t z, const acf_t x, const acf_t y, slong prec, arf_rnd_t rnd)
+{
+	int a, b;
+	arf_t u, v, w;
+	arf_init(u);
+	arf_init(v);
+	arf_init(w);
+	arf_mul(u, acf_realref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_addmul(u, acf_imagref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_mul(v, acf_imagref(x), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_submul(v, acf_realref(x), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_mul(w, acf_realref(y), acf_realref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
+	arf_addmul(w, acf_imagref(y), acf_imagref(y), ARF_PREC_EXACT, ARF_RND_DOWN);
+	a = arf_div(acf_realref(z), u, w, prec, rnd) != 0;
+	b = arf_div(acf_imagref(z), v, w, prec, rnd) != 0;
+	arf_clear(u);
+	arf_clear(v);
+	arf_clear(w);
+	return a | (b << 1);
+}
+#endif
+
 #ifndef HAVE_ACF_DIV_UI
 int acf_div_ui(acf_t z, const acf_t x, ulong y, slong prec, arf_rnd_t rnd)
 {
