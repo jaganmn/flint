@@ -1012,7 +1012,8 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			arf_set(arb_midref(acb_realref(xb)), acf_realref(x)); \
 			arf_set(arb_midref(acb_imagref(xb)), acf_imagref(x)); \
 			op(zb, xb, precb); \
-			while ((status = acb_rel_accuracy_bits(zb) <= prec) && \
+			while (((status = arf_is_nan(arb_midref(acb_realref(zb))) == 0 && arb_rel_accuracy_bits(acb_realref(zb)) <= prec) || \
+			        (status = arf_is_nan(arb_midref(acb_imagref(zb))) == 0 && arb_rel_accuracy_bits(acb_imagref(zb)) <= prec)) && \
 			       precb < ARF_PREC_EXACT - 1) { \
 				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
 				op(zb, xb, precb); \

@@ -1025,7 +1025,7 @@ SEXP R_flint_arf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			precb = prec + 2; \
 			arf_set(arb_midref(xb), x); \
 			op(zb, xb, precb); \
-			while ((status = arb_rel_accuracy_bits(zb) <= prec) && \
+			while ((status = arf_is_nan(arb_midref(zb)) == 0 && arb_rel_accuracy_bits(zb) <= prec) && \
 			       precb < ARF_PREC_EXACT - 1) { \
 				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
 				op(zb, xb, precb); \
