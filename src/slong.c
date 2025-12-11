@@ -361,8 +361,8 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_ADD:
 	case R_FLINT_OPS2_SUB:
 	case R_FLINT_OPS2_MUL:
-	case R_FLINT_OPS2_MOD:
-	case R_FLINT_OPS2_FID:
+	case R_FLINT_OPS2_FDR:
+	case R_FLINT_OPS2_FDQ:
 	{
 		slong *z = (nz) ? flint_calloc(nz, sizeof(slong)) : 0;
 		slong a, b;
@@ -443,7 +443,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			}
 			break;
-		case R_FLINT_OPS2_MOD:
+		case R_FLINT_OPS2_FDR:
 		{
 			slong t;
 			for (jz = 0; jz < nz; ++jz) {
@@ -463,7 +463,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			}
 			break;
 		}
-		case R_FLINT_OPS2_FID:
+		case R_FLINT_OPS2_FDQ:
 		{
 			slong t;
 			for (jz = 0; jz < nz; ++jz) {

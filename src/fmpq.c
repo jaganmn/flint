@@ -338,8 +338,8 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_ADD:
 	case R_FLINT_OPS2_SUB:
 	case R_FLINT_OPS2_MUL:
-	case R_FLINT_OPS2_MOD:
-	case R_FLINT_OPS2_FID:
+	case R_FLINT_OPS2_FDR:
+	case R_FLINT_OPS2_FDQ:
 	case R_FLINT_OPS2_DIV:
 	case R_FLINT_OPS2_POW:
 	{
@@ -358,7 +358,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (jz = 0; jz < nz; ++jz)
 				fmpq_mul(z + jz, x + jz % nx, y + jz % ny);
 			break;
-		case R_FLINT_OPS2_MOD:
+		case R_FLINT_OPS2_FDR:
 			for (jz = 0; jz < nz; ++jz) {
 				if (fmpz_is_zero(fmpq_numref(y + jz % ny)))
 				Rf_error(_("quotient with 0 is undefined"));
@@ -369,7 +369,7 @@ SEXP R_flint_fmpq_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				}
 			}
 			break;
-		case R_FLINT_OPS2_FID:
+		case R_FLINT_OPS2_FDQ:
 			for (jz = 0; jz < nz; ++jz) {
 				if (fmpz_is_zero(fmpq_numref(y + jz % ny)))
 				Rf_error(_("quotient with 0 is undefined"));

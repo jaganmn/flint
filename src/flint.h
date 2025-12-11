@@ -237,8 +237,8 @@ typedef enum {
 	R_FLINT_OPS2_MUL,     /*    x  *  y    */
 	R_FLINT_OPS2_DIV,     /*    x  /  y    */
 	R_FLINT_OPS2_POW,     /*    x  ^  y    */
-	R_FLINT_OPS2_MOD,     /*    x  %% y    */
-	R_FLINT_OPS2_FID,     /*    x %/% y    */
+	R_FLINT_OPS2_FDR,     /*    x  %% y    */
+	R_FLINT_OPS2_FDQ,     /*    x %/% y    */
 	R_FLINT_OPS2_EQ,      /*    x  == y    */
 	R_FLINT_OPS2_NEQ,     /*    x  != y    */
 	R_FLINT_OPS2_L,       /*    x  <  y    */

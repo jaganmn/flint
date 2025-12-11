@@ -283,8 +283,8 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_ADD:
 	case R_FLINT_OPS2_SUB:
 	case R_FLINT_OPS2_MUL:
-	case R_FLINT_OPS2_MOD:
-	case R_FLINT_OPS2_FID:
+	case R_FLINT_OPS2_FDR:
+	case R_FLINT_OPS2_FDQ:
 	{
 		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_FMPZ, 0, nz));
 		fmpz *z = R_flint_get_pointer(ans);
@@ -301,14 +301,14 @@ SEXP R_flint_fmpz_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (jz = 0; jz < nz; ++jz)
 				fmpz_mul(z + jz, x + jz % nx, y + jz % ny);
 			break;
-		case R_FLINT_OPS2_MOD:
+		case R_FLINT_OPS2_FDR:
 			for (jz = 0; jz < nz; ++jz)
 				if (fmpz_is_zero(y + jz % ny))
 				Rf_error(_("quotient with 0 is undefined"));
 				else
 				fmpz_fdiv_r(z + jz, x + jz % nx, y + jz % ny);
 			break;
-		case R_FLINT_OPS2_FID:
+		case R_FLINT_OPS2_FDQ:
 			for (jz = 0; jz < nz; ++jz)
 				if (fmpz_is_zero(y + jz % ny))
 				Rf_error(_("quotient with 0 is undefined"));
