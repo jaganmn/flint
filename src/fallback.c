@@ -260,13 +260,10 @@ void arb_fdiv_r(arb_t z, const arb_t x, const arb_t y, slong prec)
 #ifndef HAVE_ARB_ARG
 void arb_arg(arb_t z, const arb_t x, slong prec)
 {
-	acb_t z0, x0;
-	acb_init(z0);
+	acb_t x0;
 	acb_init(x0);
 	arb_set(acb_realref(x0), x);
-	acb_arg(z0, x0, prec);
-	arb_set(z, acb_realref(z0));
-	acb_clear(z0);
+	acb_arg(z, x0, prec);
 	acb_clear(x0);
 	return;
 }
