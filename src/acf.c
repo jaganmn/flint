@@ -441,9 +441,9 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				op(zb, xb, yb, precb); \
 			} \
 			if (status) { \
-				arb_clear(zb); \
-				arb_clear(xb); \
-				arb_clear(yb); \
+				acb_clear(zb); \
+				acb_clear(xb); \
+				acb_clear(yb); \
 				Rf_error(_("failed to reach desired precision")); \
 			} \
 			arf_set_round(acf_realref(z), arb_midref(acb_realref(zb)), prec, rnd); \
