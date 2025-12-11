@@ -232,12 +232,14 @@ void arb_set_mag(arb_t z, const mag_t x)
 #ifndef HAVE_ARB_ARG
 void arb_arg(arb_t z, const arb_t x, slong prec)
 {
-	acb_t t;
-	acb_init(t);
-	arb_set(acb_realref(t), x);
-	arb_zero(acb_imagref(t));
-	acb_arg(z, t, prec);
-	acb_clear(t);
+	acb_t z0, x0;
+	acb_init(z0);
+	acb_init(x0);
+	arb_set(acb_realref(x0), x);
+	acb_arg(z0, x0, prec);
+	arb_set(z, acb_realref(z0));
+	acb_clear(z0);
+	acb_clear(x0);
 	return;
 }
 #endif
@@ -245,11 +247,13 @@ void arb_arg(arb_t z, const arb_t x, slong prec)
 #ifndef HAVE_ARB_LOG_BASE
 void arb_log_base(arb_t z, const arb_t x, const arb_t b, slong prec)
 {
-	arb_t t;
+	arb_t s, t;
+	arb_init(s);
 	arb_init(t);
+	arb_log(s, x, prec);
 	arb_log(t, b, prec);
-	arb_log(z, x, prec);
-	arb_div(z, z, t, prec);
+	arb_div(z, s, t, prec);
+	arb_clear(s);
 	arb_clear(t);
 	return;
 }
@@ -264,8 +268,6 @@ void arb_polygamma(arb_t z, const arb_t s, const arb_t x, slong prec)
 	acb_init(x0);
 	arb_set(acb_realref(s0), s);
 	arb_set(acb_realref(x0), x);
-	arb_zero(acb_imagref(s0));
-	arb_zero(acb_imagref(x0));
 	acb_polygamma(z0, s0, x0, prec);
 	arb_set(z, acb_realref(z0));
 	acb_clear(z0);
@@ -278,11 +280,13 @@ void arb_polygamma(arb_t z, const arb_t s, const arb_t x, slong prec)
 #ifndef HAVE_ACB_LOG_BASE
 void acb_log_base(acb_t z, const acb_t x, const acb_t b, slong prec)
 {
-	acb_t t;
+	acb_t s, t;
+	acb_init(s);
 	acb_init(t);
+	acb_log(s, x, prec);
 	acb_log(t, b, prec);
-	acb_log(z, x, prec);
-	acb_div(z, z, t, prec);
+	acb_div(z, s, t, prec);
+	acb_clear(s);
 	acb_clear(t);
 	return;
 }
