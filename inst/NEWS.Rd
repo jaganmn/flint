@@ -141,6 +141,9 @@
 
       \item \code{mag(0)/mag(0)} and \code{mag(Inf)/mag(Inf)} wrongly
       returned \code{mag(Inf)}.  Now they signal an error.
+
+      \item \code{diag<-} assigned to entries in the first row rather
+      than to entries in the main diagonal.
     }
   }
   \subsection{Internals}{

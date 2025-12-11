@@ -91,3 +91,9 @@ stopifnot(all.equal(Arg(mag(c(    0, 1))), mag(c(    0, 0))),
 ## 0/0, Inf/Inf returned Inf for operands of class 'mag'
 stopifnot(tryCatch(mag(  0)/mag(  0), error = function (e) TRUE),
           tryCatch(mag(Inf)/mag(Inf), error = function (e) TRUE))
+
+
+## diag(x) <- value assigned to entries in the first row
+x <- slong.array(0L, c(4L, 6L))
+diag(x) <- slong(1L)
+stopifnot(identical(print(x), slong(diag(1L, 4L, 6L))))

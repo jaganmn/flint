@@ -1315,7 +1315,7 @@ setMethod("diag<-",
               if (length(d <- x@dim) != 2L)
                   stop(gettextf("'%s' is not a matrix", "x"),
                        domain = NA)
-              i <- ulong(1L) + ulong(d[1L]) * .Call(R_flint_ulong_seq, ulong(0L), ulong(min(d)), FALSE)
+              i <- ulong(1L) + (ulong(d[1L]) + ulong(1L)) * .Call(R_flint_ulong_seq, ulong(0L), ulong(min(d)), FALSE)
               x[i] <- value
               x
           })
