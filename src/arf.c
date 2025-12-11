@@ -445,6 +445,67 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		UNPROTECT(1);
 		return ans;
 	}
+	case R_FLINT_OPS2_FDR:
+	case R_FLINT_OPS2_FDQ:
+	case R_FLINT_OPS2_POW:
+	{
+		if (prec > ARF_PREC_EXACT - 3)
+			Rf_error(_("desired precision exceeds maximum %lld"),
+			         (long long int) (ARF_PREC_EXACT - 3));
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARF, 0, nz));
+		arf_ptr z = R_flint_get_pointer(ans);
+		int status;
+		slong precb;
+		arb_t zb, xb, yb;
+		arb_init(zb);
+		arb_init(xb);
+		arb_init(yb);
+
+#define WRAP(op, z, x, y, prec, rnd) \
+		do { \
+			precb = prec + 2; \
+			arf_set(arb_midref(xb), x); \
+			arf_set(arb_midref(yb), y); \
+			op(zb, xb, yb, precb); \
+			while ((status = arf_is_nan(arb_midref(zb)) == 0 && arb_rel_accuracy_bits(zb) <= prec) && \
+			       precb < ARF_PREC_EXACT - 1) { \
+				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
+				op(zb, xb, yb, precb); \
+			} \
+			if (status) { \
+				arb_clear(zb); \
+				arb_clear(xb); \
+				arb_clear(yb); \
+				Rf_error(_("failed to reach desired precision")); \
+			} \
+			arf_set_round(z, arb_midref(zb), prec, rnd); \
+		} while (0)
+
+		switch (op) {
+		case R_FLINT_OPS2_FDR:
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_fdiv_r, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			break;
+		case R_FLINT_OPS2_FDQ:
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_fdiv_q, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			break;
+		case R_FLINT_OPS2_POW:
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(arb_pow, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			break;
+		default: /* -Wswitch */
+		}
+
+#undef WRAP
+
+		arb_clear(zb);
+		arb_clear(xb);
+		arb_clear(yb);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
+		UNPROTECT(1);
+		return ans;
+	}
 	case R_FLINT_OPS2_EQ:
 	case R_FLINT_OPS2_NEQ:
 	case R_FLINT_OPS2_L:

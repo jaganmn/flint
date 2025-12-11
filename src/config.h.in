@@ -45,6 +45,12 @@
 /* Define to 1 if you have the 'arb_arg' function. */
 #undef HAVE_ARB_ARG
 
+/* Define to 1 if you have the 'arb_fdiv_q' function. */
+#undef HAVE_ARB_FDIV_Q
+
+/* Define to 1 if you have the 'arb_fdiv_r' function. */
+#undef HAVE_ARB_FDIV_R
+
 /* Define to 1 if you have the 'arb_log_base' function. */
 #undef HAVE_ARB_LOG_BASE
 

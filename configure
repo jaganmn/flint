@@ -4901,6 +4901,18 @@ then :
   printf "%s\n" "#define HAVE_ARB_ARG 1" >>confdefs.h
 
 fi
+ac_fn_c_check_func "$LINENO" "arb_fdiv_q" "ac_cv_func_arb_fdiv_q"
+if test "x$ac_cv_func_arb_fdiv_q" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_FDIV_Q 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "arb_fdiv_r" "ac_cv_func_arb_fdiv_r"
+if test "x$ac_cv_func_arb_fdiv_r" = xyes
+then :
+  printf "%s\n" "#define HAVE_ARB_FDIV_R 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "arb_log_base" "ac_cv_func_arb_log_base"
 if test "x$ac_cv_func_arb_log_base" = xyes
 then :

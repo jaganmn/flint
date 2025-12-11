@@ -376,6 +376,8 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_ADD:
 	case R_FLINT_OPS2_SUB:
 	case R_FLINT_OPS2_MUL:
+	case R_FLINT_OPS2_FDR:
+	case R_FLINT_OPS2_FDQ:
 	case R_FLINT_OPS2_DIV:
 	case R_FLINT_OPS2_POW:
 	{
@@ -393,6 +395,14 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		case R_FLINT_OPS2_MUL:
 			for (jz = 0; jz < nz; ++jz)
 				arb_mul(z + jz, x + jz % nx, y + jz % ny, prec);
+			break;
+		case R_FLINT_OPS2_FDR:
+			for (jz = 0; jz < nz; ++jz)
+				arb_fdiv_r(z + jz, x + jz % nx, y + jz % ny, prec);
+			break;
+		case R_FLINT_OPS2_FDQ:
+			for (jz = 0; jz < nz; ++jz)
+				arb_fdiv_q(z + jz, x + jz % nx, y + jz % ny, prec);
 			break;
 		case R_FLINT_OPS2_DIV:
 			for (jz = 0; jz < nz; ++jz)

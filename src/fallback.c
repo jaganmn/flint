@@ -229,6 +229,34 @@ void arb_set_mag(arb_t z, const mag_t x)
 }
 #endif
 
+#ifndef HAVE_ARB_FDIV_Q
+void arb_fdiv_q(arb_t z, const arb_t x, const arb_t y, slong prec)
+{
+	arb_t q;
+	arb_init(q);
+	arb_div(q, x, y, prec);
+	arb_floor(z, q, prec);
+	arb_clear(q);
+	return;
+}
+#endif
+
+#ifndef HAVE_ARB_FDIV_R
+void arb_fdiv_r(arb_t z, const arb_t x, const arb_t y, slong prec)
+{
+	arb_t q, f;
+	arb_init(q);
+	arb_init(f);
+	arb_div(q, x, y, prec);
+	arb_floor(f, q, prec);
+	arb_set(z, x);
+	arb_submul(z, f, y, prec);
+	arb_clear(q);
+	arb_clear(f);
+	return;
+}
+#endif
+
 #ifndef HAVE_ARB_ARG
 void arb_arg(arb_t z, const arb_t x, slong prec)
 {

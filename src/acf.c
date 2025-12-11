@@ -412,6 +412,61 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		UNPROTECT(1);
 		return ans;
 	}
+	case R_FLINT_OPS2_POW:
+	{
+		if (prec > ARF_PREC_EXACT - 3)
+			Rf_error(_("desired precision exceeds maximum %lld"),
+			         (long long int) (ARF_PREC_EXACT - 3));
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ACF, 0, nz));
+		acf_ptr z = R_flint_get_pointer(ans);
+		int status;
+		slong precb;
+		acb_t zb, xb, yb;
+		acb_init(zb);
+		acb_init(xb);
+		acb_init(yb);
+
+#define WRAP(op, z, x, y, prec, rnd) \
+		do { \
+			precb = prec + 2; \
+			arf_set(arb_midref(acb_realref(xb)), acf_realref(x)); \
+			arf_set(arb_midref(acb_imagref(xb)), acf_imagref(x)); \
+			arf_set(arb_midref(acb_realref(yb)), acf_realref(y)); \
+			arf_set(arb_midref(acb_imagref(yb)), acf_imagref(y)); \
+			op(zb, xb, yb, precb); \
+			while (((status = arf_is_nan(arb_midref(acb_realref(zb))) == 0 && arb_rel_accuracy_bits(acb_realref(zb)) <= prec) || \
+			        (status = arf_is_nan(arb_midref(acb_imagref(zb))) == 0 && arb_rel_accuracy_bits(acb_imagref(zb)) <= prec)) && \
+			       precb < ARF_PREC_EXACT - 1) { \
+				precb = (precb < ARF_PREC_EXACT / 2) ? precb * 2 : ARF_PREC_EXACT - 1; \
+				op(zb, xb, yb, precb); \
+			} \
+			if (status) { \
+				arb_clear(zb); \
+				arb_clear(xb); \
+				arb_clear(yb); \
+				Rf_error(_("failed to reach desired precision")); \
+			} \
+			arf_set_round(acf_realref(z), arb_midref(acb_realref(zb)), prec, rnd); \
+			arf_set_round(acf_imagref(z), arb_midref(acb_imagref(zb)), prec, rnd); \
+		} while (0)
+
+		switch (op) {
+		case R_FLINT_OPS2_POW:
+			for (jz = 0; jz < nz; ++jz)
+				WRAP(acb_pow, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			break;
+		default: /* -Wswitch */
+		}
+
+#undef WRAP
+
+		acb_clear(zb);
+		acb_clear(xb);
+		acb_clear(yb);
+		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
+		UNPROTECT(1);
+		return ans;
+	}
 	case R_FLINT_OPS2_EQ:
 	case R_FLINT_OPS2_NEQ:
 	case R_FLINT_OPS2_AND:
