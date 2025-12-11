@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-12-09)}{
+\section{Changes in version 0.1.3 (2025-12-11)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -64,6 +64,10 @@
       \code{Math} are more completely implemented for classes
       \code{mag}, \code{arf}, and \code{acf}, for parity with classes
       \code{arb} and \code{acb}.
+
+      \item \code{/} is implemented for \code{acf}.  \code{^} is
+      implemented for \code{arf} and \code{acf}.  \code{\%\%} and
+      \code{\%/\%} are implemented for \code{arf} and \code{arb}.
 
       \item S4 generic functions \code{Real}, \code{Real<-},
       \code{Imag}, and \code{Imag<-} gain sensible default methods.
