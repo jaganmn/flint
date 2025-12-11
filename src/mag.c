@@ -390,6 +390,8 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_ADD:
 	case R_FLINT_OPS2_SUB:
 	case R_FLINT_OPS2_MUL:
+	case R_FLINT_OPS2_FDR:
+	case R_FLINT_OPS2_FDQ:
 	case R_FLINT_OPS2_DIV:
 	case R_FLINT_OPS2_POW:
 	{
@@ -411,6 +413,59 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			for (jz = 0; jz < nz; ++jz)
 				TERN(mag_mul, lower, z + jz, x + jz % nx, y + jz % ny);
 			break;
+		case R_FLINT_OPS2_FDR:
+		{
+			int cmp;
+			mag_t q, t;
+			fmpz_t f;
+			mag_init(q);
+			mag_init(t);
+			fmpz_init(f);
+			for (jz = 0; jz < nz; ++jz) {
+				if (mag_is_zero(y + jz % ny))
+					Rf_error(_("NaN is not representable by \"%s\""), "mag");
+				cmp = mag_cmp(x + jz % nx, y + jz % ny);
+				if (cmp == 0)
+					mag_zero(z + jz);
+				else if (cmp < 0)
+					mag_set(z + jz, x + jz % nx);
+				else {
+					mag_div_lower(q, x + jz % nx, y + jz % ny);
+					mag_get_fmpz_lower(f, q);
+					mag_mul_fmpz_lower(t, q, f);
+					mag_sub(z + jz, x + jz % nx, t);
+				}
+			}
+			mag_clear(q);
+			mag_clear(t);
+			fmpz_clear(f);
+			break;
+		}
+		case R_FLINT_OPS2_FDQ:
+		{
+			int cmp;
+			mag_t q;
+			fmpz_t f;
+			mag_init(q);
+			fmpz_init(f);
+			for (jz = 0; jz < nz; ++jz) {
+				if (mag_is_zero(y + jz % ny))
+					Rf_error(_("NaN is not representable by \"%s\""), "mag");
+				cmp = mag_cmp(x + jz % nx, y + jz % ny);
+				if (cmp == 0)
+					mag_one(z + jz);
+				else if (cmp < 0)
+					mag_zero(z + jz);
+				else {
+					mag_div(q, x + jz % nx, y + jz % ny);
+					mag_get_fmpz_lower(f, q);
+					mag_set_fmpz(z + jz, f);
+				}
+			}
+			mag_clear(q);
+			fmpz_clear(f);
+			break;
+		}
 		case R_FLINT_OPS2_DIV:
 			for (jz = 0; jz < nz; ++jz) {
 				if (mag_is_special(x + jz % nx) &&

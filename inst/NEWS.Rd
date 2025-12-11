@@ -67,7 +67,8 @@
 
       \item \code{/} is implemented for \code{acf}.  \code{^} is
       implemented for \code{arf} and \code{acf}.  \code{\%\%} and
-      \code{\%/\%} are implemented for \code{arf} and \code{arb}.
+      \code{\%/\%} are implemented for \code{mag}, \code{arf} and
+      \code{arb}.
 
       \item S4 generic functions \code{Real}, \code{Real<-},
       \code{Imag}, and \code{Imag<-} gain sensible default methods.
