@@ -249,6 +249,19 @@ setMethod("determinant",
                         "det")
           })
 
+setMethod("diff",
+          c(x = "fmpz"),
+          function (x, lag = 1L, differences = 1L, ...)
+              .Call(R_flint_fmpz_ops1, "diff", x,
+                    list(as.integer(lag), as.integer(differences))))
+
+setMethod("diffinv",
+          c(x = "fmpz"),
+          function (x, lag = 1L, differences = 1L, xi, ...)
+              .Call(R_flint_fmpz_ops1, "diffinv", x,
+                    list(as.integer(lag), as.integer(differences),
+                         if (!missing(xi)) as(xi, "fmpz"))))
+
 setMethod("format",
           c(x = "fmpz"),
           function (x, base = 10L, ...)

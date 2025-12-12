@@ -246,6 +246,16 @@ setMethod("determinant",
           function (x, logarithm = TRUE, ...)
               determinant(fmpz(x), logarithm = logarithm, ...))
 
+setMethod("diff",
+          c(x = "ulong"),
+          function (x, ...)
+              diff(fmpz(x), ...))
+
+setMethod("diffinv",
+          c(x = "ulong"),
+          function (x, ...)
+              diffinv(fmpz(x), ...))
+
 setMethod("format",
           c(x = "ulong"),
           function (x, base = 10L, ...)

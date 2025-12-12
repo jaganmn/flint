@@ -62,6 +62,8 @@
 \alias{crossprod,acb,acb-method}
 \alias{det,acb-method}
 \alias{determinant,acb-method}
+\alias{diff,acb-method}
+\alias{diffinv,acb-method}
 \alias{is.finite,acb-method}
 \alias{is.infinite,acb-method}
 \alias{is.na,acb-method}
@@ -327,6 +329,17 @@ acb(real=, imag=, length=)}
       specifying the determinant of \code{x}, following the documented
       behaviour of the \pkg{base} function (except for the use of
       argument instead of sign).}
+    \item{\code{\link{diff}}}{
+      \code{signature(x = "acb")}:\cr
+      returns a vector storing lagged differences of the elements of
+      \code{x} or (if \code{x} is a matrix) a matrix storing lagged
+      differences of the rows of \code{x}, following the documented
+      behaviour of the S3 default method.}
+    \item{\code{\link[stats]{diffinv}}}{
+      \code{signature(x = "acb")}:\cr
+      returns the vector or matrix \code{y} such that
+      \code{x = diff(y, \dots)}, following the documented behaviour of
+      the S3 default method.}
     \item{\code{\link{format}}}{
       \code{signature(x = "acb")}:\cr
       returns a character vector suitable for printing, using string

@@ -62,6 +62,8 @@
 \alias{crossprod,arf,acb-method}
 \alias{det,arf-method}
 \alias{determinant,arf-method}
+\alias{diff,arf-method}
+\alias{diffinv,arf-method}
 \alias{is.finite,arf-method}
 \alias{is.infinite,arf-method}
 \alias{is.na,arf-method}
@@ -295,6 +297,17 @@ arf(x, length=)}
       returns a list with components \code{modulus} and \code{sign}
       specifying the determinant of \code{x}, following the documented
       behaviour of the \pkg{base} function.}
+    \item{\code{\link{diff}}}{
+      \code{signature(x = "arf")}:\cr
+      returns a vector storing lagged differences of the elements of
+      \code{x} or (if \code{x} is a matrix) a matrix storing lagged
+      differences of the rows of \code{x}, following the documented
+      behaviour of the S3 default method.}
+    \item{\code{\link[stats]{diffinv}}}{
+      \code{signature(x = "arf")}:\cr
+      returns the vector or matrix \code{y} such that
+      \code{x = diff(y, \dots)}, following the documented behaviour of
+      the S3 default method.}
     \item{\code{\link{format}}}{
       \code{signature(x = "arf")}:\cr
       returns a character vector suitable for printing, using scientific

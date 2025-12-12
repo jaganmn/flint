@@ -128,6 +128,10 @@
 \alias{det,slong-method}
 \alias{determinant,ulong-method}
 \alias{determinant,slong-method}
+\alias{diff,ulong-method}
+\alias{diff,slong-method}
+\alias{diffinv,ulong-method}
+\alias{diffinv,slong-method}
 \alias{is.finite,ulong-method}
 \alias{is.finite,slong-method}
 \alias{is.infinite,ulong-method}
@@ -423,7 +427,7 @@ slong(x, length=)}
       returns an \code{\linkS4class{fmpq}} vector or array containing
       the column means of \code{x}, defined as means over dimensions
       \code{1:dims}.}
-    \item{\code{\link{det}}, \code{\link{determinant}}}{
+    \item{\code{\link{det}}, \code{\link{determinant}}, \code{\link{diff}}, \code{\link[stats]{diffinv}}}{
       \code{signature(x = "ulong")}:\cr
       \code{signature(x = "slong")}:\cr
       coerces \code{x} to class \code{\linkS4class{fmpz}} and

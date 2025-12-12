@@ -234,6 +234,16 @@ setMethod("determinant",
           function (x, logarithm = TRUE, ...)
               determinant(arf(x), logarithm = logarithm, ...))
 
+setMethod("diff",
+          c(x = "mag"),
+          function (x, ...)
+              diff(arf(x), ...))
+
+setMethod("diffinv",
+          c(x = "mag"),
+          function (x, ...)
+              diffinv(arf(x), ...))
+
 setMethod("format",
           c(x = "mag"),
           function (x, base = 10L, sep = NULL,

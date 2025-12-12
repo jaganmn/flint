@@ -62,6 +62,8 @@
 \alias{crossprod,arb,acb-method}
 \alias{det,arb-method}
 \alias{determinant,arb-method}
+\alias{diff,arb-method}
+\alias{diffinv,arb-method}
 \alias{is.finite,arb-method}
 \alias{is.infinite,arb-method}
 \alias{is.na,arb-method}
@@ -328,6 +330,17 @@ arb(mid=, mid=, length=)}
       behaviour of the \pkg{base} function.  The sign is \code{NA} if
       the interval computed by \code{det(x)} contains both negative
       numbers and positive numbers.}
+    \item{\code{\link{diff}}}{
+      \code{signature(x = "arb")}:\cr
+      returns a vector storing lagged differences of the elements of
+      \code{x} or (if \code{x} is a matrix) a matrix storing lagged
+      differences of the rows of \code{x}, following the documented
+      behaviour of the S3 default method.}
+    \item{\code{\link[stats]{diffinv}}}{
+      \code{signature(x = "arb")}:\cr
+      returns the vector or matrix \code{y} such that
+      \code{x = diff(y, \dots)}, following the documented behaviour of
+      the S3 default method.}
     \item{\code{\link{format}}}{
       \code{signature(x = "arb")}:\cr
       returns a character vector suitable for printing, using string

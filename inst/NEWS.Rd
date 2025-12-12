@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-12-11)}{
+\section{Changes in version 0.1.3 (2025-12-12)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -58,7 +58,8 @@
   \subsection{Methods}{
     \itemize{
       \item S4 methods are defined for generic (or made-generic)
-      functions \code{diff}, \code{kronecker}, and \code{outer}.
+      functions \code{diff}, \code{diffinv}, \code{kronecker}, and
+      \code{outer}.
 
       \item S4 methods for group generic functions \code{Complex} and
       \code{Math} are more completely implemented for classes

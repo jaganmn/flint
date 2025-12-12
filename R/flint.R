@@ -1320,48 +1320,6 @@ setMethod("diag<-",
               x
           })
 
-setMethod("diff",
-          c(x = "flint"),
-          function (x, lag = 1L, differences = 1L, ...) {
-              lag <- as.integer(lag)
-              differences <- as.integer(differences)
-              if (length(lag) != 1L || lag < 1L)
-                  stop(gettextf("'%s' is not a positive integer",
-                                "lag"),
-                       domain = NA)
-              if (length(differences) != 1L || differences < 1L)
-                  stop(gettextf("'%s' is not a positive integer",
-                                "differences"),
-                       domain = NA)
-              if (is.matrix(x)) {
-                  n <- nrow(x)
-                  if (lag * differences >= n)
-                      return(x[0L, , drop = FALSE])
-                  i1 <- -1L:-lag
-                  for (i in seq_len(differences)) {
-                      i2 <- -n:-(n - lag + 1L)
-                      x <- x[i1, , drop = FALSE] - x[i2, , drop = FALSE]
-                      n <- nrow(x)
-                  }
-              } else {
-                  n <- length(x)
-                  if (lag * differences >= n)
-                      return(x[0L])
-                  i1 <- -1L:-lag
-                  for (i in seq_len(differences)) {
-                      i2 <- -n:-(n - lag + 1L)
-                      x <- x[i1] - x[i2]
-                      n <- length(x)
-                  }
-              }
-              x
-          })
-
-setMethod("diffinv",
-          c(x = "flint"),
-          function (x, lag = 1L, differences = 1L, xi, ...)
-              .NotYetImplemented())
-
 setMethod("dim",
           c(x = "flint"),
           function (x)

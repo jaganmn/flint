@@ -62,6 +62,8 @@
 \alias{crossprod,fmpz,acb-method}
 \alias{det,fmpz-method}
 \alias{determinant,fmpz-method}
+\alias{diff,fmpz-method}
+\alias{diffinv,fmpz-method}
 \alias{is.finite,fmpz-method}
 \alias{is.infinite,fmpz-method}
 \alias{is.na,fmpz-method}
@@ -290,6 +292,17 @@ fmpz(x, length=)}
       behaviour of the \pkg{base} function.  Note that \code{det(x)} and
       \code{determinant(x, logarithm = FALSE)} are exact, but
       \code{determinant(x)} is not in general due to rounding.}
+    \item{\code{\link{diff}}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns a vector storing lagged differences of the elements of
+      \code{x} or (if \code{x} is a matrix) a matrix storing lagged
+      differences of the rows of \code{x}, following the documented
+      behaviour of the S3 default method.}
+    \item{\code{\link[stats]{diffinv}}}{
+      \code{signature(x = "fmpz")}:\cr
+      returns the vector or matrix \code{y} such that
+      \code{x = diff(y, \dots)}, following the documented behaviour of
+      the S3 default method.}
     \item{\code{\link{format}}}{
       \code{signature(x = "fmpz")}:\cr
       returns a character vector suitable for printing.  Optional

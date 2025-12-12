@@ -65,10 +65,10 @@ const char *R_flint_ops1[] =
 	"sum", "prod", "mean",
 	"any", "all", "anyNA", "is.unsorted",
 	"rowSums", "colSums", "rowMeans", "colMeans",
-	/* matrixOps (8) : */
+	/* matrixOps (10) : */
 	"crossprod", "tcrossprod",
 	"solve", "backsolve", "tbacksolve", "chol2inv",
-	"chol", "det",
+	"chol", "det", "diff", "diffinv",
 	NULL
 };
 

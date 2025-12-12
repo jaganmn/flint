@@ -62,6 +62,8 @@
 \alias{crossprod,mag,acb-method}
 \alias{det,mag-method}
 \alias{determinant,mag-method}
+\alias{diff,mag-method}
+\alias{diffinv,mag-method}
 \alias{is.finite,mag-method}
 \alias{is.infinite,mag-method}
 \alias{is.na,mag-method}
@@ -278,7 +280,7 @@ mag(x, length=)}
       returns a \code{mag} vector or array containing the column sums or
       means of \code{x}, defined as sums or means over dimensions
       \code{1:dims}.}
-    \item{\code{\link{det}}, \code{\link{determinant}}}{
+    \item{\code{\link{det}}, \code{\link{determinant}}, \code{\link{diff}}, \code{\link[stats]{diffinv}}}{
       \code{signature(x = "mag")}:\cr
       coerces \code{x} to class \code{\linkS4class{arf}} and
       dispatches.}

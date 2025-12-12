@@ -1687,6 +1687,237 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 		UNPROTECT(2);
 		return ans;
 	}
+	case R_FLINT_OPS1_DIFF:
+	{
+		SEXP s_lag = VECTOR_ELT(s_dots, 0),
+			s_ord = VECTOR_ELT(s_dots, 1);
+		if (XLENGTH(s_lag) == 0 || (INTEGER(s_lag)[0]) <= 0)
+			Rf_error(_("'%s' is not a positive integer"),
+			         "lag");
+		if (XLENGTH(s_ord) == 0 || (INTEGER(s_ord)[0]) <= 0)
+			Rf_error(_("'%s' is not a positive integer"),
+			         "differences");
+		mp_limb_t i, j, k, m, n, r, r__,
+			lag = (mp_limb_t) INTEGER(s_lag)[0],
+			ord = (mp_limb_t) INTEGER(s_ord)[0];
+		SEXP dimx = R_do_slot(s_x, R_flint_symbol_dim);
+		int ismx = dimx != R_NilValue && XLENGTH(dimx) == 2;
+		if (ismx) {
+			m = (mp_limb_t) INTEGER(dimx)[0];
+			n = (mp_limb_t) INTEGER(dimx)[1];
+		} else {
+			m = nx;
+			n = 1;
+		}
+		r = (lag >= m / ord) ? m : lag * ord;
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARB, 0, (m - r) * n));
+		if (r < m) {
+			SEXP work = newFlint(R_FLINT_CLASS_ARB, 0, m);
+			arb_ptr z = R_flint_get_pointer(ans),
+				w = R_flint_get_pointer(work);
+			for (j = 0; j < n; ++j) {
+				for (i = 0; i < m; ++i)
+					arb_set(w + i, x + i);
+				r__ = 0;
+				for (k = 0; k < ord; ++k) {
+					r__ += lag;
+					for (i = m - 1; i >= r__; --i)
+						arb_sub(w + i, w + i, w + i - lag, prec);
+				}
+				for (i = r; i < m; ++i)
+					arb_set(z + i - r, w + i);
+				x += m;
+				z += m - r;
+			}
+		}
+		if (ismx) {
+			SEXP dimz = PROTECT(Rf_allocVector(INTSXP, 2));
+			INTEGER(dimz)[0] = (int) (m - r);
+			INTEGER(dimz)[1] = (int) n;
+			R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
+			UNPROTECT(1);
+			SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
+				dimnamesz = R_NilValue;
+			if (dimnamesx != R_NilValue) {
+				PROTECT(dimnamesx);
+				PROTECT(dimnamesz = Rf_allocVector(VECSXP, 2));
+				SEXP rownamesx = VECTOR_ELT(dimnamesx, 0),
+					rownamesz = R_NilValue;
+				if (rownamesx != R_NilValue) {
+					PROTECT(rownamesx);
+					PROTECT(rownamesz = Rf_allocVector(STRSXP, (int) (m - r)));
+					for (i = r; i < m; ++i)
+						SET_STRING_ELT(rownamesz, (int) (i - r),
+						               STRING_ELT(rownamesx, (int) i));
+					SET_VECTOR_ELT(dimnamesz, 0, rownamesz);
+					UNPROTECT(2);
+				}
+				SET_VECTOR_ELT(dimnamesz, 1, VECTOR_ELT(dimnamesx, 1));
+				SEXP namesdimnamesx = Rf_getAttrib(dimnamesx, R_NamesSymbol);
+				if (namesdimnamesx != R_NilValue) {
+					PROTECT(namesdimnamesx);
+					Rf_setAttrib(dimnamesz, R_NamesSymbol, namesdimnamesx);
+					UNPROTECT(1);
+				}
+				R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnamesz);
+				UNPROTECT(2);
+			}
+		} else {
+			SEXP namesx = R_do_slot(s_x, R_flint_symbol_names),
+				namesz = R_NilValue;
+			if (namesx != R_NilValue) {
+				PROTECT(namesx);
+				PROTECT(namesz = Rf_allocVector(STRSXP, (int) (m - r)));
+				for (i = r; i < m; ++i)
+					SET_STRING_ELT(namesz, (int) (i - r),
+					               STRING_ELT(namesx, (int) i));
+				R_do_slot_assign(ans, R_flint_symbol_names, namesz);
+				UNPROTECT(2);
+			}
+		}
+		UNPROTECT(1);
+		return ans;
+	}
+	case R_FLINT_OPS1_DIFFINV:
+	{
+		SEXP s_lag = VECTOR_ELT(s_dots, 0),
+			s_ord = VECTOR_ELT(s_dots, 1);
+		if (XLENGTH(s_lag) == 0 || (INTEGER(s_lag)[0]) <= 0)
+			Rf_error(_("'%s' is not a positive integer"),
+			         "lag");
+		if (XLENGTH(s_ord) == 0 || (INTEGER(s_ord)[0]) <= 0)
+			Rf_error(_("'%s' is not a positive integer"),
+			         "differences");
+		mp_limb_t i, j, k, m, n, r, r__,
+			lag = (mp_limb_t) INTEGER(s_lag)[0],
+			ord = (mp_limb_t) INTEGER(s_ord)[0];
+		SEXP dimx = R_do_slot(s_x, R_flint_symbol_dim);
+		int ismx = dimx != R_NilValue && XLENGTH(dimx) == 2;
+		if (ismx) {
+			m = (mp_limb_t) INTEGER(dimx)[0];
+			n = (mp_limb_t) INTEGER(dimx)[1];
+			if (lag > (INT_MAX - m) / ord)
+				Rf_error(_("dimensions would exceed maximum %d"),
+				         INT_MAX);
+		} else {
+			m = nx;
+			n = 1;
+			if (lag > (UWORD_MAX - m) / ord)
+				Rf_error(_("length would exceed maximum %llu"),
+				         (unsigned long long int) UWORD_MAX);
+		}
+		r = lag * ord;
+		SEXP s_y = VECTOR_ELT(s_dots, 2);
+		int usey = s_y != R_NilValue;
+		if (usey) {
+		if (ismx) {
+			SEXP dimy = R_do_slot(s_y, R_flint_symbol_dim);
+			if (dimy == R_NilValue || XLENGTH(dimy) != 2)
+				Rf_error(_("'%s' is not a matrix"),
+				         "xi");
+			if (INTEGER(dimy)[0] != r)
+				Rf_error(_("number of rows of '%s' is not equal to %s"),
+				         "xi", "lag * differences");
+			if (INTEGER(dimy)[1] != n)
+				Rf_error(_("number of columns of '%s' is not equal to %s"),
+				         "xi", "ncol(x)");
+		} else {
+			if (R_flint_get_length(s_y) != r)
+				Rf_error(_("length of '%s' is not equal to %s"),
+				         "xi", "lag * differences");
+		}
+		}
+		SEXP ans = PROTECT(newFlint(R_FLINT_CLASS_ARB, 0, (m + r) * n));
+		arb_ptr z = R_flint_get_pointer(ans);
+		arb_srcptr y = (usey) ? R_flint_get_pointer(s_y) : 0;
+		for (j = 0; j < n; ++j) {
+			if (usey)
+			for (i = 0; i < r; ++i)
+				arb_set(z + i, y + i);
+			else
+			for (i = 0; i < r; ++i)
+				arb_zero(z + i);
+			for (i = 0; i < m; ++i)
+				arb_set(z + r + i, x + i);
+			r__ = 0;
+			for (k = 0; k < ord; ++k) {
+				r__ += lag;
+				for (i = r - 1; i >= r__; --i)
+					arb_sub(z + i, z + i, z + i - lag, prec);
+			}
+			r__ = r;
+			for (k = 0; k < ord; ++k) {
+				for (i = r__; i < m + r; ++i)
+					arb_add(z + i, z + i, z + i - lag, prec);
+				r__ -= lag;
+			}
+			x += m;
+			if (usey)
+			y += r;
+			z += m + r;
+		}
+		if (ismx) {
+			SEXP dimz = PROTECT(Rf_allocVector(INTSXP, 2));
+			INTEGER(dimz)[0] = (int) (m + r);
+			INTEGER(dimz)[1] = (int) n;
+			R_do_slot_assign(ans, R_flint_symbol_dim, dimz);
+			UNPROTECT(1);
+			SEXP dimnamesx = R_do_slot(s_x, R_flint_symbol_dimnames),
+				dimnamesy = R_NilValue,
+				dimnamesz = R_NilValue;
+			if (dimnamesx != R_NilValue) {
+				PROTECT(dimnamesx);
+				PROTECT(dimnamesy = (usey) ? R_do_slot(s_y, R_flint_symbol_dimnames) : R_NilValue);
+				PROTECT(dimnamesz = Rf_allocVector(VECSXP, 2));
+				SEXP rownamesx = VECTOR_ELT(dimnamesx, 0),
+					rownamesy = R_NilValue,
+					rownamesz = R_NilValue;
+				if (rownamesx != R_NilValue) {
+					PROTECT(rownamesx);
+					PROTECT(rownamesy = (dimnamesy == R_NilValue) ? R_NilValue : VECTOR_ELT(dimnamesy, 0));
+					PROTECT(rownamesz = Rf_allocVector(STRSXP, (int) (m + r)));
+					if (rownamesy != R_NilValue)
+					for (i = 0; i < r; ++i)
+						SET_STRING_ELT(rownamesz, (int) i,
+						               STRING_ELT(rownamesy, (int) i));
+					for (i = 0; i < m; ++i)
+						SET_STRING_ELT(rownamesz, (int) (i + r),
+						               STRING_ELT(rownamesx, (int) i));
+					SET_VECTOR_ELT(dimnamesz, 0, rownamesz);
+					UNPROTECT(3);
+				}
+				SET_VECTOR_ELT(dimnamesz, 1, VECTOR_ELT(dimnamesx, 1));
+				SEXP namesdimnamesx = Rf_getAttrib(dimnamesx, R_NamesSymbol);
+				if (namesdimnamesx != R_NilValue) {
+					PROTECT(namesdimnamesx);
+					Rf_setAttrib(dimnamesz, R_NamesSymbol, namesdimnamesx);
+					UNPROTECT(1);
+				}
+				R_do_slot_assign(ans, R_flint_symbol_dimnames, dimnamesz);
+				UNPROTECT(3);
+			}
+		} else {
+			SEXP namesx = R_do_slot(s_x, R_flint_symbol_names),
+				namesy = R_NilValue,
+				namesz = R_NilValue;
+			if (namesx != R_NilValue) {
+				PROTECT(namesx);
+				PROTECT(namesy = (usey) ? R_do_slot(s_y, R_flint_symbol_names) : R_NilValue);
+				PROTECT(namesz = Rf_allocVector(STRSXP, (int) (m + r)));
+				if (namesy != R_NilValue)
+				for (i = 0; i < r; ++i)
+					SET_STRING_ELT(namesz, (int) i,
+					               STRING_ELT(namesy, (int) i));
+				for (i = r; i < m; ++i)
+					SET_STRING_ELT(namesz, (int) i,
+					               STRING_ELT(namesx, (int) (i + r)));
+				R_do_slot_assign(ans, R_flint_symbol_names, namesz);
+				UNPROTECT(3);
+			}
+		}
+		UNPROTECT(1);
+		return ans;
+	}
 	default:
 		Rf_error(_("operation '%s' is not yet implemented for class \"%s\""),
 		         CHAR(STRING_ELT(s_op, 0)), "arb");

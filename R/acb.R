@@ -300,6 +300,19 @@ setMethod("determinant",
                         "det")
           })
 
+setMethod("diff",
+          c(x = "acb"),
+          function (x, lag = 1L, differences = 1L, ...)
+              .Call(R_flint_acb_ops1, "diff", x,
+                    list(as.integer(lag), as.integer(differences))))
+
+setMethod("diffinv",
+          c(x = "acb"),
+          function (x, lag = 1L, differences = 1L, xi, ...)
+              .Call(R_flint_acb_ops1, "diffinv", x,
+                    list(as.integer(lag), as.integer(differences),
+                         if (!missing(xi)) as(xi, "acb"))))
+
 setMethod("format",
           c(x = "acb"),
           function (x, base = 10L, sep = NULL,

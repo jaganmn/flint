@@ -224,6 +224,19 @@ setMethod("colSums",
           function (x, na.rm = FALSE, dims = 1, ...)
               .Call(R_flint_arf_ops1, "colSums", x, list(as.logical(na.rm), as.integer(dims))))
 
+setMethod("diff",
+          c(x = "arf"),
+          function (x, lag = 1L, differences = 1L, ...)
+              .Call(R_flint_arf_ops1, "diff", x,
+                    list(as.integer(lag), as.integer(differences))))
+
+setMethod("diffinv",
+          c(x = "arf"),
+          function (x, lag = 1L, differences = 1L, xi, ...)
+              .Call(R_flint_arf_ops1, "diffinv", x,
+                    list(as.integer(lag), as.integer(differences),
+                         if (!missing(xi)) as(xi, "arf"))))
+
 setMethod("format",
           c(x = "arf"),
           function (x, base = 10L, sep = NULL,

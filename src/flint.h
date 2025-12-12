@@ -328,6 +328,8 @@ typedef enum {
 	R_FLINT_OPS1_CHOL2INV,   /*       chol2inv(z)    */
 	R_FLINT_OPS1_CHOL,       /*           chol(z)    */
 	R_FLINT_OPS1_DET,        /*            det(z)    */
+	R_FLINT_OPS1_DIFF,       /*           diff(z)    */
+	R_FLINT_OPS1_DIFFINV,    /*        diffinv(z)    */
 	R_FLINT_OPS1_INVALID = -1
 } R_flint_ops1_t;
 
@@ -341,7 +343,7 @@ extern
 const char *R_flint_ops2[22];
 
 extern
-const char *R_flint_ops1[72];
+const char *R_flint_ops1[74];
 
 #if R_VERSION < R_Version(4, 5, 0)
 void CLEAR_ATTRIB(SEXP s);
