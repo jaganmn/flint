@@ -60,6 +60,11 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	PROTECT(s_names = validNames(s_names, ny));
 	ulong *y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
+#ifdef R_FLINT_ABI_64
+# define UB 0x1.0p+64
+#else
+# define UB 0x1.0p+32
+#endif
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		break;
@@ -75,9 +80,9 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (x[jx] == NA_LOGICAL)
-			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
-			else
-			y[jy] = (ulong) x[jx];
+				Rf_error(_("NA is not representable by \"%s\""),
+				         "ulong");
+			y[jy] = (ulong) (x[jx] != 0);
 		}
 		break;
 	}
@@ -86,10 +91,11 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (x[jx] == NA_INTEGER)
-			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
-			else if (x[jx] < 0)
-			Rf_error(_("integer not in range of \"%s\""), "ulong");
-			else
+				Rf_error(_("NA is not representable by \"%s\""),
+				         "ulong");
+			if (x[jx] < 0)
+				Rf_error(_("integer not in range of \"%s\""),
+				         "ulong");
 			y[jy] = (ulong) x[jx];
 		}
 		break;
@@ -99,14 +105,11 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx]))
-			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
-#ifdef R_FLINT_ABI_64
-			else if (x[jx] <= -1.0 || x[jx] >= 0x1.0p+64)
-#else
-			else if (x[jx] <= -1.0 || x[jx] >= 0x1.0p+32)
-#endif
-			Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
-			else
+				Rf_error(_("NaN is not representable by \"%s\""),
+				         "ulong");
+			if (x[jx] <= -1.0 || x[jx] >= UB)
+				Rf_error(_("floating-point number not in range of \"%s\""),
+				         "ulong");
 			y[jy] = (ulong) x[jx];
 		}
 		break;
@@ -116,14 +119,11 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx].r))
-			Rf_error(_("NaN is not representable by \"%s\""), "ulong");
-#ifdef R_FLINT_ABI_64
-			else if (x[jx].r <= -1.0 || x[jx].r >= 0x1.0p+64)
-#else
-			else if (x[jx].r <= -1.0 || x[jx].r >= 0x1.0p+32)
-#endif
-			Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
-			else
+				Rf_error(_("NaN is not representable by \"%s\""),
+				         "ulong");
+			if (x[jx].r <= -1.0 || x[jx].r >= UB)
+				Rf_error(_("floating-point number not in range of \"%s\""),
+				         "ulong");
 			y[jy] = (ulong) x[jx].r;
 		}
 		break;
@@ -141,7 +141,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 			if (!__local_mpz_fits_ulong_p(r)) {
 				mpz_clear(r);
-				Rf_error(_("converted string not in range of \"%s\""), "ulong");
+				Rf_error(_("converted string not in range of \"%s\""),
+				         "ulong");
 			}
 			y[jy] = __local_mpz_get_ui(r);
 		}
@@ -162,8 +163,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const slong *x = R_flint_get_pointer(s_x);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (x[jx] < 0)
-				Rf_error(_("integer not in range of \"%s\""), "ulong");
-				else
+					Rf_error(_("integer not in range of \"%s\""),
+					         "ulong");
 				y[jy] = (ulong) x[jx];
 			}
 			break;
@@ -173,8 +174,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpz *x = R_flint_get_pointer(s_x);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (fmpz_sgn(x + jx) < 0 || !fmpz_abs_fits_ui(x + jx))
-				Rf_error(_("integer not in range of \"%s\""), "ulong");
-				else
+					Rf_error(_("integer not in range of \"%s\""),
+					         "ulong");
 				y[jy] = fmpz_get_ui(x + jx);
 			}
 			break;
@@ -187,10 +188,10 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				fmpz_tdiv_q(q, fmpq_numref(x + jx), fmpq_denref(x + jx));
 				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
-				fmpz_clear(q);
-				Rf_error(_("rational not in range of \"%s\""), "ulong");
+					fmpz_clear(q);
+					Rf_error(_("rational not in range of \"%s\""),
+					         "ulong");
 				}
-				else
 				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
@@ -202,12 +203,12 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			fmpz_t q;
 			fmpz_init(q);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
-				mag_get_fmpz_lower(q, x + jx);
-				if (!fmpz_abs_fits_ui(q)) {
-				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
+				if (mag_cmp_2exp_si(x + jx, FLINT_BITS) >= 0) {
+					fmpz_clear(q);
+					Rf_error(_("floating-point number not in range of \"%s\""),
+					         "ulong");
 				}
-				else
+				mag_get_fmpz_lower(q, x + jx);
 				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
@@ -219,12 +220,18 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			fmpz_t q;
 			fmpz_init(q);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
-				arf_get_fmpz(q, x + jx, ARF_RND_DOWN);
-				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
-				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
+				if (arf_is_nan(x + jx)) {
+					fmpz_clear(q);
+					Rf_error(_("NaN is not representable by \"%s\""),
+					         "ulong");
 				}
-				else
+				if (arf_cmp_d(x + jx, -1.0) <= 0 ||
+				    arf_cmp_d(x + jx,   UB) >= 0) {
+					fmpz_clear(q);
+					Rf_error(_("floating-point number not in range of \"%s\""),
+					         "ulong");
+				}
+				arf_get_fmpz(q, x + jx, ARF_RND_DOWN);
 				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
@@ -236,12 +243,18 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			fmpz_t q;
 			fmpz_init(q);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
-				arf_get_fmpz(q, acf_realref(x + jx), ARF_RND_DOWN);
-				if (fmpz_sgn(q) < 0 || !fmpz_abs_fits_ui(q)) {
-				fmpz_clear(q);
-				Rf_error(_("floating-point number not in range of \"%s\""), "ulong");
+				if (arf_is_nan(acf_realref(x + jx))) {
+					fmpz_clear(q);
+					Rf_error(_("NaN is not representable by \"%s\""),
+					         "ulong");
 				}
-				else
+				if (arf_cmp_d(acf_realref(x + jx), -1.0) <= 0 ||
+				    arf_cmp_d(acf_realref(x + jx),   UB) >= 0) {
+					fmpz_clear(q);
+					Rf_error(_("floating-point number not in range of \"%s\""),
+					         "ulong");
+				}
+				arf_get_fmpz(q, acf_realref(x + jx), ARF_RND_DOWN);
 				y[jy] = fmpz_get_ui(q);
 			}
 			fmpz_clear(q);
@@ -257,6 +270,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		}
 		break;
 	}
+#undef UB
 	setDDNN(object, s_dim, s_dimnames, s_names);
 	UNPROTECT(3);
 	return object;

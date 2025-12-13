@@ -67,9 +67,9 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			if (x[jx] == NA_LOGICAL)
 			arf_nan(y + jy);
 			else if (exact)
-			arf_set_si      (y + jy, x[jx]);
+			arf_set_si      (y + jy, x[jx] != 0);
 			else
-			arf_set_round_si(y + jy, x[jx], prec, rnd);
+			arf_set_round_si(y + jy, x[jx] != 0, prec, rnd);
 		break;
 	}
 	case INTSXP:

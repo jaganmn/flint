@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.3 (2025-12-12)}{
+\section{Changes in version 0.1.3 (2025-12-13)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -142,6 +142,10 @@
 
       \item \code{mag(0)/mag(0)} and \code{mag(Inf)/mag(Inf)} wrongly
       returned \code{mag(Inf)}.  Now they signal an error.
+
+      \item Conversion to \code{ulong} or \code{slong} of \code{NaN},
+      \code{-Inf}, or \code{Inf} stored as \code{mag} or \code{arf}
+      signaled an unhelpful error (\dQuote{caught exception}).
 
       \item \code{diag<-} assigned to entries in the first row rather
       than to entries in the main diagonal.

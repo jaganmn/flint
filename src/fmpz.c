@@ -56,9 +56,9 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (x[jx] == NA_LOGICAL)
-			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-			else
-			fmpz_set_si(y + jy, x[jx]);
+				Rf_error(_("NA is not representable by \"%s\""),
+				         "fmpz");
+			fmpz_set_si(y + jy, x[jx] != 0);
 		}
 		break;
 	}
@@ -67,8 +67,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (x[jx] == NA_INTEGER)
-			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-			else
+				Rf_error(_("NA is not representable by \"%s\""),
+				         "fmpz");
 			fmpz_set_si(y + jy, x[jx]);
 		}
 		break;
@@ -78,8 +78,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (!R_FINITE(x[jx]))
-			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-			else
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+				         "fmpz");
 			fmpz_set_d(y + jy, (fabs(x[jx]) < DBL_MIN) ? 0.0 : x[jx]);
 		}
 		break;
@@ -89,8 +89,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (!R_FINITE(x[jx].r))
-			Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-			else
+				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+				         "fmpz");
 			fmpz_set_d(y + jy, (fabs(x[jx].r) < DBL_MIN) ? 0.0 : x[jx].r);
 		}
 		break;
@@ -146,8 +146,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mag_srcptr x = R_flint_get_pointer(s_x);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (mag_is_inf(x + jx))
-				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-				else
+					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+					         "fmpz");
 				mag_get_fmpz_lower(y + jy, x + jx);
 			}
 			break;
@@ -157,8 +157,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr x = R_flint_get_pointer(s_x);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (!arf_is_finite(x + jx))
-				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-				else
+					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+					         "fmpz");
 				arf_get_fmpz(y + jy, x + jx, ARF_RND_DOWN);
 			}
 			break;
@@ -168,8 +168,8 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (!arf_is_finite(acf_realref(x + jx)))
-				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""), "fmpz");
-				else
+					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+					         "fmpz");
 				arf_get_fmpz(y + jy, acf_realref(x + jx), ARF_RND_DOWN);
 			}
 			break;

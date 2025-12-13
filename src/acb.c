@@ -107,9 +107,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				if (x[jx] == NA_LOGICAL)
 				arb_set_d(acb_realref(y + jy), R_NaN);
 				else if (exact)
-				arb_set_si      (acb_realref(y + jy), x[jx]);
+				arb_set_si      (acb_realref(y + jy), x[jx] != 0);
 				else
-				arb_set_round_si(acb_realref(y + jy), x[jx], prec);
+				arb_set_round_si(acb_realref(y + jy), x[jx] != 0, prec);
 				arb_zero(acb_imagref(y + jy));
 			}
 			break;

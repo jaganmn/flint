@@ -105,9 +105,9 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				if (x[jx] == NA_LOGICAL)
 				arb_set_d(y + jy, R_NaN);
 				else if (exact)
-				arb_set_si      (y + jy, x[jx]);
+				arb_set_si      (y + jy, x[jx] != 0);
 				else
-				arb_set_round_si(y + jy, x[jx], prec);
+				arb_set_round_si(y + jy, x[jx] != 0, prec);
 			break;
 		}
 		case INTSXP:

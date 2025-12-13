@@ -108,9 +108,9 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				if (x[jx] == NA_LOGICAL)
 				arf_nan(acf_realref(y + jy));
 				else if (exact)
-				arf_set_si      (acf_realref(y + jy), x[jx]);
+				arf_set_si      (acf_realref(y + jy), x[jx] != 0);
 				else
-				arf_set_round_si(acf_realref(y + jy), x[jx], prec, rnd);
+				arf_set_round_si(acf_realref(y + jy), x[jx] != 0, prec, rnd);
 				arf_zero(acf_imagref(y + jy));
 			}
 			break;

@@ -63,9 +63,9 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = LOGICAL_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (x[jx] == NA_LOGICAL)
-			Rf_error(_("NaN is not representable by \"%s\""), "mag");
-			else
-			TERN(mag_set_ui, lower, y + jy, (ulong) x[jx]);
+				Rf_error(_("NaN is not representable by \"%s\""),
+				         "mag");
+			TERN(mag_set_ui, lower, y + jy, (ulong) (x[jx] != 0));
 		}
 		break;
 	}
@@ -74,9 +74,10 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const int *x = INTEGER_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (x[jx] == NA_INTEGER)
-			Rf_error(_("NaN is not representable by \"%s\""), "mag");
-			else if (x[jx] >= 0)
-			TERN(mag_set_ui, lower, y + jy, (ulong) x[jx]);
+				Rf_error(_("NaN is not representable by \"%s\""),
+				         "mag");
+			if (x[jx] >= 0)
+			TERN(mag_set_ui, lower, y + jy, (ulong)  x[jx]);
 			else
 			TERN(mag_set_ui, lower, y + jy, (ulong) -x[jx]);
 		}
@@ -87,8 +88,8 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const double *x = REAL_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx]))
-			Rf_error(_("NaN is not representable by \"%s\""), "mag");
-			else
+				Rf_error(_("NaN is not representable by \"%s\""),
+				         "mag");
 			TERN(mag_set_d, lower, y + jy, x[jx]);
 		}
 		break;
@@ -98,8 +99,8 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		const Rcomplex *x = COMPLEX_RO(s_x);
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx].r))
-			Rf_error(_("NaN is not representable by \"%s\""), "mag");
-			else
+				Rf_error(_("NaN is not representable by \"%s\""),
+				         "mag");
 			TERN(mag_set_d, lower, y + jy, x[jx].r);
 		}
 		break;
