@@ -3,7 +3,7 @@
 ** DONE '%/%', '%%' for arf, arb
 ** DONE '/' for acf
 ** DONE '^' for arf, acf
-** TODO diffinv
+** DONE diff, diffinv
 
 ** TODO methods for generic functions designed for arrays
 *** DONE aperm
