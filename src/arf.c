@@ -18,7 +18,7 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
                             SEXP s_dim, SEXP s_dimnames, SEXP s_names,
                             SEXP s_prec, SEXP s_rnd)
 {
-	mp_limb_t jy, nx = 0, ny = 0;
+	mp_limb_t jx, jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	int exact = s_prec == R_NilValue;
 	slong prec = asPrec(s_prec, __func__);
@@ -47,48 +47,48 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_arf_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
-		for (jy = 0; jy < ny; ++jy)
+		FOR_RECYCLE0(jy, ny)
 			arf_zero(y + jy);
 		break;
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
+		FOR_RECYCLE1(jy, ny, jx, nx)
 			if (exact)
-			arf_set_ui      (y + jy, x[jy % nx]);
+			arf_set_ui      (y + jy, x[jx]);
 			else
-			arf_set_round_ui(y + jy, x[jy % nx], prec, rnd);
+			arf_set_round_ui(y + jy, x[jx], prec, rnd);
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
-			if (x[jy % nx] == NA_LOGICAL)
+		FOR_RECYCLE1(jy, ny, jx, nx)
+			if (x[jx] == NA_LOGICAL)
 			arf_nan(y + jy);
 			else if (exact)
-			arf_set_si      (y + jy, x[jy % nx]);
+			arf_set_si      (y + jy, x[jx]);
 			else
-			arf_set_round_si(y + jy, x[jy % nx], prec, rnd);
+			arf_set_round_si(y + jy, x[jx], prec, rnd);
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
-			if (x[jy % nx] == NA_INTEGER)
+		FOR_RECYCLE1(jy, ny, jx, nx)
+			if (x[jx] == NA_INTEGER)
 			arf_nan(y + jy);
 			else if (exact)
-			arf_set_si      (y + jy, x[jy % nx]);
+			arf_set_si      (y + jy, x[jx]);
 			else
-			arf_set_round_si(y + jy, x[jy % nx], prec, rnd);
+			arf_set_round_si(y + jy, x[jx], prec, rnd);
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			arf_set_d(y + jy, x[jy % nx]);
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			arf_set_d(y + jy, x[jx]);
 			if (!exact)
 			arf_set_round(y + jy, y + jy, prec, rnd);
 		}
@@ -97,8 +97,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			arf_set_d(y + jy, x[jy % nx].r);
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			arf_set_d(y + jy, x[jx].r);
 			if (!exact)
 			arf_set_round(y + jy, y + jy, prec, rnd);
 		}
@@ -112,8 +112,8 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		mpfr_init2(m, prec__);
 		const char *s;
 		char *t;
-		for (jy = 0; jy < ny; ++jy) {
-			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) jx));
 			mpfr_strtofr(m, s, &t, 0, rnd__);
 			if (t <= s)
 				break;
@@ -134,45 +134,45 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
+			FOR_RECYCLE1(jy, ny, jx, nx)
 				if (exact)
-				arf_set_ui      (y + jy, x[jy % nx]);
+				arf_set_ui      (y + jy, x[jx]);
 				else
-				arf_set_round_ui(y + jy, x[jy % nx], prec, rnd);
+				arf_set_round_ui(y + jy, x[jx], prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
+			FOR_RECYCLE1(jy, ny, jx, nx)
 				if (exact)
-				arf_set_si      (y + jy, x[jy % nx]);
+				arf_set_si      (y + jy, x[jx]);
 				else
-				arf_set_round_si(y + jy, x[jy % nx], prec, rnd);
+				arf_set_round_si(y + jy, x[jx], prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
+			FOR_RECYCLE1(jy, ny, jx, nx)
 				if (exact)
-				arf_set_fmpz      (y + jy, x + jy % nx);
+				arf_set_fmpz      (y + jy, x + jx);
 				else
-				arf_set_round_fmpz(y + jy, x + jy % nx, prec, rnd);
+				arf_set_round_fmpz(y + jy, x + jx, prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
 		{
 			const fmpq *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				arf_fmpz_div_fmpz(y + jy, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				arf_fmpz_div_fmpz(y + jy, fmpq_numref(x + jx), fmpq_denref(x + jx), prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_MAG:
 		{
 			mag_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				arf_set_mag(y + jy, x + jy % nx);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				arf_set_mag(y + jy, x + jx);
 				if (!exact)
 				arf_set_round(y + jy, y + jy, prec, rnd);
 			}
@@ -181,21 +181,21 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ARF:
 		{
 			arf_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
+			FOR_RECYCLE1(jy, ny, jx, nx)
 				if (exact)
-				arf_set      (y + jy, x + jy % nx);
+				arf_set      (y + jy, x + jx);
 				else
-				arf_set_round(y + jy, x + jy % nx, prec, rnd);
+				arf_set_round(y + jy, x + jx, prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
+			FOR_RECYCLE1(jy, ny, jx, nx)
 				if (exact)
-				arf_set      (y + jy, acf_realref(x + jy % nx));
+				arf_set      (y + jy, acf_realref(x + jx));
 				else
-				arf_set_round(y + jy, acf_realref(x + jy % nx), prec, rnd);
+				arf_set_round(y + jy, acf_realref(x + jx), prec, rnd);
 			break;
 		}
 		case R_FLINT_CLASS_ARB:
@@ -402,7 +402,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
 	R_flint_ops2_t op = ops2match(CHAR(STRING_ELT(s_op, 0)));
 	int info = ops2info(op);
-	mp_limb_t jz,
+	mp_limb_t jx, jy, jz,
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y),
 		nz = RECYCLE2(nx, ny);
@@ -424,20 +424,20 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		arf_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case R_FLINT_OPS2_ADD:
-			for (jz = 0; jz < nz; ++jz)
-				arf_add(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				arf_add(z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		case R_FLINT_OPS2_SUB:
-			for (jz = 0; jz < nz; ++jz)
-				arf_sub(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				arf_sub(z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		case R_FLINT_OPS2_MUL:
-			for (jz = 0; jz < nz; ++jz)
-				arf_mul(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				arf_mul(z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		case R_FLINT_OPS2_DIV:
-			for (jz = 0; jz < nz; ++jz)
-				arf_div(z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				arf_div(z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		default: /* -Wswitch */
 		}
@@ -483,16 +483,16 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 
 		switch (op) {
 		case R_FLINT_OPS2_FDR:
-			for (jz = 0; jz < nz; ++jz)
-				WRAP(arb_fdiv_r, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				WRAP(arb_fdiv_r, z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		case R_FLINT_OPS2_FDQ:
-			for (jz = 0; jz < nz; ++jz)
-				WRAP(arb_fdiv_q, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				WRAP(arb_fdiv_q, z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		case R_FLINT_OPS2_POW:
-			for (jz = 0; jz < nz; ++jz)
-				WRAP(arb_pow, z + jz, x + jz % nx, y + jz % ny, prec, rnd);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				WRAP(arb_pow, z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		default: /* -Wswitch */
 		}
@@ -520,65 +520,65 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case R_FLINT_OPS2_EQ:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
-				: arf_equal(x + jz % nx, y + jz % ny) != 0;
+				: arf_equal(x + jx, y + jy) != 0;
 			break;
 		case R_FLINT_OPS2_NEQ:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
-				: arf_equal(x + jz % nx, y + jz % ny) == 0;
+				: arf_equal(x + jx, y + jy) == 0;
 			break;
 		case R_FLINT_OPS2_L:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
-				: arf_cmp(x + jz % nx, y + jz % ny) < 0;
+				: arf_cmp(x + jx, y + jy) < 0;
 			break;
 		case R_FLINT_OPS2_G:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
-				: arf_cmp(x + jz % nx, y + jz % ny) > 0;
+				: arf_cmp(x + jx, y + jy) > 0;
 			break;
 		case R_FLINT_OPS2_LEQ:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
-				: arf_cmp(x + jz % nx, y + jz % ny) <= 0;
+				: arf_cmp(x + jx, y + jy) <= 0;
 			break;
 		case R_FLINT_OPS2_GEQ:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_nan(x + jz % nx) || arf_is_nan(y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
-				: arf_cmp(x + jz % nx, y + jz % ny) >= 0;
+				: arf_cmp(x + jx, y + jy) >= 0;
 			break;
 		case R_FLINT_OPS2_AND:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(arf_is_zero(x + jz % nx) || arf_is_zero(y + jz % ny))
+				(arf_is_zero(x + jx) || arf_is_zero(y + jy))
 				? 0
 				:
-				(arf_is_nan (x + jz % nx) || arf_is_nan (y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case R_FLINT_OPS2_OR:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(!(arf_is_nan(x + jz % nx) || arf_is_zero(x + jz % nx)) ||
-				 !(arf_is_nan(y + jz % ny) || arf_is_zero(y + jz % ny)))
+				(!(arf_is_nan(x + jx) || arf_is_zero(x + jx)) ||
+				 !(arf_is_nan(y + jy) || arf_is_zero(y + jy)))
 				? 1
 				:
-				(arf_is_nan (x + jz % nx) || arf_is_nan (y + jz % ny))
+				(arf_is_nan(x + jx) || arf_is_nan(y + jy))
 				? NA_LOGICAL
 				: 0;
 			break;
@@ -651,7 +651,7 @@ SEXP R_flint_arf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mb->stride = ma->c;
 #endif
 		arb_mat_approx_mul(mc, ma, mb, prec);
-		for (jz = 0; jz < nz; ++jz) {
+		FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
 			arf_set(z + jz, arb_midref(mc->entries + jz));
 			arb_clear(mc->entries + jz);
 		}

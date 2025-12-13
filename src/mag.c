@@ -21,7 +21,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
                             SEXP s_dim, SEXP s_dimnames, SEXP s_names,
                             SEXP s_rnd)
 {
-	mp_limb_t jy, nx = 0, ny = 0;
+	mp_limb_t jx, jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	int lower = isRndZ(asRnd(s_rnd, 0, __func__));
 	PROTECT(s_dim = validDim(s_dim));
@@ -48,59 +48,59 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_mag_finalize);
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
-		for (jy = 0; jy < ny; ++jy)
+		FOR_RECYCLE0(jy, ny)
 			mag_zero(y + jy);
 		break;
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
-			TERN(mag_set_ui, lower, y + jy, x[jy % nx]);
+		FOR_RECYCLE1(jy, ny, jx, nx)
+			TERN(mag_set_ui, lower, y + jy, x[jx]);
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (x[jy % nx] == NA_LOGICAL)
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (x[jx] == NA_LOGICAL)
 			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else
-			TERN(mag_set_ui, lower, y + jy, (ulong) x[jy % nx]);
+			TERN(mag_set_ui, lower, y + jy, (ulong) x[jx]);
 		}
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (x[jy % nx] == NA_INTEGER)
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (x[jx] == NA_INTEGER)
 			Rf_error(_("NaN is not representable by \"%s\""), "mag");
-			else if (x[jy % nx] >= 0)
-			TERN(mag_set_ui, lower, y + jy, (ulong) x[jy % nx]);
+			else if (x[jx] >= 0)
+			TERN(mag_set_ui, lower, y + jy, (ulong) x[jx]);
 			else
-			TERN(mag_set_ui, lower, y + jy, (ulong) -x[jy % nx]);
+			TERN(mag_set_ui, lower, y + jy, (ulong) -x[jx]);
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (ISNAN(x[jy % nx]))
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (ISNAN(x[jx]))
 			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else
-			TERN(mag_set_d, lower, y + jy, x[jy % nx]);
+			TERN(mag_set_d, lower, y + jy, x[jx]);
 		}
 		break;
 	}
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (ISNAN(x[jy % nx].r))
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (ISNAN(x[jx].r))
 			Rf_error(_("NaN is not representable by \"%s\""), "mag");
 			else
-			TERN(mag_set_d, lower, y + jy, x[jy % nx].r);
+			TERN(mag_set_d, lower, y + jy, x[jx].r);
 		}
 		break;
 	}
@@ -114,8 +114,8 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		arf_init(tmp);
 		const char *s;
 		char *t;
-		for (jy = 0; jy < ny; ++jy) {
-			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) jx));
 			mpfr_strtofr(r, s, &t, 0, rnd);
 			if (t <= s)
 				break;
@@ -138,26 +138,26 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				TERN(mag_set_ui, lower, y + jy, x[jy % nx]);
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				TERN(mag_set_ui, lower, y + jy, x[jx]);
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				if (x[jy % nx] >= 0)
-				TERN(mag_set_ui, lower, y + jy, (ulong) x[jy % nx]);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (x[jx] >= 0)
+				TERN(mag_set_ui, lower, y + jy, (ulong) x[jx]);
 				else
-				TERN(mag_set_ui, lower, y + jy, (ulong) -1 - (ulong) x[jy % nx] + 1);
+				TERN(mag_set_ui, lower, y + jy, (ulong) -1 - (ulong) x[jx] + 1);
 			}
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				TERN(mag_set_fmpz, lower, y + jy, x + jy % nx);
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				TERN(mag_set_fmpz, lower, y + jy, x + jx);
 			break;
 		}
 		case R_FLINT_CLASS_FMPQ:
@@ -167,8 +167,8 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_rnd_t rnd = (lower) ? ARF_RND_DOWN : ARF_RND_UP;
 			arf_t q;
 			arf_init(q);
-			for (jy = 0; jy < ny; ++jy) {
-				arf_fmpz_div_fmpz(q, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec, rnd);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				arf_fmpz_div_fmpz(q, fmpq_numref(x + jx), fmpq_denref(x + jx), prec, rnd);
 				TERN(arf_get_mag, lower, y + jy, q);
 			}
 			arf_clear(q);
@@ -177,22 +177,22 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_MAG:
 		{
 			mag_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				mag_set(y + jy, x + jy % nx);
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				mag_set(y + jy, x + jx);
 			break;
 		}
 		case R_FLINT_CLASS_ARF:
 		{
 			arf_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				TERN(arf_get_mag, lower, y + jy, x + jy % nx);
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				TERN(arf_get_mag, lower, y + jy, x + jx);
 			break;
 		}
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				TERN(arf_get_mag, lower, y + jy, acf_realref(x + jy % nx));
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				TERN(arf_get_mag, lower, y + jy, acf_realref(x + jx));
 			break;
 		}
 		case R_FLINT_CLASS_ARB:
@@ -376,7 +376,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
 	R_flint_ops2_t op = ops2match(CHAR(STRING_ELT(s_op, 0)));
 	int info = ops2info(op);
-	mp_limb_t jz,
+	mp_limb_t jx, jy, jz,
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y),
 		nz = RECYCLE2(nx, ny);
@@ -399,19 +399,19 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		mag_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case R_FLINT_OPS2_ADD:
-			for (jz = 0; jz < nz; ++jz)
-				TERN(mag_add, lower, z + jz, x + jz % nx, y + jz % ny);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				TERN(mag_add, lower, z + jz, x + jx, y + jy);
 			break;
 		case R_FLINT_OPS2_SUB:
-			for (jz = 0; jz < nz; ++jz)
-				if (mag_cmp(x + jz % nx, y + jz % ny) >= 0)
-				TERN(mag_sub, lower, z + jz, x + jz % nx, y + jz % ny);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				if (mag_cmp(x + jx, y + jy) >= 0)
+				TERN(mag_sub, lower, z + jz, x + jx, y + jy);
 				else
-				TERN(mag_sub, lower, z + jz, y + jz % ny, x + jz % nx);
+				TERN(mag_sub, lower, z + jz, y + jy, x + jx);
 			break;
 		case R_FLINT_OPS2_MUL:
-			for (jz = 0; jz < nz; ++jz)
-				TERN(mag_mul, lower, z + jz, x + jz % nx, y + jz % ny);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				TERN(mag_mul, lower, z + jz, x + jx, y + jy);
 			break;
 		case R_FLINT_OPS2_FDR:
 		{
@@ -421,19 +421,19 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			mag_init(q);
 			mag_init(t);
 			fmpz_init(f);
-			for (jz = 0; jz < nz; ++jz) {
-				if (mag_is_zero(y + jz % ny))
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				if (mag_is_zero(y + jy))
 					Rf_error(_("NaN is not representable by \"%s\""), "mag");
-				cmp = mag_cmp(x + jz % nx, y + jz % ny);
+				cmp = mag_cmp(x + jx, y + jy);
 				if (cmp == 0)
 					mag_zero(z + jz);
 				else if (cmp < 0)
-					mag_set(z + jz, x + jz % nx);
+					mag_set(z + jz, x + jx);
 				else {
-					mag_div_lower(q, x + jz % nx, y + jz % ny);
+					mag_div_lower(q, x + jx, y + jy);
 					mag_get_fmpz_lower(f, q);
 					mag_mul_fmpz_lower(t, q, f);
-					mag_sub(z + jz, x + jz % nx, t);
+					mag_sub(z + jz, x + jx, t);
 				}
 			}
 			mag_clear(q);
@@ -448,16 +448,16 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			fmpz_t f;
 			mag_init(q);
 			fmpz_init(f);
-			for (jz = 0; jz < nz; ++jz) {
-				if (mag_is_zero(y + jz % ny))
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				if (mag_is_zero(y + jy))
 					Rf_error(_("NaN is not representable by \"%s\""), "mag");
-				cmp = mag_cmp(x + jz % nx, y + jz % ny);
+				cmp = mag_cmp(x + jx, y + jy);
 				if (cmp == 0)
 					mag_one(z + jz);
 				else if (cmp < 0)
 					mag_zero(z + jz);
 				else {
-					mag_div(q, x + jz % nx, y + jz % ny);
+					mag_div(q, x + jx, y + jy);
 					mag_get_fmpz_lower(f, q);
 					mag_set_fmpz(z + jz, f);
 				}
@@ -467,13 +467,13 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			break;
 		}
 		case R_FLINT_OPS2_DIV:
-			for (jz = 0; jz < nz; ++jz) {
-				if (mag_is_special(x + jz % nx) &&
-				    mag_is_special(y + jz % ny) &&
-				    (mag_is_zero(x + jz % nx) != 0) ==
-				    (mag_is_zero(y + jz % ny) != 0))
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				if (mag_is_special(x + jx) &&
+				    mag_is_special(y + jy) &&
+				    (mag_is_zero(x + jx) != 0) ==
+				    (mag_is_zero(y + jy) != 0))
 					Rf_error(_("NaN is not representable by \"%s\""), "mag");
-				TERN(mag_div, lower, z + jz, x + jz % nx, y + jz % ny);
+				TERN(mag_div, lower, z + jz, x + jx, y + jy);
 			}
 			break;
 		case R_FLINT_OPS2_POW:
@@ -481,9 +481,9 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			mag_srcptr b, e;
 			mag_t a;
 			mag_init(a);
-			for (jz = 0; jz < nz; ++jz) {
-				b = x + jz % nx;
-				e = y + jz % ny;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				b = x + jx;
+				e = y + jy;
 				if (mag_is_zero(e) || mag_cmp_2exp_si(b, 0) == 0)
 					/* b^0, 1^e = 1 */
 					mag_one(z + jz);
@@ -533,36 +533,36 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case R_FLINT_OPS2_EQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = mag_equal(x + jz % nx, y + jz % ny) != 0;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = mag_equal(x + jx, y + jy) != 0;
 			break;
 		case R_FLINT_OPS2_NEQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = mag_equal(x + jz % nx, y + jz % ny) == 0;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = mag_equal(x + jx, y + jy) == 0;
 			break;
 		case R_FLINT_OPS2_L:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = mag_cmp(x + jz % nx, y + jz % ny) < 0;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = mag_cmp(x + jx, y + jy) < 0;
 			break;
 		case R_FLINT_OPS2_G:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = mag_cmp(x + jz % nx, y + jz % ny) > 0;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = mag_cmp(x + jx, y + jy) > 0;
 			break;
 		case R_FLINT_OPS2_LEQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = mag_cmp(x + jz % nx, y + jz % ny) <= 0;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = mag_cmp(x + jx, y + jy) <= 0;
 			break;
 		case R_FLINT_OPS2_GEQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = mag_cmp(x + jz % nx, y + jz % ny) >= 0;
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = mag_cmp(x + jx, y + jy) >= 0;
 			break;
 		case R_FLINT_OPS2_AND:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = !mag_is_zero(x + jz % nx) && !mag_is_zero(y + jz % ny);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = !mag_is_zero(x + jx) && !mag_is_zero(y + jy);
 			break;
 		case R_FLINT_OPS2_OR:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = !mag_is_zero(x + jz % nx) || !mag_is_zero(y + jz % ny);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = !mag_is_zero(x + jx) || !mag_is_zero(y + jy);
 			break;
 		default: /* -Wswitch */
 		}

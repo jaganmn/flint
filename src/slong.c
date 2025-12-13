@@ -44,7 +44,7 @@ void R_flint_slong_finalize(SEXP x)
 SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
                               SEXP s_dim, SEXP s_dimnames, SEXP s_names)
 {
-	mp_limb_t jy, nx = 0, ny = 0;
+	mp_limb_t jx, jy, nx = 0, ny = 0;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	PROTECT(s_dim = validDim(s_dim));
 	PROTECT(s_dimnames = validDimNames(s_dimnames, s_dim));
@@ -74,67 +74,67 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case RAWSXP:
 	{
 		const Rbyte *x = RAW_RO(s_x);
-		for (jy = 0; jy < ny; ++jy)
-			y[jy] = (slong) x[jy % nx];
+		FOR_RECYCLE1(jy, ny, jx, nx)
+			y[jy] = (slong) x[jx];
 		break;
 	}
 	case LGLSXP:
 	{
 		const int *x = LOGICAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (x[jy % nx] == NA_LOGICAL)
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (x[jx] == NA_LOGICAL)
 			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 			else
-			y[jy] = x[jy % nx];
+			y[jy] = x[jx];
 		}
 		break;
 	}
 	case INTSXP:
 	{
 		const int *x = INTEGER_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (x[jy % nx] == NA_INTEGER)
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (x[jx] == NA_INTEGER)
 			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 			else
-			y[jy] = x[jy % nx];
+			y[jy] = x[jx];
 		}
 		break;
 	}
 	case REALSXP:
 	{
 		const double *x = REAL_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (ISNAN(x[jy % nx]))
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (ISNAN(x[jx]))
 			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 #ifdef R_FLINT_ABI_64
-			else if (x[jy % nx] <  -0x1.0p+63       ||
-			         x[jy % nx] >=  0x1.0p+63)
+			else if (x[jx] <  -0x1.0p+63       ||
+			         x[jx] >=  0x1.0p+63)
 #else
-			else if (x[jy % nx] <= -0x1.0p+31 - 1.0 ||
-			         x[jy % nx] >=  0x1.0p+31)
+			else if (x[jx] <= -0x1.0p+31 - 1.0 ||
+			         x[jx] >=  0x1.0p+31)
 #endif
 			Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 			else
-			y[jy] = (slong) x[jy % nx];
+			y[jy] = (slong) x[jx];
 		}
 		break;
 	}
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		for (jy = 0; jy < ny; ++jy) {
-			if (ISNAN(x[jy % nx].r))
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			if (ISNAN(x[jx].r))
 			Rf_error(_("NaN is not representable by \"%s\""), "slong");
 #ifdef R_FLINT_ABI_64
-			else if (x[jy % nx].r <  -0x1.0p+63       ||
-			         x[jy % nx].r >=  0x1.0p+63)
+			else if (x[jx].r <  -0x1.0p+63       ||
+			         x[jx].r >=  0x1.0p+63)
 #else
-			else if (x[jy % nx].r <= -0x1.0p+31 - 1.0 ||
-			         x[jy % nx].r >=  0x1.0p+31)
+			else if (x[jx].r <= -0x1.0p+31 - 1.0 ||
+			         x[jx].r >=  0x1.0p+31)
 #endif
 			Rf_error(_("floating-point number not in range of \"%s\""), "slong");
 			else
-			y[jy] = (slong) x[jy % nx].r;
+			y[jy] = (slong) x[jx].r;
 		}
 		break;
 	}
@@ -143,8 +143,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		mpz_t r;
 		mpz_init(r);
 		const char *s;
-		for (jy = 0; jy < ny; ++jy) {
-			s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
+		FOR_RECYCLE1(jy, ny, jx, nx) {
+			s = CHAR(STRING_ELT(s_x, (R_xlen_t) jx));
 			if (mpz_set_str(r, s, 0) != 0) {
 				mpz_clear(r);
 				Rf_error(_("invalid input in string conversion"));
@@ -163,29 +163,29 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ULONG:
 		{
 			const ulong *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				if (x[jy % nx] > WORD_MAX)
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (x[jx] > WORD_MAX)
 				Rf_error(_("integer not in range of \"%s\""), "slong");
 				else
-				y[jy] = (slong) x[jy % nx];
+				y[jy] = (slong) x[jx];
 			}
 			break;
 		}
 		case R_FLINT_CLASS_SLONG:
 		{
 			const slong *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy)
-				y[jy] = x[jy % nx];
+			FOR_RECYCLE1(jy, ny, jx, nx)
+				y[jy] = x[jx];
 			break;
 		}
 		case R_FLINT_CLASS_FMPZ:
 		{
 			const fmpz *x = R_flint_get_pointer(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				if (!fmpz_fits_si(x + jy % nx))
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (!fmpz_fits_si(x + jx))
 				Rf_error(_("integer not in range of \"%s\""), "slong");
 				else
-				y[jy] = fmpz_get_si(x + jy % nx);
+				y[jy] = fmpz_get_si(x + jx);
 			}
 			break;
 		}
@@ -194,8 +194,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const fmpq *x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (jy = 0; jy < ny; ++jy) {
-				fmpz_tdiv_q(q, fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx));
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				fmpz_tdiv_q(q, fmpq_numref(x + jx), fmpq_denref(x + jx));
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("rational not in range of \"%s\""), "slong");
@@ -211,8 +211,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			mag_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (jy = 0; jy < ny; ++jy) {
-				mag_get_fmpz_lower(q, x + jy % nx);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				mag_get_fmpz_lower(q, x + jx);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of \"%s\""), "slong");
@@ -228,8 +228,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (jy = 0; jy < ny; ++jy) {
-				arf_get_fmpz(q, x + jy % nx, ARF_RND_DOWN);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				arf_get_fmpz(q, x + jx, ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of \"%s\""), "slong");
@@ -245,8 +245,8 @@ SEXP R_flint_slong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			for (jy = 0; jy < ny; ++jy) {
-				arf_get_fmpz(q, acf_realref(x + jy % nx), ARF_RND_DOWN);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				arf_get_fmpz(q, acf_realref(x + jx), ARF_RND_DOWN);
 				if (!fmpz_fits_si(q)) {
 				fmpz_clear(q);
 				Rf_error(_("floating-point number not in range of \"%s\""), "slong");
@@ -348,7 +348,7 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
 	R_flint_ops2_t op = ops2match(CHAR(STRING_ELT(s_op, 0)));
 	int info = ops2info(op);
-	mp_limb_t jz,
+	mp_limb_t jx, jy, jz,
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y),
 		nz = RECYCLE2(nx, ny);
@@ -365,22 +365,19 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 	case R_FLINT_OPS2_FDQ:
 	{
 		slong *z = (nz) ? flint_calloc(nz, sizeof(slong)) : 0;
-		slong a, b;
 		int over = 0;
 		switch (op) {
 		case R_FLINT_OPS2_ADD:
-			for (jz = 0; jz < nz; ++jz) {
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
 #if !defined(__GNUC__)
-				a = x[jz % nx];
-				b = y[jz % ny];
-				if ((a >= 0) ? b > WORD_MAX - a : b < WORD_MIN - a)
+				if ((x[jx] >= 0) ? y[jy] > WORD_MAX - x[jx] : y[jy] < WORD_MIN - x[jx])
 					break;
-				z[jz] = a + b;
+				z[jz] = x[jx] + y[jy];
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_saddll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
+				if (__builtin_saddll_overflow(x[jx], y[jy], &z[jz]))
 					break;
 #else
-				if (__builtin_saddl_overflow(x[jz % nx], y[jz % ny], &z[jz]))
+				if (__builtin_saddl_overflow(x[jx], y[jy], &z[jz]))
 					break;
 #endif
 			}
@@ -388,25 +385,23 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			if (over) {
 			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (jz = 0; jz < nz; ++jz) {
-				fmpz_set_si(Z + jz, x[jz % nx]);
-				fmpz_add_si(Z + jz, Z + jz, y[jz % ny]);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				fmpz_set_si(Z + jz, x[jx]);
+				fmpz_add_si(Z + jz, Z + jz, y[jy]);
 			}
 			}
 			break;
 		case R_FLINT_OPS2_SUB:
-			for (jz = 0; jz < nz; ++jz) {
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
 #if !defined(__GNUC__)
-				a = x[jz % nx];
-				b = y[jz % ny];
-				if ((a >= 0) ? b < a - WORD_MAX : b > a - WORD_MIN)
+				if ((x[jx] >= 0) ? y[jy] < x[jx] - WORD_MAX : y[jy] > x[jx] - WORD_MIN)
 					break;
-				z[jz] = b - a;
+				z[jz] = x[jx] - y[jy];
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_ssubll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
+				if (__builtin_ssubll_overflow(x[jx], y[jy], &z[jz]))
 					break;
 #else
-				if (__builtin_ssubl_overflow(x[jz % nx], y[jz % ny], &z[jz]))
+				if (__builtin_ssubl_overflow(x[jx], y[jy], &z[jz]))
 					break;
 #endif
 			}
@@ -414,22 +409,22 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			if (over) {
 			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (jz = 0; jz < nz; ++jz) {
-				fmpz_set_si(Z + jz, x[jz % nx]);
-				fmpz_sub_si(Z + jz, Z + jz, y[jz % ny]);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				fmpz_set_si(Z + jz, x[jx]);
+				fmpz_sub_si(Z + jz, Z + jz, y[jy]);
 			}
 			}
 			break;
 		case R_FLINT_OPS2_MUL:
-			for (jz = 0; jz < nz; ++jz) {
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
 #if !defined(__GNUC__)
-				if (z_mul_checked(&z[jz], x[jz % nx], y[jz % ny]))
+				if (z_mul_checked(&z[jz], x[jx], y[jy]))
 					break;
 #elif defined(R_FLINT_ABI_LL)
-				if (__builtin_smulll_overflow(x[jz % nx], y[jz % ny], &z[jz]))
+				if (__builtin_smulll_overflow(x[jx], y[jy], &z[jz]))
 					break;
 #else
-				if (__builtin_smull_overflow(x[jz % nx], y[jz % ny], &z[jz]))
+				if (__builtin_smull_overflow(x[jx], y[jy], &z[jz]))
 					break;
 #endif
 			}
@@ -437,26 +432,25 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			if (over) {
 			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (jz = 0; jz < nz; ++jz) {
-				fmpz_set_si(Z + jz, x[jz % nx]);
-				fmpz_mul_si(Z + jz, Z + jz, y[jz % ny]);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				fmpz_set_si(Z + jz, x[jx]);
+				fmpz_mul_si(Z + jz, Z + jz, y[jy]);
 			}
 			}
 			break;
 		case R_FLINT_OPS2_FDR:
 		{
 			slong t;
-			for (jz = 0; jz < nz; ++jz) {
-				a = x[jz % nx];
-				b = y[jz % ny];
-				if (b) {
-				if (a == WORD_MIN && b == -1)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				if (y[jy]) {
+				if (x[jx] == WORD_MIN && y[jy] == -1)
 					z[jz] = 0;
 				else {
-					t = a % b;
-					z[jz] = (t && (a >= 0) != (b >= 0)) ? t + b : t;
+					t = x[jx] % y[jy];
+					z[jz] = (t && (x[jx] >= 0) != (y[jy] >= 0)) ? t + y[jy] : t;
 				}
-				} else {
+				}
+				else {
 				flint_free(z);
 				Rf_error(_("quotient with 0 is undefined"));
 				}
@@ -466,17 +460,16 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		case R_FLINT_OPS2_FDQ:
 		{
 			slong t;
-			for (jz = 0; jz < nz; ++jz) {
-				a = x[jz % nx];
-				b = y[jz % ny];
-				if (b) {
-				if (a == WORD_MIN && b == -1)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				if (y[jy]) {
+				if (x[jx] == WORD_MIN && y[jy] == -1)
 					break;
 				else {
-					t = a / b;
-					z[jz] = (a % b && (a >= 0) != (b >= 0)) ? t - 1 : t;
+					t = x[jx] / y[jy];
+					z[jz] = (x[jx] % y[jy] && (x[jx] >= 0) != (y[jy] >= 0)) ? t - 1 : t;
 				}
-				} else {
+				}
+				else {
 				flint_free(z);
 				Rf_error(_("quotient with 0 is undefined"));
 				}
@@ -485,16 +478,16 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			if (over) {
 			memset(z, 0, nz * sizeof(slong));
 			fmpz *Z = (void *) z;
-			for (jz = 0; jz < nz; ++jz) {
-				b = y[jz % ny];
-				if (b) {
-				if (a == WORD_MIN && b == -1)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				if (y[jy]) {
+				if (x[jx] == WORD_MIN && y[jy] == -1)
 					fmpz_set_ui(Z + jz, (ulong) -1 - (ulong) WORD_MIN + 1);
 				else {
-					t = a / b;
-					fmpz_set_si(Z + jz, (a % b && (a >= 0) != (b >= 0)) ? t - 1 : t);
+					t = x[jx] / y[jy];
+					fmpz_set_si(Z + jz, (x[jx] % y[jy] && (x[jx] >= 0) != (y[jy] >= 0)) ? t - 1 : t);
 				}
-				} else {
+				}
+				else {
 				flint_free(z);
 				Rf_error(_("quotient with 0 is undefined"));
 				}
@@ -516,10 +509,10 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		fmpq *z = R_flint_get_pointer(ans);
 		switch (op) {
 		case R_FLINT_OPS2_DIV:
-			for (jz = 0; jz < nz; ++jz)
-				if (y[jz % ny]) {
-				fmpz_set_si(fmpq_numref(z + jz), x[jz % nx]);
-				fmpz_set_si(fmpq_denref(z + jz), y[jz % ny]);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				if (y[jy]) {
+				fmpz_set_si(fmpq_numref(z + jz), x[jx]);
+				fmpz_set_si(fmpq_denref(z + jz), y[jy]);
 				fmpq_canonicalise(z + jz);
 				}
 				else
@@ -530,9 +523,9 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			slong b, e;
 			fmpz_t t;
 			fmpz_init(t);
-			for (jz = 0; jz < nz; ++jz) {
-				b = x[jz % nx];
-				e = y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny) {
+				b = x[jx];
+				e = y[jy];
 				if (b == 0 && e < 0) {
 				fmpz_clear(t);
 				Rf_error(_("<%s> %s <%s>: value is not in the range of \"%s\""),
@@ -571,36 +564,36 @@ SEXP R_flint_slong_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case R_FLINT_OPS2_EQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] == y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] == y[jy];
 			break;
 		case R_FLINT_OPS2_NEQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] != y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] != y[jy];
 			break;
 		case R_FLINT_OPS2_L:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] < y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] < y[jy];
 			break;
 		case R_FLINT_OPS2_G:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] > y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] > y[jy];
 			break;
 		case R_FLINT_OPS2_LEQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] <= y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] <= y[jy];
 			break;
 		case R_FLINT_OPS2_GEQ:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] >= y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] >= y[jy];
 			break;
 		case R_FLINT_OPS2_AND:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] && y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] && y[jy];
 			break;
 		case R_FLINT_OPS2_OR:
-			for (jz = 0; jz < nz; ++jz)
-				z[jz] = x[jz % nx] || y[jz % ny];
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				z[jz] = x[jx] || y[jy];
 			break;
 		default: /* -Wswitch */
 		}

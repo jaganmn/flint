@@ -19,7 +19,7 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
                             SEXP s_real, SEXP s_imag,
                             SEXP s_prec)
 {
-	mp_limb_t jy, nx = 0, ny = 0, nr = 1, ni = 1;
+	mp_limb_t jx, jy, jr, ji, nx = 0, ny = 0, nr = 1, ni = 1;
 	R_flint_class_t class = R_FLINT_CLASS_INVALID;
 	int exact = s_prec == R_NilValue;
 	slong prec = asPrec(s_prec, __func__);
@@ -63,39 +63,39 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			arb_srcptr xr = R_flint_get_pointer(s_real);
 			if (s_imag != R_NilValue) {
 				arb_srcptr xi = R_flint_get_pointer(s_imag);
-				for (jy = 0; jy < ny; ++jy) {
-					arb_set(acb_realref(y + jy), xr + jy % nr);
-					arb_set(acb_imagref(y + jy), xi + jy % ni);
+				FOR_RECYCLE2(jy, ny, jr, nr, ji, ni) {
+					arb_set(acb_realref(y + jy), xr + jr);
+					arb_set(acb_imagref(y + jy), xi + ji);
 				}
 			} else {
-				for (jy = 0; jy < ny; ++jy) {
-					arb_set(acb_realref(y + jy), xr + jy % nr);
+				FOR_RECYCLE1(jy, ny, jr, nr) {
+					arb_set(acb_realref(y + jy), xr + jr);
 					arb_zero(acb_imagref(y + jy));
 				}
 			}
 		} else {
 			if (s_imag != R_NilValue) {
 				arb_srcptr xi = R_flint_get_pointer(s_imag);
-				for (jy = 0; jy < ny; ++jy) {
+				FOR_RECYCLE1(jy, ny, ji, ni) {
 					arb_zero(acb_realref(y + jy));
-					arb_set(acb_imagref(y + jy), xi + jy % ni);
+					arb_set(acb_imagref(y + jy), xi + ji);
 				}
 			}
 		}
 	} else if (s_x != R_NilValue) {
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
-			for (jy = 0; jy < ny; ++jy)
+			FOR_RECYCLE0(jy, ny)
 				acb_zero(y + jy);
 			break;
 		case RAWSXP:
 		{
 			const Rbyte *x = RAW_RO(s_x);
-			for (jy = 0; jy < ny; ++jy) {
+			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (exact)
-				arb_set_ui      (acb_realref(y + jy), x[jy % nx]);
+				arb_set_ui      (acb_realref(y + jy), x[jx]);
 				else
-				arb_set_round_ui(acb_realref(y + jy), x[jy % nx], prec);
+				arb_set_round_ui(acb_realref(y + jy), x[jx], prec);
 				arb_zero(acb_imagref(y + jy));
 			}
 			break;
@@ -103,13 +103,13 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case LGLSXP:
 		{
 			const int *x = LOGICAL_RO(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				if (x[jy % nx] == NA_LOGICAL)
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (x[jx] == NA_LOGICAL)
 				arb_set_d(acb_realref(y + jy), R_NaN);
 				else if (exact)
-				arb_set_si      (acb_realref(y + jy), x[jy % nx]);
+				arb_set_si      (acb_realref(y + jy), x[jx]);
 				else
-				arb_set_round_si(acb_realref(y + jy), x[jy % nx], prec);
+				arb_set_round_si(acb_realref(y + jy), x[jx], prec);
 				arb_zero(acb_imagref(y + jy));
 			}
 			break;
@@ -117,13 +117,13 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case INTSXP:
 		{
 			const int *x = INTEGER_RO(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				if (x[jy % nx] == NA_INTEGER)
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (x[jx] == NA_INTEGER)
 				arb_set_d(acb_realref(y + jy), R_NaN);
 				else if (exact)
-				arb_set_si      (acb_realref(y + jy), x[jy % nx]);
+				arb_set_si      (acb_realref(y + jy), x[jx]);
 				else
-				arb_set_round_si(acb_realref(y + jy), x[jy % nx], prec);
+				arb_set_round_si(acb_realref(y + jy), x[jx], prec);
 				arb_zero(acb_imagref(y + jy));
 			}
 			break;
@@ -131,8 +131,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case REALSXP:
 		{
 			const double *x = REAL_RO(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				arb_set_d(acb_realref(y + jy), x[jy % nx]);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				arb_set_d(acb_realref(y + jy), x[jx]);
 				if (!exact)
 				arb_set_round(acb_realref(y + jy), acb_realref(y + jy), prec);
 				arb_zero(acb_imagref(y + jy));
@@ -142,9 +142,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case CPLXSXP:
 		{
 			const Rcomplex *x = COMPLEX_RO(s_x);
-			for (jy = 0; jy < ny; ++jy) {
-				arb_set_d(acb_realref(y + jy), x[jy % nx].r);
-				arb_set_d(acb_imagref(y + jy), x[jy % nx].i);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				arb_set_d(acb_realref(y + jy), x[jx].r);
+				arb_set_d(acb_imagref(y + jy), x[jx].i);
 				if (!exact) {
 				arb_set_round(acb_realref(y + jy), acb_realref(y + jy), prec);
 				arb_set_round(acb_imagref(y + jy), acb_imagref(y + jy), prec);
@@ -163,8 +163,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			const char *s;
 			char *t;
 			int negate;
-			for (jy = 0; jy < ny; ++jy) {
-				s = CHAR(STRING_ELT(s_x, (R_xlen_t) (jy % nx)));
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				s = CHAR(STRING_ELT(s_x, (R_xlen_t) jx));
 #define COMMON \
 				do { \
 				while (isspace(*s)) \
@@ -247,11 +247,11 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ULONG:
 			{
 				const ulong *x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
+				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (exact)
-					arb_set_ui      (acb_realref(y + jy), x[jy % nx]);
+					arb_set_ui      (acb_realref(y + jy), x[jx]);
 					else
-					arb_set_round_ui(acb_realref(y + jy), x[jy % nx], prec);
+					arb_set_round_ui(acb_realref(y + jy), x[jx], prec);
 					arb_zero(acb_imagref(y + jy));
 				}
 				break;
@@ -259,11 +259,11 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_SLONG:
 			{
 				const slong *x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
+				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (exact)
-					arb_set_si      (acb_realref(y + jy), x[jy % nx]);
+					arb_set_si      (acb_realref(y + jy), x[jx]);
 					else
-					arb_set_round_si(acb_realref(y + jy), x[jy % nx], prec);
+					arb_set_round_si(acb_realref(y + jy), x[jx], prec);
 					arb_zero(acb_imagref(y + jy));
 				}
 				break;
@@ -271,11 +271,11 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_FMPZ:
 			{
 				const fmpz *x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
+				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (exact)
-					arb_set_fmpz      (acb_realref(y + jy), x + jy % nx);
+					arb_set_fmpz      (acb_realref(y + jy), x + jx);
 					else
-					arb_set_round_fmpz(acb_realref(y + jy), x + jy % nx, prec);
+					arb_set_round_fmpz(acb_realref(y + jy), x + jx, prec);
 					arb_zero(acb_imagref(y + jy));
 				}
 				break;
@@ -283,8 +283,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_FMPQ:
 			{
 				const fmpq *x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
-					arb_fmpz_div_fmpz(acb_realref(y + jy), fmpq_numref(x + jy % nx), fmpq_denref(x + jy % nx), prec);
+				FOR_RECYCLE1(jy, ny, jx, nx) {
+					arb_fmpz_div_fmpz(acb_realref(y + jy), fmpq_numref(x + jx), fmpq_denref(x + jx), prec);
 					arb_zero(acb_imagref(y + jy));
 				}
 				break;
@@ -292,8 +292,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_MAG:
 			{
 				mag_srcptr x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
-					arb_set_mag(acb_realref(y + jy), x + jy % nx);
+				FOR_RECYCLE1(jy, ny, jx, nx) {
+					arb_set_mag(acb_realref(y + jy), x + jx);
 					if (!exact)
 					arb_set_round(acb_realref(y + jy), acb_realref(y + jy), prec);
 					arb_zero(acb_imagref(y + jy));
@@ -303,8 +303,8 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ARF:
 			{
 				arf_srcptr x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
-					arb_set_arf(acb_realref(y + jy), x + jy % nx);
+				FOR_RECYCLE1(jy, ny, jx, nx) {
+					arb_set_arf(acb_realref(y + jy), x + jx);
 					if (!exact)
 					arb_set_round(acb_realref(y + jy), acb_realref(y + jy), prec);
 					arb_zero(acb_imagref(y + jy));
@@ -314,9 +314,9 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
-					arb_set_arf(acb_realref(y + jy), acf_realref(x + jy % nx));
-					arb_set_arf(acb_imagref(y + jy), acf_imagref(x + jy % nx));
+				FOR_RECYCLE1(jy, ny, jx, nx) {
+					arb_set_arf(acb_realref(y + jy), acf_realref(x + jx));
+					arb_set_arf(acb_imagref(y + jy), acf_imagref(x + jx));
 					if (!exact) {
 					arb_set_round(acb_realref(y + jy), acb_realref(y + jy), prec);
 					arb_set_round(acb_imagref(y + jy), acb_imagref(y + jy), prec);
@@ -327,11 +327,11 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ARB:
 			{
 				arb_srcptr x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy) {
+				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (exact)
-					arb_set      (acb_realref(y + jy), x + jy % nx);
+					arb_set      (acb_realref(y + jy), x + jx);
 					else
-					arb_set_round(acb_realref(y + jy), x + jy % nx, prec);
+					arb_set_round(acb_realref(y + jy), x + jx, prec);
 					arb_zero(acb_imagref(y + jy));
 				}
 				break;
@@ -339,13 +339,13 @@ SEXP R_flint_acb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ACB:
 			{
 				acb_srcptr x = R_flint_get_pointer(s_x);
-				for (jy = 0; jy < ny; ++jy)
+				FOR_RECYCLE1(jy, ny, jx, nx)
 					if (exact) {
-					arb_set      (acb_realref(y + jy), acb_realref(x + jy % nx));
-					arb_set      (acb_imagref(y + jy), acb_imagref(x + jy % nx));
+					arb_set      (acb_realref(y + jy), acb_realref(x + jx));
+					arb_set      (acb_imagref(y + jy), acb_imagref(x + jx));
 					} else {
-					arb_set_round(acb_realref(y + jy), acb_realref(x + jy % nx), prec);
-					arb_set_round(acb_imagref(y + jy), acb_imagref(x + jy % nx), prec);
+					arb_set_round(acb_realref(y + jy), acb_realref(x + jx), prec);
+					arb_set_round(acb_imagref(y + jy), acb_imagref(x + jx), prec);
 					}
 				break;
 			}
@@ -434,7 +434,7 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 {
 	R_flint_ops2_t op = ops2match(CHAR(STRING_ELT(s_op, 0)));
 	int info = ops2info(op);
-	mp_limb_t jz,
+	mp_limb_t jx, jy, jz,
 		nx = R_flint_get_length(s_x),
 		ny = R_flint_get_length(s_y),
 		nz = RECYCLE2(nx, ny);
@@ -456,24 +456,24 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		acb_ptr z = R_flint_get_pointer(ans);
 		switch (op) {
 		case R_FLINT_OPS2_ADD:
-			for (jz = 0; jz < nz; ++jz)
-				acb_add(z + jz, x + jz % nx, y + jz % ny, prec);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				acb_add(z + jz, x + jx, y + jy, prec);
 			break;
 		case R_FLINT_OPS2_SUB:
-			for (jz = 0; jz < nz; ++jz)
-				acb_sub(z + jz, x + jz % nx, y + jz % ny, prec);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				acb_sub(z + jz, x + jx, y + jy, prec);
 			break;
 		case R_FLINT_OPS2_MUL:
-			for (jz = 0; jz < nz; ++jz)
-				acb_mul(z + jz, x + jz % nx, y + jz % ny, prec);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				acb_mul(z + jz, x + jx, y + jy, prec);
 			break;
 		case R_FLINT_OPS2_DIV:
-			for (jz = 0; jz < nz; ++jz)
-				acb_div(z + jz, x + jz % nx, y + jz % ny, prec);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				acb_div(z + jz, x + jx, y + jy, prec);
 			break;
 		case R_FLINT_OPS2_POW:
-			for (jz = 0; jz < nz; ++jz)
-				acb_pow(z + jz, x + jz % nx, y + jz % ny, prec);
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
+				acb_pow(z + jz, x + jx, y + jy, prec);
 			break;
 		default: /* -Wswitch */
 		}
@@ -491,42 +491,42 @@ SEXP R_flint_acb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 		int *z = LOGICAL(ans);
 		switch (op) {
 		case R_FLINT_OPS2_EQ:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(ACB_CONTAINS_NAN(x + jz % nx) ||
-				 ACB_CONTAINS_NAN(y + jz % ny))
+				(ACB_CONTAINS_NAN(x + jx) ||
+				 ACB_CONTAINS_NAN(y + jy))
 				? NA_LOGICAL
-				: acb_eq(x + jz % nx, y + jz % ny) != 0;
+				: acb_eq(x + jx, y + jy) != 0;
 			break;
 		case R_FLINT_OPS2_NEQ:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(ACB_CONTAINS_NAN(x + jz % nx) ||
-				 ACB_CONTAINS_NAN(y + jz % ny))
+				(ACB_CONTAINS_NAN(x + jx) ||
+				 ACB_CONTAINS_NAN(y + jy))
 				? NA_LOGICAL
-				: acb_ne(x + jz % nx, y + jz % ny) != 0;
+				: acb_ne(x + jx, y + jy) != 0;
 			break;
 		case R_FLINT_OPS2_AND:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(ACB_CONTAINS_ZERO(x + jz % nx) ||
-				 ACB_CONTAINS_ZERO(y + jz % ny))
+				(ACB_CONTAINS_ZERO(x + jx) ||
+				 ACB_CONTAINS_ZERO(y + jy))
 				? 0
 				:
-				(ACB_CONTAINS_NAN(x + jz % nx) ||
-				 ACB_CONTAINS_NAN(y + jz % ny))
+				(ACB_CONTAINS_NAN(x + jx) ||
+				 ACB_CONTAINS_NAN(y + jy))
 				? NA_LOGICAL
 				: 1;
 			break;
 		case R_FLINT_OPS2_OR:
-			for (jz = 0; jz < nz; ++jz)
+			FOR_RECYCLE2(jz, nz, jx, nx, jy, ny)
 				z[jz] =
-				(ACB_CONTAINS_NONZERO(x + jz % nx) ||
-				 ACB_CONTAINS_NONZERO(y + jz % ny))
+				(ACB_CONTAINS_NONZERO(x + jx) ||
+				 ACB_CONTAINS_NONZERO(y + jy))
 				? 1
 				:
-				(ACB_CONTAINS_NAN(x + jz % nx) ||
-				 ACB_CONTAINS_NAN(y + jz % ny))
+				(ACB_CONTAINS_NAN(x + jx) ||
+				 ACB_CONTAINS_NAN(y + jy))
 				? NA_LOGICAL
 				: 0;
 			break;

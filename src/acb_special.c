@@ -5,7 +5,7 @@
 
 SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t jz, jk, jflags, jprec,
 		nz = R_flint_get_length(s_z),
 		nk = R_flint_get_length(s_k),
 		nflags = (mp_limb_t) XLENGTH(s_flags),
@@ -19,8 +19,8 @@ SEXP R_flint_acb_lambertw(SEXP s_res, SEXP s_z, SEXP s_k, SEXP s_flags, SEXP s_p
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		acb_lambertw(res + j, z + j % nz, k + j % nk, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE4(j, n, jz, nz, jk, nk, jflags, nflags, jprec, nprec)
+		acb_lambertw(res + j, z + jz, k + jk, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }
 

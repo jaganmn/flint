@@ -4,15 +4,14 @@
 SEXP R_flint_acb_0ary(void (*fn)(acb_t, slong),
                       SEXP s_res, SEXP s_prec)
 {
-	mp_limb_t
-		nprec = R_flint_get_length(s_prec);
+	mp_limb_t nprec = R_flint_get_length(s_prec);
 	const slong *prec = R_flint_get_pointer(s_prec);
 
 	mp_limb_t j, n = nprec;
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
+	FOR_RECYCLE0(j, n)
 		fn(res + j, prec[j]);
 	return R_NilValue;
 }
@@ -20,7 +19,7 @@ SEXP R_flint_acb_0ary(void (*fn)(acb_t, slong),
 SEXP R_flint_acb_1ary(void (*fn)(acb_t, const acb_t, slong),
                       SEXP s_res, SEXP s_a0, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, jprec,
 		na0 = R_flint_get_length(s_a0),
 		nprec = R_flint_get_length(s_prec);
 	acb_srcptr a0 = R_flint_get_pointer(s_a0);
@@ -30,15 +29,15 @@ SEXP R_flint_acb_1ary(void (*fn)(acb_t, const acb_t, slong),
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, prec[j % nprec]);
+	FOR_RECYCLE2(j, n, ja0, na0, jprec, nprec)
+		fn(res + j, a0 + ja0, prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_2ary(void (*fn)(acb_t, const acb_t, const acb_t, slong),
                       SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		nprec = R_flint_get_length(s_prec);
@@ -51,15 +50,15 @@ SEXP R_flint_acb_2ary(void (*fn)(acb_t, const acb_t, const acb_t, slong),
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, prec[j % nprec]);
+	FOR_RECYCLE3(j, n, ja0, na0, ja1, na1, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_3ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, slong),
                       SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_a2, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, ja2, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		na2 = R_flint_get_length(s_a2),
@@ -74,15 +73,15 @@ SEXP R_flint_acb_3ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, s
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, prec[j % nprec]);
+	FOR_RECYCLE4(j, n, ja0, na0, ja1, na1, ja2, na2, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, a2 + ja2, prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_4ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, const acb_t, slong),
                       SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_a2, SEXP s_a3, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, ja2, ja3, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		na2 = R_flint_get_length(s_a2),
@@ -99,15 +98,15 @@ SEXP R_flint_acb_4ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, c
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, a3 + j % na3, prec[j % nprec]);
+	FOR_RECYCLE5(j, n, ja0, na0, ja1, na1, ja2, na2, ja3, na3, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, a2 + ja2, a3 + ja3, prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_5ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, const acb_t, const acb_t, slong),
                       SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_a2, SEXP s_a3, SEXP s_a4, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, ja2, ja3, ja4, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		na2 = R_flint_get_length(s_a2),
@@ -126,15 +125,16 @@ SEXP R_flint_acb_5ary(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, c
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
+	FOR_RECYCLE6(j, n, ja0, na0, ja1, na1, ja2, na2, ja3, na3, ja4, na4, jprec, nprec)
 	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, a3 + j % na3, a4 + j % na4, prec[j % nprec]);
+		fn(res + j, a0 + ja0, a1 + ja1, a2 + ja2, a3 + ja3, a4 + ja4, prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_0ary_flags(void (*fn)(acb_t, int, slong),
                             SEXP s_res, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t jflags, jprec,
 		nflags = (mp_limb_t) XLENGTH(s_flags),
 		nprec = R_flint_get_length(s_prec);
 	const int *flags = INTEGER_RO(s_flags);
@@ -144,15 +144,15 @@ SEXP R_flint_acb_0ary_flags(void (*fn)(acb_t, int, slong),
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE2(j, n, jflags, nflags, jprec, nprec)
+		fn(res + j, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_1ary_flags(void (*fn)(acb_t, const acb_t, int, slong),
                             SEXP s_res, SEXP s_a0, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, jflags, jprec,
 		na0 = R_flint_get_length(s_a0),
 		nflags = (mp_limb_t) XLENGTH(s_flags),
 		nprec = R_flint_get_length(s_prec);
@@ -164,15 +164,15 @@ SEXP R_flint_acb_1ary_flags(void (*fn)(acb_t, const acb_t, int, slong),
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE3(j, n, ja0, na0, jflags, nflags, jprec, nprec)
+		fn(res + j, a0 + ja0, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_2ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, int, slong),
                             SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, jflags, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		nflags = (mp_limb_t) XLENGTH(s_flags),
@@ -187,15 +187,15 @@ SEXP R_flint_acb_2ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, int, slo
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE4(j, n, ja0, na0, ja1, na1, jflags, nflags, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_3ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, int, slong),
                             SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_a2, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, ja2, jflags, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		na2 = R_flint_get_length(s_a2),
@@ -212,15 +212,15 @@ SEXP R_flint_acb_3ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, const ac
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE5(j, n, ja0, na0, ja1, na1, ja2, na2, jflags, nflags, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, a2 + ja2, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_4ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, const acb_t, int, slong),
                             SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_a2, SEXP s_a3, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, ja2, ja3, jflags, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		na2 = R_flint_get_length(s_a2),
@@ -239,15 +239,15 @@ SEXP R_flint_acb_4ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, const ac
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, a3 + j % na3, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE6(j, n, ja0, na0, ja1, na1, ja2, na2, ja3, na3, jflags, nflags, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, a2 + ja2, a3 + ja3, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }
 
 SEXP R_flint_acb_5ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, const acb_t, const acb_t, const acb_t, int, slong),
                             SEXP s_res, SEXP s_a0, SEXP s_a1, SEXP s_a2, SEXP s_a3, SEXP s_a4, SEXP s_flags, SEXP s_prec)
 {
-	mp_limb_t
+	mp_limb_t ja0, ja1, ja2, ja3, ja4, jflags, jprec,
 		na0 = R_flint_get_length(s_a0),
 		na1 = R_flint_get_length(s_a1),
 		na2 = R_flint_get_length(s_a2),
@@ -268,7 +268,7 @@ SEXP R_flint_acb_5ary_flags(void (*fn)(acb_t, const acb_t, const acb_t, const ac
 	acb_ptr res = (n) ? flint_calloc(n, sizeof(acb_t)) : 0;
 	R_flint_set(s_res, res, n, (R_CFinalizer_t) &R_flint_acb_finalize);
 
-	for (j = 0; j < n; ++j)
-		fn(res + j, a0 + j % na0, a1 + j % na1, a2 + j % na2, a3 + j % na3, a4 + j % na4, flags[j % nflags], prec[j % nprec]);
+	FOR_RECYCLE7(j, n, ja0, na0, ja1, na1, ja2, na2, ja3, na3, ja4, na4, jflags, nflags, jprec, nprec)
+		fn(res + j, a0 + ja0, a1 + ja1, a2 + ja2, a3 + ja3, a4 + ja4, flags[jflags], prec[jprec]);
 	return R_NilValue;
 }

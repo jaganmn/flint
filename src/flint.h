@@ -55,6 +55,12 @@
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
 
+#ifdef R_FLINT_ABI_64
+# define R_FLINT_ABI 64
+#else
+# define R_FLINT_ABI 32
+#endif
+
 #define R_FLINT_SWITCH(class, template) \
 do { \
 	switch (class) { \
@@ -128,6 +134,95 @@ do { \
 (((a) && (b) && (c) && (d) && (e) && (f))        ? MAX6(a, b, c, d, e, f)    : 0)
 #define RECYCLE7(a, b, c, d, e, f, g) \
 (((a) && (b) && (c) && (d) && (e) && (f) && (g)) ? MAX7(a, b, c, d, e, f, g) : 0)
+
+#define FOR_RECYCLE0(j, n) \
+for (j = 0; \
+     j < n; \
+     ++j)
+#define FOR_RECYCLE1(j, n, ja, na) \
+for (j = 0, \
+     ja = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja)
+#define FOR_RECYCLE2(j, n, ja, na, jb, nb) \
+for (j = 0, \
+     ja = 0, \
+     jb = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja, \
+     jb = (++jb == nb) ? 0 : jb)
+#define FOR_RECYCLE3(j, n, ja, na, jb, nb, jc, nc) \
+for (j = 0, \
+     ja = 0, \
+     jb = 0, \
+     jc = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja, \
+     jb = (++jb == nb) ? 0 : jb, \
+     jc = (++jc == nc) ? 0 : jc)
+#define FOR_RECYCLE4(j, n, ja, na, jb, nb, jc, nc, jd, nd) \
+for (j = 0, \
+     ja = 0, \
+     jb = 0, \
+     jc = 0, \
+     jd = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja, \
+     jb = (++jb == nb) ? 0 : jb, \
+     jc = (++jc == nc) ? 0 : jc, \
+     jd = (++jd == nd) ? 0 : jd)
+#define FOR_RECYCLE5(j, n, ja, na, jb, nb, jc, nc, jd, nd, je, ne) \
+for (j = 0, \
+     ja = 0, \
+     jb = 0, \
+     jc = 0, \
+     jd = 0, \
+     je = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja, \
+     jb = (++jb == nb) ? 0 : jb, \
+     jc = (++jc == nc) ? 0 : jc, \
+     jd = (++jd == nd) ? 0 : jd, \
+     je = (++je == ne) ? 0 : je)
+#define FOR_RECYCLE6(j, n, ja, na, jb, nb, jc, nc, jd, nd, je, ne, jf, nf) \
+for (j = 0, \
+     ja = 0, \
+     jb = 0, \
+     jc = 0, \
+     jd = 0, \
+     je = 0, \
+     jf = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja, \
+     jb = (++jb == nb) ? 0 : jb, \
+     jc = (++jc == nc) ? 0 : jc, \
+     jd = (++jd == nd) ? 0 : jd, \
+     je = (++je == ne) ? 0 : je, \
+     jf = (++jf == nf) ? 0 : jf)
+#define FOR_RECYCLE7(j, n, ja, na, jb, nb, jc, nc, jd, nd, je, ne, jf, nf, jg, ng) \
+for (j = 0, \
+     ja = 0, \
+     jb = 0, \
+     jc = 0, \
+     jd = 0, \
+     je = 0, \
+     jf = 0, \
+     jg = 0; \
+     j < n; \
+     ++j, \
+     ja = (++ja == na) ? 0 : ja, \
+     jb = (++jb == nb) ? 0 : jb, \
+     jc = (++jc == nc) ? 0 : jc, \
+     jd = (++jd == nd) ? 0 : jd, \
+     je = (++je == ne) ? 0 : je, \
+     jf = (++jf == nf) ? 0 : jf, \
+     jg = (++jg == ng) ? 0 : jg)
 
 #define WARNING_OOB_INTEGER(w) \
 do { \
