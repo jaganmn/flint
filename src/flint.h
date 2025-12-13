@@ -55,12 +55,6 @@
 # define OBJSXP S4SXP
 #endif /* < 4.4.0 */
 
-#ifdef R_FLINT_ABI_64
-# define R_FLINT_ABI 64
-#else
-# define R_FLINT_ABI 32
-#endif
-
 #define R_FLINT_SWITCH(class, template) \
 do { \
 	switch (class) { \
