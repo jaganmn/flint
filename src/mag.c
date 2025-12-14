@@ -97,11 +97,14 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
+		int seenimag = 0;
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx].r))
 				Rf_error(_("NaN is not representable by \"%s\""),
 				         "mag");
 			TERN(mag_set_d, lower, y + jy, x[jx].r);
+			if (!seenimag && (seenimag = x[jx].i != 0.0))
+				Rf_warning(_("imaginary parts discarded in coercion"));
 		}
 		break;
 	}
@@ -192,8 +195,12 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
-			FOR_RECYCLE1(jy, ny, jx, nx)
+			int seenimag = 0;
+			FOR_RECYCLE1(jy, ny, jx, nx) {
 				TERN(arf_get_mag, lower, y + jy, acf_realref(x + jx));
+				if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
+					Rf_warning(_("imaginary parts discarded in coercion"));
+			}
 			break;
 		}
 		case R_FLINT_CLASS_ARB:

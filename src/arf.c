@@ -97,10 +97,13 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
+		int seenimag = 0;
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			arf_set_d(y + jy, x[jx].r);
 			if (!exact)
 			arf_set_round(y + jy, y + jy, prec, rnd);
+			if (!seenimag && (seenimag = x[jx].i != 0.0))
+				Rf_warning(_("imaginary parts discarded in coercion"));
 		}
 		break;
 	}
@@ -191,11 +194,15 @@ SEXP R_flint_arf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
-			FOR_RECYCLE1(jy, ny, jx, nx)
+			int seenimag = 0;
+			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (exact)
 				arf_set      (y + jy, acf_realref(x + jx));
 				else
 				arf_set_round(y + jy, acf_realref(x + jx), prec, rnd);
+				if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
+					Rf_warning(_("imaginary parts discarded in coercion"));
+			}
 			break;
 		}
 		case R_FLINT_CLASS_ARB:

@@ -87,11 +87,14 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
+		int seenimag = 0;
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (!R_FINITE(x[jx].r))
 				Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
 				         "fmpz");
 			fmpz_set_d(y + jy, (fabs(x[jx].r) < DBL_MIN) ? 0.0 : x[jx].r);
+			if (!seenimag && (seenimag = x[jx].i != 0.0))
+				Rf_warning(_("imaginary parts discarded in coercion"));
 		}
 		break;
 	}
@@ -166,11 +169,14 @@ SEXP R_flint_fmpz_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
+			int seenimag = 0;
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (!arf_is_finite(acf_realref(x + jx)))
 					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
 					         "fmpz");
 				arf_get_fmpz(y + jy, acf_realref(x + jx), ARF_RND_DOWN);
+				if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
+					Rf_warning(_("imaginary parts discarded in coercion"));
 			}
 			break;
 		}

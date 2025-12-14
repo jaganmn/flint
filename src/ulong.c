@@ -117,6 +117,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
+		int seenimag = 0;
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx].r))
 				Rf_error(_("NaN is not representable by \"%s\""),
@@ -125,6 +126,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				Rf_error(_("floating-point number not in range of \"%s\""),
 				         "ulong");
 			y[jy] = (ulong) x[jx].r;
+			if (!seenimag && (seenimag = x[jx].i != 0.0))
+				Rf_warning(_("imaginary parts discarded in coercion"));
 		}
 		break;
 	}
@@ -242,6 +245,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
+			int seenimag = 0;
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (arf_is_nan(acf_realref(x + jx))) {
 					fmpz_clear(q);
@@ -256,6 +260,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				}
 				arf_get_fmpz(q, acf_realref(x + jx), ARF_RND_DOWN);
 				y[jy] = fmpz_get_ui(q);
+				if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
+					Rf_warning(_("imaginary parts discarded in coercion"));
 			}
 			fmpz_clear(q);
 			break;
