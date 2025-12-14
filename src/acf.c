@@ -291,7 +291,7 @@ SEXP R_flint_acf_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 			case R_FLINT_CLASS_ARB:
 			{
-				arf_srcptr x = R_flint_get_pointer(s_x);
+				arb_srcptr x = R_flint_get_pointer(s_x);
 				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (exact)
 					arf_set      (acf_realref(y + jy), arb_midref(x + jx));

@@ -232,12 +232,12 @@ do { \
 
 #define WARNING_LOST_IMAG \
 do { \
-	Rf_warning(_("imaginary parts discarded in conversion"); \
+	Rf_warning(_("imaginary parts discarded in conversion")); \
 } while (0)
 
 #define WARNING_LOST_RAD \
 do { \
-	Rf_warning(_("radii discarded in conversion"); \
+	Rf_warning(_("radii discarded in conversion")); \
 } while (0)
 
 #define ERROR_INVALID_TYPE(x, func) \
