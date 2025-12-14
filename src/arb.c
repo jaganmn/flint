@@ -83,6 +83,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 		}
 	} else {
+		int seenimag = 0;
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
 			FOR_RECYCLE0(jy, ny)
@@ -140,8 +141,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				arb_set_d(y + jy, x[jx].r);
 				if (!exact)
 				arb_set_round(y + jy, y + jy, prec);
-				if (!seenimag && (seenimag = x[jx].i != 0.0))
-					Rf_warning(_("imaginary parts discarded in coercion"));
+				seenimag = seenimag || x[jx].i != 0.0;
 			}
 			break;
 		}
@@ -267,13 +267,11 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = R_flint_get_pointer(s_x);
-				int seenimag = 0;
 				FOR_RECYCLE1(jy, ny, jx, nx) {
 					arb_set_arf(y + jy, acf_realref(x + jx));
 					if (!exact)
 					arb_set_round(y + jy, y + jy, prec);
-					if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
-						Rf_warning(_("imaginary parts discarded in coercion"));
+					seenimag = seenimag || !arf_is_zero(acf_imagref(x + jx));
 				}
 				break;
 			}
@@ -290,14 +288,12 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ACB:
 			{
 				acb_srcptr x = R_flint_get_pointer(s_x);
-				int seenimag = 0;
 				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (exact)
 					arb_set      (y + jy, acb_realref(x + jx));
 					else
 					arb_set_round(y + jy, acb_realref(x + jx), prec);
-					if (!seenimag && (seenimag = !arb_is_zero(acf_imagref(x + jx))))
-						Rf_warning(_("imaginary parts discarded in coercion"));
+					seenimag = seenimag || !arb_is_zero(acb_imagref(x + jx));
 				}
 				break;
 			}
@@ -307,6 +303,7 @@ SEXP R_flint_arb_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 			break;
 		}
+		if (seenimag) WARNING_LOST_IMAG;
 	}
 	setDDNN(object, s_dim, s_dimnames, s_names);
 	UNPROTECT(3);
@@ -343,13 +340,13 @@ SEXP R_flint_arb_atomic(SEXP object)
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	arb_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
+	int seenoob = 0, seenrad = 0;
 	arf_t lb, ub;
 	arf_srcptr p;
 	arf_init(lb);
 	arf_init(ub);
 	arf_set_d(ub, DBL_MAX);
 	arf_neg(lb, ub);
-	int w = 1;
 	for (j = 0; j < n; ++j) {
 		p = arb_midref(x + j);
 		if (arf_is_nan(p))
@@ -358,11 +355,14 @@ SEXP R_flint_arb_atomic(SEXP object)
 			y[j] = arf_get_d(p, rnd);
 		else {
 			y[j] = (arf_sgn(p) < 0) ? R_NegInf : R_PosInf;
-			WARNING_OOB_DOUBLE(w);
+			seenoob = 1;
 		}
+		seenrad = seenrad || !arb_is_exact(x + j);
 	}
 	arf_clear(lb);
 	arf_clear(ub);
+	if (seenoob) WARNING_OOB_DOUBLE;
+	if (seenrad) WARNING_LOST_RAD;
 	UNPROTECT(1);
 	return ans;
 }

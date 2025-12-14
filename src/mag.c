@@ -46,6 +46,7 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	PROTECT(s_names = validNames(s_names, ny));
 	mag_ptr y = (ny) ? flint_calloc(ny, sizeof(mag_t)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_mag_finalize);
+	int seenimag = 0, seenrad = 0;
 	switch (TYPEOF(s_x)) {
 	case NILSXP:
 		FOR_RECYCLE0(jy, ny)
@@ -97,14 +98,12 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		int seenimag = 0;
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx].r))
 				Rf_error(_("NaN is not representable by \"%s\""),
 				         "mag");
 			TERN(mag_set_d, lower, y + jy, x[jx].r);
-			if (!seenimag && (seenimag = x[jx].i != 0.0))
-				Rf_warning(_("imaginary parts discarded in coercion"));
+			seenimag = seenimag || x[jx].i != 0.0;
 		}
 		break;
 	}
@@ -195,24 +194,39 @@ SEXP R_flint_mag_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case R_FLINT_CLASS_ACF:
 		{
 			acf_srcptr x = R_flint_get_pointer(s_x);
-			int seenimag = 0;
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				TERN(arf_get_mag, lower, y + jy, acf_realref(x + jx));
-				if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
-					Rf_warning(_("imaginary parts discarded in coercion"));
+				seenimag = seenimag || !arf_is_zero(acf_imagref(x + jx));
 			}
 			break;
 		}
 		case R_FLINT_CLASS_ARB:
-		case R_FLINT_CLASS_ACB:
-			Rf_error(_("coercion from ball to point is not yet supported"));
+		{
+			arb_srcptr x = R_flint_get_pointer(s_x);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				TERN(arf_get_mag, lower, y + jy, arb_midref(x + jx));
+				seenrad = seenrad || !arb_is_exact(x + jx);
+			}
 			break;
+		}
+		case R_FLINT_CLASS_ACB:
+		{
+			acb_srcptr x = R_flint_get_pointer(s_x);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				TERN(arf_get_mag, lower, y + jy, arb_midref(acb_realref(x + jx)));
+				seenimag = seenimag || !arb_is_zero (acb_imagref(x + jx));
+				seenrad  = seenrad  || !arb_is_exact(acb_realref(x + jx));
+			}
+			break;
+		}
 		case R_FLINT_CLASS_INVALID:
 			Rf_error(_("foreign external pointer"));
 			break;
 		}
 		break;
 	}
+	if (seenimag) WARNING_LOST_IMAG;
+	if (seenrad ) WARNING_LOST_RAD ;
 	setDDNN(object, s_dim, s_dimnames, s_names);
 	UNPROTECT(3);
 	return object;
@@ -226,19 +240,20 @@ SEXP R_flint_mag_atomic(SEXP object)
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	mag_srcptr x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
+	int seenoob = 0;
 	mag_t ub;
 	mag_init(ub);
 	mag_set_ui_2exp_si(ub, 1, DBL_MAX_EXP);
-	int w = 1;
 	for (j = 0; j < n; ++j) {
 		if (mag_cmp(x + j, ub) < 0)
 			y[j] = TERN(mag_get_d, lower, x + j);
 		else {
 			y[j] = R_PosInf;
-			WARNING_OOB_DOUBLE(w);
+			seenoob = 1;
 		}
 	}
 	mag_clear(ub);
+	if (seenoob) WARNING_OOB_DOUBLE;
 	UNPROTECT(1);
 	return ans;
 }

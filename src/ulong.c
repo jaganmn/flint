@@ -60,6 +60,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	PROTECT(s_names = validNames(s_names, ny));
 	ulong *y = (ny) ? flint_calloc(ny, sizeof(ulong)) : 0;
 	R_flint_set(object, y, ny, (R_CFinalizer_t) &R_flint_ulong_finalize);
+	int seenimag = 0, seenrad = 0;
 #ifdef R_FLINT_ABI_64
 # define UB 0x1.0p+64
 #else
@@ -117,7 +118,6 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 	case CPLXSXP:
 	{
 		const Rcomplex *x = COMPLEX_RO(s_x);
-		int seenimag = 0;
 		FOR_RECYCLE1(jy, ny, jx, nx) {
 			if (ISNAN(x[jx].r))
 				Rf_error(_("NaN is not representable by \"%s\""),
@@ -126,8 +126,7 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				Rf_error(_("floating-point number not in range of \"%s\""),
 				         "ulong");
 			y[jy] = (ulong) x[jx].r;
-			if (!seenimag && (seenimag = x[jx].i != 0.0))
-				Rf_warning(_("imaginary parts discarded in coercion"));
+			seenimag = seenimag || x[jx].i != 0.0;
 		}
 		break;
 	}
@@ -245,7 +244,6 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			acf_srcptr x = R_flint_get_pointer(s_x);
 			fmpz_t q;
 			fmpz_init(q);
-			int seenimag = 0;
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (arf_is_nan(acf_realref(x + jx))) {
 					fmpz_clear(q);
@@ -260,16 +258,60 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				}
 				arf_get_fmpz(q, acf_realref(x + jx), ARF_RND_DOWN);
 				y[jy] = fmpz_get_ui(q);
-				if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
-					Rf_warning(_("imaginary parts discarded in coercion"));
+				seenimag = seenimag || !arf_is_zero(acf_imagref(x + jx));
 			}
 			fmpz_clear(q);
 			break;
 		}
 		case R_FLINT_CLASS_ARB:
-		case R_FLINT_CLASS_ACB:
-			Rf_error(_("coercion from ball to point is not yet supported"));
+		{
+			arb_srcptr x = R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (arf_is_nan(arb_midref(x + jx))) {
+					fmpz_clear(q);
+					Rf_error(_("NaN is not representable by \"%s\""),
+					         "ulong");
+				}
+				if (arf_cmp_d(arb_midref(x + jx), -1.0) <= 0 ||
+				    arf_cmp_d(arb_midref(x + jx),   UB) >= 0) {
+					fmpz_clear(q);
+					Rf_error(_("floating-point number not in range of \"%s\""),
+					         "ulong");
+				}
+				arf_get_fmpz(q, arb_midref(x + jx), ARF_RND_DOWN);
+				y[jy] = fmpz_get_ui(q);
+				seenrad = seenrad || !arb_is_exact(x + jx);
+			}
+			fmpz_clear(q);
 			break;
+		}
+		case R_FLINT_CLASS_ACB:
+		{
+			acb_srcptr x = R_flint_get_pointer(s_x);
+			fmpz_t q;
+			fmpz_init(q);
+			FOR_RECYCLE1(jy, ny, jx, nx) {
+				if (arf_is_nan(arb_midref(acb_realref(x + jx)))) {
+					fmpz_clear(q);
+					Rf_error(_("NaN is not representable by \"%s\""),
+					         "ulong");
+				}
+				if (arf_cmp_d(arb_midref(acb_realref(x + jx)), -1.0) <= 0 ||
+				    arf_cmp_d(arb_midref(acb_realref(x + jx)),   UB) >= 0) {
+					fmpz_clear(q);
+					Rf_error(_("floating-point number not in range of \"%s\""),
+					         "ulong");
+				}
+				arf_get_fmpz(q, arb_midref(acb_realref(x + jx)), ARF_RND_DOWN);
+				y[jy] = fmpz_get_ui(q);
+				seenimag = seenimag || !arb_is_zero (acb_imagref(x + jx));
+				seenrad  = seenrad  || !arb_is_exact(acb_realref(x + jx));
+			}
+			fmpz_clear(q);
+			break;
+		}
 		case R_FLINT_CLASS_INVALID:
 			Rf_error(_("foreign external pointer"));
 			break;
@@ -277,6 +319,8 @@ SEXP R_flint_ulong_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		break;
 	}
 #undef UB
+	if (seenimag) WARNING_LOST_IMAG;
+	if (seenrad ) WARNING_LOST_RAD ;
 	setDDNN(object, s_dim, s_dimnames, s_names);
 	UNPROTECT(3);
 	return object;

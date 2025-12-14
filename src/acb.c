@@ -397,13 +397,13 @@ SEXP R_flint_acb_atomic(SEXP object)
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acb_srcptr x = R_flint_get_pointer(object);
 	Rcomplex *y = COMPLEX(ans);
+	int seenoob = 1, seenrad = 0;
 	arf_t lb, ub;
 	arf_srcptr p;
 	arf_init(lb);
 	arf_init(ub);
 	arf_set_d(ub, DBL_MAX);
 	arf_neg(lb, ub);
-	int w = 1;
 	for (j = 0; j < n; ++j) {
 		p = arb_midref(acb_realref(x + j));
 		if (arf_is_nan(p))
@@ -412,7 +412,7 @@ SEXP R_flint_acb_atomic(SEXP object)
 			y[j].r = arf_get_d(p, rnd);
 		else {
 			y[j].r = (arf_sgn(p) < 0) ? R_NegInf : R_PosInf;
-			WARNING_OOB_DOUBLE(w);
+			seenoob = 1;
 		}
 		p = arb_midref(acb_imagref(x + j));
 		if (arf_is_nan(p))
@@ -421,11 +421,14 @@ SEXP R_flint_acb_atomic(SEXP object)
 			y[j].i = arf_get_d(p, rnd);
 		else {
 			y[j].i = (arf_sgn(p) < 0) ? R_NegInf : R_PosInf;
-			WARNING_OOB_DOUBLE(w);
+			seenoob = 1;
 		}
+		seenrad = seenrad || !acb_is_exact(x + j);
 	}
 	arf_clear(lb);
 	arf_clear(ub);
+	if (seenoob) WARNING_OOB_DOUBLE;
+	if (seenrad) WARNING_LOST_RAD;
 	UNPROTECT(1);
 	return ans;
 }

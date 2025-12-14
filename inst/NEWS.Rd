@@ -111,8 +111,13 @@
       objects \code{ULONG_MAX}, \code{SLONG_MIN}, and \code{SLONG_MAX},
       defined at load time according to the ABI.
 
+      \item Class generator functions support conversion from
+      midpoint-radius interval types to point types, taking midpoints
+      and discarding radii.
+
       \item Conversion from complex types to real types warns about
-      nonzero imaginary parts.
+      nonzero imaginary parts.  Conversion from midpoint-radius interval
+      types to point types warns about nonzero radii.
     }
   }
   \subsection{Bug Fixes}{
@@ -152,6 +157,10 @@
 
       \item \code{diag<-} assigned to entries in the first row rather
       than to entries in the main diagonal.
+
+      \item Conversion from \code{flint} to atomic withholds warnings
+      until after memory is freed, in case warnings are caught by a
+      handler.
     }
   }
   \subsection{Internals}{

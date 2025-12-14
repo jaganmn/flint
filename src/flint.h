@@ -218,22 +218,26 @@ for (j = 0, \
      jf = (++jf == nf) ? 0 : jf, \
      jg = (++jg == ng) ? 0 : jg)
 
-#define WARNING_OOB_INTEGER(w) \
+#define WARNING_OOB_INTEGER \
 do { \
-	if (w) { \
-		Rf_warning(_("NA introduced by coercion to range of \"%s\""), \
-		           "integer"); \
-		w = 0; \
-	} \
+	Rf_warning(_("NA introduced by coercion to range of \"%s\""), \
+	           "integer"); \
 } while (0)
 
-#define WARNING_OOB_DOUBLE(w) \
+#define WARNING_OOB_DOUBLE \
 do { \
-	if (w) { \
-		Rf_warning(_("-Inf or Inf introduced by coercion to range of \"%s\""), \
-		           "double"); \
-		w = 0; \
-	} \
+	Rf_warning(_("-Inf or Inf introduced by coercion to range of \"%s\""), \
+	           "double"); \
+} while (0)
+
+#define WARNING_LOST_IMAG \
+do { \
+	Rf_warning(_("imaginary parts discarded in conversion"); \
+} while (0)
+
+#define WARNING_LOST_RAD \
+do { \
+	Rf_warning(_("radii discarded in conversion"); \
 } while (0)
 
 #define ERROR_INVALID_TYPE(x, func) \

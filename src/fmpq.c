@@ -86,6 +86,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			}
 		}
 	} else {
+		int seenimag = 0, seenrad = 0;
 		switch (TYPEOF(s_x)) {
 		case NILSXP:
 			FOR_RECYCLE0(jy, ny)
@@ -149,7 +150,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 		case CPLXSXP:
 		{
 			const Rcomplex *x = COMPLEX_RO(s_x);
-			int e, seenimag = 0;
+			int e;
 			FOR_RECYCLE1(jy, ny, jx, nx) {
 				if (!R_FINITE(x[jx].r))
 					Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
@@ -165,8 +166,7 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 				              (ulong)  e);
 				fmpz_one(fmpq_denref(y + jy));
 				}
-				if (!seenimag && (seenimag = x[jx].i != 0.0))
-					Rf_warning(_("imaginary parts discarded in coercion"));
+				seenimag = seenimag || x[jx].i != 0.0;
 			}
 			break;
 		}
@@ -248,27 +248,48 @@ SEXP R_flint_fmpq_initialize(SEXP object, SEXP s_x, SEXP s_length,
 			case R_FLINT_CLASS_ACF:
 			{
 				acf_srcptr x = R_flint_get_pointer(s_x);
-				int seenimag = 0;
 				FOR_RECYCLE1(jy, ny, jx, nx) {
 					if (!arf_is_finite(acf_realref(x + jx)))
 						Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
 						         "fmpq");
 					arf_get_fmpq(y + jy, acf_realref(x + jx));
-					if (!seenimag && (seenimag = !arf_is_zero(acf_imagref(x + jx))))
-						Rf_warning(_("imaginary parts discarded in coercion"));
+					seenimag = seenimag || !arf_is_zero(acf_imagref(x + jx));
 				}
 				break;
 			}
 			case R_FLINT_CLASS_ARB:
-			case R_FLINT_CLASS_ACB:
-				Rf_error(_("coercion from ball to point is not yet supported"));
+			{
+				arb_srcptr x = R_flint_get_pointer(s_x);
+				FOR_RECYCLE1(jy, ny, jx, nx) {
+					if (!arf_is_finite(arb_midref(x + jx)))
+						Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+						         "fmpq");
+					arf_get_fmpq(y + jy, arb_midref(x + jx));
+					seenrad = seenrad || !arb_is_exact(x + jx);
+				}
 				break;
+			}
+			case R_FLINT_CLASS_ACB:
+			{
+				acb_srcptr x = R_flint_get_pointer(s_x);
+				FOR_RECYCLE1(jy, ny, jx, nx) {
+					if (!arf_is_finite(arb_midref(acb_realref(x + jx))))
+						Rf_error(_("NaN, -Inf, Inf are not representable by \"%s\""),
+						         "fmpq");
+					arf_get_fmpq(y + jy, arb_midref(acb_realref(x + jx)));
+					seenimag = seenimag || !arb_is_zero (acb_imagref(x + jx));
+					seenrad  = seenrad  || !arb_is_exact(acb_realref(x + jx));
+				}
+				break;
+			}
 			case R_FLINT_CLASS_INVALID:
 				Rf_error(_("foreign external pointer"));
 				break;
 			}
 			break;
 		}
+		if (seenimag) WARNING_LOST_IMAG;
+		if (seenrad ) WARNING_LOST_RAD ;
 	}
 	setDDNN(object, s_dim, s_dimnames, s_names);
 	UNPROTECT(3);
@@ -300,22 +321,23 @@ SEXP R_flint_fmpq_atomic(SEXP object)
 	SEXP ans = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t) n));
 	const fmpq *x = R_flint_get_pointer(object);
 	double *y = REAL(ans);
+	int seenoob = 0;
 	fmpz_t lb, ub;
 	fmpz_init(lb);
 	fmpz_init(ub);
 	fmpz_set_d(ub, DBL_MAX);
 	fmpz_neg(lb, ub);
-	int w = 1;
 	for (j = 0; j < n; ++j) {
 		if (fmpq_cmp_fmpz(x + j, lb) >= 0 && fmpq_cmp_fmpz(x + j, ub) <= 0)
 			y[j] = fmpq_get_d(x + j);
 		else {
 			y[j] = (fmpq_sgn(x + j) < 0) ? R_NegInf : R_PosInf;
-			WARNING_OOB_DOUBLE(w);
+			seenoob = 1;
 		}
 	}
 	fmpz_clear(lb);
 	fmpz_clear(ub);
+	if (seenoob) WARNING_OOB_DOUBLE;
 	UNPROTECT(1);
 	return ans;
 }
