@@ -397,7 +397,7 @@ SEXP R_flint_acb_atomic(SEXP object)
 	SEXP ans = PROTECT(Rf_allocVector(CPLXSXP, (R_xlen_t) n));
 	acb_srcptr x = R_flint_get_pointer(object);
 	Rcomplex *y = COMPLEX(ans);
-	int seenoob = 1, seenrad = 0;
+	int seenoob = 0, seenrad = 0;
 	arf_t lb, ub;
 	arf_srcptr p;
 	arf_init(lb);
