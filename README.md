@@ -40,7 +40,7 @@ argument promotion, extending R's basic hierarchy.
  [7] "arf"               "flint"             "fmpq"             
 [10] "fmpz"              "mag"               "slong"            
 [13] "ulong"            
-> getDataPart(getGenerics(ns)) # of length 102!
+> getDataPart(getGenerics(ns)) # of length 114!
   [1] "!"             "$"             "$<-"           "%*%"          
   [5] "+"             "-"             "Complex"       "Den"          
   [9] "Den<-"         "Imag"          "Imag<-"        "Math2"        
@@ -55,25 +55,28 @@ argument promotion, extending R's basic hierarchy.
  [45] "backsolve"     "c"             "cbind2"        "chol2inv"     
  [49] "chol"          "coerce"        "colMeans"      "colSums"      
  [53] "crossprod"     "cut"           "det"           "determinant"  
- [57] "diag"          "diag<-"        "dim"           "dim<-"        
- [61] "dimnames"      "dimnames<-"    "drop"          "duplicated"   
- [65] "findInterval"  "format"        "identical"     "is.array"     
- [69] "is.finite"     "is.infinite"   "is.matrix"     "is.na"        
- [73] "is.na<-"       "is.nan"        "is.unsorted"   "isSymmetric"  
- [77] "length"        "length<-"      "log"           "match"        
- [81] "mean"          "mtfrm"         "names"         "names<-"      
- [85] "norm"          "print"         "quantile"      "rbind2"       
- [89] "rep.int"       "rep"           "rep_len"       "rowMeans"     
- [93] "rowSums"       "seq"           "sequence"      "show"         
- [97] "solve"         "summary"       "t"             "tcrossprod"   
-[101] "unique"        "xtfrm"        
+ [57] "diag"          "diag<-"        "diff"          "diffinv"      
+ [61] "dim"           "dim<-"         "dimnames"      "dimnames<-"   
+ [65] "drop"          "duplicated"    "eigen"         "findInterval" 
+ [69] "format"        "identical"     "is.array"      "is.finite"    
+ [73] "is.infinite"   "is.matrix"     "is.na"         "is.na<-"      
+ [77] "is.nan"        "is.unsorted"   "isComplex"     "isFloating"   
+ [81] "isSigned"      "isSymmetric"   "kronecker"     "length"       
+ [85] "length<-"      "log"           "match"         "mean"         
+ [89] "mtfrm"         "names"         "names<-"       "norm"         
+ [93] "outer"         "print"         "qr"            "quantile"     
+ [97] "rbind2"        "rcond"         "rep.int"       "rep"          
+[101] "rep_len"       "rowMeans"      "rowSums"       "scale"        
+[105] "seq"           "sequence"      "show"          "solve"        
+[109] "summary"       "svd"           "t"             "tcrossprod"   
+[113] "unique"        "xtfrm"        
 > oprec <- flintPrec(0x1p+12L) # 2^12 = 4096 bits
 > (x <- 0:3 * arb_const_pi() / 2)
-class "arb", length 4, address 0x600001920240
+class "arb", length 4, address 0x600002d52280
 [1] (0.000000e+0 +/- 0.000e+0000) (1.570796e+0 +/- 9.575e-1234)
 [3] (3.141593e+0 +/- 1.915e-1233) (4.712389e+0 +/- 1.054e-1232)
 > (y <- exp(1i * x))
-class "acb", length 4, address 0x135f0a2f0
+class "acb", length 4, address 0x137e39e20
 [1] ( 1.000000e+0000 +/- 0.000e+0000)+( 0.000000e+0000 +/- 0.000e+0000)i
 [2] (-4.080025e-1234 +/- 9.575e-1234)+( 1.000000e+0000 +/- 9.575e-1234)i
 [3] (-1.000000e+0000 +/- 1.915e-1233)+(-8.160051e-1234 +/- 1.915e-1233)i
