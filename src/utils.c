@@ -1,6 +1,11 @@
 #include "flint.h"
 
 #if R_VERSION < R_Version(4, 5, 0)
+int ANY_ATTRIB(SEXP s)
+{
+	return ATTRIB(s) != R_NilValue;
+}
+
 void CLEAR_ATTRIB(SEXP s)
 {
 	SET_ATTRIB(s, R_NilValue);
@@ -236,7 +241,7 @@ SEXP validDim(SEXP dim)
 				Rf_error(_("%s[[%d]] is negative"),
 				         "dim", (int) i);
 		}
-		return (ATTRIB(dim) != R_NilValue) ? copyVector(dim) : dim;
+		return (ANY_ATTRIB(dim)) ? copyVector(dim) : dim;
 	} else {
 		const double *x = REAL_RO(dim);
 		for (i = 0; i < m; ++i) {
@@ -280,8 +285,9 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 		         "dimnames", (long long int) XLENGTH(dimnames),
 		         "dim"     , (long long int) m);
 	const int *d = INTEGER_RO(dim);
-	SEXP a = ATTRIB(dimnames);
-	int new = a != R_NilValue && (CDR(a) != R_NilValue || TAG(a) != R_NamesSymbol);
+	/* FIXME: ask LT about a way to get LENGTH(ATTRIB(dimnames)) */
+	int new = ANY_ATTRIB(dimnames) &&
+		Rf_getAttrib(dimnames, R_NamesSymbol) == R_NilValue;
 	for (i = 0; i < m; ++i) {
 		SEXP elt = VECTOR_ELT(dimnames, i);
 		t = (SEXPTYPE) TYPEOF(elt);
@@ -300,7 +306,7 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 				Rf_error(_("length of %s[[%d]] [%lld] is not equal to %s[[%d]] [%lld]"),
 				         "dimnames", (int) i, (long long int) XLENGTH(elt),
 				         "dim"     , (int) i, (long long int) d[i]);
-			new |= (t != STRSXP || ATTRIB(elt) != R_NilValue);
+			new = new || t != STRSXP || ANY_ATTRIB(elt);
 			break;
 		default:
 			Rf_error(_("%s[[%d]] has invalid type \"%s\""),
@@ -317,7 +323,7 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 		case NILSXP:
 			break;
 		case STRSXP:
-			SET_VECTOR_ELT(ans, i, (ATTRIB(elt) != R_NilValue) ? copyVector(elt) : elt);
+			SET_VECTOR_ELT(ans, i, (ANY_ATTRIB(elt)) ? copyVector(elt) : elt);
 			break;
 		case INTSXP:
 			if (Rf_inherits(elt, "factor")) {
@@ -333,7 +339,7 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 	SEXP namesdimnames = Rf_getAttrib(dimnames, R_NamesSymbol);
 	if (namesdimnames != R_NilValue) {
 		PROTECT(namesdimnames);
-		if (ATTRIB(namesdimnames) == R_NilValue)
+		if (!ANY_ATTRIB(namesdimnames))
 			Rf_setAttrib(ans, R_NamesSymbol, namesdimnames);
 		else {
 			PROTECT(namesdimnames = copyVector(namesdimnames));
@@ -374,7 +380,7 @@ SEXP validNames(SEXP names, mp_limb_t length)
 	}
 	switch (t) {
 	case STRSXP:
-		return (ATTRIB(names) != R_NilValue) ? copyVector(names) : names;
+		return (ANY_ATTRIB(names)) ? copyVector(names) : names;
 	case INTSXP:
 		if (Rf_inherits(names, "factor"))
 		return Rf_asCharacterFactor(names);

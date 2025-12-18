@@ -439,8 +439,9 @@ extern
 const char *R_flint_ops1[74];
 
 #if R_VERSION < R_Version(4, 5, 0)
-void CLEAR_ATTRIB(SEXP s);
-SEXP R_ClosureEnv(SEXP s);
+int ANY_ATTRIB(SEXP);
+void CLEAR_ATTRIB(SEXP);
+SEXP R_ClosureEnv(SEXP);
 #endif
 
 char *R_alloc_snprintf(size_t, const char *, ...);
