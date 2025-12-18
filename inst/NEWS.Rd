@@ -2,64 +2,16 @@
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
 \section{Changes in version 0.1.4 (2025-12-18)}{
-  \subsection{Description}{
-    \itemize{
-      \item .
-    }
-  }
   \subsection{Compatibility}{
     \itemize{
-      \item .
+      \item \proglang{C} function \code{ATTRIB} was called in a few
+      places despite not belonging to \R{}'s \proglang{C} API.
     }
   }
   \subsection{Installation}{
     \itemize{
-      \item .
-    }
-  }
-  \subsection{Documentation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Significant User-Visible Changes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Classes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Methods}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{New Features}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Bug Fixes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Internals}{
-    \itemize{
-      \item .
+      \item Installation failed on some platforms due to labels without
+      statements in several \file{src/*.c}.
     }
   }
 }
