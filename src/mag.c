@@ -537,6 +537,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
@@ -588,6 +589,7 @@ SEXP R_flint_mag_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				z[jz] = !mag_is_zero(x + jx) || !mag_is_zero(y + jy);
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
@@ -916,6 +918,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
@@ -1043,6 +1046,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 
 #undef WRAP
@@ -1123,6 +1127,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			TERN(mag_div_ui, lower, z, z, nx);
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		UNPROTECT(1);
 		return ans;
@@ -1161,6 +1166,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		UNPROTECT(1);
 		return ans;
@@ -1193,6 +1199,7 @@ SEXP R_flint_mag_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[jz] = mag_is_zero(x + jz) != 0;
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);

@@ -423,6 +423,7 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				arb_pow(z + jz, x + jx, y + jy, prec);
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
@@ -514,6 +515,7 @@ SEXP R_flint_arb_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				: 0;
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
@@ -1136,6 +1138,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
@@ -1218,6 +1221,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		UNPROTECT(1);
 		return ans;
@@ -1259,6 +1263,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			z[0] = jx < nx;
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		UNPROTECT(1);
 		return ans;
@@ -1300,6 +1305,7 @@ SEXP R_flint_arb_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 					mag_is_zero(arb_radref(x + jz)) != 0;
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);

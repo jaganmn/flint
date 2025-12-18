@@ -433,6 +433,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				acf_div(z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
@@ -482,6 +483,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				WRAP(acb_pow, z + jz, x + jx, y + jy, prec, rnd);
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 
 #undef WRAP
@@ -538,6 +540,7 @@ SEXP R_flint_acf_ops2(SEXP s_op, SEXP s_x, SEXP s_y, SEXP s_dots)
 				: 0;
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN2(ans, s_x, s_y, nz, nx, ny, info);
 		UNPROTECT(1);
@@ -987,6 +990,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
@@ -1191,6 +1195,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 
 #undef WRAP
@@ -1241,6 +1246,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		UNPROTECT(1);
 		return ans;
@@ -1312,6 +1318,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 			break;
 		}
 		default: /* -Wswitch */
+			break;
 		}
 		UNPROTECT(1);
 		return ans;
@@ -1347,6 +1354,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				z[jz] = acf_is_zero(x + jz) != 0;
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
@@ -1367,6 +1375,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				arf_set(z + jz, acf_imagref(x + jz));
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 		setDDNN1(ans, s_x);
 		UNPROTECT(1);
@@ -1420,6 +1429,7 @@ SEXP R_flint_acf_ops1(SEXP s_op, SEXP s_x, SEXP s_dots)
 				WRAP(acb_arg, z + jz, x + jz, prec, rnd);
 			break;
 		default: /* -Wswitch */
+			break;
 		}
 
 #undef WRAP
