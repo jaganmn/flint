@@ -1,6 +1,68 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
+\section{Changes in version 0.1.4 (2025-12-18)}{
+  \subsection{Description}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Compatibility}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Installation}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Documentation}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Significant User-Visible Changes}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Deprecated and Defunct}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Classes}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Generic Functions}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Methods}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{New Features}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item .
+    }
+  }
+  \subsection{Internals}{
+    \itemize{
+      \item .
+    }
+  }
+}
 \section{Changes in version 0.1.3 (2025-12-15)}{
   \subsection{Description}{
     \itemize{
