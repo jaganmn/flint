@@ -438,6 +438,7 @@ const char *R_flint_ops2[22];
 extern
 const char *R_flint_ops1[74];
 
+int LENGTH_ATTRIB(SEXP);
 #if R_VERSION < R_Version(4, 5, 0)
 int ANY_ATTRIB(SEXP);
 void CLEAR_ATTRIB(SEXP);

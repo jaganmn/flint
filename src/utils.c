@@ -1,5 +1,26 @@
 #include "flint.h"
 
+#if R_VERSION < R_Version(4, 6, 0)
+int LENGTH_ATTRIB(SEXP s)
+{
+	return Rf_length(ATTRIB(s));
+}
+#else
+static
+SEXP LENGTH_ATTRIB_check(SEXP tag, SEXP value, void *data)
+{
+	(*((int *) data))++;
+	return (SEXP) 0;
+}
+
+int LENGTH_ATTRIB(SEXP s)
+{
+	int n = 0;
+	R_mapAttrib(s, &LENGTH_ATTRIB_check, &n);
+	return n;
+}
+#endif
+
 #if R_VERSION < R_Version(4, 5, 0)
 int ANY_ATTRIB(SEXP s)
 {
@@ -285,9 +306,8 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 		         "dimnames", (long long int) XLENGTH(dimnames),
 		         "dim"     , (long long int) m);
 	const int *d = INTEGER_RO(dim);
-	/* FIXME: ask LT about a way to get LENGTH(ATTRIB(dimnames)) */
-	int new = ANY_ATTRIB(dimnames) &&
-		Rf_getAttrib(dimnames, R_NamesSymbol) == R_NilValue;
+	int nat = LENGTH_ATTRIB(dimnames);
+	int new = nat > 1 || (nat == 1 && Rf_getAttrib(dimnames, R_NamesSymbol) == R_NilValue);
 	for (i = 0; i < m; ++i) {
 		SEXP elt = VECTOR_ELT(dimnames, i);
 		t = (SEXPTYPE) TYPEOF(elt);
