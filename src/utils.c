@@ -1,25 +1,23 @@
 #include "flint.h"
 
 #if R_VERSION < R_Version(4, 6, 0)
-int LENGTH_ATTRIB(SEXP s)
+R_xlen_t R_getAttribCount(SEXP s)
 {
-	return Rf_length(ATTRIB(s));
+	R_xlen_t n = 0;
+	SEXP t;
+	for (t = ATTRIB(s); t != R_NilValue; t = CDR(t))
+		n++;
+	switch (TYPEOF(s)) {
+	case LISTSXP:
+	case LANGSXP:
+	case DOTSXP:
+		for (t = s; t != R_NilValue; t = CDR(t))
+			if (TAG(t) != R_NilValue)
+				return n + 1;
+	default:
+		return n;
+	}
 }
-#else
-static
-SEXP LENGTH_ATTRIB_check(SEXP tag, SEXP value, void *data)
-{
-	(*((int *) data))++;
-	return (SEXP) 0;
-}
-
-int LENGTH_ATTRIB(SEXP s)
-{
-	int n = 0;
-	R_mapAttrib(s, &LENGTH_ATTRIB_check, &n);
-	return n;
-}
-#endif
 
 #if R_VERSION < R_Version(4, 5, 0)
 int ANY_ATTRIB(SEXP s)
@@ -40,6 +38,7 @@ SEXP R_ClosureEnv(SEXP s)
 	return CLOENV(s);
 }
 #endif
+#endif
 
 char *R_alloc_snprintf(size_t n, const char *format, ...)
 {
@@ -53,12 +52,12 @@ char *R_alloc_snprintf(size_t n, const char *format, ...)
 
 SEXP newObject(const char *what)
 {
-	static SEXP s_getClass = NULL;
-	if (!s_getClass)
-		s_getClass = Rf_install("getClass");
+	static SEXP name = NULL;
+	if (!name)
+		name = Rf_install("getClass");
 	SEXP t;
 	PROTECT(t = Rf_mkString(what));
-	PROTECT(t = Rf_lang4(s_getClass, t, R_MissingArg, R_flint_namespace));
+	PROTECT(t = Rf_lang4(name, t, R_MissingArg, R_flint_namespace));
 	PROTECT(t = Rf_eval(t, R_flint_namespace));
 	t = R_do_new_object(t);
 	UNPROTECT(3);
@@ -306,7 +305,7 @@ SEXP validDimNames(SEXP dimnames, SEXP dim)
 		         "dimnames", (long long int) XLENGTH(dimnames),
 		         "dim"     , (long long int) m);
 	const int *d = INTEGER_RO(dim);
-	int nat = LENGTH_ATTRIB(dimnames);
+	R_xlen_t nat = R_getAttribCount(dimnames);
 	int new = nat > 1 || (nat == 1 && Rf_getAttrib(dimnames, R_NamesSymbol) == R_NilValue);
 	for (i = 0; i < m; ++i) {
 		SEXP elt = VECTOR_ELT(dimnames, i);

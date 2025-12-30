@@ -438,11 +438,13 @@ const char *R_flint_ops2[22];
 extern
 const char *R_flint_ops1[74];
 
-int LENGTH_ATTRIB(SEXP);
+#if R_VERSION < R_Version(4, 6, 0)
+R_xlen_t R_getAttribCount(SEXP);
 #if R_VERSION < R_Version(4, 5, 0)
 int ANY_ATTRIB(SEXP);
 void CLEAR_ATTRIB(SEXP);
 SEXP R_ClosureEnv(SEXP);
+#endif
 #endif
 
 char *R_alloc_snprintf(size_t, const char *, ...);
