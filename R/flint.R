@@ -7,7 +7,7 @@ function (object, mode) {
            ## x
            switch(type.,
                   "raw" =, "logical" =, "integer" =, "double" =, "complex" =, "character" =, "NULL" =, "pairlist" =, "language" =, "list" =, "expression" =
-                                                                                              type.,
+                      type.,
                   "S4" =
                       if (is.na(class. <- flintClass(object)))
                           stop(.error.notSubsettable(object))
