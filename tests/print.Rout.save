@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2025-11-16 r89026) -- "Unsuffered Consequences"
-Copyright (C) 2025 The R Foundation for Statistical Computing
-Platform: aarch64-apple-darwin23.6.0
+R version 4.5.2 Patched (2026-01-19 r89323) -- "[Not] Part in a Rumble"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -261,10 +261,10 @@ class "arb", length 16, address <pointer: 0x102874ce0>
 > 
 > ## Row and column labels were not printed for arrays of length zero
 > ulong.array(0L, c(0L, 2L))
-class "ulong", dim (0,2), address <pointer: 0x0>
+class "ulong", dim (0,2), address <pointer: (nil)>
      [,1] [,2]
 > ulong.array(0L, c(2L, 0L))
-class "ulong", dim (2,0), address <pointer: 0x0>
+class "ulong", dim (2,0), address <pointer: (nil)>
     
 [1,]
 [2,]
