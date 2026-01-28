@@ -97,3 +97,9 @@ stopifnot(tryCatch(mag(  0)/mag(  0), error = function (e) TRUE),
 x <- slong.array(0L, c(4L, 6L))
 diag(x) <- slong(1L)
 stopifnot(identical(print(x), slong(diag(1L, 4L, 6L))))
+
+
+## acb_hypgeom_bessel_* passed 'arb' instead of 'acb'
+for (b in mget(paste0("acb_hypgeom_bessel_", c("j", "y", "i", "k")),
+               mode = "function", inherits = TRUE))
+    b(0, 0) # caught segfault

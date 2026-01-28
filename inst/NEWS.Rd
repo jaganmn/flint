@@ -1,7 +1,7 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.5 (2025-12-30)}{
+\section{Changes in version 0.1.5 (2026-01-28)}{
   \subsection{Description}{
     \itemize{
       \item .
@@ -54,7 +54,9 @@
   }
   \subsection{Bug Fixes}{
     \itemize{
-      \item .
+      \item Typos in \code{acb_hypgeom_bessel_[jyik]} caused segfaults.
+      \proglang{C} functions were passed \code{arb} objects instead of
+      \code{acb} ones.
     }
   }
   \subsection{Internals}{
