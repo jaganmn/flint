@@ -123,6 +123,7 @@
 \alias{summary,flint-method}
 \alias{svd,flint-method}
 \alias{t,flint-method}
+\alias{toeplitz,flint-method}
 \alias{unique,flint-method}
 \docType{class}
 \title{Class of FLINT-Type Vectors}
@@ -561,6 +562,12 @@ seq(to=, by=, length.out=)}
       \code{signature(x = "flint")}:\cr
       returns the transpose of \code{x} if \code{x} is a matrix,
       handling non-array \code{x} as \code{length(x)}-by-1 matrices.}
+    \item{\code{\link[stats]{toeplitz}}}{
+      \code{signature(x = "flint")}:\cr
+      returns the Toeplitz matrix whose first row is \code{x} or
+      (if not \code{NULL}) \code{r} and whose first column is \code{x}.
+      The dimension names of the return value are constructed from the
+      names of the arguments.}
     \item{\code{\link{unique}}}{
       \code{signature(x = "flint")}:\cr
       if \code{x} is not an array or \code{MARGIN} is empty, returns

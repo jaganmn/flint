@@ -35,7 +35,7 @@ exportMethods("!", "$", "$<-", "%*%", "+", "-", "[", "[<-", "[[",
 exportMethods(Complex, Math, Math2, Ops, Summary, cbind2, coerce,
               kronecker, rbind2, show)
 ## Generic functions in 'stats':
-exportMethods(diffinv, quantile)
+exportMethods(diffinv, quantile, toeplitz)
 
 export(ULONG_MAX,
        SLONG_MIN,

@@ -2169,6 +2169,33 @@ setMethod("t",
           function (x)
               .Call(R_flint_transpose, x, FALSE))
 
+setMethod("toeplitz",
+          c(x = "flint"),
+          function (x, r = NULL, ...) {
+              m <- n <- length(x)
+              if (!is.null(rn <- cn <- names(x)))
+                  names(x) <- NULL
+              if (!is.null(r)) {
+                  stopifnot(is.vector(r) || is(r, "flint"))
+                  n <- length(r)
+                  if (!is.null(cn <- names(r)))
+                      names(r) <- NULL
+              }
+              if (is.double(m) || is.double(n))
+                  stop(gettextf("dimensions would exceed maximum %d",
+                                .Machine[["integer.max"]]),
+                       domain = NA)
+              d <- c(m, n)
+              ans <-
+              if (is.null(r))
+                  x[abs(.row(d) - .col(d)) + 1L]
+              else c.flint(r[if (n >= 2L) n:2L else 0L], x)[.row(d) - .col(d) + n]
+              dim(ans) <- d
+              if (!is.null(rn) || !is.null(cn))
+                  dimnames(ans) <- list(rn, cn)
+              ans
+          })
+
 setMethod("unique",
           c(x = "flint"),
           function (x, incomparables = FALSE, MARGIN = 1L, ...) {

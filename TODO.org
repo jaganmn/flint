@@ -20,6 +20,7 @@
 *** DONE duplicated
 *** DONE unique
 *** DONE anyDuplicated
+*** DONE toeplitz
 
 ** DONE function for numerical solution of systems of ODE using 'arf'
 ** DONE function for numerical integration of functions of one variable
