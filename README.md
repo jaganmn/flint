@@ -40,7 +40,7 @@ argument promotion, extending R's basic hierarchy.
  [7] "arf"               "flint"             "fmpq"             
 [10] "fmpz"              "mag"               "slong"            
 [13] "ulong"            
-> getDataPart(getGenerics(ns)) # of length 114!
+> getDataPart(getGenerics(ns)) # of length 115!
   [1] "!"             "$"             "$<-"           "%*%"          
   [5] "+"             "-"             "Complex"       "Den"          
   [9] "Den<-"         "Imag"          "Imag<-"        "Math2"        
@@ -69,7 +69,7 @@ argument promotion, extending R's basic hierarchy.
 [101] "rep_len"       "rowMeans"      "rowSums"       "scale"        
 [105] "seq"           "sequence"      "show"          "solve"        
 [109] "summary"       "svd"           "t"             "tcrossprod"   
-[113] "unique"        "xtfrm"        
+[113] "toeplitz"      "unique"        "xtfrm"        
 > oprec <- flintPrec(0x1p+12L) # 2^12 = 4096 bits
 > (x <- 0:3 * arb_const_pi() / 2)
 class "arb", length 4, address 0x600002d52280
