@@ -1674,8 +1674,6 @@ setMethod("norm",
                           domain = NA))
           })
 
-## The method with signature c(x = "ANY", type = "missing") in package
-## 'methods' seems to call base::norm, not methods:::.implicitTable$norm
 setMethod("norm",
           c(x = "flint", type = "missing"),
           function (x, type, ...)
@@ -1913,9 +1911,14 @@ setMethod("rbind2",
               rbind.flint(x, y, deparse.level = 0L))
 
 setMethod("rcond",
-          c(x = "flint"),
+          c(x = "flint", norm = "ANY"),
           function (x, norm, ...)
               .NotYetImplemented())
+
+setMethod("rcond",
+          c(x = "flint", norm = "missing"),
+          function (x, norm, ...)
+              rcond(x, type = "O", ...))
 
 setMethod("rep",
           c(x = "flint"),

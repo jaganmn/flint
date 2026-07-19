@@ -112,7 +112,8 @@
 \alias{rbind2,ANY,flint-method}
 \alias{rbind2,flint,ANY-method}
 \alias{rbind2,flint,flint-method}
-\alias{rcond,flint-method}
+\alias{rcond,flint,ANY-method}
+\alias{rcond,flint,missing-method}
 \alias{rep,flint-method}
 \alias{rep.int,flint-method}
 \alias{rep_len,flint-method}
@@ -464,7 +465,8 @@ flint.array(class, \dots)
       length is less than the length of \code{x}.  An error is signaled
       if its length is greater.}
     \item{\code{\link{norm}}}{
-      \code{signature(x = "flint")}:\cr
+      \code{signature(x = "flint", type = "ANY")}:\cr
+      \code{signature(x = "flint", type = "missing")}:\cr
       returns the matrix norm of \code{x} as a \code{flint} vector of
       length 1.  The class of the return value can depend on the norm
       type indicated by argument \code{type}; see \code{\link{norm}}.}
