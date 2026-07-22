@@ -1,56 +1,11 @@
 \name{NEWS}
 \title{News for \R{} Package \pkg{flint}}
 \newcommand{\GH}{\href{https://github.com/jaganmn/flint/issues/#1}{GH##1}}
-\section{Changes in version 0.1.5 (2026-07-20)}{
-  \subsection{Description}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Compatibility}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Installation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Documentation}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Significant User-Visible Changes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Deprecated and Defunct}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Classes}{
-    \itemize{
-      \item .
-    }
-  }
-  \subsection{Generic Functions}{
-    \itemize{
-      \item .
-    }
-  }
+\section{Changes in version 0.1.5 (2026-07-22)}{
   \subsection{Methods}{
     \itemize{
       \item An S4 method is defined for made-generic function
       \code{toeplitz}.
-    }
-  }
-  \subsection{New Features}{
-    \itemize{
-      \item .
     }
   }
   \subsection{Bug Fixes}{
@@ -62,7 +17,10 @@
   }
   \subsection{Internals}{
     \itemize{
-      \item .
+      \item \proglang{C} function \code{validDimNames} is modified to
+      make use of \code{R_getAttribCount} from \R{}'s \proglang{C} API.
+      Now it is guaranteed that the return value does not have
+      attributes apart from \code{names}.
     }
   }
 }
